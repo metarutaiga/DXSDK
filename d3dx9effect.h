@@ -25,12 +25,18 @@
 // D3DXFX_DONOTSAVESAMPLERSTATE
 //   This flag is used as a parameter to ID3DXEffect::Begin(). When this flag
 //   is specified, sampler device state is not saved or restored in Begin/End.
+// D3DXFX_NOT_CLONEABLE
+//   This flag is used as a parameter to the D3DXCreateEffect family of APIs.
+//   When this flag is specified, the effect will be non-cloneable and will not
+//   contain any shader binary data.
+//   Furthermore, GetPassDesc will not return shader function pointers. 
+//   Setting this flag reduces effect memory usage by about 50%.
 //----------------------------------------------------------------------------
 
 #define D3DXFX_DONOTSAVESTATE         (1 << 0)
 #define D3DXFX_DONOTSAVESHADERSTATE   (1 << 1)
 #define D3DXFX_DONOTSAVESAMPLERSTATE  (1 << 2)
-
+#define D3DXFX_NOT_CLONEABLE          (1 << 11)
 
 //----------------------------------------------------------------------------
 // D3DX_PARAMETER_SHARED

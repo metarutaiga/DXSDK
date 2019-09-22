@@ -1117,6 +1117,130 @@ HRESULT WINAPI D3DXComputeTangent(LPD3DXMESH Mesh,
                                  DWORD Wrap,
                                  CONST DWORD *pAdjacency);
 
+//============================================================================
+//
+// UVAtlas apis
+//
+//============================================================================
+typedef HRESULT (WINAPI *LPD3DXUVATLASCB)(FLOAT fPercentDone,  LPVOID lpUserContext);
+
+// This function creates atlases for meshes. There are two modes of operation,
+// either based on the number of charts, or the maximum allowed stretch. If the
+// maximum allowed stretch is 0, then each triangle will likely be in its own
+// chart.
+
+//
+// The parameters are as follows:
+//  pMesh - Input mesh to calculate an atlas for. This must have a position
+//          channel and at least a 2-d texture channel.
+//  uMaxChartNumber - The maximum number of charts required for the atlas.
+//                    If this is 0, it will be parameterized based solely on
+//                    stretch.
+//  fMaxStretch - The maximum amount of stretch, if 0, no stretching is allowed,
+//                if 1, then any amount of stretching is allowed.
+//  uWidth - The width of the texture the atlas will be used on.
+//  uHeight - The height of the texture the atlas will be used on.
+//  fGutter - The minimum distance, in texels between two charts on the atlas.
+//            this gets scaled by the width, so if fGutter is 2.5, and it is
+//            used on a 512x512 texture, then the minimum distance will be
+//            2.5 / 512 in u-v space.
+//  dwTextureIndex - Specifies which texture coordinate to write to in the
+//                   output mesh (which is cloned from the input mesh). Useful
+//                   if your vertex has multiple texture coordinates.
+//  pdwAdjacency - a pointer to an array with 3 DWORDs per face, indicating
+//                 which triangles are adjacent to each other (unused so far).
+//  pfIMTArray - a pointer to an array with 3 FLOATs per face, describing the
+//               integrated metric tensor for that face. This lets you control
+//               the way this triangle may be stretched in the atlas. The IMT
+//               passed in will be 3 floats (a,b,c) and specify a symmetric
+//               matrix (a b) that, given a vector (s,t), specifies the 
+//                      (b c)
+//               distance between a vector v1 and a vector v2 = v1 + (s,t) as
+//               sqrt((s, t) * M * (s, t)^T).
+//               In other words, this lets one specify the magnitude of the
+//               stretch in an arbitrary direction in u-v space. For example
+//               if a = b = c = 1, then this scales the vector (1,1) by 2, and
+//               the vector (1,-1) by 0. Note that this is multiplying the edge
+//               length by the square of the matrix, so if you want the face to
+//               stretch to twice its
+//               size with no shearing, the IMT value should be (2, 0, 2), which
+//               is just the identity matrix times 2.
+//               Note that this assumes you have an orientation for the triangle
+//               in some 2-D space. For D3DXUVAtlas, this space is created by
+//               letting S be the direction from the first to the second
+//               vertex, and T be the cross product between the normal and S.
+//               
+//  pCallback - Since the atlas creation process can be very CPU intensive,
+//              this allows the programmer to specify a function to be called
+//              periodically, similarly to how it is done in the PRT simulation
+//              engine.
+//  fCallbackFrequency - This lets you specify how often the callback will be
+//                       called. A decent default should be 0.0001f.
+//  pUserContext - a void pointer to be passed back to the callback function
+//  ppMeshOut - A pointer to a location to store a pointer for the newly created
+//              mesh.
+//  ppFacePartitioning - A pointer to a location to store a pointer for an array,
+//                       one DWORD per face, giving the final partitioning
+//                       created by the atlasing algorithm.
+//  ppVertexRemapArray - A pointer to a location to store a pointer for an array,
+//                       one DWORD per vertex, giving the vertex it was copied
+//                       from, if any vertices needed to be split.
+//  pfMaxStretchOut - A location to store the maximum stretch resulting from the
+//                    atlasing algorithm.
+//  puNumChartsOut - A location to store the number of charts created, or if the
+//                   maximum number of charts was too low, this gives the minimum
+//                    number of charts needed to create an atlas.
+
+HRESULT WINAPI D3DXUVAtlasCreate(LPD3DXMESH pMesh,
+                                 UINT uMaxChartNumber,
+                                 FLOAT fMaxStretch,
+                                 UINT uWidth,
+                                 UINT uHeight,
+                                 FLOAT fGutter,
+                                 DWORD dwTextureIndex,
+                                 CONST DWORD *pdwAdjacency,
+                                 FLOAT *pfIMTArray,
+                                 LPD3DXUVATLASCB pCallback,
+                                 FLOAT fCallbackFrequency,
+                                 LPVOID pUserContext,
+                                 LPD3DXMESH *ppMeshOut,
+                                 LPD3DXBUFFER *ppFacePartitioning,
+                                 LPD3DXBUFFER *ppVertexRemapArray,
+                                 FLOAT *pfMaxStretchOut,
+                                 UINT *puNumChartsOut);
+
+// This has the same exact arguments as Create, except that it does not perform the
+// final packing step. This method allows one to get a partitioning out, and possibly
+// modify it before sending it to be repacked. Note that if you change the
+// partitioning, you'll also need to calculate new texture coordinates for any faces
+// that have switched charts.
+HRESULT WINAPI D3DXUVAtlasPartition(LPD3DXMESH pMesh,
+                                    UINT uMaxChartNumber,
+                                    FLOAT fMaxStretch,
+                                    DWORD dwTextureIndex,
+                                    CONST DWORD *pdwAdjacency,
+                                    FLOAT *pfIMTArray,
+                                    LPD3DXUVATLASCB pCallback,
+                                    FLOAT fCallbackFrequency,
+                                    LPVOID pUserContext,
+                                    LPD3DXMESH *ppMeshOut,
+                                    LPD3DXBUFFER *ppFacePartitioning,
+                                    LPD3DXBUFFER *ppVertexRemapArray,
+                                    FLOAT *pfMaxStretchOut,
+                                    UINT *puNumChartsOut);
+
+// This takes the face partitioning result from Partition and packs it into an
+// atlas of the given size.
+HRESULT WINAPI D3DXUVAtlasPack(ID3DXMesh *pMesh,
+                               UINT uWidth,
+                               UINT uHeight,
+                               FLOAT fGutter,
+                               DWORD dwTextureIndex,
+                               LPD3DXUVATLASCB pCallback,
+                               FLOAT fCallbackFrequency,
+                               LPVOID pUserContext,
+                               LPD3DXBUFFER pFacePartitioning);
+
 HRESULT WINAPI
     D3DXConvertMeshSubsetToSingleStrip(
         LPD3DXBASEMESH MeshIn,
