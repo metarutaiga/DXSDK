@@ -22,10 +22,10 @@ Abstract:
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         1f1b577e, 5e5a, 4e8a, ba, 73, c6, 57, ea, 8e, 85, 98);
-    DEFINE_CLSID(XACTAuditionEngine, fcecc8be, b09a, 48cb, 92, 08, 95, a7, ed, 45, 82, a6);
-    DEFINE_CLSID(XACTDebugEngine,    2b4a46bb, ae7a, 4072, ae, 18, 11, 28, 15, 4f, ba, 97);
-    DEFINE_IID(IXACTEngine,          7cdd1894, 643b, 4168, 83, 6f, d1, 9d, 59, d0, ce, 53);
+    DEFINE_CLSID(XACTEngine,         c60fae90, 4183, 4a3f, b2, f7, ac, 1d, c4, 9b, 0e, 5c);
+    DEFINE_CLSID(XACTAuditionEngine, 4cb2112c, 62e9, 43fc, 8d, 9d, 6c, a0, 8c, ed, 45, f1);
+    DEFINE_CLSID(XACTDebugEngine,    3ec76fdc, b626, 43fb, be, 22, 9b, 43, 1d, 06, b9, 68);
+    DEFINE_IID(IXACTEngine,          9c454686, b827, 4e5e, 88, d9, 5b, 99, d6, 6b, 02, 2f);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
@@ -102,7 +102,7 @@ static const XACTVARIABLEVALUE XACTPARAMETERVALUE_MAX = FLT_MAX;
 static const XAUDIOVOICEINDEX XACTMAXOUTPUTVOICECOUNT = 3;
 #endif // _XBOX
 
-#define XACT_CONTENT_VERSION    38
+#define XACT_CONTENT_VERSION    39
 
 //------------------------------------------------------------------------------
 // XACT Parameters

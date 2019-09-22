@@ -66,14 +66,14 @@ UINT WINAPI D3DX10GetDriverLevel(ID3D10Device *pDevice);
 //   AddRef/Release all textures passed in to DrawSpritesBuffered
 //////////////////////////////////////////////////////////////////////////////
 
-enum
+typedef enum _D3DX10_SPRITE_FLAG
 {
     D3DX10_SPRITE_SORT_TEXTURE              = 0x01,
     D3DX10_SPRITE_SORT_DEPTH_BACK_TO_FRONT  = 0x02,
     D3DX10_SPRITE_SORT_DEPTH_FRONT_TO_BACK  = 0x04,
     D3DX10_SPRITE_SAVE_STATE                = 0x08,
     D3DX10_SPRITE_ADDREF_TEXTURES           = 0x10,
-};
+} D3DX10_SPRITE_FLAG;
 
 typedef struct _D3DX10_SPRITE
 {
@@ -311,11 +311,11 @@ DECLARE_INTERFACE_(ID3DX10Font, IUnknown)
 
 #ifdef __cplusplus
 #ifdef UNICODE
-    HRESULT GetDesc(D3DX10_FONT_DESCW *pDesc) { return GetDescW(pDesc); }
-    HRESULT PreloadText(LPCWSTR pString, INT Count) { return PreloadTextW(pString, Count); }
+    HRESULT WINAPI GetDesc(D3DX10_FONT_DESCW *pDesc) { return GetDescW(pDesc); }
+    HRESULT WINAPI PreloadText(LPCWSTR pString, INT Count) { return PreloadTextW(pString, Count); }
 #else
-    HRESULT GetDesc(D3DX10_FONT_DESCA *pDesc) { return GetDescA(pDesc); }
-    HRESULT PreloadText(LPCSTR pString, INT Count) { return PreloadTextA(pString, Count); }
+    HRESULT WINAPI GetDesc(D3DX10_FONT_DESCA *pDesc) { return GetDescA(pDesc); }
+    HRESULT WINAPI PreloadText(LPCSTR pString, INT Count) { return PreloadTextA(pString, Count); }
 #endif
 #endif //__cplusplus
 };

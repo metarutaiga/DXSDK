@@ -51,7 +51,8 @@ typedef DWORD WAVEBANKOFFSET;
 #define WAVEBANK_FLAGS_ENTRYNAMES    0x00010000      // Bank includes entry names
 #define WAVEBANK_FLAGS_COMPACT       0x00020000      // Bank uses compact format
 #define WAVEBANK_FLAGS_SYNC_DISABLED 0x00040000      // Bank is disabled for audition sync
-#define WAVEBANK_FLAGS_MASK          0x00070000
+#define WAVEBANK_FLAGS_SEEKTABLES    0x00080000      // Bank includes seek tables.
+#define WAVEBANK_FLAGS_MASK          0x000F0000
 
 //
 // Entry flags
@@ -102,8 +103,8 @@ typedef enum WAVEBANKSEGIDX
 {
     WAVEBANK_SEGIDX_BANKDATA = 0,       // Bank data
     WAVEBANK_SEGIDX_ENTRYMETADATA,      // Entry meta-data
+    WAVEBANK_SEGIDX_SEEKTABLES,         // Storage for seek tables for the encoded waves.
     WAVEBANK_SEGIDX_ENTRYNAMES,         // Entry friendly names
-    WAVEBANK_SEGIDX_EXTRA,              // Storage for extra metadata defined by the wave entry
     WAVEBANK_SEGIDX_ENTRYWAVEDATA,      // Entry wave data
     WAVEBANK_SEGIDX_COUNT
 } WAVEBANKSEGIDX, *LPWAVEBANKSEGIDX;
@@ -165,13 +166,13 @@ namespace XACTWaveBank
 #endif // __cplusplus
 
 //
-// Wave bank region
+// Wave bank region in bytes.
 //
 
 typedef struct WAVEBANKREGION
 {
-    DWORD       dwOffset;               // Region offset, in bytes
-    DWORD       dwLength;               // Region length, in bytes
+    DWORD       dwOffset;               // Region offset, in bytes.
+    DWORD       dwLength;               // Region length, in bytes.
 
 #ifdef __cplusplus
 
@@ -186,6 +187,31 @@ typedef struct WAVEBANKREGION
 } WAVEBANKREGION, *LPWAVEBANKREGION;
 
 typedef const WAVEBANKREGION *LPCWAVEBANKREGION;
+
+
+//
+// Wave bank region in samples.
+//
+
+typedef struct WAVEBANKSAMPLEREGION
+{
+    DWORD       dwStartSample;          // Start sample for the region.
+    DWORD       dwTotalSamples;         // Region length in samples.
+
+#ifdef __cplusplus
+
+    void SwapBytes(void)
+    {
+        XACTWaveBank::SwapBytes(dwStartSample);
+        XACTWaveBank::SwapBytes(dwTotalSamples);
+    }
+
+#endif // __cplusplus
+
+} WAVEBANKSAMPLEREGION, *LPWAVEBANKSAMPLEREGION;
+
+typedef const WAVEBANKSAMPLEREGION *LPCWAVEBANKSAMPLEREGION;
+
 
 //
 // Wave bank file header
@@ -282,34 +308,9 @@ typedef struct WAVEBANKENTRY
         DWORD dwFlagsAndDuration;
     };
 
-    WAVEBANKMINIWAVEFORMAT  Format;         // Entry format
-    WAVEBANKREGION          PlayRegion;     // Region within the wave data segment that contains this entry
-
-    union
-    {
-        WAVEBANKREGION          LoopRegion; // Region within the wave data that should loop
-
-        // XMA loop region
-        // Note: this is not the same memory layout as the XMA loop region
-        // passed to the XMA driver--it is more compact. The named values
-        // map correctly and there are enough bits to store the entire
-        // range of values that XMA considers valid, with one exception:
-        // valid values for nSubframeSkip are 1, 2, 3, or 4. In order to
-        // store this in two bits, XACT subtracts 1 from the value, then adds
-
-        struct
-        {
-            DWORD   dwStartOffset;          // loop start offset (in bits)
-
-            DWORD   nSubframeSkip   : 2;    // needed by XMA decoder. Valid values for XMA are 1-4; XACT converts to 0-3 for storage. Add 1 to this value before passing to driver.
-            DWORD   nSubframeEnd    : 2;    // needed by XMA decoder
-            DWORD   dwEndOffset     : 28;   // loop end offset (in bits)
-        } XMALoopRegion[ WAVEBANKENTRY_XMASTREAMS_MAX ];
-
-        // The last element in the union is an array that aliases the
-        // entire union so we can byte-reverse the whole thing.
-        WAVEBANKREGION LoopRegionAlias[ WAVEBANKENTRY_XMASTREAMS_MAX ];
-    };
+    WAVEBANKMINIWAVEFORMAT  Format;         // Entry format.
+    WAVEBANKREGION          PlayRegion;     // Region within the wave data segment that contains this entry.
+    WAVEBANKSAMPLEREGION    LoopRegion;     // Region within the wave data (in samples) that should loop.
 
 #ifdef __cplusplus
 
@@ -318,10 +319,7 @@ typedef struct WAVEBANKENTRY
         XACTWaveBank::SwapBytes(dwFlagsAndDuration);
         Format.SwapBytes();
         PlayRegion.SwapBytes();
-        for( int i = 0; i < WAVEBANKENTRY_XMASTREAMS_MAX; ++i )
-        {
-            LoopRegionAlias[i].SwapBytes();
-        }
+        LoopRegion.SwapBytes();
     }
 
 #endif // __cplusplus
@@ -358,7 +356,7 @@ typedef const WAVEBANKENTRYCOMPACT *LPCWAVEBANKENTRYCOMPACT;
 
 typedef struct WAVEBANKDATA
 {
-    DWORD                   dwFlags;                                 // Bank flags
+    DWORD                   dwFlags;                                // Bank flags
     DWORD                   dwEntryCount;                           // Number of entries in the bank
     CHAR                    szBankName[WAVEBANK_BANKNAME_LENGTH];   // Bank friendly name
     DWORD                   dwEntryMetaDataElementSize;             // Size of each entry meta-data element, in bytes

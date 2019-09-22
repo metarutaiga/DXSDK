@@ -3,7 +3,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0485 */
+ /* File created by MIDL compiler version 7.00.0493 */
 /* Compiler settings for dxgitype.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -59,9 +59,11 @@ extern "C"{
 #define _FACDXGI    0x87a
 #define MAKE_DXGI_HRESULT( code )    MAKE_HRESULT( 1, _FACDXGI, code )
 #define MAKE_DXGI_STATUS( code )    MAKE_HRESULT( 0, _FACDXGI, code )
-#define DXGI_STATUS_OCCLUDED    MAKE_DXGI_STATUS(1 )
-#define DXGI_STATUS_CLIPPED    MAKE_DXGI_STATUS(2 )
-#define DXGI_STATUS_NO_REDIRECTION    MAKE_DXGI_STATUS(4 )
+#define DXGI_STATUS_OCCLUDED                MAKE_DXGI_STATUS(1 )
+#define DXGI_STATUS_CLIPPED                 MAKE_DXGI_STATUS(2 )
+#define DXGI_STATUS_NO_REDIRECTION          MAKE_DXGI_STATUS(4 )
+#define DXGI_STATUS_NO_DESKTOP_ACCESS       MAKE_DXGI_STATUS(5 )
+#define DXGI_STATUS_GRAPHICS_VIDPN_SOURCE_IN_USE       MAKE_DXGI_STATUS(6 )
 #define DXGI_ERROR_INVALID_CALL    MAKE_DXGI_HRESULT( 1 )
 #define DXGI_ERROR_NOT_FOUND    MAKE_DXGI_HRESULT( 2 )
 #define DXGI_ERROR_MORE_DATA    MAKE_DXGI_HRESULT( 3 )
@@ -72,18 +74,7 @@ extern "C"{
 #define DXGI_ERROR_WAS_STILL_DRAWING    MAKE_DXGI_HRESULT( 10 )
 #define DXGI_ERROR_DRIVER_INTERNAL_ERROR    MAKE_DXGI_HRESULT( 32 )
 #define DXGI_ERROR_NONEXCLUSIVE    MAKE_DXGI_HRESULT( 33 )
-#define DXGI_CPU_ACCESS_NONE    ( 0 )
-#define DXGI_CPU_ACCESS_DYNAMIC    ( 1 )
-#define DXGI_CPU_ACCESS_READ_WRITE    ( 2 )
-#define DXGI_CPU_ACCESS_SCRATCH    ( 3 )
-#define DXGI_CPU_ACCESS_FIELD        15
-#define DXGI_USAGE_SHADER_INPUT    ( 1L << (0 + 4) )
-#define DXGI_USAGE_RENDER_TARGET_OUTPUT    ( 1L << (1 + 4) )
-#define DXGI_USAGE_BACK_BUFFER    ( 1L << (2 + 4) )
-#define DXGI_USAGE_SHARED    ( 1L << (3 + 4) )
-#define DXGI_USAGE_PRIMARY    ( 1L << (4 + 4) )
-typedef UINT DXGI_USAGE;
-
+#define DXGI_FORMAT_DEFINED 1
 typedef 
 enum DXGI_FORMAT
     {	DXGI_FORMAT_UNKNOWN	= 0,
@@ -192,23 +183,14 @@ typedef struct DXGI_GAMMA_CONTROL
     DXGI_RGB GammaCurve[ 1025 ];
     } 	DXGI_GAMMA_CONTROL;
 
-typedef struct DXGI_GAMMA_CONTROL_CAPABILIITES
+typedef struct DXGI_GAMMA_CONTROL_CAPABILITIES
     {
     BOOL ScaleAndOffsetSupported;
     float MaxConvertedValue;
     float MinConvertedValue;
     UINT NumGammaControlPoints;
     float ControlPointPositions[ 1025 ];
-    } 	DXGI_GAMMA_CONTROL_CAPABILIITES;
-
-typedef struct DXGI_FRAME_STATISTICS
-    {
-    UINT PresentCount;
-    UINT PresentRefreshCount;
-    UINT SyncRefreshCount;
-    LARGE_INTEGER SyncQPCTime;
-    LARGE_INTEGER SyncGPUTime;
-    } 	DXGI_FRAME_STATISTICS;
+    } 	DXGI_GAMMA_CONTROL_CAPABILITIES;
 
 typedef struct DXGI_RATIONAL
     {
@@ -250,96 +232,11 @@ typedef struct DXGI_MODE_DESC
     DXGI_MODE_SCALING Scaling;
     } 	DXGI_MODE_DESC;
 
-typedef struct DXGI_MAPPED_RECT
-    {
-    INT Pitch;
-    BYTE *pBits;
-    } 	DXGI_MAPPED_RECT;
-
-typedef struct DXGI_ADAPTER_DESC
-    {
-    WCHAR Description[ 128 ];
-    UINT VendorId;
-    UINT DeviceId;
-    UINT SubSysId;
-    UINT Revision;
-    SIZE_T DedicatedVideoMemory;
-    SIZE_T SharedVideoMemory;
-    } 	DXGI_ADAPTER_DESC;
-
-#if !defined(HMONITOR_DECLARED) && !defined(HMONITOR) && (WINVER < 0x0500)
-#define HMONITOR_DECLARED
-#if 0
-typedef HANDLE HMONITOR;
-
-#endif
-DECLARE_HANDLE(HMONITOR);
-#endif
-typedef struct DXGI_OUTPUT_DESC
-    {
-    WCHAR DeviceName[ 32 ];
-    RECT DesktopCoordinates;
-    BOOL AttachedToDesktop;
-    DXGI_MODE_ROTATION Rotation;
-    HMONITOR Monitor;
-    } 	DXGI_OUTPUT_DESC;
-
 typedef struct DXGI_SAMPLE_DESC
     {
     UINT Count;
     UINT Quality;
     } 	DXGI_SAMPLE_DESC;
-
-typedef struct DXGI_SHARED_RESOURCE
-    {
-    HANDLE Handle;
-    DXGI_USAGE OpenUsage;
-    } 	DXGI_SHARED_RESOURCE;
-
-#define	DXGI_RESOURCE_PRIORITY_MINIMUM	( 0x28000000 )
-
-#define	DXGI_RESOURCE_PRIORITY_LOW	( 0x50000000 )
-
-#define	DXGI_RESOURCE_PRIORITY_NORMAL	( 0x78000000 )
-
-#define	DXGI_RESOURCE_PRIORITY_HIGH	( 0xa0000000 )
-
-#define	DXGI_RESOURCE_PRIORITY_MAXIMUM	( 0xc8000000 )
-
-typedef 
-enum DXGI_RESIDENCY
-    {	DXGI_RESIDENCY_FULLY_RESIDENT	= 1,
-	DXGI_RESIDENCY_RESIDENT_IN_SHARED_MEMORY	= 2,
-	DXGI_RESIDENCY_EVICTED_TO_DISK	= 3
-    } 	DXGI_RESIDENCY;
-
-typedef struct DXGI_SURFACE_DESC
-    {
-    UINT Width;
-    UINT Height;
-    DXGI_FORMAT Format;
-    DXGI_SAMPLE_DESC SampleDesc;
-    } 	DXGI_SURFACE_DESC;
-
-typedef 
-enum DXGI_SWAP_EFFECT
-    {	DXGI_SWAP_EFFECT_DISCARD	= 0,
-	DXGI_SWAP_EFFECT_COPY	= 1
-    } 	DXGI_SWAP_EFFECT;
-
-typedef struct DXGI_SWAP_CHAIN_DESC
-    {
-    DXGI_MODE_DESC BackBufferDesc;
-    DXGI_SAMPLE_DESC SampleDesc;
-    DXGI_SHARED_RESOURCE Sharing;
-    DXGI_USAGE BackBufferUsage;
-    UINT BackBufferCount;
-    UINT MaxFrameLatency;
-    HWND OutputWindow;
-    BOOL Windowed;
-    DXGI_SWAP_EFFECT SwapEffect;
-    DXGI_MODE_ROTATION BackBufferRotation;
-    } 	DXGI_SWAP_CHAIN_DESC;
 
 
 

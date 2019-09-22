@@ -96,6 +96,15 @@
 #define D3D10_SHADER_PREFER_FLOW_CONTROL            (1 << 10)
 #define D3D10_SHADER_ENABLE_STRICTNESS              (1 << 11)
 #define D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY (1 << 12)
+#define D3D10_SHADER_IEEE_STRICTNESS                (1 << 13)
+
+
+// optimization level flags
+#define D3D10_SHADER_OPTIMIZATION_LEVEL0            (1 << 14)
+#define D3D10_SHADER_OPTIMIZATION_LEVEL1            0
+#define D3D10_SHADER_OPTIMIZATION_LEVEL2            ((1 << 14) | (1 << 15))
+#define D3D10_SHADER_OPTIMIZATION_LEVEL3            (1 << 15)
+
 
 
 
@@ -133,6 +142,15 @@ typedef enum _D3D10_SHADER_VARIABLE_CLASS
 
 } D3D10_SHADER_VARIABLE_CLASS, *LPD3D10_SHADER_VARIABLE_CLASS;
 
+typedef enum _D3D10_SHADER_VARIABLE_FLAGS
+{
+    D3D10_SVF_USERPACKED = 1,
+
+    // force 32-bit size enum
+    D3D10_SVF_FORCE_DWORD = 0x7fffffff
+
+} D3D10_SHADER_VARIABLE_FLAGS, *LPD3D10_SHADER_VARIABLE_FLAGS;
+
 //----------------------------------------------------------------------------
 // D3D10_SHADER_VARIABLE_TYPE:
 //----------------------------------------------------------------------------
@@ -163,11 +181,22 @@ typedef enum _D3D10_SHADER_VARIABLE_TYPE
     D3D10_SVT_TBUFFER = 27,
     D3D10_SVT_TEXTURE1DARRAY = 28,
     D3D10_SVT_TEXTURE2DARRAY = 29,
+    D3D10_SVT_RENDERTARGETVIEW = 30,
+    D3D10_SVT_DEPTHSTENCILVIEW = 31,
 
     // force 32-bit size enum
     D3D10_SVT_FORCE_DWORD = 0x7fffffff
 
 } D3D10_SHADER_VARIABLE_TYPE, *LPD3D10_SHADER_VARIABLE_TYPE;
+
+typedef enum _D3D10_SHADER_INPUT_FLAGS
+{
+    D3D10_SIF_USERPACKED = 1,
+    D3D10_SIF_COMPARISON_SAMPLER = 2,  // is this a comparison sampler?
+
+    // force 32-bit size enum
+    D3D10_SIF_FORCE_DWORD = 0x7fffffff
+} D3D10_SHADER_INPUT_FLAGS, *LPD3D10_SHADER_INPUT_FLAGS;
 
 //----------------------------------------------------------------------------
 // D3D10_SHADER_INPUT_TYPE
@@ -181,6 +210,14 @@ typedef enum _D3D10_SHADER_INPUT_TYPE
     D3D10_SIT_SAMPLER,
 } D3D10_SHADER_INPUT_TYPE, *LPD3D10_SHADER_INPUT_TYPE;
 
+typedef enum _D3D10_SHADER_CBUFFER_FLAGS
+{
+    D3D10_CBF_USERPACKED = 1,
+
+    // force 32-bit size enum
+    D3D10_CBF_FORCE_DWORD = 0x7fffffff
+} D3D10_SHADER_CBUFFER_FLAGS, *LPD3D10_SHADER_CBUFFER_FLAGS;
+
 typedef enum _D3D10_CBUFFER_TYPE
 {
     D3D10_CT_CBUFFER,
@@ -190,6 +227,8 @@ typedef enum _D3D10_CBUFFER_TYPE
 typedef enum D3D10_NAME
 {
     D3D10_NAME_UNDEFINED = 0,
+
+    // Names meaningful to both HLSL and hardware
     D3D10_NAME_POSITION = 1,
     D3D10_NAME_CLIP_DISTANCE = 2,
     D3D10_NAME_CULL_DISTANCE = 3,
@@ -198,20 +237,12 @@ typedef enum D3D10_NAME
     D3D10_NAME_VERTEX_ID = 6,
     D3D10_NAME_PRIMITIVE_ID = 7,
     D3D10_NAME_INSTANCE_ID = 8,
-    D3D10_NAME_IS_FRONT_FACE = 9
-} D3D10_NAME;
+    D3D10_NAME_IS_FRONT_FACE = 9,
 
-typedef enum D3D10_RESOURCE_DIMENSION
-{
-    D3D10_RESOURCE_DIMENSION_UNKNOWN = 0,
-    D3D10_RESOURCE_DIMENSION_BUFFER = 1,
-    D3D10_RESOURCE_DIMENSION_TEXTURE1D = 2,
-    D3D10_RESOURCE_DIMENSION_TEXTURE2D = 3,
-    D3D10_RESOURCE_DIMENSION_TEXTURE3D = 4,
-    D3D10_RESOURCE_DIMENSION_TEXTURECUBE = 5,
-    D3D10_RESOURCE_DIMENSION_TEXTURE1DARRAY = 6,
-    D3D10_RESOURCE_DIMENSION_TEXTURE2DARRAY = 7,
-} D3D10_RESOURCE_DIMENSION;
+    // Names meaningful to HLSL only
+    D3D10_NAME_TARGET = 64,
+    D3D10_NAME_DEPTH = 65,
+} D3D10_NAME;
 
 typedef enum D3D10_RESOURCE_RETURN_TYPE
 {
@@ -294,6 +325,11 @@ typedef struct _D3D10_SHADER_DESC
     UINT                    BoundResources;     // Number of bound resources
     UINT                    InputParameters;    // Number of parameters in the input signature
     UINT                    OutputParameters;   // Number of parameters in the output signature
+
+    /* johnrapp: commented out for beta 2 compat
+    UINT                    InstructionCount;   // Number of emitted instructions
+    UINT                    TempRegisterCount;  // Number of temporary registers used (including temp arrays)
+    */
 } D3D10_SHADER_DESC;
 
 typedef struct _D3D10_SHADER_BUFFER_DESC
@@ -302,6 +338,7 @@ typedef struct _D3D10_SHADER_BUFFER_DESC
     D3D10_CBUFFER_TYPE      Type;           // Indicates that this is a CBuffer or TBuffer
     UINT                    Variables;      // Number of member variables
     UINT                    Size;           // Size of CB (in bytes)
+    UINT                    uFlags;         // Buffer description flags
 } D3D10_SHADER_BUFFER_DESC;
 
 typedef struct _D3D10_SHADER_VARIABLE_DESC
@@ -309,6 +346,7 @@ typedef struct _D3D10_SHADER_VARIABLE_DESC
     LPCSTR                  Name;           // Name of the variable
     UINT                    StartOffset;    // Offset in constant buffer's backing store
     UINT                    Size;           // Size of variable (in bytes)
+    UINT                    uFlags;         // Variable flags
     LPVOID                  DefaultValue;   // Raw pointer to default value
 } D3D10_SHADER_VARIABLE_DESC;
 
@@ -329,8 +367,10 @@ typedef struct _D3D10_SHADER_INPUT_BIND_DESC
     UINT                        BindPoint;      // Starting bind point
     UINT                        BindCount;      // Number of contiguous bind points (for arrays)
     
+    UINT                        uFlags;         // Input binding flags
     D3D10_RESOURCE_RETURN_TYPE  ReturnType;     // Return type (if texture)
-    D3D10_RESOURCE_DIMENSION    Dimension;      // Dimension (if texture)
+    D3D10_SRV_DIMENSION         Dimension;      // Dimension (if texture)
+    UINT                        NumSamples;     // Number of samples (0 if not MS texture)
 } D3D10_SHADER_INPUT_BIND_DESC;
 
 typedef struct _D3D10_SIGNATURE_PARAMETER_DESC
@@ -348,6 +388,7 @@ typedef struct _D3D10_SIGNATURE_PARAMETER_DESC
                                                 // (combination of D3D10_COMPONENT_MASK values)
     
 } D3D10_SIGNATURE_PARAMETER_DESC;
+
 
 //
 // Interface definitions
@@ -518,19 +559,6 @@ HRESULT WINAPI D3D10DisassembleShader(CONST UINT *pShader, BOOL EnableColorCode,
 
 UINT WINAPI D3D10GetShaderSize(CONST UINT *pFunction);
 
-//----------------------------------------------------------------------------
-// D3D10GetShaderVersion:
-// -----------------------
-// Returns the shader version of a given shader.  Returns zero if the shader 
-// function is NULL.
-//
-// Parameters:
-//  pFunction
-//      Pointer to the function UINT  stream
-//----------------------------------------------------------------------------
-
-UINT WINAPI D3D10GetShaderVersion(CONST UINT *pFunction);
-
 
 //----------------------------------------------------------------------------
 // D3D10GetPixelShaderProfile/D3D10GetVertexShaderProfile/D3D10GetGeometryShaderProfile:
@@ -628,9 +656,9 @@ HRESULT WINAPI D3D10PreprocessShader(LPCSTR pSrcData, SIZE_T SrcDataSize, LPCSTR
 //
 //////////////////////////////////////////////////////////////////////////
 
-HRESULT D3D10GetInputSignatureBlob(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
-HRESULT D3D10GetOutputSignatureBlob(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
-HRESULT D3D10GetInputAndOutputSignatureBlob(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
+HRESULT WINAPI D3D10GetInputSignatureBlob(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
+HRESULT WINAPI D3D10GetOutputSignatureBlob(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
+HRESULT WINAPI D3D10GetInputAndOutputSignatureBlob(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
 
 #ifdef __cplusplus
 }

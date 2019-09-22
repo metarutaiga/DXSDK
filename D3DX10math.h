@@ -56,11 +56,11 @@ typedef struct _D3DMATRIX {
 // General purpose utilities
 //
 //===========================================================================
-#define D3DX_PI    ((FLOAT)  3.141592654f)
-#define D3DX_1BYPI ((FLOAT)  0.318309886f)
+#define D3DX_PI    (3.14159265358979323846)
+#define D3DX_1BYPI ( 1.0 / D3DX_PI )
 
-#define D3DXToRadian( degree ) ((degree) * (D3DX_PI / 180.0f))
-#define D3DXToDegree( radian ) ((radian) * (180.0f / D3DX_PI))
+#define D3DXToRadian( degree ) ((degree) * (D3DX_PI / 180.0))
+#define D3DXToDegree( radian ) ((radian) * (180.0 / D3DX_PI))
 
 
 

@@ -38,9 +38,9 @@ DEFINE_GUID(IID_ID3DX10PatchMesh,
 
 
 // Mesh options - lower 3 bytes only, upper byte used by _D3DX10MESHOPT option flags
-enum _D3DX10MESH {
+enum _D3DX10_MESH {
     D3DX10_MESH_32_BIT                  = 0x001, // If set, then use 32 bit indices, if not set use 16 bit indices.
-    D3DX10_MESH_GS_ADJACENCY			  = 0x004, // If set, mesh contains GS adjacency info. Not valid on input.
+    D3DX10_MESH_GS_ADJACENCY			= 0x004, // If set, mesh contains GS adjacency info. Not valid on input.
 
 };
 
@@ -147,7 +147,7 @@ DECLARE_INTERFACE_(ID3DX10Mesh, IUnknown)
     STDMETHOD(GetPointRepBuffer)(THIS_ ID3DX10MeshBuffer **ppPointReps) PURE;
     
     STDMETHOD(Discard)(THIS_ D3DX10_MESH_DISCARD_FLAGS dwDiscard) PURE;
-    STDMETHOD(CloneMesh)(THIS_ UINT Flags, LPCWSTR pPosSemantic, CONST D3D10_INPUT_ELEMENT_DESC *pDesc, UINT  DeclCount, ID3DX10Mesh** ppCloneMesh) PURE;
+    STDMETHOD(CloneMesh)(THIS_ UINT Flags, LPCSTR pPosSemantic, CONST D3D10_INPUT_ELEMENT_DESC *pDesc, UINT  DeclCount, ID3DX10Mesh** ppCloneMesh) PURE;
 
     STDMETHOD(Optimize)(THIS_ UINT Flags, UINT * pFaceRemap, LPD3D10BLOB *ppVertexRemap) PURE;
     STDMETHOD(GenerateAttributeBufferFromTable)(THIS) PURE;
@@ -177,7 +177,7 @@ HRESULT WINAPI
         ID3D10Device *pDevice,
         CONST D3D10_INPUT_ELEMENT_DESC *pDeclaration, 
         UINT  DeclCount,
-        LPCWSTR pPositionSemantic,
+        LPCSTR pPositionSemantic,
         UINT  VertexCount,
         UINT  FaceCount,
         UINT  Options, 
@@ -189,7 +189,7 @@ HRESULT WINAPI
 
 
 // ID3DX10Mesh::Optimize options - upper byte only, lower 3 bytes used from _D3DX10MESH option flags
-enum _D3DX10MESHOPT {
+enum _D3DX10_MESHOPT {
     D3DX10_MESHOPT_COMPACT       = 0x01000000,
     D3DX10_MESHOPT_ATTR_SORT     = 0x02000000,
     D3DX10_MESHOPT_VERTEX_CACHE   = 0x04000000,

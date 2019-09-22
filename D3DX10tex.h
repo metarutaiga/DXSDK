@@ -161,6 +161,7 @@ typedef enum _D3DX10_IMAGE_FILE_FORMAT
     D3DX10_IFF_DDS         = 4,
     D3DX10_IFF_TIFF		  = 10,
     D3DX10_IFF_GIF		  = 11,
+    D3DX10_IFF_WMP		  = 12,
     D3DX10_IFF_FORCE_DWORD = 0x7fffffff
 
 } D3DX10_IMAGE_FILE_FORMAT;
@@ -182,11 +183,13 @@ typedef enum _D3DX10_IMAGE_FILE_FORMAT
 //      Array size in textures
 //  MipLevels
 //      Number of mip levels in original image
+//  MiscFlags
+//      Miscellaneous flags
 //  Format
 //      D3D format which most closely describes the data in original image
-//  ResourceType
-//      D3DRESOURCETYPE representing the type of texture stored in the file.
-//      D3DRTYPE_TEXTURE, D3DRTYPE_VOLUMETEXTURE, or D3DRTYPE_CUBETEXTURE.
+//  ResourceDimension
+//      D3D10_RESOURCE_DIMENSION representing the dimension of texture stored in the file.
+//      D3D10_RESOURCE_DIMENSION_TEXTURE1D, 2D, 3D
 //  ImageFileFormat
 //      D3DX10_IMAGE_FILE_FORMAT representing the format of the image file.
 //
@@ -199,8 +202,9 @@ typedef struct _D3DX10_IMAGE_INFO
     UINT                        Depth;
     UINT                        ArraySize;
     UINT                        MipLevels;
+    UINT                        MiscFlags;
     DXGI_FORMAT                 Format;
-    D3D10_RESOURCE              ResourceType;
+    D3D10_RESOURCE_DIMENSION    ResourceDimension;
     D3DX10_IMAGE_FILE_FORMAT    ImageFileFormat;
 
 } D3DX10_IMAGE_INFO;
@@ -267,9 +271,9 @@ typedef struct _D3DX10_IMAGE_LOAD_INFO
     UINT                       FirstMipLevel;
     UINT                       MipLevels;
     D3D10_USAGE                Usage;
-    UINT32                     BindFlags;
-    UINT32                     CpuAccessFlags;
-    UINT32                     MiscFlags;
+    UINT                       BindFlags;
+    UINT                       CpuAccessFlags;
+    UINT                       MiscFlags;
     DXGI_FORMAT                Format;
     UINT                       Filter;
     UINT                       MipFilter;
@@ -458,7 +462,7 @@ HRESULT WINAPI
         LPCSTR                      pSrcFile,
         D3DX10_IMAGE_LOAD_INFO      *pLoadInfo,
         ID3DX10ThreadPump*          pPump,
-        ID3D10Resource**            ppShaderResourceView);
+        ID3D10Resource**            ppTexture);
 
 HRESULT WINAPI
     D3DX10CreateTextureFromFileW(
@@ -466,7 +470,7 @@ HRESULT WINAPI
         LPCWSTR                     pSrcFile,
         D3DX10_IMAGE_LOAD_INFO      *pLoadInfo,
         ID3DX10ThreadPump*          pPump,
-        ID3D10Resource**            ppShaderResourceView);
+        ID3D10Resource**            ppTexture);
 
 #ifdef UNICODE
 #define D3DX10CreateTextureFromFile D3DX10CreateTextureFromFileW
