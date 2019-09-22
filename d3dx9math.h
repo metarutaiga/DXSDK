@@ -47,7 +47,7 @@
 #define D3DX_16F_MAX_EXP      15               // max binary exponent
 #define D3DX_16F_MIN          6.1035156e-5f    // min positive value
 #define D3DX_16F_MIN_10_EXP   (-4)             // min decimal exponent
-#define D3DX_16F_MIN_EXP      (-12)            // min binary exponent
+#define D3DX_16F_MIN_EXP      (-14)            // min binary exponent
 #define D3DX_16F_RADIX        2                // exponent radix
 #define D3DX_16F_ROUNDS       1                // addition rounding: near
 

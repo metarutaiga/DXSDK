@@ -306,9 +306,9 @@ DECLARE_INTERFACE_(ID3DXEffectStateManager, IUnknown)
 typedef interface ID3DXEffect ID3DXEffect;
 typedef interface ID3DXEffect *LPD3DXEFFECT;
 
-// {D165CCB1-62B0-4a33-B3FA-A92300305A11}
+// {C7B17651-5420-490e-8A7F-923675A2D687}
 DEFINE_GUID(IID_ID3DXEffect, 
-0xd165ccb1, 0x62b0, 0x4a33, 0xb3, 0xfa, 0xa9, 0x23, 0x0, 0x30, 0x5a, 0x11);
+0xc7b17651, 0x5420, 0x490e, 0x8a, 0x7f, 0x92, 0x36, 0x75, 0xa2, 0xd6, 0x87);
 
 #undef INTERFACE
 #define INTERFACE ID3DXEffect
@@ -421,6 +421,7 @@ DECLARE_INTERFACE_(ID3DXEffect, ID3DXBaseEffect)
     STDMETHOD(BeginParameterBlock)(THIS) PURE;
     STDMETHOD_(D3DXHANDLE, EndParameterBlock)(THIS) PURE;
     STDMETHOD(ApplyParameterBlock)(THIS_ D3DXHANDLE hParameterBlock) PURE;
+    STDMETHOD(DeleteParameterBlock)(THIS_ D3DXHANDLE hParameterBlock) PURE;
 
     // Cloning
     STDMETHOD(CloneEffect)(THIS_ LPDIRECT3DDEVICE9 pDevice, LPD3DXEFFECT* ppEffect) PURE;

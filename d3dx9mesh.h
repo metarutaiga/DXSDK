@@ -119,6 +119,16 @@ typedef enum _D3DXTANGENT
     D3DXTANGENT_GENERATE_IN_PLACE =         0x0400,
 } D3DXTANGENT;
 
+// D3DXIMT_WRAP_U means the texture wraps in the U direction
+// D3DXIMT_WRAP_V means the texture wraps in the V direction
+// D3DXIMT_WRAP_UV means the texture wraps in both directions
+typedef enum _D3DXIMT
+{
+    D3DXIMT_WRAP_U =                    0x01,
+    D3DXIMT_WRAP_V =                    0x02,
+    D3DXIMT_WRAP_UV =                   0x03,
+} D3DXIMT;
+
 
 typedef struct ID3DXBaseMesh *LPD3DXBASEMESH;
 typedef struct ID3DXMesh *LPD3DXMESH;
@@ -126,6 +136,9 @@ typedef struct ID3DXPMesh *LPD3DXPMESH;
 typedef struct ID3DXSPMesh *LPD3DXSPMESH;
 typedef struct ID3DXSkinInfo *LPD3DXSKININFO;
 typedef struct ID3DXPatchMesh *LPD3DXPATCHMESH;
+typedef interface ID3DXTextureGutterHelper *LPD3DXTEXTUREGUTTERHELPER;
+typedef interface ID3DXPRTBuffer *LPD3DXPRTBUFFER;
+
 
 typedef struct _D3DXATTRIBUTERANGE
 {
@@ -1148,7 +1161,7 @@ typedef HRESULT (WINAPI *LPD3DXUVATLASCB)(FLOAT fPercentDone,  LPVOID lpUserCont
 //                   output mesh (which is cloned from the input mesh). Useful
 //                   if your vertex has multiple texture coordinates.
 //  pdwAdjacency - a pointer to an array with 3 DWORDs per face, indicating
-//                 which triangles are adjacent to each other (unused so far).
+//                 which triangles are adjacent to each other.
 //  pfIMTArray - a pointer to an array with 3 FLOATs per face, describing the
 //               integrated metric tensor for that face. This lets you control
 //               the way this triangle may be stretched in the atlas. The IMT
@@ -1240,6 +1253,127 @@ HRESULT WINAPI D3DXUVAtlasPack(ID3DXMesh *pMesh,
                                FLOAT fCallbackFrequency,
                                LPVOID pUserContext,
                                LPD3DXBUFFER pFacePartitioning);
+
+
+//============================================================================
+//
+// IMT Calculation apis
+//
+// These functions all compute the Integrated Metric Tensor for use in the
+// UVAtlas API. They all calculate the IMT with respect to the canonical
+// triangle, where the coordinate system is set up so that the u axis goes
+// from vertex 0 to 1 and the v axis is N x u. So, for example, the second
+// vertex's canonical uv coordinates are (d,0) where d is the distance between
+// vertices 0 and 1. This way the IMT does not depend on the parameterization
+// of the mesh, and if the signal over the surface doesn't change, then
+// the IMT doesn't need to be recalculated.
+//============================================================================
+
+// This callback is used by D3DXComputeIMTFromSignal.
+//
+// uv               - The texture coordinate for the vertex
+// uSignalDimension - The number of floats to store in pfSignalOut
+// pUserData        - The pUserData pointer passed in to ComputeIMTFromSignal
+// pfSignalOut      - A pointer to where to store the signal data.
+typedef HRESULT (WINAPI* LPD3DXIMTSIGNALCALLBACK)
+     (CONST D3DXVECTOR2 *uv,
+      UINT uSignalDimension,
+      VOID *pUserData,
+      FLOAT *pfSignalOut);
+
+// This function is used to calculate the IMT from per vertex data. It sets
+// up a linear system over the triangle, solves for the jacobian J, then
+// constructs the IMT from that (J^TJ).
+// This function allows you to calculate the IMT based off of any value in a
+// mesh (color, normal, etc) by specifying the correct stride of the array.
+// The IMT computed will cause areas of the mesh that have similar values to
+// take up less space in the texture.
+//
+// pMesh            - The mesh to calculate the IMT for.
+// pVertexSignal    - A float array of size uSignalStride * v, where v is the
+//                    number of vertices in the mesh.
+// uSignalDimension - How many floats per vertex to use in calculating the IMT.
+// uSignalStride    - The number of bytes per vertex in the array. This must be
+//                    a multiple of sizeof(float)
+// ppIMTData        - Where to store the buffer holding the IMT data
+
+HRESULT WINAPI D3DXComputeIMTFromPerVertexSignal (
+	LPD3DXMESH pMesh,
+	CONST FLOAT *pfVertexSignal, // uSignalDimension floats per vertex
+	UINT uSignalDimension,
+	UINT uSignalStride,         // stride of signal in bytes
+    DWORD dwOptions,            // reserved for future use
+	LPD3DXBUFFER *ppIMTData);
+
+// This function is used to calculate the IMT from data that varies over the
+// surface of the mesh (generally at a higher frequency than vertex data).
+// This function requires the mesh to already be parameterized (so it already
+// has texture coordinates). It allows the user to define a signal arbitrarily
+// over the surface of the mesh.
+//
+// pMesh            - The mesh to calculate the IMT for.
+// dwTextureIndex   - This describes which set of texture coordinates in the
+//                    mesh to use.
+// uSignalDimension - How many components there are in the signal.
+// fMaxUVDistance   - The subdivision will continue until the distance between
+//                    all vertices is at most fMaxUVDistance.
+// dwOptions        - reserved for future use
+// pSignalCallback  - The callback to use to get the signal.
+// pUserData        - A pointer that will be passed in to the callback.
+// ppIMTData        - Where to store the buffer holding the IMT data
+HRESULT WINAPI D3DXComputeIMTFromSignal(
+     LPD3DXMESH pMesh,
+     DWORD dwTextureIndex,
+     UINT uSignalDimension,
+     FLOAT fMaxUVDistance,
+     DWORD dwOptions, // reserved for future use
+     LPD3DXIMTSIGNALCALLBACK pSignalCallback,
+     VOID *pUserData,
+     LPD3DXBUFFER *ppIMTData);
+
+// This function is used to calculate the IMT from texture data. Given a texture
+// that maps over the surface of the mesh, the algorithm computes the IMT for
+// each face. This will cause large areas that are very similar to take up less
+// room when parameterized with UVAtlas. The texture is assumed to be
+// interpolated over the mesh bilinearly.
+//
+// pMesh            - The mesh to calculate the IMT for.
+// pTexture         - The texture to load data from.
+// dwTextureIndex   - This describes which set of texture coordinates in the
+//                    mesh to use.
+// dwOptions        - Combination of one or more D3DXIMT flags.
+// ppIMTData        - Where to store the buffer holding the IMT data
+HRESULT WINAPI D3DXComputeIMTFromTexture (
+     LPD3DXMESH pMesh,
+     LPDIRECT3DTEXTURE9 pTexture,
+     DWORD dwTextureIndex,
+     DWORD dwOptions,
+     LPD3DXBUFFER *ppIMTData);
+
+// This function is very similar to ComputeIMTFromTexture, but it uses a
+// float array to pass in the data, and it can calculate higher dimensional
+// values than 4.
+//
+// pMesh            - The mesh to calculate the IMT for.
+// dwTextureIndex   - This describes which set of texture coordinates in the
+//                    mesh to use.
+// pfFloatArray     - a pointer to a float array of size
+//                    uWidth*uHeight*uComponents
+// uWidth           - The width of the texture
+// uHeight          - The height of the texture
+// uSignalDimension - The number of floats per texel in the signal
+// uComponents      - The number of floats in each texel
+// dwOptions        - Combination of one or more D3DXIMT flags
+// ppIMTData        - Where to store the buffer holding the IMT data
+HRESULT WINAPI D3DXComputeIMTFromPerTexelSignal(LPD3DXMESH pMesh,
+                                                DWORD dwTextureIndex,
+                                                FLOAT *pfTexelSignal,
+                                                UINT uWidth,
+                                                UINT uHeight,
+                                                UINT uSignalDimension,
+                                                UINT uComponents,
+                                                DWORD dwOptions,
+                                                LPD3DXBUFFER *ppIMTData);
 
 HRESULT WINAPI
     D3DXConvertMeshSubsetToSingleStrip(
@@ -1418,13 +1552,8 @@ DEFINE_GUID(IID_ID3DXPRTEngine,
 
 // interface defenitions
 
-
 typedef interface ID3DXTextureGutterHelper ID3DXTextureGutterHelper;
-typedef interface ID3DXTextureGutterHelper *LPD3DXTEXTUREGUTTERHELPER;
-
 typedef interface ID3DXPRTBuffer ID3DXPRTBuffer;
-typedef interface ID3DXPRTBuffer *LPD3DXPRTBUFFER;
-
 
 #undef INTERFACE
 #define INTERFACE ID3DXPRTBuffer
