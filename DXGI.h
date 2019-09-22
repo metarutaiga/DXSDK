@@ -3,7 +3,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0493 */
+ /* File created by MIDL compiler version 7.00.0497 */
 /* Compiler settings for dxgi.idl:
     Oicf, W1, Zp8, env=Win64 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -228,11 +228,9 @@ typedef struct DXGI_SWAP_CHAIN_DESC
     DXGI_SAMPLE_DESC SampleDesc;
     DXGI_USAGE BufferUsage;
     UINT BufferCount;
-    UINT MaxFrameLatency;
     HWND OutputWindow;
     BOOL Windowed;
     DXGI_SWAP_EFFECT SwapEffect;
-    DXGI_MODE_ROTATION BufferRotation;
     UINT Flags;
     } 	DXGI_SWAP_CHAIN_DESC;
 
@@ -1775,7 +1773,6 @@ EXTERN_C const IID IID_IDXGIDevice;
 /* interface __MIDL_itf_dxgi_0000_0009 */
 /* [local] */ 
 
-HRESULT WINAPI CreateDataTransportDevice( IDXGIAdapter *pAdapter, IDXGIDevice **pOut);
 #ifdef __cplusplus
 #endif /*__cplusplus*/
 DEFINE_GUID(IID_IDXGIObject,0xaec22fb8,0x76f3,0x4639,0x9b,0xe0,0x28,0xeb,0x43,0xa6,0x7a,0x2e);

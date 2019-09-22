@@ -100,6 +100,8 @@
     //
     // REMARKS:
     //  This method only needs to be called once
+    //  The number of bits set in SpeakerChannelMask should equal the number of
+    //  channels expected on the final mix.
     //
     // PARAMETERS:
     //  SpeakerChannelMask - [in]  speaker geometry configuration on the final mix, specifies assignment of channels to speaker positions, defined as per WAVEFORMATEXTENSIBLE.dwChannelMask, must be != 0
@@ -123,13 +125,10 @@
         return hr;
     }
 
+
     ////
     // DESCRIPTION:
     //  Calculates DSP settings with respect to 3D parameters:
-    //
-    // REMARKS:
-    //  The number of bits set in SpeakerChannelMask should equal the number of
-    //  channels expected on the final mix.
     //
     // PARAMETERS:
     //  X3DInstance        - [in]  X3DAudio instance (returned from XACT3DInitialize)
@@ -166,7 +165,7 @@
             if (pEmitter->pLFECurve == NULL) {
                 pEmitter->pLFECurve = &DefaultCurve;
             }
-    
+
             X3DAudioCalculate(X3DInstance, pListener, pEmitter, X3DAUDIO_CALCULATE_MATRIX | X3DAUDIO_CALCULATE_DOPPLER | X3DAUDIO_CALCULATE_EMITTER_ANGLE, pDSPSettings);
         }
 

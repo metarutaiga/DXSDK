@@ -29,35 +29,35 @@
 
 typedef enum _D3D10_DEVICE_STATE_TYPES
 {
-    D3D10_DST_VS = 1,                   // Single-value state
+    
+    D3D10_DST_SO_BUFFERS=1,             // Single-value state (atomical gets/sets)
+    D3D10_DST_OM_RENDER_TARGETS,        // Single-value state (atomical gets/sets)
+    D3D10_DST_OM_DEPTH_STENCIL_STATE,   // Single-value state
+    D3D10_DST_OM_BLEND_STATE,           // Single-value state
+
+    D3D10_DST_VS,                       // Single-value state
     D3D10_DST_VS_SAMPLERS,              // Count: D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT
     D3D10_DST_VS_SHADER_RESOURCES,      // Count: D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT
-    D3D10_DST_VS_CONSTANT_BUFFERS,      // Count: D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT
+    D3D10_DST_VS_CONSTANT_BUFFERS,      // Count:			
 
     D3D10_DST_GS,                       // Single-value state
     D3D10_DST_GS_SAMPLERS,              // Count: D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT
     D3D10_DST_GS_SHADER_RESOURCES,      // Count: D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT
-    D3D10_DST_GS_CONSTANT_BUFFERS,      // Count: D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT
+    D3D10_DST_GS_CONSTANT_BUFFERS,      // Count: D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT
 
     D3D10_DST_PS,                       // Single-value state
     D3D10_DST_PS_SAMPLERS,              // Count: D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT
     D3D10_DST_PS_SHADER_RESOURCES,      // Count: D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT
-    D3D10_DST_PS_CONSTANT_BUFFERS,      // Count: D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT
+    D3D10_DST_PS_CONSTANT_BUFFERS,      // Count: D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT
     
     D3D10_DST_IA_VERTEX_BUFFERS,        // Count: D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT
     D3D10_DST_IA_INDEX_BUFFER,          // Single-value state
     D3D10_DST_IA_INPUT_LAYOUT,          // Single-value state
     D3D10_DST_IA_PRIMITIVE_TOPOLOGY,    // Single-value state
 
-    D3D10_DST_OM_RENDER_TARGETS,        // Single-value state (atomical gets/sets)
-    D3D10_DST_OM_DEPTH_STENCIL_STATE,   // Single-value state
-    D3D10_DST_OM_BLEND_STATE,           // Single-value state
-
     D3D10_DST_RS_VIEWPORTS,             // Single-value state (atomical gets/sets)
     D3D10_DST_RS_SCISSOR_RECTS,         // Single-value state (atomical gets/sets)
     D3D10_DST_RS_RASTERIZER_STATE,      // Single-value state
-
-    D3D10_DST_SO_BUFFERS,               // Single-value state (atomical gets/sets)
 
     D3D10_DST_PREDICATION,              // Single-value state
 } D3D10_DEVICE_STATE_TYPES;
@@ -78,17 +78,17 @@ typedef struct _D3D10_STATE_BLOCK_MASK
     BYTE VS;
     BYTE VSSamplers[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT)];
     BYTE VSShaderResources[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT)];
-    BYTE VSConstantBuffers[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT)];
+    BYTE VSConstantBuffers[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT)];
     
     BYTE GS;
     BYTE GSSamplers[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT)];
     BYTE GSShaderResources[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT)];
-    BYTE GSConstantBuffers[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT)];
+    BYTE GSConstantBuffers[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT)];
     
     BYTE PS;
     BYTE PSSamplers[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT)];
     BYTE PSShaderResources[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT)];
-    BYTE PSConstantBuffers[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT)];
+    BYTE PSConstantBuffers[D3D10_BYTES_FROM_BITS(D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT)];
     
     BYTE IAVertexBuffers[D3D10_BYTES_FROM_BITS(D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT)];
     BYTE IAIndexBuffer;
@@ -205,11 +205,11 @@ HRESULT WINAPI D3D10CreateStateBlock(ID3D10Device *pDevice, D3D10_STATE_BLOCK_MA
 // These flags are passed in when creating an effect, and affect
 // either compilation behavior or runtime effect behavior
 //
-// D3D10_COMPILE_CHILD_EFFECT
+// D3D10_EFFECT_COMPILE_CHILD_EFFECT
 //   Compile this .fx file to a child effect. Child effects have no initializers
 //   for any shared values as these are initialied in the master effect (pool).
 //
-// D3D10_COMPILE_DISABLE_PERFORMANCE_MODE
+// D3D10_EFFECT_COMPILE_ALLOW_SLOW_OPS
 //   By default, performance mode is enabled.  Performance mode disallows
 //   mutable state objects by preventing non-literal expressions from appearing in
 //   state object definitions.  Specifying this flag will disable the mode and allow
@@ -221,9 +221,9 @@ HRESULT WINAPI D3D10CreateStateBlock(ID3D10Device *pDevice, D3D10_STATE_BLOCK_MA
 //
 //----------------------------------------------------------------------------
 
-#define D3D10_COMPILE_CHILD_EFFECT (1 << 0)
-#define D3D10_COMPILE_DISABLE_PERFORMANCE_MODE (1 << 1)
-#define D3D10_EFFECT_SINGLE_THREADED (1 << 3)
+#define D3D10_EFFECT_COMPILE_CHILD_EFFECT              (1 << 0)
+#define D3D10_EFFECT_COMPILE_ALLOW_SLOW_OPS            (1 << 1)
+#define D3D10_EFFECT_SINGLE_THREADED                   (1 << 3)
 
 
 //----------------------------------------------------------------------------
@@ -243,10 +243,15 @@ HRESULT WINAPI D3D10CreateStateBlock(ID3D10Device *pDevice, D3D10_STATE_BLOCK_MA
 //   Indicates that this is an annotation on a technique, pass, or global
 //   variable. Otherwise, this is a global variable. Annotations cannot
 //   be shared.
+//
+// D3D10_EFFECT_VARIABLE_EXPLICIT_BIND_POINT
+//   Indicates that the variable has been explicitly bound using the
+//   register keyword.
 //----------------------------------------------------------------------------
 
-#define D3D10_EFFECT_VARIABLE_POOLED         (1 << 0)
-#define D3D10_EFFECT_VARIABLE_ANNOTATION     (1 << 1)
+#define D3D10_EFFECT_VARIABLE_POOLED                  (1 << 0)
+#define D3D10_EFFECT_VARIABLE_ANNOTATION              (1 << 1)
+#define D3D10_EFFECT_VARIABLE_EXPLICIT_BIND_POINT     (1 << 2)
 
 //////////////////////////////////////////////////////////////////////////////
 // ID3D10EffectType //////////////////////////////////////////////////////////
@@ -329,6 +334,10 @@ typedef struct _D3D10_EFFECT_VARIABLE_DESC
     UINT    BufferOffset;           // Offset into containing cbuffer or tbuffer
                                     // (always 0 for annotations or variables
                                     // not in constant buffers)
+
+    UINT    ExplicitBindPoint;      // Used if the variable has been explicitly bound
+                                    // using the register keyword. Check Flags for
+                                    // D3D10_EFFECT_VARIABLE_EXPLICIT_BIND_POINT;
 } D3D10_EFFECT_VARIABLE_DESC;
 
 typedef interface ID3D10EffectVariable ID3D10EffectVariable;
@@ -378,10 +387,8 @@ DECLARE_INTERFACE(ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
-    /*
     STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
-    */
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -429,10 +436,8 @@ DECLARE_INTERFACE_(ID3D10EffectScalarVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
-    /*
     STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
-    */
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -498,10 +503,8 @@ DECLARE_INTERFACE_(ID3D10EffectVectorVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE; 
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
-    /*
     STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
-    */
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -565,10 +568,8 @@ DECLARE_INTERFACE_(ID3D10EffectMatrixVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
-    /*
     STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
-    */
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -628,10 +629,8 @@ DECLARE_INTERFACE_(ID3D10EffectStringVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
-    /*
     STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
-    */
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -683,10 +682,8 @@ DECLARE_INTERFACE_(ID3D10EffectShaderResourceVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
-    /*
     STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
-    */
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -849,6 +846,8 @@ DECLARE_INTERFACE_(ID3D10EffectConstantBuffer, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -927,13 +926,15 @@ DECLARE_INTERFACE_(ID3D10EffectShaderVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
     STDMETHOD_(ID3D10EffectDepthStencilVariable*, AsDepthStencil)(THIS) PURE;
     STDMETHOD_(ID3D10EffectRasterizerVariable*, AsRasterizer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectSamplerVariable*, AsSampler)(THIS) PURE;
-    
+        
     STDMETHOD(SetRawValue)(THIS_ void *pData, UINT Offset, UINT Count) PURE;
     STDMETHOD(GetRawValue)(THIS_ void *pData, UINT Offset, UINT Count) PURE;
     
@@ -982,6 +983,8 @@ DECLARE_INTERFACE_(ID3D10EffectBlendVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -1031,6 +1034,8 @@ DECLARE_INTERFACE_(ID3D10EffectDepthStencilVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -1080,6 +1085,8 @@ DECLARE_INTERFACE_(ID3D10EffectRasterizerVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -1129,6 +1136,8 @@ DECLARE_INTERFACE_(ID3D10EffectSamplerVariable, ID3D10EffectVariable)
     STDMETHOD_(ID3D10EffectMatrixVariable*, AsMatrix)(THIS) PURE;
     STDMETHOD_(ID3D10EffectStringVariable*, AsString)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderResourceVariable*, AsShaderResource)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectRenderTargetViewVariable*, AsRenderTargetView)(THIS) PURE;
+    STDMETHOD_(ID3D10EffectDepthStencilViewVariable*, AsDepthStencilView)(THIS) PURE;
     STDMETHOD_(ID3D10EffectConstantBuffer*, AsConstantBuffer)(THIS) PURE;
     STDMETHOD_(ID3D10EffectShaderVariable*, AsShader)(THIS) PURE;
     STDMETHOD_(ID3D10EffectBlendVariable*, AsBlend)(THIS) PURE;
@@ -1160,6 +1169,7 @@ typedef struct _D3D10_PASS_DESC
     
     BYTE *pIAInputSignature;        // Signature from VS or GS (if there is no VS)
                                     // or NULL if neither exists
+    SIZE_T IAInputSignatureSize;    // Singature size in bytes                                
                                     
     UINT StencilRef;                // Specified in SetDepthStencilState()
     UINT SampleMask;                // Specified in SetBlendState()

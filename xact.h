@@ -18,14 +18,14 @@ Abstract:
 #define _XACT_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs
+// XACT class and interface IDs (Version 2.3)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         c60fae90, 4183, 4a3f, b2, f7, ac, 1d, c4, 9b, 0e, 5c);
-    DEFINE_CLSID(XACTAuditionEngine, 4cb2112c, 62e9, 43fc, 8d, 9d, 6c, a0, 8c, ed, 45, f1);
-    DEFINE_CLSID(XACTDebugEngine,    3ec76fdc, b626, 43fb, be, 22, 9b, 43, 1d, 06, b9, 68);
-    DEFINE_IID(IXACTEngine,          9c454686, b827, 4e5e, 88, d9, 5b, 99, d6, 6b, 02, 2f);
+    DEFINE_CLSID(XACTEngine,         1138472b, d187, 44e9, 81, f2, ae, 1b, 0e, 77, 85, f1);
+    DEFINE_CLSID(XACTAuditionEngine, 07fb2b69, 0ee4, 4eee, bb, e8, c7, 62, 89, 79, 87, 17);
+    DEFINE_CLSID(XACTDebugEngine,    9ebf716a, 4c83, 4db0, 9a, 5a, c7, 27, de, 92, b2, 73);
+    DEFINE_IID(IXACTEngine,          b28629f1, 0cb0, 47bc, b4, 6a, a2, a1, a7, 29, 6f, 02);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
@@ -102,7 +102,7 @@ static const XACTVARIABLEVALUE XACTPARAMETERVALUE_MAX = FLT_MAX;
 static const XAUDIOVOICEINDEX XACTMAXOUTPUTVOICECOUNT = 3;
 #endif // _XBOX
 
-#define XACT_CONTENT_VERSION    39
+#define XACT_CONTENT_VERSION    40
 
 //------------------------------------------------------------------------------
 // XACT Parameters
@@ -1048,6 +1048,7 @@ STDAPI XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine);
 
 __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine)
 {
+    HRESULT hr;
     HKEY    key;
     DWORD   data;
     DWORD   type     = REG_DWORD;
@@ -1069,15 +1070,25 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
         RegCloseKey(key);
     }
 
-    return CoCreateInstance(audition ? __uuidof(XACTAuditionEngine)
-                            : (debug ? __uuidof(XACTDebugEngine) : __uuidof(XACTEngine)),
-                            NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACTEngine), (void**)ppEngine);
+    // Priority order: Audition, Debug, Retail
+    hr = CoCreateInstance(audition ? __uuidof(XACTAuditionEngine)
+                          : (debug ? __uuidof(XACTDebugEngine) : __uuidof(XACTEngine)),
+                          NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACTEngine), (void**)ppEngine);
+
+    // If debug engine does not exist fallback to retail version
+    if(FAILED(hr) && debug && !audition)
+    {
+        hr = CoCreateInstance(__uuidof(XACTEngine), NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACTEngine), (void**)ppEngine);
+    }
+
+    return hr;
 }
 
 #else
 
 __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine)
 {
+    HRESULT hr;
     HKEY    key;
     DWORD   data;
     DWORD   type     = REG_DWORD;
@@ -1099,9 +1110,18 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
         RegCloseKey(key);
     }
 
-    return CoCreateInstance(audition ? &CLSID_XACTAuditionEngine
-                            : (debug ? &CLSID_XACTDebugEngine : &CLSID_XACTEngine),
-                            NULL, CLSCTX_INPROC_SERVER, &IID_IXACTEngine, (void**)ppEngine);
+    // Priority order: Audition, Debug, Retail
+    hr = CoCreateInstance(audition ? &CLSID_XACTAuditionEngine
+                          : (debug ? &CLSID_XACTDebugEngine : &CLSID_XACTEngine),
+                          NULL, CLSCTX_INPROC_SERVER, &IID_IXACTEngine, (void**)ppEngine);
+
+    // If debug engine does not exist fallback to retail version
+    if(FAILED(hr) && debug && !audition)
+    {
+        hr = CoCreateInstance(&CLSID_XACTEngine, NULL, CLSCTX_INPROC_SERVER, &IID_IXACTEngine, (void**)ppEngine);
+    }
+
+    return hr;
 }
 
 #endif // #ifdef __cplusplus
@@ -1143,14 +1163,16 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
 #define XACTENGINE_E_WAVEBANKNOTPREPARED       XACTENGINEERROR(0x016)   // The wavebank is not prepared
 #define XACTENGINE_E_NORENDERER                XACTENGINEERROR(0x017)   // No audio device found on.
 #define XACTENGINE_E_INVALIDENTRYCOUNT         XACTENGINEERROR(0x018)   // Invalid entry count for channel maps
-#define XACTENGINE_E_SEEKTIMEBEYONDCUEEND      XACTENGINEERROR(0x19)    // Time offset for seeking is beyond the cue end.
+#define XACTENGINE_E_SEEKTIMEBEYONDCUEEND      XACTENGINEERROR(0x019)   // Time offset for seeking is beyond the cue end.
 
-#define XACTENGINE_E_AUDITION_WRITEFILE        XACTENGINEERROR(0x101)  // Error writing a file during auditioning
-#define XACTENGINE_E_AUDITION_NOSOUNDBANK      XACTENGINEERROR(0x102)  // Missing a soundbank
-#define XACTENGINE_E_AUDITION_INVALIDRPCINDEX  XACTENGINEERROR(0x103)  // Missing an RPC curve
-#define XACTENGINE_E_AUDITION_MISSINGDATA      XACTENGINEERROR(0x104)  // Missing data for an audition command
-#define XACTENGINE_E_AUDITION_UNKNOWNCOMMAND   XACTENGINEERROR(0x105)  // Unknown command
-#define XACTENGINE_E_AUDITION_INVALIDDSPINDEX  XACTENGINEERROR(0x106)  // Missing a DSP parameter
+#define XACTENGINE_E_AUDITION_WRITEFILE             XACTENGINEERROR(0x101)  // Error writing a file during auditioning
+#define XACTENGINE_E_AUDITION_NOSOUNDBANK           XACTENGINEERROR(0x102)  // Missing a soundbank
+#define XACTENGINE_E_AUDITION_INVALIDRPCINDEX       XACTENGINEERROR(0x103)  // Missing an RPC curve
+#define XACTENGINE_E_AUDITION_MISSINGDATA           XACTENGINEERROR(0x104)  // Missing data for an audition command
+#define XACTENGINE_E_AUDITION_UNKNOWNCOMMAND        XACTENGINEERROR(0x105)  // Unknown command
+#define XACTENGINE_E_AUDITION_INVALIDDSPINDEX       XACTENGINEERROR(0x106)  // Missing a DSP parameter
+#define XACTENGINE_E_AUDITION_MISSINGWAVE           XACTENGINEERROR(0x107)  // Wave does not exist in auditioned wavebank
+#define XACTENGINE_E_AUDITION_CREATEDIRECTORYFAILED XACTENGINEERROR(0x108)  // Failed to create a directory for streaming wavebank data
 
 #endif // #ifndef GUID_DEFS_ONLY
 #endif // #ifndef _XACT_H_

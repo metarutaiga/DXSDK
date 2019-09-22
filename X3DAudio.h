@@ -103,7 +103,7 @@
 
 //--------------<M-A-C-R-O-S>-----------------------------------------------//
     // function storage-class attribute and calltype
-    #if defined(_XBOX)
+    #if defined(_XBOX) || defined(X3DAUDIOSTATIC)
         #define X3DAUDIO_API_(type) EXTERN_C type STDAPICALLTYPE
     #else
         #if defined(X3DEXPORT)

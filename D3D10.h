@@ -3,7 +3,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0493 */
+ /* File created by MIDL compiler version 7.00.0497 */
 /* Compiler settings for d3d10.idl:
     Oicf, W1, Zp8, env=Win64 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -186,12 +186,6 @@ typedef interface ID3D10Device ID3D10Device;
 #endif 	/* __ID3D10Device_FWD_DEFINED__ */
 
 
-#ifndef __ID3D10ShaderMirror_FWD_DEFINED__
-#define __ID3D10ShaderMirror_FWD_DEFINED__
-typedef interface ID3D10ShaderMirror ID3D10ShaderMirror;
-#endif 	/* __ID3D10ShaderMirror_FWD_DEFINED__ */
-
-
 #ifndef __ID3D10Multithread_FWD_DEFINED__
 #define __ID3D10Multithread_FWD_DEFINED__
 typedef interface ID3D10Multithread ID3D10Multithread;
@@ -225,9 +219,13 @@ extern "C"{
 
 #define	D3D10_CLIP_OR_CULL_DISTANCE_ELEMENT_COUNT	( 2 )
 
+#define	D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT	( 14 )
+
 #define	D3D10_COMMONSHADER_CONSTANT_BUFFER_COMPONENTS	( 4 )
 
 #define	D3D10_COMMONSHADER_CONSTANT_BUFFER_COMPONENT_BIT_COUNT	( 32 )
+
+#define	D3D10_COMMONSHADER_CONSTANT_BUFFER_HW_SLOT_COUNT	( 15 )
 
 #define	D3D10_COMMONSHADER_CONSTANT_BUFFER_REGISTER_COMPONENTS	( 4 )
 
@@ -236,8 +234,6 @@ extern "C"{
 #define	D3D10_COMMONSHADER_CONSTANT_BUFFER_REGISTER_READS_PER_INST	( 1 )
 
 #define	D3D10_COMMONSHADER_CONSTANT_BUFFER_REGISTER_READ_PORTS	( 1 )
-
-#define	D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT	( 15 )
 
 #define	D3D10_COMMONSHADER_FLOWCONTROL_NESTING_LIMIT	( 64 )
 
@@ -343,7 +339,7 @@ extern "C"{
 #define D3D10_FLOAT_TO_SRGB_THRESHOLD	( 0.0031308f )
 #define D3D10_FTOI_INSTRUCTION_MAX_INPUT	( 2147483647.999f )
 #define D3D10_FTOI_INSTRUCTION_MIN_INPUT	( -2147483648.999f )
-#define D3D10_FTOU_INSTRUCTION_MAX_INPUT	( 4294967296.999f )
+#define D3D10_FTOU_INSTRUCTION_MAX_INPUT	( 4294967295.999f )
 #define D3D10_FTOU_INSTRUCTION_MIN_INPUT	( 0.0f )
 #define	D3D10_GS_INPUT_PRIM_CONST_REGISTER_COMPONENTS	( 1 )
 
@@ -478,7 +474,7 @@ extern "C"{
 
 #define	D3D10_REQ_MAXANISOTROPY	( 16 )
 
-#define	D3D10_REQ_MIP_LEVELS	( 13 )
+#define	D3D10_REQ_MIP_LEVELS	( 14 )
 
 #define	D3D10_REQ_MULTI_ELEMENT_STRUCTURE_SIZE_IN_BYTES	( 2048 )
 
@@ -593,17 +589,13 @@ extern "C"{
 
 #define	D3D_MINOR_VERSION	( 0 )
 
-#define	D3D_SPEC_DATE_DAY	( 17 )
+#define	D3D_SPEC_DATE_DAY	( 21 )
 
-#define	D3D_SPEC_DATE_MONTH	( 01 )
+#define	D3D_SPEC_DATE_MONTH	( 06 )
 
 #define	D3D_SPEC_DATE_YEAR	( 2006 )
 
-#define D3D_SPEC_VERSION	( 1.040002 )
-#define	WGF_MAJOR_VERSION	( 2 )
-
-#define	WGF_MINOR_VERSION	( 0 )
-
+#define D3D_SPEC_VERSION	( 1.050004 )
 #endif
 #define	_FACD3D10	( 0x879 )
 
@@ -624,6 +616,8 @@ enum D3D10_INPUT_CLASSIFICATION
     {	D3D10_INPUT_PER_VERTEX_DATA	= 0,
 	D3D10_INPUT_PER_INSTANCE_DATA	= 1
     } 	D3D10_INPUT_CLASSIFICATION;
+
+#define	D3D10_APPEND_ALIGNED_ELEMENT	( 0xffffffff )
 
 typedef struct D3D10_INPUT_ELEMENT_DESC
     {
@@ -662,12 +656,6 @@ enum D3D10_CULL_MODE
 	D3D10_CULL_FRONT	= 2,
 	D3D10_CULL_BACK	= 3
     } 	D3D10_CULL_MODE;
-
-typedef 
-enum D3D10_FRONT_WINDING
-    {	D3D10_FRONT_CW	= 1,
-	D3D10_FRONT_CCW	= 2
-    } 	D3D10_FRONT_WINDING;
 
 typedef struct D3D10_SO_DECLARATION_ENTRY
     {
@@ -785,8 +773,6 @@ typedef
 enum D3D10_RAISE_FLAG
     {	D3D10_RAISE_FLAG_DRIVER_INTERNAL_ERROR	= 0x1L
     } 	D3D10_RAISE_FLAG;
-
-#define	D3D10_BUFFEROFFSET_APPEND	( 0xffffffffL )
 
 typedef 
 enum D3D10_CLEAR_FLAG
@@ -3322,20 +3308,6 @@ EXTERN_C const IID IID_ID3D10DepthStencilView;
 #endif 	/* __ID3D10DepthStencilView_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_d3d10_0000_0013 */
-/* [local] */ 
-
-typedef struct D3D10_VERTEX_SHADER_DESC
-    {
-    const BYTE *pFunction;
-    UINT SizeInBytes;
-    } 	D3D10_VERTEX_SHADER_DESC;
-
-
-
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0013_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0013_v0_0_s_ifspec;
-
 #ifndef __ID3D10VertexShader_INTERFACE_DEFINED__
 #define __ID3D10VertexShader_INTERFACE_DEFINED__
 
@@ -3447,23 +3419,6 @@ EXTERN_C const IID IID_ID3D10VertexShader;
 
 #endif 	/* __ID3D10VertexShader_INTERFACE_DEFINED__ */
 
-
-/* interface __MIDL_itf_d3d10_0000_0014 */
-/* [local] */ 
-
-typedef struct D3D10_GEOMETRY_SHADER_DESC
-    {
-    const BYTE *pFunction;
-    UINT SizeInBytes;
-    const D3D10_SO_DECLARATION_ENTRY *pDeclaration;
-    UINT NumElements;
-    UINT StreamStride;
-    } 	D3D10_GEOMETRY_SHADER_DESC;
-
-
-
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0014_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0014_v0_0_s_ifspec;
 
 #ifndef __ID3D10GeometryShader_INTERFACE_DEFINED__
 #define __ID3D10GeometryShader_INTERFACE_DEFINED__
@@ -3577,20 +3532,6 @@ EXTERN_C const IID IID_ID3D10GeometryShader;
 #endif 	/* __ID3D10GeometryShader_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_d3d10_0000_0015 */
-/* [local] */ 
-
-typedef struct D3D10_PIXEL_SHADER_DESC
-    {
-    const BYTE *pFunction;
-    UINT SizeInBytes;
-    } 	D3D10_PIXEL_SHADER_DESC;
-
-
-
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0015_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0015_v0_0_s_ifspec;
-
 #ifndef __ID3D10PixelShader_INTERFACE_DEFINED__
 #define __ID3D10PixelShader_INTERFACE_DEFINED__
 
@@ -3702,21 +3643,6 @@ EXTERN_C const IID IID_ID3D10PixelShader;
 
 #endif 	/* __ID3D10PixelShader_INTERFACE_DEFINED__ */
 
-
-/* interface __MIDL_itf_d3d10_0000_0016 */
-/* [local] */ 
-
-typedef struct D3D10_INPUT_LAYOUT_DESC
-    {
-    D3D10_INPUT_ELEMENT_DESC *pDeclaration;
-    UINT NumElements;
-    const void *pShaderBytecodeWithInputSignature;
-    } 	D3D10_INPUT_LAYOUT_DESC;
-
-
-
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0016_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0016_v0_0_s_ifspec;
 
 #ifndef __ID3D10InputLayout_INTERFACE_DEFINED__
 #define __ID3D10InputLayout_INTERFACE_DEFINED__
@@ -4084,7 +4010,9 @@ enum D3D10_FORMAT_SUPPORT
 	D3D10_FORMAT_SUPPORT_CPU_LOCKABLE	= 0x20000,
 	D3D10_FORMAT_SUPPORT_MULTISAMPLE_RESOLVE	= 0x40000,
 	D3D10_FORMAT_SUPPORT_DISPLAY	= 0x80000,
-	D3D10_FORMAT_SUPPORT_CAST_WITHIN_BIT_LAYOUT	= 0x100000
+	D3D10_FORMAT_SUPPORT_CAST_WITHIN_BIT_LAYOUT	= 0x100000,
+	D3D10_FORMAT_SUPPORT_MULTISAMPLE_RENDERTARGET	= 0x200000,
+	D3D10_FORMAT_SUPPORT_MULTISAMPLE_LOAD	= 0x400000
     } 	D3D10_FORMAT_SUPPORT;
 
 
@@ -4839,17 +4767,17 @@ EXTERN_C const IID IID_ID3D10Device;
     public:
         virtual void STDMETHODCALLTYPE VSSetConstantBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppConstantBuffers) = 0;
         
         virtual void STDMETHODCALLTYPE PSSetShaderResources( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __in_ecount(NumViews)  ID3D10ShaderResourceView *const *ppShaderResourceViews) = 0;
         
@@ -4859,9 +4787,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE PSSetSamplers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __in_ecount(NumSamplers)  ID3D10SamplerState *const *ppSamplers) = 0;
         
@@ -4885,9 +4813,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE PSSetConstantBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppConstantBuffers) = 0;
         
@@ -4897,9 +4825,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE IASetVertexBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppVertexBuffers,
             /*  */ 
@@ -4939,9 +4867,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE GSSetConstantBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppConstantBuffers) = 0;
         
@@ -4955,17 +4883,17 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE VSSetShaderResources( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __in_ecount(NumViews)  ID3D10ShaderResourceView *const *ppShaderResourceViews) = 0;
         
         virtual void STDMETHODCALLTYPE VSSetSamplers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __in_ecount(NumSamplers)  ID3D10SamplerState *const *ppSamplers) = 0;
         
@@ -4977,17 +4905,17 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE GSSetShaderResources( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __in_ecount(NumViews)  ID3D10ShaderResourceView *const *ppShaderResourceViews) = 0;
         
         virtual void STDMETHODCALLTYPE GSSetSamplers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __in_ecount(NumSamplers)  ID3D10SamplerState *const *ppSamplers) = 0;
         
@@ -5111,17 +5039,17 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE VSGetConstantBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount(NumBuffers)  ID3D10Buffer **ppConstantBuffers) = 0;
         
         virtual void STDMETHODCALLTYPE PSGetShaderResources( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __out_ecount(NumViews)  ID3D10ShaderResourceView **ppShaderResourceViews) = 0;
         
@@ -5131,9 +5059,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE PSGetSamplers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __out_ecount(NumSamplers)  ID3D10SamplerState **ppSamplers) = 0;
         
@@ -5143,9 +5071,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE PSGetConstantBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount(NumBuffers)  ID3D10Buffer **ppConstantBuffers) = 0;
         
@@ -5155,9 +5083,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE IAGetVertexBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount_opt(NumBuffers)  ID3D10Buffer **ppVertexBuffers,
             /*  */ 
@@ -5175,9 +5103,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE GSGetConstantBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount(NumBuffers)  ID3D10Buffer **ppConstantBuffers) = 0;
         
@@ -5191,17 +5119,17 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE VSGetShaderResources( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __out_ecount(NumViews)  ID3D10ShaderResourceView **ppShaderResourceViews) = 0;
         
         virtual void STDMETHODCALLTYPE VSGetSamplers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __out_ecount(NumSamplers)  ID3D10SamplerState **ppSamplers) = 0;
         
@@ -5213,17 +5141,17 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE GSGetShaderResources( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __out_ecount(NumViews)  ID3D10ShaderResourceView **ppShaderResourceViews) = 0;
         
         virtual void STDMETHODCALLTYPE GSGetSamplers( 
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __out_ecount(NumSamplers)  ID3D10SamplerState **ppSamplers) = 0;
         
@@ -5370,11 +5298,15 @@ EXTERN_C const IID IID_ID3D10Device;
             /*  */ 
             __in  const void *pShaderBytecodeWithInputSignature,
             /*  */ 
+            __in  SIZE_T BytecodeLength,
+            /*  */ 
             __out_opt  ID3D10InputLayout **ppInputLayout) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateVertexShader( 
             /*  */ 
             __in  const void *pShaderBytecode,
+            /*  */ 
+            __in  SIZE_T BytecodeLength,
             /*  */ 
             __out_opt  ID3D10VertexShader **ppVertexShader) = 0;
         
@@ -5382,11 +5314,15 @@ EXTERN_C const IID IID_ID3D10Device;
             /*  */ 
             __in  const void *pShaderBytecode,
             /*  */ 
+            __in  SIZE_T BytecodeLength,
+            /*  */ 
             __out_opt  ID3D10GeometryShader **ppGeometryShader) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateGeometryShaderWithStreamOutput( 
             /*  */ 
             __in  const void *pShaderBytecode,
+            /*  */ 
+            __in  SIZE_T BytecodeLength,
             /*  */ 
             __in_ecount_opt(NumEntries)  const D3D10_SO_DECLARATION_ENTRY *pSODeclaration,
             /*  */ 
@@ -5399,6 +5335,8 @@ EXTERN_C const IID IID_ID3D10Device;
         virtual HRESULT STDMETHODCALLTYPE CreatePixelShader( 
             /*  */ 
             __in  const void *pShaderBytecode,
+            /*  */ 
+            __in  SIZE_T BytecodeLength,
             /*  */ 
             __out_opt  ID3D10PixelShader **ppPixelShader) = 0;
         
@@ -5515,18 +5453,18 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *VSSetConstantBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppConstantBuffers);
         
         void ( STDMETHODCALLTYPE *PSSetShaderResources )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __in_ecount(NumViews)  ID3D10ShaderResourceView *const *ppShaderResourceViews);
         
@@ -5538,9 +5476,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *PSSetSamplers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __in_ecount(NumSamplers)  ID3D10SamplerState *const *ppSamplers);
         
@@ -5568,9 +5506,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *PSSetConstantBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppConstantBuffers);
         
@@ -5582,9 +5520,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *IASetVertexBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppVertexBuffers,
             /*  */ 
@@ -5628,9 +5566,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *GSSetConstantBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppConstantBuffers);
         
@@ -5647,18 +5585,18 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *VSSetShaderResources )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __in_ecount(NumViews)  ID3D10ShaderResourceView *const *ppShaderResourceViews);
         
         void ( STDMETHODCALLTYPE *VSSetSamplers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __in_ecount(NumSamplers)  ID3D10SamplerState *const *ppSamplers);
         
@@ -5672,18 +5610,18 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *GSSetShaderResources )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __in_ecount(NumViews)  ID3D10ShaderResourceView *const *ppShaderResourceViews);
         
         void ( STDMETHODCALLTYPE *GSSetSamplers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __in_ecount(NumSamplers)  ID3D10SamplerState *const *ppSamplers);
         
@@ -5823,18 +5761,18 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *VSGetConstantBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount(NumBuffers)  ID3D10Buffer **ppConstantBuffers);
         
         void ( STDMETHODCALLTYPE *PSGetShaderResources )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __out_ecount(NumViews)  ID3D10ShaderResourceView **ppShaderResourceViews);
         
@@ -5846,9 +5784,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *PSGetSamplers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __out_ecount(NumSamplers)  ID3D10SamplerState **ppSamplers);
         
@@ -5860,9 +5798,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *PSGetConstantBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount(NumBuffers)  ID3D10Buffer **ppConstantBuffers);
         
@@ -5874,9 +5812,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *IAGetVertexBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount_opt(NumBuffers)  ID3D10Buffer **ppVertexBuffers,
             /*  */ 
@@ -5896,9 +5834,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *GSGetConstantBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_SLOT_COUNT - Offset )  UINT NumBuffers,
+            __in_range( 0, D3D10_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount(NumBuffers)  ID3D10Buffer **ppConstantBuffers);
         
@@ -5915,18 +5853,18 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *VSGetShaderResources )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __out_ecount(NumViews)  ID3D10ShaderResourceView **ppShaderResourceViews);
         
         void ( STDMETHODCALLTYPE *VSGetSamplers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __out_ecount(NumSamplers)  ID3D10SamplerState **ppSamplers);
         
@@ -5940,18 +5878,18 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *GSGetShaderResources )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - Offset )  UINT NumViews,
+            __in_range( 0, D3D10_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumViews,
             /*  */ 
             __out_ecount(NumViews)  ID3D10ShaderResourceView **ppShaderResourceViews);
         
         void ( STDMETHODCALLTYPE *GSGetSamplers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT Offset,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - Offset )  UINT NumSamplers,
+            __in_range( 0, D3D10_COMMONSHADER_SAMPLER_SLOT_COUNT - StartSlot )  UINT NumSamplers,
             /*  */ 
             __out_ecount(NumSamplers)  ID3D10SamplerState **ppSamplers);
         
@@ -6121,12 +6059,16 @@ EXTERN_C const IID IID_ID3D10Device;
             /*  */ 
             __in  const void *pShaderBytecodeWithInputSignature,
             /*  */ 
+            __in  SIZE_T BytecodeLength,
+            /*  */ 
             __out_opt  ID3D10InputLayout **ppInputLayout);
         
         HRESULT ( STDMETHODCALLTYPE *CreateVertexShader )( 
             ID3D10Device * This,
             /*  */ 
             __in  const void *pShaderBytecode,
+            /*  */ 
+            __in  SIZE_T BytecodeLength,
             /*  */ 
             __out_opt  ID3D10VertexShader **ppVertexShader);
         
@@ -6135,12 +6077,16 @@ EXTERN_C const IID IID_ID3D10Device;
             /*  */ 
             __in  const void *pShaderBytecode,
             /*  */ 
+            __in  SIZE_T BytecodeLength,
+            /*  */ 
             __out_opt  ID3D10GeometryShader **ppGeometryShader);
         
         HRESULT ( STDMETHODCALLTYPE *CreateGeometryShaderWithStreamOutput )( 
             ID3D10Device * This,
             /*  */ 
             __in  const void *pShaderBytecode,
+            /*  */ 
+            __in  SIZE_T BytecodeLength,
             /*  */ 
             __in_ecount_opt(NumEntries)  const D3D10_SO_DECLARATION_ENTRY *pSODeclaration,
             /*  */ 
@@ -6154,6 +6100,8 @@ EXTERN_C const IID IID_ID3D10Device;
             ID3D10Device * This,
             /*  */ 
             __in  const void *pShaderBytecode,
+            /*  */ 
+            __in  SIZE_T BytecodeLength,
             /*  */ 
             __out_opt  ID3D10PixelShader **ppPixelShader);
         
@@ -6283,17 +6231,17 @@ EXTERN_C const IID IID_ID3D10Device;
     ( (This)->lpVtbl -> Release(This) ) 
 
 
-#define ID3D10Device_VSSetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers)	\
-    ( (This)->lpVtbl -> VSSetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers) ) 
+#define ID3D10Device_VSSetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers)	\
+    ( (This)->lpVtbl -> VSSetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers) ) 
 
-#define ID3D10Device_PSSetShaderResources(This,Offset,NumViews,ppShaderResourceViews)	\
-    ( (This)->lpVtbl -> PSSetShaderResources(This,Offset,NumViews,ppShaderResourceViews) ) 
+#define ID3D10Device_PSSetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews)	\
+    ( (This)->lpVtbl -> PSSetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews) ) 
 
 #define ID3D10Device_PSSetShader(This,pPixelShader)	\
     ( (This)->lpVtbl -> PSSetShader(This,pPixelShader) ) 
 
-#define ID3D10Device_PSSetSamplers(This,Offset,NumSamplers,ppSamplers)	\
-    ( (This)->lpVtbl -> PSSetSamplers(This,Offset,NumSamplers,ppSamplers) ) 
+#define ID3D10Device_PSSetSamplers(This,StartSlot,NumSamplers,ppSamplers)	\
+    ( (This)->lpVtbl -> PSSetSamplers(This,StartSlot,NumSamplers,ppSamplers) ) 
 
 #define ID3D10Device_VSSetShader(This,pVertexShader)	\
     ( (This)->lpVtbl -> VSSetShader(This,pVertexShader) ) 
@@ -6304,14 +6252,14 @@ EXTERN_C const IID IID_ID3D10Device;
 #define ID3D10Device_Draw(This,VertexCount,StartVertexLocation)	\
     ( (This)->lpVtbl -> Draw(This,VertexCount,StartVertexLocation) ) 
 
-#define ID3D10Device_PSSetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers)	\
-    ( (This)->lpVtbl -> PSSetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers) ) 
+#define ID3D10Device_PSSetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers)	\
+    ( (This)->lpVtbl -> PSSetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers) ) 
 
 #define ID3D10Device_IASetInputLayout(This,pInputLayout)	\
     ( (This)->lpVtbl -> IASetInputLayout(This,pInputLayout) ) 
 
-#define ID3D10Device_IASetVertexBuffers(This,Offset,NumBuffers,ppVertexBuffers,pStrides,pOffsets)	\
-    ( (This)->lpVtbl -> IASetVertexBuffers(This,Offset,NumBuffers,ppVertexBuffers,pStrides,pOffsets) ) 
+#define ID3D10Device_IASetVertexBuffers(This,StartSlot,NumBuffers,ppVertexBuffers,pStrides,pOffsets)	\
+    ( (This)->lpVtbl -> IASetVertexBuffers(This,StartSlot,NumBuffers,ppVertexBuffers,pStrides,pOffsets) ) 
 
 #define ID3D10Device_IASetIndexBuffer(This,pIndexBuffer,Format,Offset)	\
     ( (This)->lpVtbl -> IASetIndexBuffer(This,pIndexBuffer,Format,Offset) ) 
@@ -6322,8 +6270,8 @@ EXTERN_C const IID IID_ID3D10Device;
 #define ID3D10Device_DrawInstanced(This,VertexCountPerInstance,InstanceCount,StartVertexLocation,StartInstanceLocation)	\
     ( (This)->lpVtbl -> DrawInstanced(This,VertexCountPerInstance,InstanceCount,StartVertexLocation,StartInstanceLocation) ) 
 
-#define ID3D10Device_GSSetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers)	\
-    ( (This)->lpVtbl -> GSSetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers) ) 
+#define ID3D10Device_GSSetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers)	\
+    ( (This)->lpVtbl -> GSSetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers) ) 
 
 #define ID3D10Device_GSSetShader(This,pShader)	\
     ( (This)->lpVtbl -> GSSetShader(This,pShader) ) 
@@ -6331,20 +6279,20 @@ EXTERN_C const IID IID_ID3D10Device;
 #define ID3D10Device_IASetPrimitiveTopology(This,Topology)	\
     ( (This)->lpVtbl -> IASetPrimitiveTopology(This,Topology) ) 
 
-#define ID3D10Device_VSSetShaderResources(This,Offset,NumViews,ppShaderResourceViews)	\
-    ( (This)->lpVtbl -> VSSetShaderResources(This,Offset,NumViews,ppShaderResourceViews) ) 
+#define ID3D10Device_VSSetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews)	\
+    ( (This)->lpVtbl -> VSSetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews) ) 
 
-#define ID3D10Device_VSSetSamplers(This,Offset,NumSamplers,ppSamplers)	\
-    ( (This)->lpVtbl -> VSSetSamplers(This,Offset,NumSamplers,ppSamplers) ) 
+#define ID3D10Device_VSSetSamplers(This,StartSlot,NumSamplers,ppSamplers)	\
+    ( (This)->lpVtbl -> VSSetSamplers(This,StartSlot,NumSamplers,ppSamplers) ) 
 
 #define ID3D10Device_SetPredication(This,pPredicate,PredicateValue)	\
     ( (This)->lpVtbl -> SetPredication(This,pPredicate,PredicateValue) ) 
 
-#define ID3D10Device_GSSetShaderResources(This,Offset,NumViews,ppShaderResourceViews)	\
-    ( (This)->lpVtbl -> GSSetShaderResources(This,Offset,NumViews,ppShaderResourceViews) ) 
+#define ID3D10Device_GSSetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews)	\
+    ( (This)->lpVtbl -> GSSetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews) ) 
 
-#define ID3D10Device_GSSetSamplers(This,Offset,NumSamplers,ppSamplers)	\
-    ( (This)->lpVtbl -> GSSetSamplers(This,Offset,NumSamplers,ppSamplers) ) 
+#define ID3D10Device_GSSetSamplers(This,StartSlot,NumSamplers,ppSamplers)	\
+    ( (This)->lpVtbl -> GSSetSamplers(This,StartSlot,NumSamplers,ppSamplers) ) 
 
 #define ID3D10Device_OMSetRenderTargets(This,NumViews,ppRenderTargetViews,pDepthStencilView)	\
     ( (This)->lpVtbl -> OMSetRenderTargets(This,NumViews,ppRenderTargetViews,pDepthStencilView) ) 
@@ -6391,35 +6339,35 @@ EXTERN_C const IID IID_ID3D10Device;
 #define ID3D10Device_ResolveSubresource(This,pDstResource,DstSubresource,pSrcResource,SrcSubresource,Format)	\
     ( (This)->lpVtbl -> ResolveSubresource(This,pDstResource,DstSubresource,pSrcResource,SrcSubresource,Format) ) 
 
-#define ID3D10Device_VSGetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers)	\
-    ( (This)->lpVtbl -> VSGetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers) ) 
+#define ID3D10Device_VSGetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers)	\
+    ( (This)->lpVtbl -> VSGetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers) ) 
 
-#define ID3D10Device_PSGetShaderResources(This,Offset,NumViews,ppShaderResourceViews)	\
-    ( (This)->lpVtbl -> PSGetShaderResources(This,Offset,NumViews,ppShaderResourceViews) ) 
+#define ID3D10Device_PSGetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews)	\
+    ( (This)->lpVtbl -> PSGetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews) ) 
 
 #define ID3D10Device_PSGetShader(This,ppPixelShader)	\
     ( (This)->lpVtbl -> PSGetShader(This,ppPixelShader) ) 
 
-#define ID3D10Device_PSGetSamplers(This,Offset,NumSamplers,ppSamplers)	\
-    ( (This)->lpVtbl -> PSGetSamplers(This,Offset,NumSamplers,ppSamplers) ) 
+#define ID3D10Device_PSGetSamplers(This,StartSlot,NumSamplers,ppSamplers)	\
+    ( (This)->lpVtbl -> PSGetSamplers(This,StartSlot,NumSamplers,ppSamplers) ) 
 
 #define ID3D10Device_VSGetShader(This,ppVertexShader)	\
     ( (This)->lpVtbl -> VSGetShader(This,ppVertexShader) ) 
 
-#define ID3D10Device_PSGetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers)	\
-    ( (This)->lpVtbl -> PSGetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers) ) 
+#define ID3D10Device_PSGetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers)	\
+    ( (This)->lpVtbl -> PSGetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers) ) 
 
 #define ID3D10Device_IAGetInputLayout(This,ppInputLayout)	\
     ( (This)->lpVtbl -> IAGetInputLayout(This,ppInputLayout) ) 
 
-#define ID3D10Device_IAGetVertexBuffers(This,Offset,NumBuffers,ppVertexBuffers,pStrides,pOffsets)	\
-    ( (This)->lpVtbl -> IAGetVertexBuffers(This,Offset,NumBuffers,ppVertexBuffers,pStrides,pOffsets) ) 
+#define ID3D10Device_IAGetVertexBuffers(This,StartSlot,NumBuffers,ppVertexBuffers,pStrides,pOffsets)	\
+    ( (This)->lpVtbl -> IAGetVertexBuffers(This,StartSlot,NumBuffers,ppVertexBuffers,pStrides,pOffsets) ) 
 
 #define ID3D10Device_IAGetIndexBuffer(This,pIndexBuffer,Format,Offset)	\
     ( (This)->lpVtbl -> IAGetIndexBuffer(This,pIndexBuffer,Format,Offset) ) 
 
-#define ID3D10Device_GSGetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers)	\
-    ( (This)->lpVtbl -> GSGetConstantBuffers(This,Offset,NumBuffers,ppConstantBuffers) ) 
+#define ID3D10Device_GSGetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers)	\
+    ( (This)->lpVtbl -> GSGetConstantBuffers(This,StartSlot,NumBuffers,ppConstantBuffers) ) 
 
 #define ID3D10Device_GSGetShader(This,ppGeometryShader)	\
     ( (This)->lpVtbl -> GSGetShader(This,ppGeometryShader) ) 
@@ -6427,20 +6375,20 @@ EXTERN_C const IID IID_ID3D10Device;
 #define ID3D10Device_IAGetPrimitiveTopology(This,pTopology)	\
     ( (This)->lpVtbl -> IAGetPrimitiveTopology(This,pTopology) ) 
 
-#define ID3D10Device_VSGetShaderResources(This,Offset,NumViews,ppShaderResourceViews)	\
-    ( (This)->lpVtbl -> VSGetShaderResources(This,Offset,NumViews,ppShaderResourceViews) ) 
+#define ID3D10Device_VSGetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews)	\
+    ( (This)->lpVtbl -> VSGetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews) ) 
 
-#define ID3D10Device_VSGetSamplers(This,Offset,NumSamplers,ppSamplers)	\
-    ( (This)->lpVtbl -> VSGetSamplers(This,Offset,NumSamplers,ppSamplers) ) 
+#define ID3D10Device_VSGetSamplers(This,StartSlot,NumSamplers,ppSamplers)	\
+    ( (This)->lpVtbl -> VSGetSamplers(This,StartSlot,NumSamplers,ppSamplers) ) 
 
 #define ID3D10Device_GetPredication(This,ppPredicate,pPredicateValue)	\
     ( (This)->lpVtbl -> GetPredication(This,ppPredicate,pPredicateValue) ) 
 
-#define ID3D10Device_GSGetShaderResources(This,Offset,NumViews,ppShaderResourceViews)	\
-    ( (This)->lpVtbl -> GSGetShaderResources(This,Offset,NumViews,ppShaderResourceViews) ) 
+#define ID3D10Device_GSGetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews)	\
+    ( (This)->lpVtbl -> GSGetShaderResources(This,StartSlot,NumViews,ppShaderResourceViews) ) 
 
-#define ID3D10Device_GSGetSamplers(This,Offset,NumSamplers,ppSamplers)	\
-    ( (This)->lpVtbl -> GSGetSamplers(This,Offset,NumSamplers,ppSamplers) ) 
+#define ID3D10Device_GSGetSamplers(This,StartSlot,NumSamplers,ppSamplers)	\
+    ( (This)->lpVtbl -> GSGetSamplers(This,StartSlot,NumSamplers,ppSamplers) ) 
 
 #define ID3D10Device_OMGetRenderTargets(This,NumViews,ppRenderTargetViews,ppDepthStencilView)	\
     ( (This)->lpVtbl -> OMGetRenderTargets(This,NumViews,ppRenderTargetViews,ppDepthStencilView) ) 
@@ -6508,20 +6456,20 @@ EXTERN_C const IID IID_ID3D10Device;
 #define ID3D10Device_CreateDepthStencilView(This,pResource,pDesc,ppDepthStencilView)	\
     ( (This)->lpVtbl -> CreateDepthStencilView(This,pResource,pDesc,ppDepthStencilView) ) 
 
-#define ID3D10Device_CreateInputLayout(This,pInputElementDescs,NumElements,pShaderBytecodeWithInputSignature,ppInputLayout)	\
-    ( (This)->lpVtbl -> CreateInputLayout(This,pInputElementDescs,NumElements,pShaderBytecodeWithInputSignature,ppInputLayout) ) 
+#define ID3D10Device_CreateInputLayout(This,pInputElementDescs,NumElements,pShaderBytecodeWithInputSignature,BytecodeLength,ppInputLayout)	\
+    ( (This)->lpVtbl -> CreateInputLayout(This,pInputElementDescs,NumElements,pShaderBytecodeWithInputSignature,BytecodeLength,ppInputLayout) ) 
 
-#define ID3D10Device_CreateVertexShader(This,pShaderBytecode,ppVertexShader)	\
-    ( (This)->lpVtbl -> CreateVertexShader(This,pShaderBytecode,ppVertexShader) ) 
+#define ID3D10Device_CreateVertexShader(This,pShaderBytecode,BytecodeLength,ppVertexShader)	\
+    ( (This)->lpVtbl -> CreateVertexShader(This,pShaderBytecode,BytecodeLength,ppVertexShader) ) 
 
-#define ID3D10Device_CreateGeometryShader(This,pShaderBytecode,ppGeometryShader)	\
-    ( (This)->lpVtbl -> CreateGeometryShader(This,pShaderBytecode,ppGeometryShader) ) 
+#define ID3D10Device_CreateGeometryShader(This,pShaderBytecode,BytecodeLength,ppGeometryShader)	\
+    ( (This)->lpVtbl -> CreateGeometryShader(This,pShaderBytecode,BytecodeLength,ppGeometryShader) ) 
 
-#define ID3D10Device_CreateGeometryShaderWithStreamOutput(This,pShaderBytecode,pSODeclaration,NumEntries,OutputStreamStride,ppGeometryShader)	\
-    ( (This)->lpVtbl -> CreateGeometryShaderWithStreamOutput(This,pShaderBytecode,pSODeclaration,NumEntries,OutputStreamStride,ppGeometryShader) ) 
+#define ID3D10Device_CreateGeometryShaderWithStreamOutput(This,pShaderBytecode,BytecodeLength,pSODeclaration,NumEntries,OutputStreamStride,ppGeometryShader)	\
+    ( (This)->lpVtbl -> CreateGeometryShaderWithStreamOutput(This,pShaderBytecode,BytecodeLength,pSODeclaration,NumEntries,OutputStreamStride,ppGeometryShader) ) 
 
-#define ID3D10Device_CreatePixelShader(This,pShaderBytecode,ppPixelShader)	\
-    ( (This)->lpVtbl -> CreatePixelShader(This,pShaderBytecode,ppPixelShader) ) 
+#define ID3D10Device_CreatePixelShader(This,pShaderBytecode,BytecodeLength,ppPixelShader)	\
+    ( (This)->lpVtbl -> CreatePixelShader(This,pShaderBytecode,BytecodeLength,ppPixelShader) ) 
 
 #define ID3D10Device_CreateBlendState(This,pBlendStateDesc,ppBlendState)	\
     ( (This)->lpVtbl -> CreateBlendState(This,pBlendStateDesc,ppBlendState) ) 
@@ -6571,139 +6519,6 @@ EXTERN_C const IID IID_ID3D10Device;
 
 
 #endif 	/* __ID3D10Device_INTERFACE_DEFINED__ */
-
-
-#ifndef __ID3D10ShaderMirror_INTERFACE_DEFINED__
-#define __ID3D10ShaderMirror_INTERFACE_DEFINED__
-
-/* interface ID3D10ShaderMirror */
-/* [unique][local][object][uuid] */ 
-
-
-EXTERN_C const IID IID_ID3D10ShaderMirror;
-
-#if defined(__cplusplus) && !defined(CINTERFACE)
-    
-    MIDL_INTERFACE("9B7E4D0F-342C-4106-A19F-4F2704F689F0")
-    ID3D10ShaderMirror : public IUnknown
-    {
-    public:
-        virtual HRESULT STDMETHODCALLTYPE GetVertexShaderDesc( 
-            /*  */ 
-            __in  ID3D10VertexShader *pShader,
-            /*  */ 
-            __out  D3D10_VERTEX_SHADER_DESC *pDesc) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetGeometryShaderDesc( 
-            /*  */ 
-            __in  ID3D10GeometryShader *pShader,
-            /*  */ 
-            __out  D3D10_GEOMETRY_SHADER_DESC *pDesc) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetPixelShaderDesc( 
-            /*  */ 
-            __in  ID3D10PixelShader *pShader,
-            /*  */ 
-            __out  D3D10_PIXEL_SHADER_DESC *pDesc) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetInputLayoutDesc( 
-            /*  */ 
-            __in  ID3D10InputLayout *pInputLayout,
-            /*  */ 
-            __out  D3D10_INPUT_LAYOUT_DESC *pDesc) = 0;
-        
-    };
-    
-#else 	/* C style interface */
-
-    typedef struct ID3D10ShaderMirrorVtbl
-    {
-        BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            ID3D10ShaderMirror * This,
-            /* [in] */ REFIID riid,
-            /* [iid_is][out] */ 
-            __RPC__deref_out  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            ID3D10ShaderMirror * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
-            ID3D10ShaderMirror * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetVertexShaderDesc )( 
-            ID3D10ShaderMirror * This,
-            /*  */ 
-            __in  ID3D10VertexShader *pShader,
-            /*  */ 
-            __out  D3D10_VERTEX_SHADER_DESC *pDesc);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetGeometryShaderDesc )( 
-            ID3D10ShaderMirror * This,
-            /*  */ 
-            __in  ID3D10GeometryShader *pShader,
-            /*  */ 
-            __out  D3D10_GEOMETRY_SHADER_DESC *pDesc);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetPixelShaderDesc )( 
-            ID3D10ShaderMirror * This,
-            /*  */ 
-            __in  ID3D10PixelShader *pShader,
-            /*  */ 
-            __out  D3D10_PIXEL_SHADER_DESC *pDesc);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetInputLayoutDesc )( 
-            ID3D10ShaderMirror * This,
-            /*  */ 
-            __in  ID3D10InputLayout *pInputLayout,
-            /*  */ 
-            __out  D3D10_INPUT_LAYOUT_DESC *pDesc);
-        
-        END_INTERFACE
-    } ID3D10ShaderMirrorVtbl;
-
-    interface ID3D10ShaderMirror
-    {
-        CONST_VTBL struct ID3D10ShaderMirrorVtbl *lpVtbl;
-    };
-
-    
-
-#ifdef COBJMACROS
-
-
-#define ID3D10ShaderMirror_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
-
-#define ID3D10ShaderMirror_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
-
-#define ID3D10ShaderMirror_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
-
-#define ID3D10ShaderMirror_GetVertexShaderDesc(This,pShader,pDesc)	\
-    ( (This)->lpVtbl -> GetVertexShaderDesc(This,pShader,pDesc) ) 
-
-#define ID3D10ShaderMirror_GetGeometryShaderDesc(This,pShader,pDesc)	\
-    ( (This)->lpVtbl -> GetGeometryShaderDesc(This,pShader,pDesc) ) 
-
-#define ID3D10ShaderMirror_GetPixelShaderDesc(This,pShader,pDesc)	\
-    ( (This)->lpVtbl -> GetPixelShaderDesc(This,pShader,pDesc) ) 
-
-#define ID3D10ShaderMirror_GetInputLayoutDesc(This,pInputLayout,pDesc)	\
-    ( (This)->lpVtbl -> GetInputLayoutDesc(This,pInputLayout,pDesc) ) 
-
-#endif /* COBJMACROS */
-
-
-#endif 	/* C style interface */
-
-
-
-
-#endif 	/* __ID3D10ShaderMirror_INTERFACE_DEFINED__ */
 
 
 #ifndef __ID3D10Multithread_INTERFACE_DEFINED__
@@ -6811,19 +6626,18 @@ EXTERN_C const IID IID_ID3D10Multithread;
 #endif 	/* __ID3D10Multithread_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_d3d10_0000_0025 */
+/* interface __MIDL_itf_d3d10_0000_0024 */
 /* [local] */ 
 
 typedef 
 enum D3D10_CREATE_DEVICE_FLAG
     {	D3D10_CREATE_DEVICE_SINGLETHREADED	= 0x1,
-	D3D10_CREATE_DEVICE_SHADER_MIRROR	= 0x2,
-	D3D10_CREATE_DEVICE_DEBUG	= 0x4,
-	D3D10_CREATE_DEVICE_SWITCH_TO_REF	= 0x8
+	D3D10_CREATE_DEVICE_DEBUG	= 0x2,
+	D3D10_CREATE_DEVICE_SWITCH_TO_REF	= 0x4
     } 	D3D10_CREATE_DEVICE_FLAG;
 
 
-#define	D3D10_SDK_VERSION	( 28 )
+#define	D3D10_SDK_VERSION	( 29 )
 
 #if !defined( D3D10_IGNORE_SDK_LAYERS ) 
 #include "d3d10sdklayers.h" 
@@ -6854,12 +6668,11 @@ DEFINE_GUID(IID_ID3D10Query,0x9B7E4C0E,0x342C,0x4106,0xA1,0x9F,0x4F,0x27,0x04,0x
 DEFINE_GUID(IID_ID3D10Predicate,0x9B7E4C10,0x342C,0x4106,0xA1,0x9F,0x4F,0x27,0x04,0xF6,0x89,0xF0);
 DEFINE_GUID(IID_ID3D10Counter,0x9B7E4C11,0x342C,0x4106,0xA1,0x9F,0x4F,0x27,0x04,0xF6,0x89,0xF0);
 DEFINE_GUID(IID_ID3D10Device,0x9B7E4C0F,0x342C,0x4106,0xA1,0x9F,0x4F,0x27,0x04,0xF6,0x89,0xF0);
-DEFINE_GUID(IID_ID3D10ShaderMirror,0x9B7E4D0F,0x342C,0x4106,0xA1,0x9F,0x4F,0x27,0x04,0xF6,0x89,0xF0);
 DEFINE_GUID(IID_ID3D10Multithread,0x9B7E4E00,0x342C,0x4106,0xA1,0x9F,0x4F,0x27,0x04,0xF6,0x89,0xF0);
 
 
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0025_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0025_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0024_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_d3d10_0000_0024_v0_0_s_ifspec;
 
 /* Additional Prototypes for ALL interfaces */
 

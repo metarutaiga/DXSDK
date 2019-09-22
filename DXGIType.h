@@ -3,7 +3,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0493 */
+ /* File created by MIDL compiler version 7.00.0497 */
 /* Compiler settings for dxgitype.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -64,6 +64,7 @@ extern "C"{
 #define DXGI_STATUS_NO_REDIRECTION          MAKE_DXGI_STATUS(4 )
 #define DXGI_STATUS_NO_DESKTOP_ACCESS       MAKE_DXGI_STATUS(5 )
 #define DXGI_STATUS_GRAPHICS_VIDPN_SOURCE_IN_USE       MAKE_DXGI_STATUS(6 )
+#define DXGI_STATUS_MODE_CHANGED            MAKE_DXGI_STATUS(7 )
 #define DXGI_ERROR_INVALID_CALL    MAKE_DXGI_HRESULT( 1 )
 #define DXGI_ERROR_NOT_FOUND    MAKE_DXGI_HRESULT( 2 )
 #define DXGI_ERROR_MORE_DATA    MAKE_DXGI_HRESULT( 3 )
@@ -72,6 +73,7 @@ extern "C"{
 #define DXGI_ERROR_DEVICE_HUNG    MAKE_DXGI_HRESULT( 6 )
 #define DXGI_ERROR_DEVICE_RESET    MAKE_DXGI_HRESULT( 7 )
 #define DXGI_ERROR_WAS_STILL_DRAWING    MAKE_DXGI_HRESULT( 10 )
+#define DXGI_ERROR_FRAME_STATISTICS_DISJOINT MAKE_DXGI_HRESULT( 11 )
 #define DXGI_ERROR_DRIVER_INTERNAL_ERROR    MAKE_DXGI_HRESULT( 32 )
 #define DXGI_ERROR_NONEXCLUSIVE    MAKE_DXGI_HRESULT( 33 )
 #define DXGI_FORMAT_DEFINED 1

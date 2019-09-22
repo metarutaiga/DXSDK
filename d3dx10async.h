@@ -271,6 +271,29 @@ HRESULT WINAPI D3DX10CreateAsyncEffectPoolCreateProcessor(LPCSTR pFileName, CONS
 HRESULT WINAPI D3DX10CreateAsyncShaderPreprocessProcessor(LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude, 
         ID3D10Blob** ppShaderText, ID3D10Blob **ppErrorBuffer, ID3DX10DataProcessor **ppProcessor);
 
+
+//----------------------------------------------------------------------------
+// D3DX10 Asynchronous texture I/O (advanced mode)
+//----------------------------------------------------------------------------
+
+HRESULT WINAPI D3DX10CreateAsyncFileLoaderW(LPCWSTR pFileName, ID3DX10DataLoader **ppDataLoader);
+HRESULT WINAPI D3DX10CreateAsyncFileLoaderA(LPCSTR pFileName, ID3DX10DataLoader **ppDataLoader);
+HRESULT WINAPI D3DX10CreateAsyncMemoryLoader(LPCVOID pData, SIZE_T cbData, ID3DX10DataLoader **ppDataLoader);
+HRESULT WINAPI D3DX10CreateAsyncResourceLoaderW(HMODULE hSrcModule, LPCWSTR pSrcResource, ID3DX10DataLoader **ppDataLoader);
+HRESULT WINAPI D3DX10CreateAsyncResourceLoaderA(HMODULE hSrcModule, LPCSTR pSrcResource, ID3DX10DataLoader **ppDataLoader);
+
+#ifdef UNICODE
+#define D3DX10CreateAsyncFileLoader D3DX10CreateAsyncFileLoaderW
+#define D3DX10CreateAsyncResourceLoader D3DX10CreateAsyncResourceLoaderW
+#else
+#define D3DX10CreateAsyncFileLoader D3DX10CreateAsyncFileLoaderA
+#define D3DX10CreateAsyncResourceLoader D3DX10CreateAsyncResourceLoaderA
+#endif
+
+HRESULT WINAPI D3DX10CreateAsyncTextureProcessor(ID3D10Device *pDevice, D3DX10_IMAGE_LOAD_INFO *pLoadInfo, ID3DX10DataProcessor **ppDataProcessor);
+HRESULT WINAPI D3DX10CreateAsyncTextureInfoProcessor(D3DX10_IMAGE_INFO *pImageInfo, ID3DX10DataProcessor **ppDataProcessor);
+HRESULT WINAPI D3DX10CreateAsyncShaderResourceViewProcessor(ID3D10Device *pDevice, D3DX10_IMAGE_LOAD_INFO *pLoadInfo, ID3DX10DataProcessor **ppDataProcessor);
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus

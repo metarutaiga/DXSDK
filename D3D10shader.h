@@ -145,6 +145,7 @@ typedef enum _D3D10_SHADER_VARIABLE_CLASS
 typedef enum _D3D10_SHADER_VARIABLE_FLAGS
 {
     D3D10_SVF_USERPACKED = 1,
+    D3D10_SVF_USED       = 2,
 
     // force 32-bit size enum
     D3D10_SVF_FORCE_DWORD = 0x7fffffff
@@ -154,7 +155,6 @@ typedef enum _D3D10_SHADER_VARIABLE_FLAGS
 //----------------------------------------------------------------------------
 // D3D10_SHADER_VARIABLE_TYPE:
 //----------------------------------------------------------------------------
-
 typedef enum _D3D10_SHADER_VARIABLE_TYPE
 {
     D3D10_SVT_VOID = 0,
@@ -184,6 +184,9 @@ typedef enum _D3D10_SHADER_VARIABLE_TYPE
     D3D10_SVT_RENDERTARGETVIEW = 30,
     D3D10_SVT_DEPTHSTENCILVIEW = 31,
 
+    D3D10_SVT_TEXTURE2DMS = 32,
+    D3D10_SVT_TEXTURE2DMSARRAY = 33,
+
     // force 32-bit size enum
     D3D10_SVT_FORCE_DWORD = 0x7fffffff
 
@@ -201,7 +204,6 @@ typedef enum _D3D10_SHADER_INPUT_FLAGS
 //----------------------------------------------------------------------------
 // D3D10_SHADER_INPUT_TYPE
 //----------------------------------------------------------------------------
-
 typedef enum _D3D10_SHADER_INPUT_TYPE
 {
     D3D10_SIT_CBUFFER,
@@ -326,10 +328,25 @@ typedef struct _D3D10_SHADER_DESC
     UINT                    InputParameters;    // Number of parameters in the input signature
     UINT                    OutputParameters;   // Number of parameters in the output signature
 
-    /* johnrapp: commented out for beta 2 compat
-    UINT                    InstructionCount;   // Number of emitted instructions
-    UINT                    TempRegisterCount;  // Number of temporary registers used (including temp arrays)
-    */
+    UINT                    InstructionCount;            // Number of emitted instructions
+    UINT                    TempRegisterCount;           // Number of temporary registers used 
+    UINT                    TempArrayCount;              // Number of temporary arrays used
+    UINT                    DefCount;                    // Number of constant defines 
+    UINT                    DclCount;                    // Number of declarations (input + output)
+    UINT                    TextureNormalInstructions;   // Number of non-categorized texture instructions
+    UINT                    TextureLoadInstructions;     // Number of texture load instructions
+    UINT                    TextureCompInstructions;     // Number of texture comparison instructions
+    UINT                    TextureBiasInstructions;     // Number of texture bias instructions
+    UINT                    TextureGradientInstructions; // Number of texture gradient instructions
+    UINT                    FloatInstructionCount;       // Number of floating point arithmetic instructions used
+    UINT                    IntInstructionCount;         // Number of signed integer arithmetic instructions used
+    UINT                    UintInstructionCount;        // Number of unsigned integer arithmetic instructions used
+    UINT                    StaticFlowControlCount;      // Number of static flow control instructions used
+    UINT                    DynamicFlowControlCount;     // Number of dynamic flow control instructions used
+    UINT                    MacroInstructionCount;       // Number of macro instructions used
+    UINT                    ArrayInstructionCount;       // Number of array instructions used
+    UINT                    CutInstructionCount;         // Number of cut instructions used
+    UINT                    EmitInstructionCount;        // Number of emit instructions used
 } D3D10_SHADER_DESC;
 
 typedef struct _D3D10_SHADER_BUFFER_DESC
@@ -358,6 +375,7 @@ typedef struct _D3D10_SHADER_TYPE_DESC
     UINT                        Columns;        // Number of columns (for vectors & matrices, 1 for other numeric, 0 if not applicable)
     UINT                        Elements;       // Number of elements (0 if not an array)
     UINT                        Members;        // Number of members (0 if not a structure)
+    UINT                        Offset;         // Offset from the start of structure (0 if not a structure member) 
 } D3D10_SHADER_TYPE_DESC;
 
 typedef struct _D3D10_SHADER_INPUT_BIND_DESC
@@ -545,19 +563,7 @@ HRESULT WINAPI D3D10CompileShader(LPCSTR pSrcData, SIZE_T SrcDataLen, LPCSTR pFi
 //      Returns a buffer containing the disassembled shader.
 //----------------------------------------------------------------------------
 
-HRESULT WINAPI D3D10DisassembleShader(CONST UINT *pShader, BOOL EnableColorCode, LPCSTR pComments, ID3D10Blob** ppDisassembly);
-
-//----------------------------------------------------------------------------
-// D3D10GetShaderSize:
-// ------------------
-// Returns the size of the shader blob container, in bytes.
-//
-// Parameters:
-//  pFunction
-//      Pointer to the function UINT  stream
-//----------------------------------------------------------------------------
-
-UINT WINAPI D3D10GetShaderSize(CONST UINT *pFunction);
+HRESULT WINAPI D3D10DisassembleShader(CONST UINT *pShader, SIZE_T Size, BOOL EnableColorCode, LPCSTR pComments, ID3D10Blob** ppDisassembly);
 
 
 //----------------------------------------------------------------------------
@@ -594,7 +600,7 @@ LPCSTR WINAPI D3D10GetGeometryShaderProfile(ID3D10Device *pDevice);
 //
 //----------------------------------------------------------------------------
 
-HRESULT WINAPI D3D10ReflectShader(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10ShaderReflection **ppReflector);
+HRESULT WINAPI D3D10ReflectShader(CONST void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10ShaderReflection **ppReflector);
 
 //----------------------------------------------------------------------------
 // D3D10PreprocessShader
@@ -656,9 +662,9 @@ HRESULT WINAPI D3D10PreprocessShader(LPCSTR pSrcData, SIZE_T SrcDataSize, LPCSTR
 //
 //////////////////////////////////////////////////////////////////////////
 
-HRESULT WINAPI D3D10GetInputSignatureBlob(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
-HRESULT WINAPI D3D10GetOutputSignatureBlob(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
-HRESULT WINAPI D3D10GetInputAndOutputSignatureBlob(void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
+HRESULT WINAPI D3D10GetInputSignatureBlob(CONST void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
+HRESULT WINAPI D3D10GetOutputSignatureBlob(CONST void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
+HRESULT WINAPI D3D10GetInputAndOutputSignatureBlob(CONST void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
 
 #ifdef __cplusplus
 }

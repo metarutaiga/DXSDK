@@ -13,8 +13,8 @@
 
 // Current name of the DLL shipped in the same SDK as this header.
 // The name reflects the current version
-#define XINPUT_DLL_A  "xinput1_1.dll"
-#define XINPUT_DLL_W L"xinput1_1.dll"
+#define XINPUT_DLL_A  "xinput1_2.dll"
+#define XINPUT_DLL_W L"xinput1_2.dll"
 #ifdef UNICODE
     #define XINPUT_DLL XINPUT_DLL_W
 #else
@@ -135,11 +135,8 @@ DWORD WINAPI XInputGetCapabilities
 
 void WINAPI XInputEnable
 (
-    BOOL enable     // [in] Indicates weather xinput is enabled or disabled. 
+    BOOL enable     // [in] Indicates whether xinput is enabled or disabled. 
 );
-
-
-
 
 DWORD WINAPI XInputGetDSoundAudioDeviceGuids
 (
