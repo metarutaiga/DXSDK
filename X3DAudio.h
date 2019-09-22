@@ -3,7 +3,7 @@
  |        Copyright (c) Microsoft Corporation.  All rights reserved.        |
  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
  |PROJECT: X3DAudio                     MODEL:   Unmanaged User-mode        |
- |VERSION: 1.4                          EXCEPT:  No Exceptions              |
+ |VERSION: 1.5                          EXCEPT:  No Exceptions              |
  |CLASS:   N / A                        MINREQ:  WinXP, Xbox360             |
  |BASE:    N / A                        DIALECT: MSC++ 14.00                |
  |>------------------------------------------------------------------------<|
@@ -185,12 +185,12 @@ typedef struct X3DAUDIO_CONE
 
     FLOAT32 InnerVolume; // volume level scaler on/within inner cone, used only for matrix calculations, must be within [0.0f, 2.0f] when used
     FLOAT32 OuterVolume; // volume level scaler on/beyond outer cone, used only for matrix calculations, must be within [0.0f, 2.0f] when used
-    FLOAT32 InnerLPF;    // LPF (both direct and reverb paths) coefficient scaler on/within inner cone, used only for LPF (both direct and reverb paths) calculations, must be within [0.0f, 1.0f] when used
-    FLOAT32 OuterLPF;    // LPF (both direct and reverb paths) coefficient scaler on/beyond outer cone, used only for LPF (both direct and reverb paths) calculations, must be within [0.0f, 1.0f] when used
+    FLOAT32 InnerLPF;    // LPF (both direct and reverb paths) coefficient subtrahend on/within inner cone, used only for LPF (both direct and reverb paths) calculations, must be within [0.0f, 1.0f] when used
+    FLOAT32 OuterLPF;    // LPF (both direct and reverb paths) coefficient subtrahend on/beyond outer cone, used only for LPF (both direct and reverb paths) calculations, must be within [0.0f, 1.0f] when used
     FLOAT32 InnerReverb; // reverb send level scaler on/within inner cone, used only for reverb calculations, must be within [0.0f, 2.0f] when used
     FLOAT32 OuterReverb; // reverb send level scaler on/beyond outer cone, used only for reverb calculations, must be within [0.0f, 2.0f] when used
 } X3DAUDIO_CONE, *LPX3DAUDIO_CONE;
-static const X3DAUDIO_CONE X3DAudioDefault_DirectionalCone = { X3DAUDIO_PI/2, X3DAUDIO_PI, 1.0f, 0.708f, 1.0f, 0.75f, 0.708f, 1.0f };
+static const X3DAUDIO_CONE X3DAudioDefault_DirectionalCone = { X3DAUDIO_PI/2, X3DAUDIO_PI, 1.0f, 0.708f, 0.0f, 0.25f, 0.708f, 1.0f };
 
 
 // Listener:
@@ -309,7 +309,7 @@ typedef struct X3DAUDIO_DSP_SETTINGS
 X3DAUDIO_API_(void) X3DAudioInitialize (UINT32 SpeakerChannelMask, FLOAT32 SpeedOfSound, __out X3DAUDIO_HANDLE Instance);
 
 // calculates DSP settings with respect to 3D parameters
-X3DAUDIO_API_(void) X3DAudioCalculate (const X3DAUDIO_HANDLE Instance, const X3DAUDIO_LISTENER* pListener, const X3DAUDIO_EMITTER* pEmitter, UINT32 Flags, __inout X3DAUDIO_DSP_SETTINGS* pDSPSettings);
+X3DAUDIO_API_(void) X3DAudioCalculate (__in const X3DAUDIO_HANDLE Instance, __in const X3DAUDIO_LISTENER* pListener, __in const X3DAUDIO_EMITTER* pEmitter, UINT32 Flags, __inout X3DAUDIO_DSP_SETTINGS* pDSPSettings);
 
 
 #pragma pack(pop) // revert packing alignment

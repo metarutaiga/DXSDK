@@ -121,7 +121,7 @@
     // RETURN VALUE:
     //  HResult error code
     ////
-    EXTERN_C HRESULT inline XACT3DInitialize (IXACT3Engine* pEngine, X3DAUDIO_HANDLE X3DInstance)
+    EXTERN_C HRESULT inline XACT3DInitialize (__in IXACT3Engine* pEngine, __in X3DAUDIO_HANDLE X3DInstance)
     {
         HRESULT hr = S_OK;
         if (pEngine == NULL) {
@@ -190,7 +190,7 @@
     // RETURN VALUE:
     //  HResult error code
     ////
-    EXTERN_C HRESULT inline XACT3DCalculate (X3DAUDIO_HANDLE X3DInstance, const X3DAUDIO_LISTENER* pListener, X3DAUDIO_EMITTER* pEmitter, X3DAUDIO_DSP_SETTINGS* pDSPSettings)
+    EXTERN_C HRESULT inline XACT3DCalculate (__in X3DAUDIO_HANDLE X3DInstance, __in const X3DAUDIO_LISTENER* pListener, __inout X3DAUDIO_EMITTER* pEmitter, __inout X3DAUDIO_DSP_SETTINGS* pDSPSettings)
     {
         HRESULT hr = S_OK;
         if (pListener == NULL || pEmitter == NULL || pDSPSettings == NULL) {
@@ -241,7 +241,7 @@
     // RETURN VALUE:
     //  HResult error code
     ////
-    EXTERN_C HRESULT inline XACT3DApply (X3DAUDIO_DSP_SETTINGS* pDSPSettings, IXACT3Cue* pCue)
+    EXTERN_C HRESULT inline XACT3DApply (__in const X3DAUDIO_DSP_SETTINGS* pDSPSettings, __in IXACT3Cue* pCue)
     {
         HRESULT hr = S_OK;
         if (pDSPSettings == NULL || pCue == NULL) {

@@ -137,7 +137,7 @@ DEFINE_CLSID(FXEcho,             A90BC001, E897, E897, 74, 39, 43, 55, 00, 00, 0
     // Echo parameters, used with IXAPOParameters::SetParameters:
     // The echo supports only FLOAT32 audio formats.
     typedef struct FXECHO_PARAMETERS {
-        float WetDryMix; // ratio of wet (processed) signal to dry (unprocessed) signal
+        float WetDryMix; // ratio of wet (processed) signal to dry (original) signal
         float Feedback;  // amount of output fed back into input
         float Delay;     // delay (all channels) in milliseconds
     } FXECHO_PARAMETERS;

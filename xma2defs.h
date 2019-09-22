@@ -178,7 +178,7 @@
  ***************************************************************************/
 
 // The currently recommended way to express format information for XMA2 files
-// is the XMAWAVEFORMATEX structure.  This structure is fully compliant with
+// is the XMA2WAVEFORMATEX structure.  This structure is fully compliant with
 // the WAVEFORMATEX standard and contains all the information needed to parse
 // and manage XMA2 files in a compact way.
 
@@ -244,10 +244,10 @@ typedef struct XMASTREAMFORMAT
     DWORD LoopEnd;           // Bit offset of the frame containing the loop end.
     BYTE  SubframeData;      // Two 4-bit numbers specifying the exact location of
                              // the loop points within the frames that contain them.
-                             //  1st 4 bits: Which subframe of the end frame does
-                             //              the loop end at.  Ranges from 0 to 3.
-                             //  2nd 4 bits: Which subframe of the start frame does
-                             //              the loop begin at.  Ranges from 1 to 4.
+                             //   SubframeEnd: Subframe of the loop end frame where
+                             //                the loop ends.  Ranges from 0 to 3.
+                             //   SubframeSkip: Subframes to skip in the start frame to
+                             //                 reach the loop.  Ranges from 0 to 4.
     BYTE  Channels;          // Number of channels in the stream (1 or 2)
     WORD  ChannelMask;       // Spatial positions of the channels in the stream
 } XMASTREAMFORMAT;
@@ -414,7 +414,6 @@ __inline HRESULT GetXmaBlockContainingSample
 
     for (nBlock = 0; nBlock < nBlockCount; ++nBlock)
     {
-        // REVISE: Is byte-swapping required?
         nTotalSamplesSoFar = pSeekTable[nBlock];
         if (nTotalSamplesSoFar > nDesiredSample)
         {
@@ -434,8 +433,8 @@ __inline HRESULT GetXmaBlockContainingSample
 __inline DWORD GetXmaFrameLengthInBits
 (
     __in_bcount(nBitPosition / 8 + 3)
-    const BYTE* pPacket,  // Pointer to XMA packet[s] containing the frame
-    DWORD nBitPosition    // Bit offset of the frame within this packet
+    __in const BYTE* pPacket,  // Pointer to XMA packet[s] containing the frame
+    DWORD nBitPosition         // Bit offset of the frame within this packet
 )
 {
     DWORD nRegion;

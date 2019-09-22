@@ -245,7 +245,7 @@ private:
     BYTE*  m_pCurrentParameters;         // pointer to current process parameters
     BYTE*  m_pCurrentParametersInternal; // pointer to current process parameters (temp pointer read by SetParameters/BeginProcess/EndProcess)
     UINT32 m_uCurrentParametersIndex;    // index of current process parameters
-    UINT32 m_uParameterBlockByteSize;    // size of parameter block in bytes
+    UINT32 m_uParameterBlockByteSize;    // size of a single parameter block in bytes
     LONG   m_nNewerResultsReady;         // non-zero if there exists new processing results, not yet picked up by GetParameters()
     BOOL   m_fProducer;                  // IXAPO::Process produces data to be returned by GetParameters(); SetParameters() disallowed
 
@@ -285,19 +285,18 @@ public:
 
     // IXAPOParameters methods:
     // Sets effect-specific parameters.
+    // This method may only be called on the realtime audio processing thread.
     STDMETHOD_(void, SetParameters) (__in_bcount(ParameterByteSize) const void* pParameters, UINT32 ParameterByteSize);
 
     // Gets effect-specific parameters.
-    // This method may block and should NEVER be called from the
-    // realtime audio processing thread.
+    // This method may block and should not be called from the realtime thread.
     // Get the current parameters via BeginProcess.
     STDMETHOD_(void, GetParameters) (__out_bcount(ParameterByteSize) void* pParameters, UINT32 ParameterByteSize);
 
     // Called by SetParameters() to allow for user-defined parameter validation.
     // SetParameters validates that ParameterByteSize == m_uParameterBlockByteSize
     // so the user may assume/assert ParameterByteSize == m_uParameterBlockByteSize.
-    // This method should not block as it is called from the
-    // realtime audio processing thread.
+    // This method should not block as it is called from the realtime thread.
     virtual void OnSetParameters (const void*, UINT32) { }
 
     // Returns TRUE if SetParameters() has been called since the last processing pass.

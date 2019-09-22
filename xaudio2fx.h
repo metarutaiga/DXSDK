@@ -32,10 +32,16 @@
 //DEFINE_CLSID(AudioReverb_Debug, aea2cabc, 8c7c, 46aa, ba, 44, 0e, 6d, 75, 88, a1, f2);
 
 // XAudio 2.2 (August 2008 SDK)
-DEFINE_CLSID(AudioVolumeMeter, f5ca7b34, 8055, 42c0, b8, 36, 21, 61, 29, eb, 7e, 30);
-DEFINE_CLSID(AudioVolumeMeter_Debug, f796f5f7, 6059, 4a9f, 98, 2d, 61, ee, c2, ed, 67, ca);
-DEFINE_CLSID(AudioReverb, 629cf0de, 3ecc, 41e7, 99, 26, f7, e4, 3e, eb, ec, 51);
-DEFINE_CLSID(AudioReverb_Debug, 4aae4299, 3260, 46d4, 97, cc, 6c, c7, 60, c8, 53, 29);
+//DEFINE_CLSID(AudioVolumeMeter, f5ca7b34, 8055, 42c0, b8, 36, 21, 61, 29, eb, 7e, 30);
+//DEFINE_CLSID(AudioVolumeMeter_Debug, f796f5f7, 6059, 4a9f, 98, 2d, 61, ee, c2, ed, 67, ca);
+//DEFINE_CLSID(AudioReverb, 629cf0de, 3ecc, 41e7, 99, 26, f7, e4, 3e, eb, ec, 51);
+//DEFINE_CLSID(AudioReverb_Debug, 4aae4299, 3260, 46d4, 97, cc, 6c, c7, 60, c8, 53, 29);
+
+// XAudio 2.3 (November 2008 SDK)
+DEFINE_CLSID(AudioVolumeMeter, e180344b, ac83, 4483, 95, 9e, 18, a5, c5, 6a, 5e, 19);
+DEFINE_CLSID(AudioVolumeMeter_Debug, 922a0a56, 7d13, 40ae, a4, 81, 3c, 6c, 60, f1, 14, 01);
+DEFINE_CLSID(AudioReverb, 9cab402c, 1d37, 44b4, 88, 6d, fa, 4f, 36, 17, 0a, 4c);
+DEFINE_CLSID(AudioReverb_Debug, eadda998, 3be6, 4505, 84, be, ea, 06, 36, 5d, b9, 6b);
 
 
 // Ignore the rest of this header if only the GUID definitions were requested
@@ -154,6 +160,11 @@ typedef struct XAUDIO2FX_VOLUMEMETER_LEVELS
  *     Input: Stereo Output: 5.1
  * The framerate must be within [20000, 48000] Hz.
  *
+ * When configured to mono, delay filters associated with the right channel
+ * are not executed.  In this case, parameters such as PositionRight and
+ * PositionMatrixRight have no effect.  This also means the reverb uses
+ * less CPU when configured to mono.
+ *
  **************************************************************************/
 
 #define XAUDIO2FX_REVERB_MIN_FRAMERATE 20000
@@ -163,7 +174,7 @@ typedef struct XAUDIO2FX_VOLUMEMETER_LEVELS
 
 typedef struct XAUDIO2FX_REVERB_PARAMETERS
 {
-    // Original / processed signal ratio
+    // ratio of wet (processed) signal to dry (original) signal
     float WetDryMix;            // [0, 100] (percentage)
 
     // Delay times
@@ -173,9 +184,9 @@ typedef struct XAUDIO2FX_REVERB_PARAMETERS
 
     // Indexed parameters
     BYTE PositionLeft;          // [0, 30] no units
-    BYTE PositionRight;         // [0, 30] no units
+    BYTE PositionRight;         // [0, 30] no units, ignored when configured to mono
     BYTE PositionMatrixLeft;    // [0, 30] no units
-    BYTE PositionMatrixRight;   // [0, 30] no units
+    BYTE PositionMatrixRight;   // [0, 30] no units, ignored when configured to mono
     BYTE EarlyDiffusion;        // [0, 15] no units
     BYTE LateDiffusion;         // [0, 15] no units
     BYTE LowEQGain;             // [0, 12] no units
@@ -199,13 +210,13 @@ typedef struct XAUDIO2FX_REVERB_PARAMETERS
 #define XAUDIO2FX_REVERB_MIN_WET_DRY_MIX            0.0f
 #define XAUDIO2FX_REVERB_MIN_REFLECTIONS_DELAY      0
 #define XAUDIO2FX_REVERB_MIN_REVERB_DELAY           0
+#define XAUDIO2FX_REVERB_MIN_REAR_DELAY             0
 #define XAUDIO2FX_REVERB_MIN_POSITION               0
 #define XAUDIO2FX_REVERB_MIN_DIFFUSION              0
 #define XAUDIO2FX_REVERB_MIN_LOW_EQ_GAIN            0
 #define XAUDIO2FX_REVERB_MIN_LOW_EQ_CUTOFF          0
 #define XAUDIO2FX_REVERB_MIN_HIGH_EQ_GAIN           0
 #define XAUDIO2FX_REVERB_MIN_HIGH_EQ_CUTOFF         0
-#define XAUDIO2FX_REVERB_MIN_REAR_DELAY             0
 #define XAUDIO2FX_REVERB_MIN_ROOM_FILTER_FREQ       20.0f
 #define XAUDIO2FX_REVERB_MIN_ROOM_FILTER_MAIN       -100.0f
 #define XAUDIO2FX_REVERB_MIN_ROOM_FILTER_HF         -100.0f
@@ -218,13 +229,13 @@ typedef struct XAUDIO2FX_REVERB_PARAMETERS
 #define XAUDIO2FX_REVERB_MAX_WET_DRY_MIX            100.0f
 #define XAUDIO2FX_REVERB_MAX_REFLECTIONS_DELAY      300
 #define XAUDIO2FX_REVERB_MAX_REVERB_DELAY           85
+#define XAUDIO2FX_REVERB_MAX_REAR_DELAY             5
 #define XAUDIO2FX_REVERB_MAX_POSITION               30
 #define XAUDIO2FX_REVERB_MAX_DIFFUSION              15
 #define XAUDIO2FX_REVERB_MAX_LOW_EQ_GAIN            12
 #define XAUDIO2FX_REVERB_MAX_LOW_EQ_CUTOFF          9
 #define XAUDIO2FX_REVERB_MAX_HIGH_EQ_GAIN           8
 #define XAUDIO2FX_REVERB_MAX_HIGH_EQ_CUTOFF         14
-#define XAUDIO2FX_REVERB_MAX_REAR_DELAY             5
 #define XAUDIO2FX_REVERB_MAX_ROOM_FILTER_FREQ       20000.0f
 #define XAUDIO2FX_REVERB_MAX_ROOM_FILTER_MAIN       0.0f
 #define XAUDIO2FX_REVERB_MAX_ROOM_FILTER_HF         0.0f
@@ -236,6 +247,7 @@ typedef struct XAUDIO2FX_REVERB_PARAMETERS
 #define XAUDIO2FX_REVERB_DEFAULT_WET_DRY_MIX        100.0f
 #define XAUDIO2FX_REVERB_DEFAULT_REFLECTIONS_DELAY  5
 #define XAUDIO2FX_REVERB_DEFAULT_REVERB_DELAY       5
+#define XAUDIO2FX_REVERB_DEFAULT_REAR_DELAY         5
 #define XAUDIO2FX_REVERB_DEFAULT_POSITION           6
 #define XAUDIO2FX_REVERB_DEFAULT_POSITION_MATRIX    27
 #define XAUDIO2FX_REVERB_DEFAULT_EARLY_DIFFUSION    8
@@ -244,7 +256,6 @@ typedef struct XAUDIO2FX_REVERB_PARAMETERS
 #define XAUDIO2FX_REVERB_DEFAULT_LOW_EQ_CUTOFF      4
 #define XAUDIO2FX_REVERB_DEFAULT_HIGH_EQ_GAIN       8
 #define XAUDIO2FX_REVERB_DEFAULT_HIGH_EQ_CUTOFF     4
-#define XAUDIO2FX_REVERB_DEFAULT_REAR_DELAY         5
 #define XAUDIO2FX_REVERB_DEFAULT_ROOM_FILTER_FREQ   5000.0f
 #define XAUDIO2FX_REVERB_DEFAULT_ROOM_FILTER_MAIN   0.0f
 #define XAUDIO2FX_REVERB_DEFAULT_ROOM_FILTER_HF     0.0f
@@ -259,7 +270,7 @@ typedef struct XAUDIO2FX_REVERB_PARAMETERS
 
 typedef struct XAUDIO2FX_REVERB_I3DL2_PARAMETERS
 {
-    // Original / processed signal ratio
+    // ratio of wet (processed) signal to dry (original) signal
     float WetDryMix;            // [0, 100] (percentage)
 
     // Standard I3DL2 parameters
@@ -400,7 +411,8 @@ enum XAudio2FXObjectType
 {
     eXAudio2FXObjectType_DSP = 10,  // Mixing, SRC and other basic DSP
     eXAudio2FXObjectType_Reverb,    // Reverb effect data
-    eXAudio2FXObjectType_Meter      // Volume meter data
+    eXAudio2FXObjectType_Meter,     // Volume meter data
+    eXAudio2FXObjectType_TotalTypes
 };
 
 #ifdef _XBOX

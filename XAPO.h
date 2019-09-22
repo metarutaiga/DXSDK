@@ -382,7 +382,7 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
           //
           //  XAudio2 calls this method only if the XAPO is locked.
           //  This method should not block as it is called from the
-          //  realtime audio processing thread.
+          //  realtime thread.
           //
           // PARAMETERS:
           //  void
@@ -396,7 +396,7 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
           // DESCRIPTION:
           //  Locks the XAPO to a specific input/output configuration,
           //  allowing it to do any final initialization before Process
-          //  is called on the realtime audio processing thread.
+          //  is called on the realtime thread.
           //
           // REMARKS:
           //  Once locked, the input/output configuration and any other locked
@@ -471,7 +471,7 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
           //
           //  XAudio2 calls this method only if the XAPO is locked.
           //  This method should not block as it is called from the
-          //  realtime audio processing thread.
+          //  realtime thread.
           //
           // PARAMETERS:
           //  InputProcessParameterCount  - [in]     number of input buffers, matches respective InputLockedParameterCount parameter given to LockForProcess
@@ -497,7 +497,7 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
           //
           //  XAudio2 calls this method only if the XAPO is locked.
           //  This method should not block as it is called from the
-          //  realtime audio processing thread.
+          //  realtime thread.
           //
           // PARAMETERS:
           //  OutputFrameCount - [in] requested number of output frames, must be within respective [0, XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS.MaxFrameCount], always XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS.MaxFrameCount for CBR/user-defined XAPOs
@@ -519,7 +519,7 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
           //
           //  XAudio2 calls this method only if the XAPO is locked.
           //  This method should not block as it is called from the
-          //  realtime audio processing thread.
+          //  realtime thread.
           //
           // PARAMETERS:
           //  InputFrameCount - [in] requested number of input frames, must be within respective [0, XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS.MaxFrameCount], always XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS.MaxFrameCount for CBR/user-defined XAPOs
@@ -543,11 +543,11 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
           //  Sets effect-specific parameters.
           //
           // REMARKS:
-          //  Since this method occurs on the realtime audio processing thread,
+          //  This method may only be called on the realtime thread;
           //  no synchronization between it and IXAPO::Process is necessary.
           //
           //  This method should not block as it is called from the
-          //  realtime audio processing thread.
+          //  realtime thread.
           //
           // PARAMETERS:
           //  pParameters       - [in] effect-specific parameter block, must be != NULL
@@ -564,9 +564,8 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
           //
           // REMARKS:
           //  Unlike SetParameters, XAudio2 does not call this method on the
-          //  realtime audio processing thread.  Thus, the XAPO must protect
-          //  variables shared with SetParameters/IXAPO::Process using
-          //  appropriate synchronization.
+          //  realtime thread.  Thus, the XAPO must protect variables shared
+          //  with SetParameters/Process using appropriate synchronization.
           //
           // PARAMETERS:
           //  pParameters       - [out] receives effect-specific parameter block, must be != NULL

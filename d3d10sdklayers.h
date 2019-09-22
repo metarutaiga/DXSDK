@@ -3,10 +3,10 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0525 */
+ /* File created by MIDL compiler version 7.00.0548 */
 /* Compiler settings for d3d10sdklayers.idl:
-    Oicf, W1, Zp8, env=Win32 (32b run)
-    protocol : dce , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 7.00.0548 
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -118,11 +118,11 @@ EXTERN_C const IID IID_ID3D10Debug;
         virtual UINT STDMETHODCALLTYPE GetPresentPerRenderOpDelay( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetSwapChain( 
-            /*  */ 
+            /* [annotation] */ 
             __in_opt  IDXGISwapChain *pSwapChain) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetSwapChain( 
-            /*  */ 
+            /* [annotation] */ 
             __out  IDXGISwapChain **ppSwapChain) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Validate( void) = 0;
@@ -138,7 +138,7 @@ EXTERN_C const IID IID_ID3D10Debug;
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             ID3D10Debug * This,
             /* [in] */ REFIID riid,
-            /* [iid_is][out] */ 
+            /* [annotation][iid_is][out] */ 
             __RPC__deref_out  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
@@ -163,12 +163,12 @@ EXTERN_C const IID IID_ID3D10Debug;
         
         HRESULT ( STDMETHODCALLTYPE *SetSwapChain )( 
             ID3D10Debug * This,
-            /*  */ 
+            /* [annotation] */ 
             __in_opt  IDXGISwapChain *pSwapChain);
         
         HRESULT ( STDMETHODCALLTYPE *GetSwapChain )( 
             ID3D10Debug * This,
-            /*  */ 
+            /* [annotation] */ 
             __out  IDXGISwapChain **ppSwapChain);
         
         HRESULT ( STDMETHODCALLTYPE *Validate )( 
@@ -260,7 +260,7 @@ EXTERN_C const IID IID_ID3D10SwitchToRef;
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             ID3D10SwitchToRef * This,
             /* [in] */ REFIID riid,
-            /* [iid_is][out] */ 
+            /* [annotation][iid_is][out] */ 
             __RPC__deref_out  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
@@ -739,8 +739,7 @@ enum D3D10_MESSAGE_ID
 	D3D10_MESSAGE_ID_SHADERRESOURCEVIEW_GETDESC_LEGACY	= ( D3D10_MESSAGE_ID_BLENDSTATE_GETDESC_LEGACY + 1 ) ,
 	D3D10_MESSAGE_ID_CREATEQUERY_OUTOFMEMORY_RETURN	= ( D3D10_MESSAGE_ID_SHADERRESOURCEVIEW_GETDESC_LEGACY + 1 ) ,
 	D3D10_MESSAGE_ID_CREATEPREDICATE_OUTOFMEMORY_RETURN	= ( D3D10_MESSAGE_ID_CREATEQUERY_OUTOFMEMORY_RETURN + 1 ) ,
-	D3D10_MESSAGE_ID_CREATEPREDICATE_INVALIDDESC	= ( D3D10_MESSAGE_ID_CREATEPREDICATE_OUTOFMEMORY_RETURN + 1 ) ,
-	D3D10_MESSAGE_ID_CREATECOUNTER_OUTOFRANGE_COUNTER	= ( D3D10_MESSAGE_ID_CREATEPREDICATE_INVALIDDESC + 1 ) ,
+	D3D10_MESSAGE_ID_CREATECOUNTER_OUTOFRANGE_COUNTER	= ( D3D10_MESSAGE_ID_CREATEPREDICATE_OUTOFMEMORY_RETURN + 1 ) ,
 	D3D10_MESSAGE_ID_CREATECOUNTER_SIMULTANEOUS_ACTIVE_COUNTERS_EXHAUSTED	= ( D3D10_MESSAGE_ID_CREATECOUNTER_OUTOFRANGE_COUNTER + 1 ) ,
 	D3D10_MESSAGE_ID_CREATECOUNTER_UNSUPPORTED_WELLKNOWN_COUNTER	= ( D3D10_MESSAGE_ID_CREATECOUNTER_SIMULTANEOUS_ACTIVE_COUNTERS_EXHAUSTED + 1 ) ,
 	D3D10_MESSAGE_ID_CREATECOUNTER_OUTOFMEMORY_RETURN	= ( D3D10_MESSAGE_ID_CREATECOUNTER_UNSUPPORTED_WELLKNOWN_COUNTER + 1 ) ,
@@ -762,9 +761,12 @@ enum D3D10_MESSAGE_ID
 	D3D10_MESSAGE_ID_DEVICE_DRAW_PS_OUTPUT_TYPE_MISMATCH	= ( D3D10_MESSAGE_ID_QUERY_GETDATA_INVALID_CALL + 1 ) ,
 	D3D10_MESSAGE_ID_DEVICE_DRAW_RESOURCE_FORMAT_GATHER_UNSUPPORTED	= ( D3D10_MESSAGE_ID_DEVICE_DRAW_PS_OUTPUT_TYPE_MISMATCH + 1 ) ,
 	D3D10_MESSAGE_ID_DEVICE_DRAW_INVALID_USE_OF_CENTER_MULTISAMPLE_PATTERN	= ( D3D10_MESSAGE_ID_DEVICE_DRAW_RESOURCE_FORMAT_GATHER_UNSUPPORTED + 1 ) ,
-	D3D10_MESSAGE_ID_CREATEDEPTHSTENCILSTATE_STENCIL_NO_TWO_SIDED	= ( D3D10_MESSAGE_ID_DEVICE_DRAW_INVALID_USE_OF_CENTER_MULTISAMPLE_PATTERN + 1 ) ,
-	D3D10_MESSAGE_ID_CREATERASTERIZERSTATE_FrontCounterClockwise_MUST_BE_FALSE	= ( D3D10_MESSAGE_ID_CREATEDEPTHSTENCILSTATE_STENCIL_NO_TWO_SIDED + 1 ) ,
-	D3D10_MESSAGE_ID_CREATERASTERIZERSTATE_DepthBiasClamp_NOT_SUPPORTED	= ( D3D10_MESSAGE_ID_CREATERASTERIZERSTATE_FrontCounterClockwise_MUST_BE_FALSE + 1 ) ,
+	D3D10_MESSAGE_ID_DEVICE_IASETVERTEXBUFFERS_STRIDE_TOO_LARGE	= ( D3D10_MESSAGE_ID_DEVICE_DRAW_INVALID_USE_OF_CENTER_MULTISAMPLE_PATTERN + 1 ) ,
+	D3D10_MESSAGE_ID_DEVICE_IASETVERTEXBUFFERS_INVALIDRANGE	= ( D3D10_MESSAGE_ID_DEVICE_IASETVERTEXBUFFERS_STRIDE_TOO_LARGE + 1 ) ,
+	D3D10_MESSAGE_ID_D3D10_MESSAGES_END	= ( D3D10_MESSAGE_ID_DEVICE_IASETVERTEXBUFFERS_INVALIDRANGE + 1 ) ,
+	D3D10_MESSAGE_ID_D3D10L9_MESSAGES_START	= 0x100000,
+	D3D10_MESSAGE_ID_CREATEDEPTHSTENCILSTATE_STENCIL_NO_TWO_SIDED	= ( D3D10_MESSAGE_ID_D3D10L9_MESSAGES_START + 1 ) ,
+	D3D10_MESSAGE_ID_CREATERASTERIZERSTATE_DepthBiasClamp_NOT_SUPPORTED	= ( D3D10_MESSAGE_ID_CREATEDEPTHSTENCILSTATE_STENCIL_NO_TWO_SIDED + 1 ) ,
 	D3D10_MESSAGE_ID_CREATESAMPLERSTATE_NO_COMPARISON_SUPPORT	= ( D3D10_MESSAGE_ID_CREATERASTERIZERSTATE_DepthBiasClamp_NOT_SUPPORTED + 1 ) ,
 	D3D10_MESSAGE_ID_CREATESAMPLERSTATE_EXCESSIVE_ANISOTROPY	= ( D3D10_MESSAGE_ID_CREATESAMPLERSTATE_NO_COMPARISON_SUPPORT + 1 ) ,
 	D3D10_MESSAGE_ID_CREATESAMPLERSTATE_BORDER_OUT_OF_RANGE	= ( D3D10_MESSAGE_ID_CREATESAMPLERSTATE_EXCESSIVE_ANISOTROPY + 1 ) ,
@@ -788,10 +790,11 @@ enum D3D10_MESSAGE_ID
 	D3D10_MESSAGE_ID_CREATEINPUTLAYOUT_UNSUPPORTED_FORMAT	= ( D3D10_MESSAGE_ID_COPYRESOURCE_NO_TEXTURE_ONLY_READBACK + 1 ) ,
 	D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_ALPHA_TO_COVERAGE	= ( D3D10_MESSAGE_ID_CREATEINPUTLAYOUT_UNSUPPORTED_FORMAT + 1 ) ,
 	D3D10_MESSAGE_ID_CREATERASTERIZERSTATE_DepthClipEnable_MUST_BE_TRUE	= ( D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_ALPHA_TO_COVERAGE + 1 ) ,
-	D3D10_MESSAGE_ID_DRAWINDEXED_STARTINDEXLOCATION_MUST_BE_ZERO	= ( D3D10_MESSAGE_ID_CREATERASTERIZERSTATE_DepthClipEnable_MUST_BE_TRUE + 1 ) ,
-	D3D10_MESSAGE_ID_CREATESHADERRESOURCEVIEW_MUST_USE_LOWEST_LOD	= ( D3D10_MESSAGE_ID_DRAWINDEXED_STARTINDEXLOCATION_MUST_BE_ZERO + 1 ) ,
-	D3D10_MESSAGE_ID_CREATESAMPLERSTATE_MINLOD_MUST_BE_ZERO	= ( D3D10_MESSAGE_ID_CREATESHADERRESOURCEVIEW_MUST_USE_LOWEST_LOD + 1 ) ,
-	D3D10_MESSAGE_ID_CREATESHADERRESOURCEVIEW_FIRSTARRAYSLICE_MUST_BE_ZERO	= ( D3D10_MESSAGE_ID_CREATESAMPLERSTATE_MINLOD_MUST_BE_ZERO + 1 ) ,
+	D3D10_MESSAGE_ID_DRAWINDEXED_STARTINDEXLOCATION_MUST_BE_POSITIVE	= ( D3D10_MESSAGE_ID_CREATERASTERIZERSTATE_DepthClipEnable_MUST_BE_TRUE + 1 ) ,
+	D3D10_MESSAGE_ID_CREATESHADERRESOURCEVIEW_MUST_USE_LOWEST_LOD	= ( D3D10_MESSAGE_ID_DRAWINDEXED_STARTINDEXLOCATION_MUST_BE_POSITIVE + 1 ) ,
+	D3D10_MESSAGE_ID_CREATESAMPLERSTATE_MINLOD_MUST_NOT_BE_FRACTIONAL	= ( D3D10_MESSAGE_ID_CREATESHADERRESOURCEVIEW_MUST_USE_LOWEST_LOD + 1 ) ,
+	D3D10_MESSAGE_ID_CREATESAMPLERSTATE_MAXLOD_MUST_BE_FLT_MAX	= ( D3D10_MESSAGE_ID_CREATESAMPLERSTATE_MINLOD_MUST_NOT_BE_FRACTIONAL + 1 ) ,
+	D3D10_MESSAGE_ID_CREATESHADERRESOURCEVIEW_FIRSTARRAYSLICE_MUST_BE_ZERO	= ( D3D10_MESSAGE_ID_CREATESAMPLERSTATE_MAXLOD_MUST_BE_FLT_MAX + 1 ) ,
 	D3D10_MESSAGE_ID_CREATESHADERRESOURCEVIEW_CUBES_MUST_HAVE_6_SIDES	= ( D3D10_MESSAGE_ID_CREATESHADERRESOURCEVIEW_FIRSTARRAYSLICE_MUST_BE_ZERO + 1 ) ,
 	D3D10_MESSAGE_ID_CREATERESOURCE_NOT_BINDABLE_AS_RENDER_TARGET	= ( D3D10_MESSAGE_ID_CREATESHADERRESOURCEVIEW_CUBES_MUST_HAVE_6_SIDES + 1 ) ,
 	D3D10_MESSAGE_ID_CREATERESOURCE_NO_DWORD_INDEX_BUFFER	= ( D3D10_MESSAGE_ID_CREATERESOURCE_NOT_BINDABLE_AS_RENDER_TARGET + 1 ) ,
@@ -800,7 +803,23 @@ enum D3D10_MESSAGE_ID
 	D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_INDEPENDENT_BLEND_ENABLE	= ( D3D10_MESSAGE_ID_CREATERESOURCE_PRESENTATION_PRECLUDES_SHADER_RESOURCE + 1 ) ,
 	D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_INDEPENDENT_WRITE_MASKS	= ( D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_INDEPENDENT_BLEND_ENABLE + 1 ) ,
 	D3D10_MESSAGE_ID_CREATERESOURCE_NO_STREAM_OUT	= ( D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_INDEPENDENT_WRITE_MASKS + 1 ) ,
-	D3D10_MESSAGE_ID_CREATERESOURCE_ONLY_VB_IB_FOR_BUFFERS	= ( D3D10_MESSAGE_ID_CREATERESOURCE_NO_STREAM_OUT + 1 ) 
+	D3D10_MESSAGE_ID_CREATERESOURCE_ONLY_VB_IB_FOR_BUFFERS	= ( D3D10_MESSAGE_ID_CREATERESOURCE_NO_STREAM_OUT + 1 ) ,
+	D3D10_MESSAGE_ID_CREATERESOURCE_NO_AUTOGEN_FOR_VOLUMES	= ( D3D10_MESSAGE_ID_CREATERESOURCE_ONLY_VB_IB_FOR_BUFFERS + 1 ) ,
+	D3D10_MESSAGE_ID_CREATERESOURCE_DXGI_FORMAT_R8G8B8A8_CANNOT_BE_SHARED	= ( D3D10_MESSAGE_ID_CREATERESOURCE_NO_AUTOGEN_FOR_VOLUMES + 1 ) ,
+	D3D10_MESSAGE_ID_VSSHADERRESOURCES_NOT_SUPPORTED	= ( D3D10_MESSAGE_ID_CREATERESOURCE_DXGI_FORMAT_R8G8B8A8_CANNOT_BE_SHARED + 1 ) ,
+	D3D10_MESSAGE_ID_GEOMETRY_SHADER_NOT_SUPPORTED	= ( D3D10_MESSAGE_ID_VSSHADERRESOURCES_NOT_SUPPORTED + 1 ) ,
+	D3D10_MESSAGE_ID_STREAM_OUT_NOT_SUPPORTED	= ( D3D10_MESSAGE_ID_GEOMETRY_SHADER_NOT_SUPPORTED + 1 ) ,
+	D3D10_MESSAGE_ID_TEXT_FILTER_NOT_SUPPORTED	= ( D3D10_MESSAGE_ID_STREAM_OUT_NOT_SUPPORTED + 1 ) ,
+	D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_SEPARATE_ALPHA_BLEND	= ( D3D10_MESSAGE_ID_TEXT_FILTER_NOT_SUPPORTED + 1 ) ,
+	D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_MRT_BLEND	= ( D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_SEPARATE_ALPHA_BLEND + 1 ) ,
+	D3D10_MESSAGE_ID_CREATEBLENDSTATE_OPERATION_NOT_SUPPORTED	= ( D3D10_MESSAGE_ID_CREATEBLENDSTATE_NO_MRT_BLEND + 1 ) ,
+	D3D10_MESSAGE_ID_CREATESAMPLERSTATE_NO_MIRRORONCE	= ( D3D10_MESSAGE_ID_CREATEBLENDSTATE_OPERATION_NOT_SUPPORTED + 1 ) ,
+	D3D10_MESSAGE_ID_DRAWINSTANCED_NOT_SUPPORTED	= ( D3D10_MESSAGE_ID_CREATESAMPLERSTATE_NO_MIRRORONCE + 1 ) ,
+	D3D10_MESSAGE_ID_DRAWINDEXEDINSTANCED_NOT_SUPPORTED_BELOW_9_3	= ( D3D10_MESSAGE_ID_DRAWINSTANCED_NOT_SUPPORTED + 1 ) ,
+	D3D10_MESSAGE_ID_DRAWINDEXED_POINTLIST_UNSUPPORTED	= ( D3D10_MESSAGE_ID_DRAWINDEXEDINSTANCED_NOT_SUPPORTED_BELOW_9_3 + 1 ) ,
+	D3D10_MESSAGE_ID_SETBLENDSTATE_SAMPLE_MASK_CANNOT_BE_ZERO	= ( D3D10_MESSAGE_ID_DRAWINDEXED_POINTLIST_UNSUPPORTED + 1 ) ,
+	D3D10_MESSAGE_ID_CREATERESOURCE_DIMENSION_EXCEEDS_FEATURE_LEVEL_DEFINITION	= ( D3D10_MESSAGE_ID_SETBLENDSTATE_SAMPLE_MASK_CANNOT_BE_ZERO + 1 ) ,
+	D3D10_MESSAGE_ID_D3D10L9_MESSAGES_END	= ( D3D10_MESSAGE_ID_CREATERESOURCE_DIMENSION_EXCEEDS_FEATURE_LEVEL_DEFINITION + 1 ) 
     } 	D3D10_MESSAGE_ID;
 
 typedef struct D3D10_MESSAGE
@@ -850,17 +869,17 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetMessageCountLimit( 
-            /*  */ 
+            /* [annotation] */ 
             __in  UINT64 MessageCountLimit) = 0;
         
         virtual void STDMETHODCALLTYPE ClearStoredMessages( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMessage( 
-            /*  */ 
+            /* [annotation] */ 
             __in  UINT64 MessageIndex,
-            /*  */ 
+            /* [annotation] */ 
             __out_bcount_opt(*pMessageByteLength)  D3D10_MESSAGE *pMessage,
-            /*  */ 
+            /* [annotation] */ 
             __inout  SIZE_T *pMessageByteLength) = 0;
         
         virtual UINT64 STDMETHODCALLTYPE GetNumMessagesAllowedByStorageFilter( void) = 0;
@@ -876,13 +895,13 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         virtual UINT64 STDMETHODCALLTYPE GetMessageCountLimit( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddStorageFilterEntries( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_INFO_QUEUE_FILTER *pFilter) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetStorageFilter( 
-            /*  */ 
+            /* [annotation] */ 
             __out_bcount_opt(*pFilterByteLength)  D3D10_INFO_QUEUE_FILTER *pFilter,
-            /*  */ 
+            /* [annotation] */ 
             __inout  SIZE_T *pFilterByteLength) = 0;
         
         virtual void STDMETHODCALLTYPE ClearStorageFilter( void) = 0;
@@ -892,7 +911,7 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         virtual HRESULT STDMETHODCALLTYPE PushCopyOfStorageFilter( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE PushStorageFilter( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_INFO_QUEUE_FILTER *pFilter) = 0;
         
         virtual void STDMETHODCALLTYPE PopStorageFilter( void) = 0;
@@ -900,13 +919,13 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         virtual UINT STDMETHODCALLTYPE GetStorageFilterStackSize( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddRetrievalFilterEntries( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_INFO_QUEUE_FILTER *pFilter) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRetrievalFilter( 
-            /*  */ 
+            /* [annotation] */ 
             __out_bcount_opt(*pFilterByteLength)  D3D10_INFO_QUEUE_FILTER *pFilter,
-            /*  */ 
+            /* [annotation] */ 
             __inout  SIZE_T *pFilterByteLength) = 0;
         
         virtual void STDMETHODCALLTYPE ClearRetrievalFilter( void) = 0;
@@ -916,7 +935,7 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         virtual HRESULT STDMETHODCALLTYPE PushCopyOfRetrievalFilter( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE PushRetrievalFilter( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_INFO_QUEUE_FILTER *pFilter) = 0;
         
         virtual void STDMETHODCALLTYPE PopRetrievalFilter( void) = 0;
@@ -924,53 +943,53 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         virtual UINT STDMETHODCALLTYPE GetRetrievalFilterStackSize( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddMessage( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_CATEGORY Category,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_SEVERITY Severity,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_ID ID,
-            /*  */ 
+            /* [annotation] */ 
             __in  LPCSTR pDescription) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddApplicationMessage( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_SEVERITY Severity,
-            /*  */ 
+            /* [annotation] */ 
             __in  LPCSTR pDescription) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetBreakOnCategory( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_CATEGORY Category,
-            /*  */ 
+            /* [annotation] */ 
             __in  BOOL bEnable) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetBreakOnSeverity( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_SEVERITY Severity,
-            /*  */ 
+            /* [annotation] */ 
             __in  BOOL bEnable) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetBreakOnID( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_ID ID,
-            /*  */ 
+            /* [annotation] */ 
             __in  BOOL bEnable) = 0;
         
         virtual BOOL STDMETHODCALLTYPE GetBreakOnCategory( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_CATEGORY Category) = 0;
         
         virtual BOOL STDMETHODCALLTYPE GetBreakOnSeverity( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_SEVERITY Severity) = 0;
         
         virtual BOOL STDMETHODCALLTYPE GetBreakOnID( 
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_ID ID) = 0;
         
         virtual void STDMETHODCALLTYPE SetMuteDebugOutput( 
-            /*  */ 
+            /* [annotation] */ 
             __in  BOOL bMute) = 0;
         
         virtual BOOL STDMETHODCALLTYPE GetMuteDebugOutput( void) = 0;
@@ -986,7 +1005,7 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             ID3D10InfoQueue * This,
             /* [in] */ REFIID riid,
-            /* [iid_is][out] */ 
+            /* [annotation][iid_is][out] */ 
             __RPC__deref_out  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
@@ -997,7 +1016,7 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         
         HRESULT ( STDMETHODCALLTYPE *SetMessageCountLimit )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  UINT64 MessageCountLimit);
         
         void ( STDMETHODCALLTYPE *ClearStoredMessages )( 
@@ -1005,11 +1024,11 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         
         HRESULT ( STDMETHODCALLTYPE *GetMessage )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  UINT64 MessageIndex,
-            /*  */ 
+            /* [annotation] */ 
             __out_bcount_opt(*pMessageByteLength)  D3D10_MESSAGE *pMessage,
-            /*  */ 
+            /* [annotation] */ 
             __inout  SIZE_T *pMessageByteLength);
         
         UINT64 ( STDMETHODCALLTYPE *GetNumMessagesAllowedByStorageFilter )( 
@@ -1032,14 +1051,14 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         
         HRESULT ( STDMETHODCALLTYPE *AddStorageFilterEntries )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_INFO_QUEUE_FILTER *pFilter);
         
         HRESULT ( STDMETHODCALLTYPE *GetStorageFilter )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __out_bcount_opt(*pFilterByteLength)  D3D10_INFO_QUEUE_FILTER *pFilter,
-            /*  */ 
+            /* [annotation] */ 
             __inout  SIZE_T *pFilterByteLength);
         
         void ( STDMETHODCALLTYPE *ClearStorageFilter )( 
@@ -1053,7 +1072,7 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         
         HRESULT ( STDMETHODCALLTYPE *PushStorageFilter )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_INFO_QUEUE_FILTER *pFilter);
         
         void ( STDMETHODCALLTYPE *PopStorageFilter )( 
@@ -1064,14 +1083,14 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         
         HRESULT ( STDMETHODCALLTYPE *AddRetrievalFilterEntries )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_INFO_QUEUE_FILTER *pFilter);
         
         HRESULT ( STDMETHODCALLTYPE *GetRetrievalFilter )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __out_bcount_opt(*pFilterByteLength)  D3D10_INFO_QUEUE_FILTER *pFilter,
-            /*  */ 
+            /* [annotation] */ 
             __inout  SIZE_T *pFilterByteLength);
         
         void ( STDMETHODCALLTYPE *ClearRetrievalFilter )( 
@@ -1085,7 +1104,7 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         
         HRESULT ( STDMETHODCALLTYPE *PushRetrievalFilter )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_INFO_QUEUE_FILTER *pFilter);
         
         void ( STDMETHODCALLTYPE *PopRetrievalFilter )( 
@@ -1096,61 +1115,61 @@ EXTERN_C const IID IID_ID3D10InfoQueue;
         
         HRESULT ( STDMETHODCALLTYPE *AddMessage )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_CATEGORY Category,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_SEVERITY Severity,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_ID ID,
-            /*  */ 
+            /* [annotation] */ 
             __in  LPCSTR pDescription);
         
         HRESULT ( STDMETHODCALLTYPE *AddApplicationMessage )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_SEVERITY Severity,
-            /*  */ 
+            /* [annotation] */ 
             __in  LPCSTR pDescription);
         
         HRESULT ( STDMETHODCALLTYPE *SetBreakOnCategory )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_CATEGORY Category,
-            /*  */ 
+            /* [annotation] */ 
             __in  BOOL bEnable);
         
         HRESULT ( STDMETHODCALLTYPE *SetBreakOnSeverity )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_SEVERITY Severity,
-            /*  */ 
+            /* [annotation] */ 
             __in  BOOL bEnable);
         
         HRESULT ( STDMETHODCALLTYPE *SetBreakOnID )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_ID ID,
-            /*  */ 
+            /* [annotation] */ 
             __in  BOOL bEnable);
         
         BOOL ( STDMETHODCALLTYPE *GetBreakOnCategory )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_CATEGORY Category);
         
         BOOL ( STDMETHODCALLTYPE *GetBreakOnSeverity )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_SEVERITY Severity);
         
         BOOL ( STDMETHODCALLTYPE *GetBreakOnID )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  D3D10_MESSAGE_ID ID);
         
         void ( STDMETHODCALLTYPE *SetMuteDebugOutput )( 
             ID3D10InfoQueue * This,
-            /*  */ 
+            /* [annotation] */ 
             __in  BOOL bMute);
         
         BOOL ( STDMETHODCALLTYPE *GetMuteDebugOutput )( 

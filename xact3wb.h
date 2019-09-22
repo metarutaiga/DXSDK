@@ -32,7 +32,7 @@
 #endif
 
 #define WAVEBANK_HEADER_SIGNATURE               'DNBW'      // WaveBank  RIFF chunk signature
-#define WAVEBANK_HEADER_VERSION                 42          // Current wavebank file version
+#define WAVEBANK_HEADER_VERSION                 43          // Current wavebank file version
 
 #define WAVEBANK_BANKNAME_LENGTH                64          // Wave bank friendly name length, in characters
 #define WAVEBANK_ENTRYNAME_LENGTH               64          // Wave bank entry friendly name length, in characters
@@ -252,33 +252,44 @@ typedef const WAVEBANKHEADER *LPCWAVEBANKHEADER;
 // NOTE: There can be a max of 8 values in the table.
 //
 
-#define MAX_WMA_AVG_BYTES_PER_SEC_ENTRIES 2
+#define MAX_WMA_AVG_BYTES_PER_SEC_ENTRIES 6
 
 static const DWORD aWMAAvgBytesPerSec[] =
 {
     12000,
-    24000
+    24000,
+    4000,
+    6000,
+    8000,
+    20000
 };
-
+// bitrate = entry * 8
 
 //
 // Table for converting WMA Block Align values to the WAVEBANKMINIWAVEFORMAT wBlockAlign field
 // NOTE: There can be a max of 32 values in the table.
 //
 
-#define MAX_WMA_BLOCK_ALIGN_ENTRIES 9
+#define MAX_WMA_BLOCK_ALIGN_ENTRIES 16
 
 static const DWORD aWMABlockAlign[] =
 {
-    929,            // 22050, 1 channel (24000)
-    1487,           // 22050, 2 channel (24000)
-    1280,           // 32000, 1 channel (24000)
-    2230,           // 44100, 1 channel (12000, 24000)
-    8917,           // 44100, 2 channel (24000); 44100, 6 channel (24000)
-    8192,           // 48000, 6 channel (24000); 48000, 2 channel (24000)
-    4459,           // 44100, 2 channel (12000)
-    5945,           // 44100, 6 channel (12000)
-    2304            // 32000, 2 channel (24000)
+    929,
+    1487,
+    1280,
+    2230,
+    8917,
+    8192,
+    4459,
+    5945,
+    2304,
+    1536,
+    1485,
+    1008,
+    2731,
+    4096,
+    6827,
+    5462
 };
 
 //
@@ -307,7 +318,10 @@ typedef union WAVEBANKMINIWAVEFORMAT
 
     WORD BitsPerSample() const
     {
-        return wFormatTag == WAVEBANKMINIFORMAT_TAG_WMA ? 16 : (wBitsPerSample == WAVEBANKMINIFORMAT_BITDEPTH_16 ? 16 : 8);
+        return wFormatTag == WAVEBANKMINIFORMAT_TAG_WMA ? 16 :
+               wFormatTag == WAVEBANKMINIFORMAT_TAG_XMA ? 16 :
+               wFormatTag == WAVEBANKMINIFORMAT_TAG_ADPCM ? 4 :
+               wBitsPerSample == WAVEBANKMINIFORMAT_BITDEPTH_16 ? 16 : 8;
     }
 
     #define ADPCM_MINIWAVEFORMAT_BLOCKALIGN_CONVERSION_OFFSET 22
@@ -327,7 +341,7 @@ typedef union WAVEBANKMINIWAVEFORMAT
         {
             dwReturn = (wBlockAlign + ADPCM_MINIWAVEFORMAT_BLOCKALIGN_CONVERSION_OFFSET) * nChannels;
         }
-        else
+        else // PCM and XMA cases
         {
             dwReturn = wBlockAlign;
         }
@@ -347,7 +361,12 @@ typedef union WAVEBANKMINIWAVEFORMAT
                 dwReturn = aWMAAvgBytesPerSec[dwBytesPerSecIndex];
             }
         }
+        else if (wFormatTag == WAVEBANKMINIFORMAT_TAG_PCM)
+        {
+            dwReturn = nSamplesPerSec * wBlockAlign;
+        }
 
+        // Can't calculate AvgBytesPerSec here for ADPCM or XMA
         return dwReturn;
     }
 
