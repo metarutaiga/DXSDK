@@ -19,10 +19,16 @@
 
 #include "comdecl.h"        // For DEFINE_CLSID and DEFINE_IID
 
-DEFINE_CLSID(AudioVolumeMeter, C0C56F46, 29B1, 44E9, 99, 39, A3, 2C, E8, 68, 67, E2);
-DEFINE_CLSID(AudioVolumeMeter_Debug, C0C56F46, 29B1, 44E9, 99, 39, A3, 2C, E8, 68, 67, DB);
-DEFINE_CLSID(AudioReverb, 6F6EA3A9, 2CF5, 41CF, 91, C1, 21, 70, B1, 54, 00, 63);
-DEFINE_CLSID(AudioReverb_Debug, 6F6EA3A9, 2CF5, 41CF, 91, C1, 21, 70, B1, 54, 00, DB);
+// XAudioFX 2.0 (March 2008 SDK)
+//DEFINE_CLSID(AudioVolumeMeter, C0C56F46, 29B1, 44E9, 99, 39, A3, 2C, E8, 68, 67, E2);
+//DEFINE_CLSID(AudioVolumeMeter_Debug, C0C56F46, 29B1, 44E9, 99, 39, A3, 2C, E8, 68, 67, DB);
+//DEFINE_CLSID(AudioReverb, 6F6EA3A9, 2CF5, 41CF, 91, C1, 21, 70, B1, 54, 00, 63);
+//DEFINE_CLSID(AudioReverb_Debug, 6F6EA3A9, 2CF5, 41CF, 91, C1, 21, 70, B1, 54, 00, DB);
+
+DEFINE_CLSID(AudioVolumeMeter, c1e3f122, a2ea, 442c, 85, 4f, 20, d9, 8f, 83, 57, a1);
+DEFINE_CLSID(AudioVolumeMeter_Debug, 6d97a461, b02d, 48ae, b5, 43, 82, bc, 35, fd, fa, e2);
+DEFINE_CLSID(AudioReverb, f4769300, b949, 4df9, b3, 33, 00, d3, 39, 32, e9, a6);
+DEFINE_CLSID(AudioReverb_Debug, aea2cabc, 8c7c, 46aa, ba, 44, 0e, 6d, 75, 88, a1, f2);
 
 
 // Ignore the rest of this header if only the GUID definitions were requested
@@ -114,18 +120,18 @@ DEFINE_CLSID(AudioReverb_Debug, 6F6EA3A9, 2CF5, 41CF, 91, C1, 21, 70, B1, 54, 00
  *
  **************************************************************************/
 
-
 // XAUDIO2FX_VOLUMEMETER_LEVELS: Receives results from GetEffectParameters().
 // The user is responsible for allocating pPeakLevels, pRMSLevels, and
 // initializing ChannelCount accordingly.
 // The volume meter does not support SetEffectParameters().
-
 typedef struct XAUDIO2FX_VOLUMEMETER_LEVELS
 {
     float* pPeakLevels;  // Peak levels table: receives maximum absolute level for each channel
-                         // over a processing pass; must have at least ChannelCount elements
+                         // over a processing pass; may be NULL if pRMSLevls != NULL,
+                         // otherwise must have at least ChannelCount elements.
     float* pRMSLevels;   // Root mean square levels table: receives RMS level for each channel
-                         // over a processing pass; must have at least ChannelCount elements
+                         // over a processing pass; may be NULL if pPeakLevels != NULL,
+                         // otherwise must have at least ChannelCount elements.
     UINT32 ChannelCount; // Number of channels being processed by the volume meter APO
 } XAUDIO2FX_VOLUMEMETER_LEVELS;
 
@@ -134,7 +140,11 @@ typedef struct XAUDIO2FX_VOLUMEMETER_LEVELS
 /**************************************************************************
  *
  * Reverb parameters.
- * The reverb currently supports only FLOAT32 mono audio formats.
+ * The reverb supports only FLOAT32 audio with the following channel
+ * configurations:
+ *     Input: Mono   Output: Mono
+ *     Input: Stereo Output: Stereo
+ *     Input: Stereo Output: 5.1
  * The framerate must be within [20000, 48000] Hz.
  *
  **************************************************************************/
@@ -373,20 +383,17 @@ __inline void ReverbConvertI3DL2ToNative
 /**************************************************************************
  *
  * Object type values used by XAudio2FX for internal memory allocations.
- * On Xbox these become calls to XMemAlloc. If the client provides their
- * own XMemAlloc implementation, this table will help them distinguish
- * between different internal XAudio2FX object types. On Windows there
- * is currently no such capability.
+ * The IXAudio2::GetPerformanceData method writes per-object-type memory
+ * usage details to the debugger.  By referring to the values below, the
+ * user can see which effects are using the most memory.
  *
  **************************************************************************/
 
 enum XAudio2FXObjectType
 {
-    eXAudio2FXObjectType_Generic,    // Misc. allocations that don't fall
-                                     // into any of the categories below
-    eXAudio2FXObjectType_Reverb,     // Reverb effect data
-    eXAudio2FXObjectType_Meter,      // Volume meter data
-    eXAudio2FXObjectType_Count       // Count of all object types
+    eXAudio2FXObjectType_DSP = 10,  // Mixing, SRC and other basic DSP
+    eXAudio2FXObjectType_Reverb,    // Reverb effect data
+    eXAudio2FXObjectType_Meter      // Volume meter data
 };
 
 #ifdef _XBOX
@@ -410,9 +417,9 @@ enum XAudio2FXObjectType
 
 #endif
 
-#define X2FXGENERIC MAKE_XAUDIO2_ALLOC_ATTRIBUTES(Generic)
-#define X2FXREVERB  MAKE_XAUDIO2_ALLOC_ATTRIBUTES(Reverb)
-#define X2FXMETER   MAKE_XAUDIO2_ALLOC_ATTRIBUTES(Meter)
+#define X2FXDSP     MAKE_XAUDIO2FX_ALLOC_ATTRIBUTES(DSP)
+#define X2FXREVERB  MAKE_XAUDIO2FX_ALLOC_ATTRIBUTES(Reverb)
+#define X2FXMETER   MAKE_XAUDIO2FX_ALLOC_ATTRIBUTES(Meter)
 
 
 // Undo the #pragma pack(push, 1) at the top of this file

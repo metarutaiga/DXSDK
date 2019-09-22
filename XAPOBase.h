@@ -144,7 +144,7 @@ public:
     virtual ~CXAPOBase ();
 
     // IUnknown methods:
-    // retreives the requested interface pointer if supported
+    // retrieves the requested interface pointer if supported
     STDMETHOD(QueryInterface) (REFIID riid, void** ppInterface)
     {
         HRESULT hr = S_OK;
@@ -230,78 +230,16 @@ public:
 //--------------------------------------------------------------------------//
   ////
   // DESCRIPTION:
-  //  Helper class for managing XAPO_REGISTRATION_PROPERTIES, including
-  //  variable-sized COM interface ID array.
-  //
-  //  InterfaceCount - number of COM interface IDs supported by the respective XAPO
-  ////
-template<int InterfaceCount> class CXAPORegistrationProperties
-{
-public:
-    XAPO_REGISTRATION_PROPERTIES m_RegistrationProperties; // registration properties of an XAPO
-    #pragma warning(push)
-    #pragma warning(disable: 4200) // disable "zero-sized array in struct/union" compile warning
-    IID m_AdditionalInterfaceArray[InterfaceCount-1];      // Set up the array of interface IDs this APO supports
-    #pragma warning(pop)
-
-
-    CXAPORegistrationProperties(REFCLSID clsid,
-                                LPCWSTR FriendlyName, LPCWSTR CopyrightInfo,
-                                UINT32 Flags,
-                                UINT32 MajorVersion, UINT32 MinorVersion,
-                                UINT32 MinInputBufferCount = 1,
-                                UINT32 MaxInputBufferCount = 1,
-                                UINT32 MinOutputBufferCount = 1,
-                                UINT32 MaxOutputBufferCount = 1,
-                                ...)
-    {
-        m_RegistrationProperties.clsid = clsid;
-        CopyMemory(m_RegistrationProperties.FriendlyName, FriendlyName, sizeof(m_RegistrationProperties.FriendlyName));
-        m_RegistrationProperties.FriendlyName[XAPO_REGISTRATION_STRING_LENGTH-1] = '\0';
-        CopyMemory(m_RegistrationProperties.CopyrightInfo, CopyrightInfo, sizeof(m_RegistrationProperties.CopyrightInfo));
-        m_RegistrationProperties.CopyrightInfo[XAPO_REGISTRATION_STRING_LENGTH-1] = '\0';
-        m_RegistrationProperties.Flags = Flags;
-        m_RegistrationProperties.MajorVersion = MajorVersion;
-        m_RegistrationProperties.MinorVersion = MinorVersion;
-        m_RegistrationProperties.MinInputBufferCount = MinInputBufferCount;
-        m_RegistrationProperties.MaxInputBufferCount = MaxInputBufferCount;
-        m_RegistrationProperties.MinOutputBufferCount = MinOutputBufferCount;
-        m_RegistrationProperties.MaxOutputBufferCount = MaxOutputBufferCount;
-        m_RegistrationProperties.InterfaceCount = InterfaceCount;
-        m_RegistrationProperties.InterfaceArray[0] = __uuidof(IXAPO);
-
-        va_list vargs;
-        va_start(vargs, MaxOutputBufferCount);
-        UINT_PTR u = 0;
-        while (u < InterfaceCount-1) {
-            m_AdditionalInterfaceArray[u++] = va_arg(vargs, IID);
-        }
-        va_end(vargs);
-    }
-
-    // dereferencing: returns a reference to the XAPO registration properties
-    operator XAPO_REGISTRATION_PROPERTIES&() const
-    {
-        return m_RegistrationProperties;
-    }
-    operator const XAPO_REGISTRATION_PROPERTIES*() const
-    {
-        return &m_RegistrationProperties;
-    }
-};
-
-
-
-  ////
-  // DESCRIPTION:
-  //  Default implementation of the IXAPOParameters interface.
-  //  Provides threadsafe overridable implementations for all methods.
+  //  Extends CXAPOBase, providing a default implementation of the
+  //  IXAPOParameters interface with appropriate synchronization to
+  //  protect variables shared between IXAPOParameters::GetParameters
+  //  and IXAPOParameters::SetParameters/IXAPO::Process.
   //
   //  This class is for parameter blocks whose size is larger than 8 bytes.
   //  For smaller parameter blocks, use Interlocked operations directly
   //  on the parameters for synchronization.
   ////
-class __declspec(novtable) CXAPOParametersBase: public IXAPOParameters {
+class __declspec(novtable) CXAPOParametersBase: public CXAPOBase, public IXAPOParameters {
 private:
     BYTE*  m_pParameterBlocks;           // three contiguous process parameter blocks used for synchronization, user responsible for initialization of parameter blocks before IXAPO::Process/SetParameters/GetParameters called
     BYTE*  m_pCurrentParameters;         // pointer to current process parameters
@@ -315,12 +253,35 @@ private:
 public:
     ////
     // PARAMETERS:
+    //  pRegistrationProperties - [in] registration properties of the XAPO
     //  pParameterBlocks        - [in] three contiguous process parameter blocks used for synchronization
     //  uParameterBlockByteSize - [in] size of one of the parameter blocks
     //  fProducer               - [in] TRUE if IXAPO::Process produces data to be returned by GetParameters() (SetParameters() disallowed)
     ////
-    CXAPOParametersBase (BYTE* pParameterBlocks, UINT32 uParameterBlockByteSize, BOOL fProducer);
+    CXAPOParametersBase (const XAPO_REGISTRATION_PROPERTIES* pRegistrationProperties, BYTE* pParameterBlocks, UINT32 uParameterBlockByteSize, BOOL fProducer);
     virtual ~CXAPOParametersBase ();
+
+    // IUnknown methods:
+    // retrieves the requested interface pointer if supported
+    STDMETHOD(QueryInterface) (REFIID riid, void** ppInterface)
+    {
+        HRESULT hr = S_OK;
+
+        if (riid == __uuidof(IXAPOParameters)) {
+            *ppInterface = static_cast<IXAPOParameters*>(this);
+            CXAPOBase::AddRef();
+        } else {
+            hr = CXAPOBase::QueryInterface(riid, ppInterface);
+        }
+
+        return hr;
+    }
+
+    // increments reference count
+    STDMETHOD_(ULONG, AddRef)() { return CXAPOBase::AddRef(); }
+
+    // decrements reference count and deletes the object if the reference count falls to zero
+    STDMETHOD_(ULONG, Release)() { return CXAPOBase::Release(); }
 
     // IXAPOParameters methods:
     // Sets effect-specific parameters.
@@ -335,6 +296,8 @@ public:
     virtual void OnSetParameters (const void*, UINT32) { }
 
     // Returns TRUE if SetParameters() has been called since the last processing pass.
+    // May only be used within the XAPO's IXAPO::Process implementation,
+    // before BeginProcess is called.
     BOOL ParametersChanged ();
 
     // Returns latest process parameters.

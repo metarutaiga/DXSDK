@@ -266,7 +266,7 @@ static const DWORD aWMAAvgBytesPerSec[] =
 // NOTE: There can be a max of 32 values in the table.
 //
 
-#define MAX_WMA_BLOCK_ALIGN_ENTRIES 8
+#define MAX_WMA_BLOCK_ALIGN_ENTRIES 9
 
 static const DWORD aWMABlockAlign[] =
 {
@@ -277,7 +277,8 @@ static const DWORD aWMABlockAlign[] =
     8917,           // 44100, 2 channel (24000); 44100, 6 channel (24000)
     8192,           // 48000, 6 channel (24000); 48000, 2 channel (24000)
     4459,           // 44100, 2 channel (12000)
-    5945            // 44100, 6 channel (12000)
+    5945,           // 44100, 6 channel (12000)
+    2304            // 32000, 2 channel (24000)
 };
 
 //

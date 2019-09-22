@@ -166,8 +166,9 @@
 #define XMA_MAX_SUBFRAMES_TO_DECODE     8u
 #define XMA_OPTIMAL_SUBFRAMES_TO_DECODE 4u
 
-// Maximum legal value for LoopCount; represent an infinite number of loops
-#define XMA_MAX_LOOPCOUNT               255u
+// LoopCount<255 means finite repetitions; LoopCount=255 means infinite looping
+#define XMA_MAX_LOOPCOUNT               254u
+#define XMA_INFINITE_LOOP               255u
 
 
 
@@ -203,7 +204,7 @@ typedef struct XMA2WAVEFORMATEX
     DWORD PlayLength;        // Length of the valid part of the decoded audio
     DWORD LoopBegin;         // Beginning of the loop region in decoded sample terms
     DWORD LoopLength;        // Length of the loop region in decoded sample terms
-    BYTE  LoopCount;         // Number of loops; 0 = no looping, 255 == infinite
+    BYTE  LoopCount;         // Number of loop repetitions; 255 = infinite
     BYTE  EncoderVersion;    // Version of XMA encoder that generated the file
     WORD  BlockCount;        // XMA blocks in file (and entries in its seek table)
 } XMA2WAVEFORMATEX, *PXMA2WAVEFORMATEX;
@@ -258,7 +259,7 @@ typedef struct XMAWAVEFORMAT
     WORD EncodeOptions;      // Options for XMA encoder/decoder
     WORD LargestSkip;        // Largest skip used in interleaving streams
     WORD NumStreams;         // Number of interleaved audio streams
-    BYTE LoopCount;          // Number of loop repetitions; 255 == infinite
+    BYTE LoopCount;          // Number of loop repetitions; 255 = infinite
     BYTE Version;            // XMA encoder version that generated the file.
                              // Always 3 or higher for XMA2 files.
     XMASTREAMFORMAT XmaStreams[1]; // Per-stream format information; the actual
@@ -281,7 +282,7 @@ typedef struct XMA2WAVEFORMAT
                              // Always 3 or higher for XMA2 files.
     BYTE  NumStreams;        // Number of interleaved audio streams
     BYTE  RESERVED;          // Reserved for future use
-    BYTE  LoopCount;         // Loop count; 255 == infinite
+    BYTE  LoopCount;         // Number of loop repetitions; 255 = infinite
     DWORD LoopBegin;         // Loop begin point, in samples
     DWORD LoopEnd;           // Loop end point, in samples
     DWORD SampleRate;        // The file's decoded sample rate
@@ -389,7 +390,9 @@ __inline DWORD GetXmaPacketSkipCount(const BYTE* pPacket)
 
 
 // GetXmaBlockContainingSample: Use a given seek table to find the XMA block
-// containing a given decoded sample.
+// containing a given decoded sample.  Note that the seek table entries in an
+// XMA file are stored in big-endian form and may need to be converted prior
+// to calling this function.
 
 __inline HRESULT GetXmaBlockContainingSample
 (

@@ -19,8 +19,12 @@
 
 #include <comdecl.h>        // For DEFINE_CLSID and DEFINE_IID
 
-DEFINE_CLSID(XAudio2, fac23f48, 31f5, 45a8, b4, 9b, 52, 25, d6, 14, 01, aa);
-DEFINE_CLSID(XAudio2_Debug, fac23f48, 31f5, 45a8, b4, 9b, 52, 25, d6, 14, 01, db);
+// XAudio 2.0 (March 2008 SDK)
+//DEFINE_CLSID(XAudio2, fac23f48, 31f5, 45a8, b4, 9b, 52, 25, d6, 14, 01, aa);
+//DEFINE_CLSID(XAudio2_Debug, fac23f48, 31f5, 45a8, b4, 9b, 52, 25, d6, 14, 01, db);
+
+DEFINE_CLSID(XAudio2, e21a7345, eb21, 468e, be, 50, 80, 4d, b9, 7c, f7, 08);
+DEFINE_CLSID(XAudio2_Debug, f7a76c21, 53d4, 46bb, ac, 53, 8b, 45, 9c, ae, 46, bd);
 DEFINE_IID(IXAudio2, 8bcf1f58, 9fe7, 4583, 8a, c6, e2, ad, c4, 65, c8, bb);
 
 
@@ -50,24 +54,31 @@ DEFINE_IID(IXAudio2, 8bcf1f58, 9fe7, 4583, 8a, c6, e2, ad, c4, 65, c8, bb);
 // Numeric boundary values
 #define XAUDIO2_MAX_BUFFER_BYTES        0x80000000    // Maximum bytes allowed in a source buffer
 #define XAUDIO2_MAX_QUEUED_BUFFERS      64            // Maximum buffers allowed in a voice queue
+#define XAUDIO2_MAX_BUFFERS_SYSTEM      2             // Maximum buffers allowed for system threads
 #define XAUDIO2_MAX_AUDIO_CHANNELS      64            // Maximum channels in an audio stream
 #define XAUDIO2_MIN_SAMPLE_RATE         1000          // Minimum audio sample rate supported
-#define XAUDIO2_MAX_SAMPLE_RATE         800000        // Maximum audio sample rate supported
+#define XAUDIO2_MAX_SAMPLE_RATE         200000        // Maximum audio sample rate supported
 #define XAUDIO2_MAX_VOLUME_LEVEL        16777216.0f   // Maximum acceptable volume level (2^24)
 #define XAUDIO2_MIN_FREQ_RATIO          (1/1024.0f)   // Minimum SetFrequencyRatio argument
 #define XAUDIO2_MAX_FREQ_RATIO          1024.0f       // Maximum MaxFrequencyRatio argument
 #define XAUDIO2_DEFAULT_FREQ_RATIO      4.0f          // Default MaxFrequencyRatio argument
 #define XAUDIO2_MAX_FILTER_ONEOVERQ     1.5f          // Maximum XAUDIO2_FILTER_PARAMETERS.OneOverQ
 #define XAUDIO2_MAX_FILTER_FREQUENCY    1.0f          // Maximum XAUDIO2_FILTER_PARAMETERS.Frequency
-#define XAUDIO2_MAX_LOOP_COUNT          0x100000      // Maximum XAUDIO2_BUFFER.LoopCount
+#define XAUDIO2_MAX_LOOP_COUNT          254           // Maximum non-infinite XAUDIO2_BUFFER.LoopCount
 #define XAUDIO2_MAX_INSTANCES           8             // Maximum simultaneous XAudio2 objects on Xbox 360
+
+// For XMA voices there is an additional restriction on the MaxFrequencyRatio argument
+// and the voice's sample rate.  The product of these two numbers cannot exceed 600000
+// for one-channel voices or 300000 for voices with any other number of channels.
+#define XAUDIO2_MAX_RATIO_TIMES_RATE_XMA_MONO         600000
+#define XAUDIO2_MAX_RATIO_TIMES_RATE_XMA_MULTICHANNEL 300000
 
 // Numeric values with special meanings
 #define XAUDIO2_COMMIT_NOW              0             // Used as an OperationSet argument
 #define XAUDIO2_COMMIT_ALL              0             // Used in IXAudio2::CommitChanges
 #define XAUDIO2_INVALID_OPSET           (UINT32)(-1)  // Not allowed for OperationSet arguments
 #define XAUDIO2_NO_LOOP_REGION          0             // Used in XAUDIO2_BUFFER.LoopCount
-#define XAUDIO2_LOOP_INFINITE           (UINT32)(-1)  // Used in XAUDIO2_BUFFER.LoopCount
+#define XAUDIO2_LOOP_INFINITE           XMA_INFINITE_LOOP // Used in XAUDIO2_BUFFER.LoopCount
 #define XAUDIO2_DEFAULT_CHANNELS        0             // Used in CreateMasteringVoice
 #define XAUDIO2_DEFAULT_SAMPLERATE      0             // Used in CreateMasteringVoice
 
@@ -83,10 +94,10 @@ DEFINE_IID(IXAudio2, 8bcf1f58, 9fe7, 4583, 8a, c6, e2, ad, c4, 65, c8, bb);
 // Internal XAudio2 constants
 #ifdef _XBOX
     #define XAUDIO2_QUANTUM_NUMERATOR   2             // On Xbox 360, XAudio2 processes audio
-    #define XAUDIO2_QUANTUM_DENOMINATOR 375           // in 5.333ms chunks (= 2/375 seconds)
+    #define XAUDIO2_QUANTUM_DENOMINATOR 375           //  in 5.333ms chunks (= 2/375 seconds)
 #else
     #define XAUDIO2_QUANTUM_NUMERATOR   1             // On Windows, XAudio2 processes audio
-    #define XAUDIO2_QUANTUM_DENOMINATOR 100           // in 10ms chunks (= 1/100 seconds)
+    #define XAUDIO2_QUANTUM_DENOMINATOR 100           //  in 10ms chunks (= 1/100 seconds)
 #endif
 #define XAUDIO2_QUANTUM_MS (1000.0f * XAUDIO2_QUANTUM_NUMERATOR / XAUDIO2_QUANTUM_DENOMINATOR)
 
@@ -94,9 +105,10 @@ DEFINE_IID(IXAudio2, 8bcf1f58, 9fe7, 4583, 8a, c6, e2, ad, c4, 65, c8, bb);
 #define FACILITY_XAUDIO2 0x896
 #define X2ERROR(n) MAKE_HRESULT(SEVERITY_ERROR, FACILITY_XAUDIO2, n)
 
-#define XAUDIO2_E_XMA_DECODER_ERROR     X2ERROR(0x01) // The XMA hardware suffered an unrecoverable error
-#define XAUDIO2_E_XAPO_CREATION_FAILED  X2ERROR(0x02) // Failed to instantiate an effect
-#define XAUDIO2_E_DEVICE_INVALIDATED    X2ERROR(0x03) // An audio device became unusable (unplugged, etc)
+#define XAUDIO2_E_INVALID_CALL          X2ERROR(0x1)  // An API call or one of its arguments was illegal
+#define XAUDIO2_E_XMA_DECODER_ERROR     X2ERROR(0x2)  // The XMA hardware suffered an unrecoverable error
+#define XAUDIO2_E_XAPO_CREATION_FAILED  X2ERROR(0x3)  // Failed to instantiate an effect
+#define XAUDIO2_E_DEVICE_INVALIDATED    X2ERROR(0x4)  // An audio device became unusable (unplugged, etc)
 
 
 /**************************************************************************
@@ -268,17 +280,15 @@ typedef struct XAUDIO2_BUFFER
     void* pContext;                     // Context value to be passed back in callbacks.
 } XAUDIO2_BUFFER;
 
-// Used with IXAudio2SourceVoice::SubmitSourceBuffer when submitting xWMA data
-// When streaming a file a few packets at a time, XAUDIO2_END_OF_STREAM
-// should be specified on the last packet.  Alternatively, the application may
-// call IXAudio2SourceVoice::Discontinuity after submitting the last packet.
-// Also, when streaming a file a few packets at a time, the application should
-// subtract pDecodedPacketCumulativeBytes[PacketCount-1] of the previous
-// buffer from all the entries of the currently submitted buffer.
+// Used for IXAudio2SourceVoice::SubmitSourceBuffer when submitting WMA data
 typedef struct XAUDIO2_BUFFER_WMA
 {
-    const UINT32* pDecodedPacketCumulativeBytes; // decoded packet cumulative data size array, each element is the number of bytes accumulated when the corresponding WMA packet is decoded in order, must have PacketCount elements
-    UINT32 PacketCount;                          // number WMA packets submitted, must be >= 1 and divide evenly into the respective XAUDIO2_BUFFER.AudioBytes
+    const UINT32* pDecodedPacketCumulativeBytes; // Decoded packet's cumulative size array.
+                                        //  Each element is the number of bytes accumulated
+                                        //  when the corresponding WMA packet is decoded in
+                                        //  order.  The array must have PacketCount elements.
+    UINT32 PacketCount;                 // Number of WMA packets submitted. Must be >= 1 and
+                                        //  divide evenly into XAUDIO2_BUFFER.AudioBytes.
 } XAUDIO2_BUFFER_WMA;
 
 // Returned by IXAudio2SourceVoice::GetState
@@ -312,7 +322,7 @@ typedef struct XAUDIO2_PERFORMANCE_DATA
     // Audio latency and glitching information
     UINT32 CurrentLatencyInSamples;     // Minimum delay from when a sample is read from a
                                         //  source buffer to when it reaches the speakers.
-    UINT32 GlitchesSinceLastQuery;      // Total audio dropouts since the last call.
+    UINT32 GlitchesSinceEngineStarted;  // Audio dropouts since the engine was started.
 
     // Data about XAudio2's current workload
     UINT32 ActiveSourceVoiceCount;      // Source voices currently playing.
@@ -358,7 +368,7 @@ typedef struct XAUDIO2_DEBUG_CONFIGURATION
  **************************************************************************/
 
 // Use SAL annotations if available (see sal.h or specstrings.h)
-#ifdef __in_opt
+#if defined(__in) && defined(__out) && defined(__in_opt)
     #define X2IN    __in
     #define X2OUT   __out
     #define X2INOPT __in_opt
@@ -722,9 +732,9 @@ DECLARE_INTERFACE(IXAudio2Voice)
     //  DestinationChannels - Confirms the destination voice's input channels.
     //  pLevelMatrix - Array of send levels, as above.
     */\
-    STDMETHOD(GetOutputMatrix) (THIS_ X2IN IXAudio2Voice* pDestinationVoice, \
-                                UINT32 SourceChannels, UINT32 DestinationChannels, \
-                                X2OUT float* pLevelMatrix) PURE; \
+    STDMETHOD_(void, GetOutputMatrix) (THIS_ X2IN IXAudio2Voice* pDestinationVoice, \
+                                       UINT32 SourceChannels, UINT32 DestinationChannels, \
+                                       X2OUT float* pLevelMatrix) PURE; \
     \
     /* NAME: IXAudio2Voice::DestroyVoice
     // DESCRIPTION: Destroys this voice, stopping it if necessary and removing
@@ -902,7 +912,7 @@ DECLARE_INTERFACE(IXAudio2EngineCallback)
 DECLARE_INTERFACE(IXAudio2VoiceCallback)
 {
     // Called just before this voice's processing pass begins.
-    STDMETHOD_(void, OnVoiceProcessingPassStart) (THIS) PURE;
+    STDMETHOD_(void, OnVoiceProcessingPassStart) (THIS_ UINT32 BytesRequired) PURE;
 
     // Called just after this voice's processing pass ends.
     STDMETHOD_(void, OnVoiceProcessingPassEnd) (THIS) PURE;
@@ -1084,17 +1094,16 @@ __inline float XAudio2FrequencyRatioToSemitones(double FrequencyRatio)
 }
 
 // Convert from filter cutoff frequencies expressed in Hertz to the radian
-// frequency values used in XAUDIO2_FILTER_PARAMETERS.Frequency
+// frequency values used in XAUDIO2_FILTER_PARAMETERS.Frequency.  Note that
+// cutoff frequencies are clamped to SampleRate/6, resulting in
+// XAUDIO2_MAX_FILTER_FREQUENCY being returned.
 __inline float XAudio2CutoffFrequencyToRadians(double CutoffFrequency, UINT32 SampleRate)
 {
-    if (CutoffFrequency < 0 || 6 * CutoffFrequency > SampleRate)
+    if ((UINT32)(CutoffFrequency * 6.0) >= SampleRate)
     {
-        return 0; // Filter is only valid up to SampleRate/6
+        return XAUDIO2_MAX_FILTER_FREQUENCY;
     }
-    else
-    {
-        return (float)(2 * sin(M_PI * CutoffFrequency / SampleRate));
-    }
+    return (float)(2 * sin(M_PI * CutoffFrequency / SampleRate));
 }
 
 // Convert from radian frequencies back to absolute frequencies in Hertz
@@ -1182,39 +1191,37 @@ __inline HRESULT XAudio2Create(X2OUT IXAudio2** ppXAudio2, UINT32 Flags X2DEFAUL
 /**************************************************************************
  *
  * Object type values used by XAudio2 for its internal memory allocations.
- * On Xbox these become calls to XMemAlloc.  If the client provides its
- * own XMemAlloc implementation, this table will allow it to distinguish
- * between different internal XAudio2 object types.
+ * The IXAudio2::GetPerformanceData method writes per-object-type memory
+ * usage details to the debugger.  By referring to the values below, the
+ * user can see which internal XAudio2 types are using the most memory.
  *
  **************************************************************************/
 
 enum XAudio2ObjectType
 {
-    eXAudio2ObjectType_Generic,      // Misc allocations that don't fall
-                                     // into any of the categories below
-    eXAudio2ObjectType_Engine,       // General XAudio2 engine data
-    eXAudio2ObjectType_Voice,        // General per-voice data
-    eXAudio2ObjectType_BufferPool,   // Management of internal buffers
-    eXAudio2ObjectType_EffectChain,  // Management of effect chains
-    eXAudio2ObjectType_MixMatrix,    // Management of send level matrices
-    eXAudio2ObjectType_LEAP,         // XAudio2's internal audio processor
-    eXAudio2ObjectType_Pipeline,     // DSP routines built into XAudio2
-    eXAudio2ObjectType_Count         // Count of all object types
+    eXAudio2ObjectType_Generic,     // Miscellaneous allocations that do not
+                                    //  fall into any of the categories below
+    eXAudio2ObjectType_Engine,      // General XAudio2 engine data
+    eXAudio2ObjectType_Voice,       // General per-voice data
+    eXAudio2ObjectType_BufferPool,  // Management of internal buffers
+    eXAudio2ObjectType_EffectChain, // Management of effect chains
+    eXAudio2ObjectType_MixMatrix,   // Management of send level matrices
+    eXAudio2ObjectType_LEAP         // XAudio2's internal audio processor
 };
 
 #ifdef _XBOX
 
     #define MAKE_XAUDIO2_ALLOC_ATTRIBUTES(type) MAKE_XALLOC_ATTRIBUTES  \
     (                                                                   \
-        eXAudio2ObjectType_ ## type,    /* ObjectType */                \
-        FALSE,                          /* HeapTracksAttributes */      \
-        FALSE,                          /* MustSucceed */               \
-        FALSE,                          /* FixedSize */                 \
-        eXALLOCAllocatorId_XAUDIO2,     /* AllocatorId */               \
-        XALLOC_ALIGNMENT_DEFAULT,       /* Alignment */                 \
-        XALLOC_MEMPROTECT_READWRITE,    /* MemoryProtect */             \
-        FALSE,                          /* ZeroInitialize */            \
-        XALLOC_MEMTYPE_HEAP             /* MemoryType */                \
+        eXAudio2ObjectType_ ## type, /* ObjectType */                   \
+        FALSE,                       /* HeapTracksAttributes */         \
+        FALSE,                       /* MustSucceed */                  \
+        FALSE,                       /* FixedSize */                    \
+        eXALLOCAllocatorId_XAUDIO2,  /* AllocatorId */                  \
+        XALLOC_ALIGNMENT_DEFAULT,    /* Alignment */                    \
+        XALLOC_MEMPROTECT_READWRITE, /* MemoryProtect */                \
+        FALSE,                       /* ZeroInitialize */               \
+        XALLOC_MEMTYPE_HEAP          /* MemoryType */                   \
     )
 
 #else // Windows
@@ -1230,7 +1237,6 @@ enum XAudio2ObjectType
 #define X2EFFECTS  MAKE_XAUDIO2_ALLOC_ATTRIBUTES(EffectChain)
 #define X2MATRIX   MAKE_XAUDIO2_ALLOC_ATTRIBUTES(MixMatrix)
 #define X2LEAP     MAKE_XAUDIO2_ALLOC_ATTRIBUTES(LEAP)
-#define X2PIPELINE MAKE_XAUDIO2_ALLOC_ATTRIBUTES(Pipeline)
 
 
 // Undo the #pragma pack(push, 1) directive at the top of this file

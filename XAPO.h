@@ -184,8 +184,6 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
         UINT32 MaxInputBufferCount;                            // maximum number of input buffers supported for processing, must be >= MinInputBufferCount
         UINT32 MinOutputBufferCount;                           // minimum number of output buffers required for processing, can be 0, must match MinInputBufferCount when XAPO_FLAG_BUFFERCOUNT_MUST_MATCH used
         UINT32 MaxOutputBufferCount;                           // maximum number of output buffers supported for processing, must be >= MinOutputBufferCount, must match MaxInputBufferCount when XAPO_FLAG_BUFFERCOUNT_MUST_MATCH used
-        UINT32 InterfaceCount;                                 // number of COM interface IDs in InterfaceArray, must be >= 1
-        IID InterfaceArray[1];                                 // supported COM interface ID array, must have InterfaceCount elements including __uuidof(IXAPO)
     } XAPO_REGISTRATION_PROPERTIES;
 
 
