@@ -1,9 +1,9 @@
 /*==========================================================================
  *
- *  Copyright (C) 1995-1996 Microsoft Corporation.  All Rights Reserved.
+ *  Copyright (C) 1995-1997 Microsoft Corporation.  All Rights Reserved.
  *
  *  File:       fastfile.h
- *  Content:    Definitions for fastfile access.
+ *  Content:	Definitions for fastfile access.
  *
  * THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
  * EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
@@ -11,7 +11,7 @@
  *
  ***************************************************************************/
 
-typedef LPVOID  HFASTFILE;
+typedef LPVOID	HFASTFILE;
 
 extern BOOL FastFileInit( LPSTR fname, int max_handles );
 extern void FastFileFini( void );
