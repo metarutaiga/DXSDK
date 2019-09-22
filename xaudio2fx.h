@@ -19,7 +19,7 @@
 
 #include "comdecl.h"        // For DEFINE_CLSID and DEFINE_IID
 
-// XAudioFX 2.0 (March 2008 SDK)
+// XAudio 2.0 (March 2008 SDK)
 //DEFINE_CLSID(AudioVolumeMeter, C0C56F46, 29B1, 44E9, 99, 39, A3, 2C, E8, 68, 67, E2);
 //DEFINE_CLSID(AudioVolumeMeter_Debug, C0C56F46, 29B1, 44E9, 99, 39, A3, 2C, E8, 68, 67, DB);
 //DEFINE_CLSID(AudioReverb, 6F6EA3A9, 2CF5, 41CF, 91, C1, 21, 70, B1, 54, 00, 63);
@@ -38,10 +38,16 @@
 //DEFINE_CLSID(AudioReverb_Debug, 4aae4299, 3260, 46d4, 97, cc, 6c, c7, 60, c8, 53, 29);
 
 // XAudio 2.3 (November 2008 SDK)
-DEFINE_CLSID(AudioVolumeMeter, e180344b, ac83, 4483, 95, 9e, 18, a5, c5, 6a, 5e, 19);
-DEFINE_CLSID(AudioVolumeMeter_Debug, 922a0a56, 7d13, 40ae, a4, 81, 3c, 6c, 60, f1, 14, 01);
-DEFINE_CLSID(AudioReverb, 9cab402c, 1d37, 44b4, 88, 6d, fa, 4f, 36, 17, 0a, 4c);
-DEFINE_CLSID(AudioReverb_Debug, eadda998, 3be6, 4505, 84, be, ea, 06, 36, 5d, b9, 6b);
+//DEFINE_CLSID(AudioVolumeMeter, e180344b, ac83, 4483, 95, 9e, 18, a5, c5, 6a, 5e, 19);
+//DEFINE_CLSID(AudioVolumeMeter_Debug, 922a0a56, 7d13, 40ae, a4, 81, 3c, 6c, 60, f1, 14, 01);
+//DEFINE_CLSID(AudioReverb, 9cab402c, 1d37, 44b4, 88, 6d, fa, 4f, 36, 17, 0a, 4c);
+//DEFINE_CLSID(AudioReverb_Debug, eadda998, 3be6, 4505, 84, be, ea, 06, 36, 5d, b9, 6b);
+
+// XAudio 2.4 (March 2009 SDK)
+DEFINE_CLSID(AudioVolumeMeter, c7338b95, 52b8, 4542, aa, 79, 42, eb, 01, 6c, 8c, 1c);
+DEFINE_CLSID(AudioVolumeMeter_Debug, 524bd872, 5c0b, 4217, bd, b8, 0a, 86, 81, 83, 0b, a5);
+DEFINE_CLSID(AudioReverb, 8bb7778b, 645b, 4475, 9a, 73, 1d, e3, 17, 0b, d3, af);
+DEFINE_CLSID(AudioReverb_Debug, da7738a2, cd0c, 4367, 9a, ac, d7, ea, d7, c6, 4f, 98);
 
 
 // Ignore the rest of this header if only the GUID definitions were requested
@@ -297,6 +303,9 @@ __inline void ReverbConvertI3DL2ToNative
     __out XAUDIO2FX_REVERB_PARAMETERS* pNative
 )
 {
+    float reflectionsDelay;
+    float reverbDelay;
+
     // RoomRolloffFactor is ignored
 
     // These parameters have no equivalent in I3DL2
@@ -315,23 +324,22 @@ __inline void ReverbConvertI3DL2ToNative
 
     if (pI3DL2->DecayHFRatio >= 1.0f)
     {
-        pNative->HighEQGain = 8;
         INT32 index = (INT32)(-4.0 * log10(pI3DL2->DecayHFRatio));
-        if (index < -8)
-        index = -8;
-        pNative->LowEQGain = BYTE((index < 0) ? index + 8 : 8);
+        if (index < -8) index = -8;
+        pNative->LowEQGain = (BYTE)((index < 0) ? index + 8 : 8);
+        pNative->HighEQGain = 8;
         pNative->DecayTime = pI3DL2->DecayTime * pI3DL2->DecayHFRatio;
     }
     else
     {
-        pNative->LowEQGain = 8;
         INT32 index = (INT32)(4.0 * log10(pI3DL2->DecayHFRatio));
         if (index < -8) index = -8;
-        pNative->HighEQGain = BYTE((index < 0) ? index + 8 : 8);
+        pNative->LowEQGain = 8;
+        pNative->HighEQGain = (BYTE)((index < 0) ? index + 8 : 8);
         pNative->DecayTime = pI3DL2->DecayTime;
     }
 
-    float reflectionsDelay = pI3DL2->ReflectionsDelay * 1000.0f;
+    reflectionsDelay = pI3DL2->ReflectionsDelay * 1000.0f;
     if (reflectionsDelay >= XAUDIO2FX_REVERB_MAX_REFLECTIONS_DELAY) // 300
     {
         reflectionsDelay = (float)(XAUDIO2FX_REVERB_MAX_REFLECTIONS_DELAY - 1);
@@ -342,7 +350,7 @@ __inline void ReverbConvertI3DL2ToNative
     }
     pNative->ReflectionsDelay = (UINT32)reflectionsDelay;
 
-    float reverbDelay = pI3DL2->ReverbDelay * 1000.0f;
+    reverbDelay = pI3DL2->ReverbDelay * 1000.0f;
     if (reverbDelay >= XAUDIO2FX_REVERB_MAX_REVERB_DELAY) // 85
     {
         reverbDelay = (float)(XAUDIO2FX_REVERB_MAX_REVERB_DELAY - 1);
@@ -396,49 +404,6 @@ __inline void ReverbConvertI3DL2ToNative
 #define XAUDIO2FX_I3DL2_PRESET_MEDIUMHALL      {100, -1000, -600,0.0f, 1.80f,0.70f, -1300,0.015f,  -800,0.030f,100.0f,100.0f,5000.0f}
 #define XAUDIO2FX_I3DL2_PRESET_LARGEHALL       {100, -1000, -600,0.0f, 1.80f,0.70f, -2000,0.030f, -1400,0.060f,100.0f,100.0f,5000.0f}
 #define XAUDIO2FX_I3DL2_PRESET_PLATE           {100, -1000, -200,0.0f, 1.30f,0.90f,     0,0.002f,     0,0.010f,100.0f, 75.0f,5000.0f}
-
-
-/**************************************************************************
- *
- * Object type values used by XAudio2FX for internal memory allocations.
- * The IXAudio2::GetPerformanceData method writes per-object-type memory
- * usage details to the debugger.  By referring to the values below, the
- * user can see which effects are using the most memory.
- *
- **************************************************************************/
-
-enum XAudio2FXObjectType
-{
-    eXAudio2FXObjectType_DSP = 10,  // Mixing, SRC and other basic DSP
-    eXAudio2FXObjectType_Reverb,    // Reverb effect data
-    eXAudio2FXObjectType_Meter,     // Volume meter data
-    eXAudio2FXObjectType_TotalTypes
-};
-
-#ifdef _XBOX
-
-    #define MAKE_XAUDIO2FX_ALLOC_ATTRIBUTES(type) MAKE_XALLOC_ATTRIBUTES  \
-    (                                                                     \
-        eXAudio2FXObjectType_ ## type,  /* ObjectType */                  \
-        FALSE,                          /* HeapTracksAttributes */        \
-        FALSE,                          /* MustSucceed */                 \
-        FALSE,                          /* FixedSize */                   \
-        eXALLOCAllocatorId_XAUDIO2,     /* AllocatorId */                 \
-        XALLOC_ALIGNMENT_DEFAULT,       /* Alignment */                   \
-        XALLOC_MEMPROTECT_READWRITE,    /* MemoryProtect */               \
-        FALSE,                          /* ZeroInitialize */              \
-        XALLOC_MEMTYPE_HEAP             /* MemoryType */                  \
-    )
-
-#else // Windows
-
-    #define MAKE_XAUDIO2FX_ALLOC_ATTRIBUTES(type) DWORD(eXAudio2FXObjectType_ ## type)
-
-#endif
-
-#define X2FXDSP     MAKE_XAUDIO2FX_ALLOC_ATTRIBUTES(DSP)
-#define X2FXREVERB  MAKE_XAUDIO2FX_ALLOC_ATTRIBUTES(Reverb)
-#define X2FXMETER   MAKE_XAUDIO2FX_ALLOC_ATTRIBUTES(Meter)
 
 
 // Undo the #pragma pack(push, 1) at the top of this file

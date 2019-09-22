@@ -237,7 +237,7 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
     typedef struct XAPO_PROCESS_BUFFER_PARAMETERS {
         void*             pBuffer;         // audio data buffer, must be non-NULL
         XAPO_BUFFER_FLAGS BufferFlags;     // describes assumed content of pBuffer, does not affect ValidFrameCount
-        UINT32            ValidFrameCount; // number of frames to process, must be within respective [0, XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS.MaxFrameCount], always XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS.MaxFrameCount for CBR/user-defined XAPOs, does not affect BufferFlags
+        UINT32            ValidFrameCount; // number of frames of valid data, must be within respective [0, XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS.MaxFrameCount], always XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS.MaxFrameCount for CBR/user-defined XAPOs, does not affect BufferFlags
     } XAPO_PROCESS_BUFFER_PARAMETERS;
 
 

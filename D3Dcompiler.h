@@ -13,8 +13,8 @@
 // Current name of the DLL shipped in the same SDK as this header.
 
 
-#define D3DCOMPILER_DLL_W L"d3dcompiler_40.dll"
-#define D3DCOMPILER_DLL_A "d3dcompiler_40.dll"
+#define D3DCOMPILER_DLL_W L"d3dcompiler_41.dll"
+#define D3DCOMPILER_DLL_A "d3dcompiler_41.dll"
 
 #ifdef UNICODE
     #define D3DCOMPILER_DLL D3DCOMPILER_DLL_W 
@@ -31,6 +31,7 @@
 // API definitions some of the neutral types are simply
 // redefinitions of older types.
 typedef struct _D3D10_SHADER_MACRO D3D_SHADER_MACRO;
+typedef enum _D3D10_INCLUDE_TYPE D3D_INCLUDE_TYPE;
 typedef interface ID3D10Blob ID3DBlob;
 typedef ID3DBlob* LPD3DBLOB;
 typedef interface ID3D10Include ID3DInclude;
@@ -141,6 +142,13 @@ D3DDisassemble(__in_bcount(SrcDataSize) LPCVOID pSrcData,
                __in UINT Flags,
                __in_opt LPCSTR szComments,
                __out LPD3DBLOB* ppDisassembly);
+
+typedef HRESULT (WINAPI *pD3DDisassemble)
+    (__in_bcount(SrcDataSize) LPCVOID pSrcData,
+     __in SIZE_T SrcDataSize,
+     __in UINT Flags,
+     __in_opt LPCSTR szComments,
+     __out LPD3DBLOB* ppDisassembly);
 
 //----------------------------------------------------------------------------
 // D3DDisassemble10Effect:

@@ -3,9 +3,9 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0548 */
+ /* File created by MIDL compiler version 7.00.0553 */
 /* Compiler settings for d3dcommon.idl:
-    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 7.00.0548 
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 7.00.0553 
     protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
@@ -76,6 +76,7 @@ enum D3D_FEATURE_LEVEL
 	D3D_FEATURE_LEVEL_11_0	= 0xb000
     } 	D3D_FEATURE_LEVEL;
 
+DEFINE_GUID(WKPDID_D3DDebugObjectName,0x429b8c22,0x9188,0x4b0c,0x87,0x42,0xac,0xb0,0xbf,0x85,0xc2,0x00);
 
 
 extern RPC_IF_HANDLE __MIDL_itf_d3dcommon_0000_0000_v0_0_c_ifspec;

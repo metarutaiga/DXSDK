@@ -461,7 +461,7 @@ typedef enum _D3DXINCLUDE_TYPE
 // Open()
 //    Opens an include file.  If successful, it should fill in ppData and
 //    pBytes.  The data pointer returned must remain valid until Close is
-//    subsequently called.
+//    subsequently called.  The name of the file is encoded in UTF-8 format.
 // Close()
 //    Closes an include file.  If Open was successful, Close is guaranteed
 //    to be called before the API using this interface returns.
@@ -952,7 +952,7 @@ HRESULT WINAPI
 //----------------------------------------------------------------------------
 
 
-HRESULT WINAPI
+DECLSPEC_DEPRECATED HRESULT WINAPI
 D3DXGatherFragmentsFromFileA(
         LPCSTR                          pSrcFile,
         CONST D3DXMACRO*                pDefines,
@@ -961,7 +961,7 @@ D3DXGatherFragmentsFromFileA(
         LPD3DXBUFFER*                   ppShader,
         LPD3DXBUFFER*                   ppErrorMsgs);
 
-HRESULT WINAPI
+DECLSPEC_DEPRECATED HRESULT WINAPI
 D3DXGatherFragmentsFromFileW(
         LPCWSTR                         pSrcFile,
         CONST D3DXMACRO*                pDefines,
@@ -977,7 +977,7 @@ D3DXGatherFragmentsFromFileW(
 #endif
 
 
-HRESULT WINAPI
+DECLSPEC_DEPRECATED HRESULT WINAPI
     D3DXGatherFragmentsFromResourceA(
         HMODULE                         hSrcModule,
         LPCSTR                          pSrcResource,
@@ -987,7 +987,7 @@ HRESULT WINAPI
         LPD3DXBUFFER*                   ppShader,
         LPD3DXBUFFER*                   ppErrorMsgs);
 
-HRESULT WINAPI
+DECLSPEC_DEPRECATED HRESULT WINAPI
     D3DXGatherFragmentsFromResourceW(
         HMODULE                         hSrcModule,
         LPCWSTR                         pSrcResource,
@@ -1004,7 +1004,7 @@ HRESULT WINAPI
 #endif
 
 
-HRESULT WINAPI
+DECLSPEC_DEPRECATED HRESULT WINAPI
     D3DXGatherFragments(
         LPCSTR                          pSrcData,
         UINT                            SrcDataLen,

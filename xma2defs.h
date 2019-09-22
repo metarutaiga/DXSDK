@@ -382,11 +382,14 @@ __inline DWORD GetXmaPacketSkipCount(__in_bcount(4) const BYTE* pPacket)
  *  XMA helper functions
  ***************************************************************************/
 
-// Try to use ASSERT and TRACE macros if available
-#ifdef ASSERT
-    #define XMA2DEFS_ASSERT ASSERT
-#else
-    #define XMA2DEFS_ASSERT(a)
+// We define a local ASSERT macro to equal the global one if it exists.
+// You can define XMA2DEFS_ASSERT in advance to override this default.
+#ifndef XMA2DEFS_ASSERT
+    #ifdef ASSERT
+        #define XMA2DEFS_ASSERT ASSERT
+    #else
+        #define XMA2DEFS_ASSERT(a) /* No-op by default */
+    #endif
 #endif
 
 
@@ -399,7 +402,7 @@ __inline HRESULT GetXmaBlockContainingSample
 (
     DWORD nBlockCount,                      // Blocks in the file (= seek table entries)
     __in_ecount(nBlockCount) const DWORD* pSeekTable,  // Pointer to the seek table data
-    DWORD nDesiredSample,                   // Decoder sample to locate
+    DWORD nDesiredSample,                   // Decoded sample to locate
     __out DWORD* pnBlockContainingSample,   // Index of the block containing the sample
     __out DWORD* pnSampleOffsetWithinBlock  // Position of the sample in this block
 )

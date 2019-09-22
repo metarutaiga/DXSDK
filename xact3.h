@@ -1,16 +1,16 @@
-/*++
-
-Copyright (c) Microsoft Corporation. All rights reserved.
-
-Module Name:
-
-    xact3.h
-
-Abstract:
-
-    XACT public interfaces, functions and data types
-
---*/
+/**************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ *
+ * Module Name:
+ * 
+ *     xact3.h
+ * 
+ * Abstract:
+ * 
+ *     XACT public interfaces, functions and data types
+ *
+ **************************************************************************/
 
 #pragma once
 
@@ -18,13 +18,13 @@ Abstract:
 #define _XACT_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs (Version 3.2)
+// XACT class and interface IDs (Version 3.4)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         94c1affa, 66e7, 4961, 95, 21, cf, de, f3, 12, 8d, 4f);
-    DEFINE_CLSID(XACTAuditionEngine, 9bd6948b, cacc, 486e, b0, 81, f9, 53, a5, 40, 03, 73);
-    DEFINE_CLSID(XACTDebugEngine,    4a2af461, 69c9, 444d, b2, 08, 7f, f9, 58, 23, 41, b0);
+    DEFINE_CLSID(XACTEngine,         0977d092, 2d95, 4e43, 8d, 42, 9d, dc, c2, 54, 5e, d5);
+    DEFINE_CLSID(XACTAuditionEngine, d6b97e84, 5151, 4567, ac, 6d, 04, 72, 97, 8f, e4, fd);
+    DEFINE_CLSID(XACTDebugEngine,    69956470, 1f58, 487d, bb, df, 73, b0, 22, 38, e8, eb);
     DEFINE_IID(IXACT3Engine,         e72c1b9a, d717, 41c0, 81, a6, 50, eb, 56, e8, 06, 49);
 #endif
 
@@ -161,7 +161,7 @@ static const XACTLOOPCOUNT          XACTLOOPCOUNT_MAX               = 0xfe;
 static const XACTLOOPCOUNT          XACTLOOPCOUNT_INFINITE          = 0xff;
 static const DWORD                  XACTWAVEALIGNMENT_MIN           = 2048;
 #ifdef _XBOX
-static const XAUDIOVOICEINDEX       XACTMAXOUTPUTVOICECOUNT         = 3;
+static const BYTE                   XACTMAXOUTPUTVOICECOUNT         = 3;
 #endif // _XBOX
 
 

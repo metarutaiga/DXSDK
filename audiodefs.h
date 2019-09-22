@@ -46,12 +46,15 @@
         WORD nBlockAlign;       // Size in bytes of a sample block (all channels)
         WORD wBitsPerSample;    // Size in bits of a single per-channel sample
         WORD cbSize;            // Bytes of extra data appended to this struct
-    } WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
+    } WAVEFORMATEX;
 
 #endif
 
-// Defining LPCWAVEFORMATEX outside of the #if block to match mmsystem.h
-typedef const WAVEFORMATEX *LPCWAVEFORMATEX;
+// Defining pointer types outside of the #if block to make sure they are
+// defined even if mmreg.h or mmsystem.h is #included before this file
+
+typedef WAVEFORMATEX *PWAVEFORMATEX, *NPWAVEFORMATEX, *LPWAVEFORMATEX;
+typedef const WAVEFORMATEX *PCWAVEFORMATEX, *LPCWAVEFORMATEX;
 
 
 /**************************************************************************
@@ -80,10 +83,13 @@ typedef const WAVEFORMATEX *LPCWAVEFORMATEX;
         } Samples;
         DWORD dwChannelMask;          // Positions of the audio channels
         GUID SubFormat;               // Format identifier GUID
-    } WAVEFORMATEXTENSIBLE, *PWAVEFORMATEXTENSIBLE, *LPPWAVEFORMATEXTENSIBLE;
-    typedef const WAVEFORMATEXTENSIBLE* LPCWAVEFORMATEXTENSIBLE;
+    } WAVEFORMATEXTENSIBLE;
 
 #endif
+
+typedef WAVEFORMATEXTENSIBLE *PWAVEFORMATEXTENSIBLE, *LPWAVEFORMATEXTENSIBLE;
+typedef const WAVEFORMATEXTENSIBLE *PCWAVEFORMATEXTENSIBLE, *LPCWAVEFORMATEXTENSIBLE;
+
 
 
 /**************************************************************************

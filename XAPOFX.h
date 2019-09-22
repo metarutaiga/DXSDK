@@ -3,7 +3,7 @@
  |        Copyright (c) Microsoft Corporation.  All rights reserved.        |
  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
  |PROJECT: XAPOFX                       MODEL:   Unmanaged User-mode        |
- |VERSION: 1.1                          EXCEPT:  No Exceptions              |
+ |VERSION: 1.3                          EXCEPT:  No Exceptions              |
  |CLASS:   N / A                        MINREQ:  WinXP, Xbox360             |
  |BASE:    N / A                        DIALECT: MSC++ 14.00                |
  |>------------------------------------------------------------------------<|

@@ -200,6 +200,8 @@ typedef enum _D3D10_SHADER_VARIABLE_TYPE
 
     D3D11_SVT_INTERFACE_POINTER = 37,
     D3D11_SVT_COMPUTESHADER = 38,
+
+    D3D11_SVT_DOUBLE = 39,
     
     // force 32-bit size enum
     D3D10_SVT_FORCE_DWORD = 0x7fffffff
@@ -250,8 +252,6 @@ typedef enum _D3D10_CBUFFER_TYPE
 {
     D3D10_CT_CBUFFER,
     D3D10_CT_TBUFFER,
-    D3D11_CT_INTERFACE_POINTERS,
-    D3D11_CT_RESOURCE_BIND_INFO,
 }  D3D10_CBUFFER_TYPE, *LPD3D10_CBUFFER_TYPE;
 
 typedef enum D3D10_NAME
@@ -329,7 +329,7 @@ typedef enum _D3D10_INCLUDE_TYPE
 // Open()
 //    Opens an include file.  If successful, it should fill in ppData and
 //    pBytes.  The data pointer returned must remain valid until Close is
-//    subsequently called.
+//    subsequently called.  The name of the file is encoded in UTF-8 format.
 // Close()
 //    Closes an include file.  If Open was successful, Close is guaranteed
 //    to be called before the API using this interface returns.

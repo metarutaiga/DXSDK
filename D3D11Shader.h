@@ -13,6 +13,26 @@
 #include "d3d10_1shader.h"
 
 
+typedef enum D3D11_RESOURCE_RETURN_TYPE
+{
+    D3D11_RETURN_TYPE_UNORM = 1,
+    D3D11_RETURN_TYPE_SNORM = 2,
+    D3D11_RETURN_TYPE_SINT = 3,
+    D3D11_RETURN_TYPE_UINT = 4,
+    D3D11_RETURN_TYPE_FLOAT = 5,
+    D3D11_RETURN_TYPE_MIXED = 6,
+    D3D11_RETURN_TYPE_DOUBLE = 7,
+    D3D11_RETURN_TYPE_CONTINUED = 8,
+} D3D11_RESOURCE_RETURN_TYPE;
+
+typedef enum _D3D11_CBUFFER_TYPE
+{
+    D3D11_CT_CBUFFER,
+    D3D11_CT_TBUFFER,
+    D3D11_CT_INTERFACE_POINTERS,
+    D3D11_CT_RESOURCE_BIND_INFO,
+}  D3D11_CBUFFER_TYPE, *LPD3D11_CBUFFER_TYPE;
+
 
 typedef struct _D3D11_SIGNATURE_PARAMETER_DESC
 {
@@ -29,6 +49,28 @@ typedef struct _D3D11_SIGNATURE_PARAMETER_DESC
                                                 // (combination of D3D10_COMPONENT_MASK values)
     UINT Stream;                                // Stream index
 } D3D11_SIGNATURE_PARAMETER_DESC;
+
+typedef struct _D3D11_SHADER_BUFFER_DESC
+{
+    LPCSTR                  Name;           // Name of the constant buffer
+    D3D11_CBUFFER_TYPE      Type;           // Indicates type of buffer content
+    UINT                    Variables;      // Number of member variables
+    UINT                    Size;           // Size of CB (in bytes)
+    UINT                    uFlags;         // Buffer description flags
+} D3D11_SHADER_BUFFER_DESC;
+
+typedef struct _D3D11_SHADER_VARIABLE_DESC
+{
+    LPCSTR                  Name;           // Name of the variable
+    UINT                    StartOffset;    // Offset in constant buffer's backing store
+    UINT                    Size;           // Size of variable (in bytes)
+    UINT                    uFlags;         // Variable flags
+    LPVOID                  DefaultValue;   // Raw pointer to default value
+    UINT                    StartTexture;   // First texture index (or -1 if no textures used)
+    UINT                    TextureSize;    // Number of texture slots possibly used.
+    UINT                    StartSampler;   // First sampler index (or -1 if no textures used)
+    UINT                    SamplerSize;    // Number of sampler slots possibly used.
+} D3D11_SHADER_VARIABLE_DESC;
 
 typedef struct _D3D11_SHADER_TYPE_DESC
 {
@@ -113,12 +155,18 @@ typedef struct _D3D11_SHADER_DESC
     UINT cTextureStoreInstructions;                      // Number of texture writes
 } D3D11_SHADER_DESC;
 
-// These structures are the same as Direct3D 10 but
-// newly-named versions are typedef'ed here so that
-// the Direct3D 11 reflection API has consistent '11' naming.
-typedef D3D10_SHADER_VARIABLE_DESC D3D11_SHADER_VARIABLE_DESC;
-typedef D3D10_SHADER_BUFFER_DESC D3D11_SHADER_BUFFER_DESC;
-typedef D3D10_SHADER_INPUT_BIND_DESC D3D11_SHADER_INPUT_BIND_DESC;
+typedef struct _D3D11_SHADER_INPUT_BIND_DESC
+{
+    LPCSTR                      Name;           // Name of the resource
+    D3D10_SHADER_INPUT_TYPE     Type;           // Type of resource (e.g. texture, cbuffer, etc.)
+    UINT                        BindPoint;      // Starting bind point
+    UINT                        BindCount;      // Number of contiguous bind points (for arrays)
+    
+    UINT                        uFlags;         // Input binding flags
+    D3D11_RESOURCE_RETURN_TYPE  ReturnType;     // Return type (if texture)
+    D3D10_SRV_DIMENSION         Dimension;      // Dimension (if texture)
+    UINT                        NumSamples;     // Number of samples (0 if not MS texture)
+} D3D11_SHADER_INPUT_BIND_DESC;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -127,6 +175,15 @@ typedef D3D10_SHADER_INPUT_BIND_DESC D3D11_SHADER_INPUT_BIND_DESC;
 
 typedef interface ID3D11ShaderReflectionType ID3D11ShaderReflectionType;
 typedef interface ID3D11ShaderReflectionType *LPD3D11SHADERREFLECTIONTYPE;
+
+typedef interface ID3D11ShaderReflectionVariable ID3D11ShaderReflectionVariable;
+typedef interface ID3D11ShaderReflectionVariable *LPD3D11SHADERREFLECTIONVARIABLE;
+
+typedef interface ID3D11ShaderReflectionConstantBuffer ID3D11ShaderReflectionConstantBuffer;
+typedef interface ID3D11ShaderReflectionConstantBuffer *LPD3D11SHADERREFLECTIONCONSTANTBUFFER;
+
+typedef interface ID3D11ShaderReflection ID3D11ShaderReflection;
+typedef interface ID3D11ShaderReflection *LPD3D11SHADERREFLECTION;
 
 // {6E6FFA6A-9BAE-4613-A51E-91652D508C21}
 DEFINE_GUID(IID_ID3D11ShaderReflectionType, 
@@ -152,9 +209,6 @@ DECLARE_INTERFACE(ID3D11ShaderReflectionType)
     STDMETHOD(ImplementsInterface)(THIS_ ID3D11ShaderReflectionType* pBase) PURE;
 };
 
-typedef interface ID3D11ShaderReflectionVariable ID3D11ShaderReflectionVariable;
-typedef interface ID3D11ShaderReflectionVariable *LPD3D11SHADERREFLECTIONVARIABLE;
-
 // {51F23923-F3E5-4BD1-91CB-606177D8DB4C}
 DEFINE_GUID(IID_ID3D11ShaderReflectionVariable, 
 0x51f23923, 0xf3e5, 0x4bd1, 0x91, 0xcb, 0x60, 0x61, 0x77, 0xd8, 0xdb, 0x4c);
@@ -167,12 +221,10 @@ DECLARE_INTERFACE(ID3D11ShaderReflectionVariable)
     STDMETHOD(GetDesc)(THIS_ D3D11_SHADER_VARIABLE_DESC *pDesc) PURE;
     
     STDMETHOD_(ID3D11ShaderReflectionType*, GetType)(THIS) PURE;
+    STDMETHOD_(ID3D11ShaderReflectionConstantBuffer*, GetBuffer)(THIS) PURE;
 
     STDMETHOD_(UINT, GetInterfaceSlot)(THIS_ UINT uArrayIndex) PURE;
 };
-
-typedef interface ID3D11ShaderReflectionConstantBuffer ID3D11ShaderReflectionConstantBuffer;
-typedef interface ID3D11ShaderReflectionConstantBuffer *LPD3D11SHADERREFLECTIONCONSTANTBUFFER;
 
 // {EB62D63D-93DD-4318-8AE8-C6F83AD371B8}
 DEFINE_GUID(IID_ID3D11ShaderReflectionConstantBuffer, 
@@ -188,9 +240,6 @@ DECLARE_INTERFACE(ID3D11ShaderReflectionConstantBuffer)
     STDMETHOD_(ID3D11ShaderReflectionVariable*, GetVariableByIndex)(THIS_ UINT Index) PURE;
     STDMETHOD_(ID3D11ShaderReflectionVariable*, GetVariableByName)(THIS_ LPCSTR Name) PURE;
 };
-
-typedef interface ID3D11ShaderReflection ID3D11ShaderReflection;
-typedef interface ID3D11ShaderReflection *LPD3D11SHADERREFLECTION;
 
 // {17F27486-A342-4D10-8842-AB0874E7F670}
 DEFINE_GUID(IID_ID3D11ShaderReflection, 
