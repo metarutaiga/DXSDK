@@ -25,10 +25,17 @@
 //DEFINE_CLSID(AudioReverb, 6F6EA3A9, 2CF5, 41CF, 91, C1, 21, 70, B1, 54, 00, 63);
 //DEFINE_CLSID(AudioReverb_Debug, 6F6EA3A9, 2CF5, 41CF, 91, C1, 21, 70, B1, 54, 00, DB);
 
-DEFINE_CLSID(AudioVolumeMeter, c1e3f122, a2ea, 442c, 85, 4f, 20, d9, 8f, 83, 57, a1);
-DEFINE_CLSID(AudioVolumeMeter_Debug, 6d97a461, b02d, 48ae, b5, 43, 82, bc, 35, fd, fa, e2);
-DEFINE_CLSID(AudioReverb, f4769300, b949, 4df9, b3, 33, 00, d3, 39, 32, e9, a6);
-DEFINE_CLSID(AudioReverb_Debug, aea2cabc, 8c7c, 46aa, ba, 44, 0e, 6d, 75, 88, a1, f2);
+// XAudio 2.1 (June 2008 SDK)
+//DEFINE_CLSID(AudioVolumeMeter, c1e3f122, a2ea, 442c, 85, 4f, 20, d9, 8f, 83, 57, a1);
+//DEFINE_CLSID(AudioVolumeMeter_Debug, 6d97a461, b02d, 48ae, b5, 43, 82, bc, 35, fd, fa, e2);
+//DEFINE_CLSID(AudioReverb, f4769300, b949, 4df9, b3, 33, 00, d3, 39, 32, e9, a6);
+//DEFINE_CLSID(AudioReverb_Debug, aea2cabc, 8c7c, 46aa, ba, 44, 0e, 6d, 75, 88, a1, f2);
+
+// XAudio 2.2 (August 2008 SDK)
+DEFINE_CLSID(AudioVolumeMeter, f5ca7b34, 8055, 42c0, b8, 36, 21, 61, 29, eb, 7e, 30);
+DEFINE_CLSID(AudioVolumeMeter_Debug, f796f5f7, 6059, 4a9f, 98, 2d, 61, ee, c2, ed, 67, ca);
+DEFINE_CLSID(AudioReverb, 629cf0de, 3ecc, 41e7, 99, 26, f7, e4, 3e, eb, ec, 51);
+DEFINE_CLSID(AudioReverb_Debug, 4aae4299, 3260, 46d4, 97, cc, 6c, c7, 60, c8, 53, 29);
 
 
 // Ignore the rest of this header if only the GUID definitions were requested
@@ -68,22 +75,22 @@ DEFINE_CLSID(AudioReverb_Debug, aea2cabc, 8c7c, 46aa, ba, 44, 0e, 6d, 75, 88, a1
 
 #ifdef _XBOX
 
-    STDAPI CreateAudioVolumeMeter(IUnknown** ppApo);
-    STDAPI CreateAudioReverb(IUnknown** ppApo);
+    STDAPI CreateAudioVolumeMeter(__deref_out IUnknown** ppApo);
+    STDAPI CreateAudioReverb(__deref_out IUnknown** ppApo);
 
-    __inline HRESULT XAudio2CreateVolumeMeter(IUnknown** ppApo, UINT32 /*Flags*/ DEFAULT(0))
+    __inline HRESULT XAudio2CreateVolumeMeter(__deref_out IUnknown** ppApo, UINT32 /*Flags*/ DEFAULT(0))
     {
         return CreateAudioVolumeMeter(ppApo);
     }
 
-    __inline HRESULT XAudio2CreateReverb(IUnknown** ppApo, UINT32 /*Flags*/ DEFAULT(0))
+    __inline HRESULT XAudio2CreateReverb(__deref_out IUnknown** ppApo, UINT32 /*Flags*/ DEFAULT(0))
     {
         return CreateAudioReverb(ppApo);
     }
 
 #else // Windows
 
-    __inline HRESULT XAudio2CreateVolumeMeter(IUnknown** ppApo, UINT32 Flags DEFAULT(0))
+    __inline HRESULT XAudio2CreateVolumeMeter(__deref_out IUnknown** ppApo, UINT32 Flags DEFAULT(0))
     {
         #ifdef __cplusplus
             return CoCreateInstance((Flags & XAUDIO2FX_DEBUG) ? __uuidof(AudioVolumeMeter_Debug)
@@ -96,7 +103,7 @@ DEFINE_CLSID(AudioReverb_Debug, aea2cabc, 8c7c, 46aa, ba, 44, 0e, 6d, 75, 88, a1
         #endif
     }
 
-    __inline HRESULT XAudio2CreateReverb(IUnknown** ppApo, UINT32 Flags DEFAULT(0))
+    __inline HRESULT XAudio2CreateReverb(__deref_out IUnknown** ppApo, UINT32 Flags DEFAULT(0))
     {
         #ifdef __cplusplus
             return CoCreateInstance((Flags & XAUDIO2FX_DEBUG) ? __uuidof(AudioReverb_Debug)
@@ -275,8 +282,8 @@ typedef struct XAUDIO2FX_REVERB_I3DL2_PARAMETERS
 
 __inline void ReverbConvertI3DL2ToNative
 (
-    const XAUDIO2FX_REVERB_I3DL2_PARAMETERS* pI3DL2,
-    XAUDIO2FX_REVERB_PARAMETERS* pNative
+    __in const XAUDIO2FX_REVERB_I3DL2_PARAMETERS* pI3DL2,
+    __out XAUDIO2FX_REVERB_PARAMETERS* pNative
 )
 {
     // RoomRolloffFactor is ignored

@@ -3,18 +3,18 @@
  |        Copyright (c) Microsoft Corporation.  All rights reserved.        |
  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
  |PROJECT: X3DAudio                     MODEL:   Unmanaged User-mode        |
- |VERSION: 1.3                          EXCEPT:  No Exceptions              |
+ |VERSION: 1.4                          EXCEPT:  No Exceptions              |
  |CLASS:   N / A                        MINREQ:  WinXP, Xbox360             |
  |BASE:    N / A                        DIALECT: MSC++ 14.00                |
  |>------------------------------------------------------------------------<|
  | DUTY: Cross-platform stand-alone 3D audio math library                   |
  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
   NOTES:
-    1.  USE THE DEBUG X3DAUDIO DLL TO ENABLE PARAMETER VALIDATION VIA ASSERTS!
+    1.  USE THE DEBUG DLL TO ENABLE PARAMETER VALIDATION VIA ASSERTS!
         Here's how:
-        Copy X3DAudioD1_X.dll to where your application exists.
-        The DLL can be found in the DXSDK under Utilities\Bin\x86\ (or x64).
-        Rename X3DAudioD1_X.dll to X3DAudio1_X.dll to use the debug version.
+        Copy X3DAudioDX_X.dll to where your application exists.
+        The debug DLL can be found under %WINDIR%\system32.
+        Rename X3DAudioDX_X.dll to X3DAudioX_X.dll to use the debug version.
 
         Only parameters required by DSP settings being calculated as
         stipulated by the calculation control flags are validated.
@@ -273,8 +273,8 @@ typedef struct X3DAUDIO_EMITTER
 // delay time array, and initializing the channel counts when used.
 typedef struct X3DAUDIO_DSP_SETTINGS
 {
-    FLOAT32* pMatrixCoefficients; // [in] matrix coefficient table, receives an array representing the volume level used to send from source channel S to destination channel D, stored as pMatrixCoefficients[SrcChannelCount * D + S], must have at least SrcChannelCount*DstChannelCount elements
-    FLOAT32* pDelayTimes;         // [in] delay time array, receives delays for each destination channel in milliseconds, must have at least DstChannelCount elements (stereo final mix only)
+    FLOAT32* pMatrixCoefficients; // [inout] matrix coefficient table, receives an array representing the volume level used to send from source channel S to destination channel D, stored as pMatrixCoefficients[SrcChannelCount * D + S], must have at least SrcChannelCount*DstChannelCount elements
+    FLOAT32* pDelayTimes;         // [inout] delay time array, receives delays for each destination channel in milliseconds, must have at least DstChannelCount elements (stereo final mix only)
     UINT32 SrcChannelCount;       // [in] number of source channels, must equal number of channels in respective emitter
     UINT32 DstChannelCount;       // [in] number of destination channels, must equal number of channels of the final mix
 

@@ -3,14 +3,18 @@
  |        Copyright (c) Microsoft Corporation.  All rights reserved.        |
  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
  |PROJECT: XAPOFX                       MODEL:   Unmanaged User-mode        |
- |VERSION: 1.0                          EXCEPT:  No Exceptions              |
+ |VERSION: 1.1                          EXCEPT:  No Exceptions              |
  |CLASS:   N / A                        MINREQ:  WinXP, Xbox360             |
  |BASE:    N / A                        DIALECT: MSC++ 14.00                |
  |>------------------------------------------------------------------------<|
  | DUTY: Cross-platform Audio Processing Objects                            |
  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
   NOTES:
-    1.  USE THE DEBUG FX LIBRARY TO ENABLE PARAMETER VALIDATION VIA ASSERTS!*/
+    1.  USE THE DEBUG DLL TO ENABLE PARAMETER VALIDATION VIA ASSERTS!
+        Here's how:
+        Copy XAPOFXDX_X.dll to where your application exists.
+        The debug DLL can be found under %WINDIR%\system32.
+        Rename XAPOFXDX_X.dll to XAPOFXX_X.dll to use the debug version.    */
 
 #pragma once
 //--------------<D-E-F-I-N-I-T-I-O-N-S>-------------------------------------//
@@ -20,6 +24,7 @@
 DEFINE_CLSID(FXEQ,               A90BC001, E897, E897, 74, 39, 43, 55, 00, 00, 00, 00);
 DEFINE_CLSID(FXMasteringLimiter, A90BC001, E897, E897, 74, 39, 43, 55, 00, 00, 00, 01);
 DEFINE_CLSID(FXReverb,           A90BC001, E897, E897, 74, 39, 43, 55, 00, 00, 00, 02);
+DEFINE_CLSID(FXEcho,             A90BC001, E897, E897, 74, 39, 43, 55, 00, 00, 00, 03);
 
 
 #if !defined(GUID_DEFS_ONLY) // ignore rest if only GUID definitions requested
@@ -73,6 +78,20 @@ DEFINE_CLSID(FXReverb,           A90BC001, E897, E897, 74, 39, 43, 55, 00, 00, 0
     #define FXREVERB_DEFAULT_ROOMSIZE 0.6f
 
 
+    // Echo parameter bounds (inclusive), used with XEcho:
+    #define FXECHO_MIN_WETDRYMIX     0.0f
+    #define FXECHO_MAX_WETDRYMIX     1.0f
+    #define FXECHO_DEFAULT_WETDRYMIX 0.5f
+
+    #define FXECHO_MIN_FEEDBACK     0.0f
+    #define FXECHO_MAX_FEEDBACK     1.0f
+    #define FXECHO_DEFAULT_FEEDBACK 0.5f
+
+    #define FXECHO_MIN_DELAY     1.0f
+    #define FXECHO_MAX_DELAY     2000.0f
+    #define FXECHO_DEFAULT_DELAY 500.0f
+
+
 //--------------<D-A-T-A---T-Y-P-E-S>---------------------------------------//
     #pragma pack(push, 1) // set packing alignment to ensure consistency across arbitrary build environments
 
@@ -115,6 +134,15 @@ DEFINE_CLSID(FXReverb,           A90BC001, E897, E897, 74, 39, 43, 55, 00, 00, 0
     } FXREVERB_PARAMETERS;
 
 
+    // Echo parameters, used with IXAPOParameters::SetParameters:
+    // The echo supports only FLOAT32 audio formats.
+    typedef struct FXECHO_PARAMETERS {
+        float WetDryMix; // ratio of wet (processed) signal to dry (unprocessed) signal
+        float Feedback;  // amount of output fed back into input
+        float Delay;     // delay (all channels) in milliseconds
+    } FXECHO_PARAMETERS;
+
+
 //--------------<M-A-C-R-O-S>-----------------------------------------------//
     // function storage-class attribute and calltype
     #if defined(_XBOX) || !defined(FXDLL)
@@ -131,7 +159,7 @@ DEFINE_CLSID(FXReverb,           A90BC001, E897, E897, 74, 39, 43, 55, 00, 00, 0
 
 //--------------<F-U-N-C-T-I-O-N-S>-----------------------------------------//
     // creates instance of requested XAPO, use Release to free instance
-    FX_API_(HRESULT) CreateFX (CLSID clsid, IUnknown** pEffect);
+    FX_API_(HRESULT) CreateFX (REFCLSID clsid, __deref_out IUnknown** pEffect);
 
 
     #pragma pack(pop) // revert packing alignment

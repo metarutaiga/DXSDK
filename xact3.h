@@ -18,13 +18,13 @@ Abstract:
 #define _XACT_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs (Version 3.1)
+// XACT class and interface IDs (Version 3.2)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         962f5027, 99be, 4692, a4, 68, 85, 80, 2c, f8, de, 61);
-    DEFINE_CLSID(XACTAuditionEngine, f3dad1cc, 4058, 40b9, b1, b7, 26, 24, 9a, 2d, 92, 7e);
-    DEFINE_CLSID(XACTDebugEngine,    026a2b1d, f204, 484e, ab, 36, ab, 2b, 66, 8f, 95, 4e);
+    DEFINE_CLSID(XACTEngine,         d3332f02, 3dd0, 4de9, 9a, ec, 20, d8, 5c, 41, 11, b6);
+    DEFINE_CLSID(XACTAuditionEngine, 57b6c2a7, 588b, 4ff1, 8f, a1, 48, 2c, 6c, fc, fc, 21);
+    DEFINE_CLSID(XACTDebugEngine,    a682be18, 835f, 4401, a6, 19, eb, 3b, 00, 46, 39, 98);
     DEFINE_IID(IXACT3Engine,         e72c1b9a, d717, 41c0, 81, a6, 50, eb, 56, e8, 06, 49);
 #endif
 
@@ -53,7 +53,7 @@ typedef struct IXACT3WaveBank        IXACT3WaveBank;
 typedef struct IXACT3Cue             IXACT3Cue;
 typedef struct IXACT3Wave            IXACT3Wave;
 typedef struct IXACT3Engine          IXACT3Engine;
-typedef struct XACT_NOTIFICATION    XACT_NOTIFICATION;
+typedef struct XACT_NOTIFICATION     XACT_NOTIFICATION;
 
 
 //------------------------------------------------------------------------------
@@ -540,6 +540,7 @@ typedef struct XACT_NOTIFICATION
 
 } XACT_NOTIFICATION, *LPXACT_NOTIFICATION;
 typedef const XACT_NOTIFICATION *LPCXACT_NOTIFICATION;
+
 #pragma pack(pop)
 
 //------------------------------------------------------------------------------
@@ -1377,12 +1378,15 @@ __inline HRESULT __stdcall IXACT3Engine_GetGlobalVariable(IXACT3Engine* pEngine,
 static const DWORD XACT_FLAG_API_AUDITION_MODE = 0x00000001;
 static const DWORD XACT_FLAG_API_DEBUG_MODE    = 0x00000002;
 
+#ifdef _XBOX
+
 STDAPI XACT3CreateEngine(DWORD dwCreationFlags, IXACT3Engine** ppEngine);
 
-#ifndef _XBOX
+#else // #ifdef _XBOX
 
 #define XACT_DEBUGENGINE_REGISTRY_KEY   TEXT("Software\\Microsoft\\XACT")
 #define XACT_DEBUGENGINE_REGISTRY_VALUE TEXT("DebugEngine")
+
 
 #ifdef __cplusplus
 
@@ -1424,7 +1428,7 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, IXACT3Engine
     return hr;
 }
 
-#else
+#else // #ifdef __cplusplus
 
 __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, IXACT3Engine** ppEngine)
 {
@@ -1465,7 +1469,8 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, IXACT3Engine
 }
 
 #endif // #ifdef __cplusplus
-#endif // #ifndef _XBOX
+
+#endif // #ifdef _XBOX
 
 //------------------------------------------------------------------------------
 // XACT specific error codes
@@ -1504,8 +1509,8 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, IXACT3Engine
 #define XACTENGINE_E_NORENDERER                XACTENGINEERROR(0x017)   // No audio device found on.
 #define XACTENGINE_E_INVALIDENTRYCOUNT         XACTENGINEERROR(0x018)   // Invalid entry count for channel maps
 #define XACTENGINE_E_SEEKTIMEBEYONDCUEEND      XACTENGINEERROR(0x019)   // Time offset for seeking is beyond the cue end.
-#define XACTENGINE_E_SEEKTIMEBEYONDWAVEEND     XACTENGINEERROR(0x019)   // Time offset for seeking is beyond the wave end.
-#define XACTENGINE_E_NOFRIENDLYNAMES           XACTENGINEERROR(0x01a)   // Friendly names are not included in the bank.
+#define XACTENGINE_E_SEEKTIMEBEYONDWAVEEND     XACTENGINEERROR(0x01a)   // Time offset for seeking is beyond the wave end.
+#define XACTENGINE_E_NOFRIENDLYNAMES           XACTENGINEERROR(0x01b)   // Friendly names are not included in the bank.
 
 #define XACTENGINE_E_AUDITION_WRITEFILE             XACTENGINEERROR(0x101)  // Error writing a file during auditioning
 #define XACTENGINE_E_AUDITION_NOSOUNDBANK           XACTENGINEERROR(0x102)  // Missing a soundbank
@@ -1516,5 +1521,7 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, IXACT3Engine
 #define XACTENGINE_E_AUDITION_MISSINGWAVE           XACTENGINEERROR(0x107)  // Wave does not exist in auditioned wavebank
 #define XACTENGINE_E_AUDITION_CREATEDIRECTORYFAILED XACTENGINEERROR(0x108)  // Failed to create a directory for streaming wavebank data
 #define XACTENGINE_E_AUDITION_INVALIDSESSION        XACTENGINEERROR(0x109)  // Invalid audition session
+
 #endif // #ifndef GUID_DEFS_ONLY
+
 #endif // #ifndef _XACT_H_

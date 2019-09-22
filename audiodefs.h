@@ -47,9 +47,11 @@
         WORD wBitsPerSample;    // Size in bits of a single per-channel sample
         WORD cbSize;            // Bytes of extra data appended to this struct
     } WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
-    typedef const WAVEFORMATEX *LPCWAVEFORMATEX;
 
 #endif
+
+// Defining LPCWAVEFORMATEX outside of the #if block to match mmsystem.h
+typedef const WAVEFORMATEX *LPCWAVEFORMATEX;
 
 
 /**************************************************************************

@@ -145,7 +145,7 @@ public:
 
     // IUnknown methods:
     // retrieves the requested interface pointer if supported
-    STDMETHOD(QueryInterface) (REFIID riid, void** ppInterface)
+    STDMETHOD(QueryInterface) (REFIID riid, __deref_out void** ppInterface)
     {
         HRESULT hr = S_OK;
 
@@ -197,7 +197,7 @@ public:
 
     // Performs any effect-specific initialization.
     // This default implementation is a no-op and only returns S_OK.
-    STDMETHOD(Initialize) (__in_bcount_opt(DataByteSize) const void*, UINT32) { return S_OK; }
+    STDMETHOD(Initialize) (const void*, UINT32) { return S_OK; }
 
     // Resets variables dependent on frame history.
     // This default implementation is a no-op: this base class contains no
@@ -263,7 +263,7 @@ public:
 
     // IUnknown methods:
     // retrieves the requested interface pointer if supported
-    STDMETHOD(QueryInterface) (REFIID riid, void** ppInterface)
+    STDMETHOD(QueryInterface) (REFIID riid, __deref_out void** ppInterface)
     {
         HRESULT hr = S_OK;
 
@@ -288,11 +288,16 @@ public:
     STDMETHOD_(void, SetParameters) (__in_bcount(ParameterByteSize) const void* pParameters, UINT32 ParameterByteSize);
 
     // Gets effect-specific parameters.
+    // This method may block and should NEVER be called from the
+    // realtime audio processing thread.
+    // Get the current parameters via BeginProcess.
     STDMETHOD_(void, GetParameters) (__out_bcount(ParameterByteSize) void* pParameters, UINT32 ParameterByteSize);
 
     // Called by SetParameters() to allow for user-defined parameter validation.
     // SetParameters validates that ParameterByteSize == m_uParameterBlockByteSize
     // so the user may assume/assert ParameterByteSize == m_uParameterBlockByteSize.
+    // This method should not block as it is called from the
+    // realtime audio processing thread.
     virtual void OnSetParameters (const void*, UINT32) { }
 
     // Returns TRUE if SetParameters() has been called since the last processing pass.
