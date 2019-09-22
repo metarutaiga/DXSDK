@@ -27,11 +27,20 @@
  */
 #define DMUS_S_PARTIALLOAD              MAKE_DMHRESULTSUCCESS(0x091)
 
+/* DMUS_S_PARTIALDOWNLOAD
+ *
+ * This code indicates that a band download was only successful in reaching
+ * some, but not all, of the referenced ports. Some samples may not play
+ * correctly.
+ */
+#define DMUS_S_PARTIALDOWNLOAD          MAKE_DMHRESULTSUCCESS(0x092)
+
 /* DMUS_S_REQUEUE
  *
  * Return value from IDirectMusicTool::ProcessPMsg() which indicates to the
  * performance that it should cue the PMsg again automatically.
  */
+
 #define DMUS_S_REQUEUE                  MAKE_DMHRESULTSUCCESS(0x200)
 
 /* DMUS_S_FREE
@@ -102,6 +111,15 @@
  * Ofcourse, DMUS_PLAYMODE_FIXED will never return this success code.
  */
 #define DMUS_S_DOWN_OCTAVE              MAKE_DMHRESULTSUCCESS(0x214)
+
+/* DMUS_S_NOBUFFERCONTROL
+ *
+ * Although the audio output from the port will be routed to the
+ * same device as the given DirectSound buffer, buffer controls
+ * such as pan and volume will not affect the output.
+ *
+ */
+#define DMUS_S_NOBUFFERCONTROL          MAKE_DMHRESULTSUCCESS(0x215)
 
 /* DMUS_E_DRIVER_FAILED
  *

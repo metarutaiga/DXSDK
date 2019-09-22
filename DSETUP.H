@@ -22,6 +22,13 @@
 extern "C" {
 #endif
 
+typedef struct _DLSVERSION {
+ DWORD dwVersionMS;
+ DWORD dwVersionLS;
+} DLSVERSION, FAR * LPDLSVERSION;
+
+#define FOURCC_VERS mmioFOURCC('v','e','r','s')
+
 // DSETUP Error Codes, must remain compatible with previous setup.
 #define DSETUPERR_SUCCESS_RESTART        1
 #define DSETUPERR_SUCCESS                0
@@ -46,6 +53,9 @@ extern "C" {
 #define DSETUP_DXCORE           0x00010000	/* install DirectX runtime              */
 #define DSETUP_DIRECTX  (DSETUP_DXCORE|DSETUP_DDRAWDRV|DSETUP_DSOUNDDRV)
 #define DSETUP_TESTINSTALL      0x00020000      /* just test install, don't do anything */
+#define DSETUP_USEROLDERFLAG	0x02000000		/* enable return DSETUPERR_NEWERVERSION */
+// Bug #22730 
+	// #define DSETUP_NTINSTALL		0x00080000		/* install on Win2K platform */
 
 // These OBSOLETE flags are here for compatibility with pre-DX5 apps only.
 // They are present to allow DX3 apps to be recompiled with DX5 and still work.
@@ -120,6 +130,7 @@ typedef struct _DSETUP_CB_FILECOPYERROR
 // Data Structures
 //
 #ifndef UNICODE_ONLY
+
 typedef struct _DIRECTXREGISTERAPPA {
     DWORD    dwSize;
     DWORD    dwFlags;
@@ -130,8 +141,22 @@ typedef struct _DIRECTXREGISTERAPPA {
     LPSTR    lpszPath;
     LPSTR    lpszCurrentDirectory;
 } DIRECTXREGISTERAPPA, *PDIRECTXREGISTERAPPA, *LPDIRECTXREGISTERAPPA;
+
+typedef struct _DIRECTXREGISTERAPP2A {
+    DWORD    dwSize;
+    DWORD    dwFlags;
+    LPSTR    lpszApplicationName;
+    LPGUID   lpGUID;
+    LPSTR    lpszFilename;
+    LPSTR    lpszCommandLine;
+    LPSTR    lpszPath;
+    LPSTR    lpszCurrentDirectory;
+    LPSTR    lpszLauncherName;
+} DIRECTXREGISTERAPP2A, *PDIRECTXREGISTERAPP2A, *LPDIRECTXREGISTERAPP2A;
+
 #endif //!UNICODE_ONLY
 #ifndef ANSI_ONLY
+
 typedef struct _DIRECTXREGISTERAPPW {
     DWORD    dwSize;
     DWORD    dwFlags;
@@ -142,21 +167,40 @@ typedef struct _DIRECTXREGISTERAPPW {
     LPWSTR   lpszPath;
     LPWSTR   lpszCurrentDirectory;
 } DIRECTXREGISTERAPPW, *PDIRECTXREGISTERAPPW, *LPDIRECTXREGISTERAPPW;
+
+typedef struct _DIRECTXREGISTERAPP2W {
+    DWORD    dwSize;
+    DWORD    dwFlags;
+    LPWSTR   lpszApplicationName;
+    LPGUID   lpGUID;
+    LPWSTR   lpszFilename;
+    LPWSTR   lpszCommandLine;
+    LPWSTR   lpszPath;
+    LPWSTR   lpszCurrentDirectory;
+    LPWSTR  lpszLauncherName;
+} DIRECTXREGISTERAPP2W, *PDIRECTXREGISTERAPP2W, *LPDIRECTXREGISTERAPP2W;
 #endif //!ANSI_ONLY
 #ifdef UNICODE
 typedef DIRECTXREGISTERAPPW DIRECTXREGISTERAPP;
 typedef PDIRECTXREGISTERAPPW PDIRECTXREGISTERAPP;
 typedef LPDIRECTXREGISTERAPPW LPDIRECTXREGISTERAPP;
+typedef DIRECTXREGISTERAPP2W DIRECTXREGISTERAPP2;
+typedef PDIRECTXREGISTERAPP2W PDIRECTXREGISTERAPP2;
+typedef LPDIRECTXREGISTERAPP2W LPDIRECTXREGISTERAPP2;
 #else
 typedef DIRECTXREGISTERAPPA DIRECTXREGISTERAPP;
 typedef PDIRECTXREGISTERAPPA PDIRECTXREGISTERAPP;
 typedef LPDIRECTXREGISTERAPPA LPDIRECTXREGISTERAPP;
+typedef DIRECTXREGISTERAPP2A DIRECTXREGISTERAPP2;
+typedef PDIRECTXREGISTERAPP2A PDIRECTXREGISTERAPP2;
+typedef LPDIRECTXREGISTERAPP2A LPDIRECTXREGISTERAPP2;
 #endif // UNICODE
 
 
 //
 // API
 //
+
 #ifndef UNICODE_ONLY
 INT
 WINAPI
@@ -180,6 +224,7 @@ DirectXSetupW(
 #else
 #define DirectXSetup  DirectXSetupA
 #endif // !UNICODE
+
 
 #ifndef UNICODE_ONLY
 INT
@@ -212,7 +257,7 @@ INT
 WINAPI
 DirectXRegisterApplicationA(
     HWND                  hWnd,
-    LPDIRECTXREGISTERAPPA lpDXRegApp
+    LPVOID				  lpDXRegApp
     );
 #endif //!UNICODE_ONLY
 #ifndef ANSI_ONLY
@@ -220,7 +265,7 @@ INT
 WINAPI
 DirectXRegisterApplicationW(
     HWND                  hWnd,
-    LPDIRECTXREGISTERAPPW lpDXRegApp
+    LPVOID				  lpDXRegApp
     );
 #endif //!ANSI_ONLY
 #ifdef UNICODE
@@ -242,11 +287,11 @@ DirectXUnRegisterApplication(
 #ifdef UNICODE
 typedef INT (WINAPI * LPDIRECTXSETUP)(HWND, LPWSTR, DWORD);
 typedef INT (WINAPI * LPDIRECTXDEVICEDRIVERSETUP)(HWND, LPWSTR, LPSTR, DWORD);
-typedef INT (WINAPI * LPDIRECTXREGISTERAPPLICATION)(HWND, LPDIRECTXREGISTERAPPW);
+typedef INT (WINAPI * LPDIRECTXREGISTERAPPLICATION)(HWND, LPVOID);
 #else
 typedef INT (WINAPI * LPDIRECTXSETUP)(HWND, LPSTR, DWORD);
 typedef INT (WINAPI * LPDIRECTXDEVICEDRIVERSETUP)(HWND, LPSTR, LPSTR, DWORD);
-typedef INT (WINAPI * LPDIRECTXREGISTERAPPLICATION)(HWND, LPDIRECTXREGISTERAPPA);
+typedef INT (WINAPI * LPDIRECTXREGISTERAPPLICATION)(HWND, LPVOID);
 #endif // UNICODE
 
 typedef DWORD (FAR PASCAL * DSETUP_CALLBACK)(DWORD Reason,

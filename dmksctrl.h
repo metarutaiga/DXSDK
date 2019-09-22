@@ -16,6 +16,9 @@
 #ifndef _DMKSCTRL_
 #define _DMKSCTRL_
 
+#pragma warning(push)
+#pragma warning(disable:4201)   /* Disable warnings on anonymous unions */
+
 #include <pshpack8.h>
 
 #include <objbase.h>
@@ -152,6 +155,7 @@ DEFINE_GUID(KSDATAFORMAT_SUBTYPE_DIRECTMUSIC, 0x1a82f8bc,  0x3f8b, 0x11d2, 0xb7,
 
 #endif
 
+#pragma warning(pop)
 
 #endif /* _DMKSCTRL */
 

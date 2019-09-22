@@ -13,12 +13,13 @@
 #include <windows.h>
 
 #include <float.h>
-#include <ddraw.h>
+#include "ddraw.h"
 
 #ifndef DIRECT3D_VERSION
-#define DIRECT3D_VERSION         0x0600
+#define DIRECT3D_VERSION         0x0700
 #endif
 
+#pragma warning(disable:4201) // anonymous unions warning
 #pragma pack(4)
 
 
@@ -159,6 +160,7 @@ typedef struct _D3DVECTOR {
     D3DVALUE z;
     D3DVALUE dvZ;
     };
+#if(DIRECT3D_VERSION >= 0x0500)
 #if (defined __cplusplus) && (defined D3D_OVERLOADS)
 
 public:
@@ -240,6 +242,7 @@ public:
         friend _D3DVECTOR CrossProduct (const _D3DVECTOR& v1, const _D3DVECTOR& v2);
 
 #endif
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DVECTOR, *LPD3DVECTOR;
 
 /*
@@ -302,6 +305,7 @@ typedef struct _D3DTLVERTEX {
     D3DVALUE    tv;
     D3DVALUE    dvTV;
     };
+#if(DIRECT3D_VERSION >= 0x0500)
 #if (defined __cplusplus) && (defined D3D_OVERLOADS)
     _D3DTLVERTEX() { }
     _D3DTLVERTEX(const D3DVECTOR& v, float _rhw,
@@ -312,6 +316,7 @@ typedef struct _D3DTLVERTEX {
           tu = _tu; tv = _tv;
         }
 #endif
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DTLVERTEX, *LPD3DTLVERTEX;
 
 /*
@@ -347,6 +352,7 @@ typedef struct _D3DLVERTEX {
     D3DVALUE     tv;
     D3DVALUE     dvTV;
     };
+#if(DIRECT3D_VERSION >= 0x0500)
 #if (defined __cplusplus) && (defined D3D_OVERLOADS)
     _D3DLVERTEX() { }
     _D3DLVERTEX(const D3DVECTOR& v,
@@ -357,6 +363,7 @@ typedef struct _D3DLVERTEX {
           tu = _tu; tv = _tv;
         }
 #endif
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DLVERTEX, *LPD3DLVERTEX;
 
 /*
@@ -396,6 +403,7 @@ typedef struct _D3DVERTEX {
     D3DVALUE     tv;
     D3DVALUE     dvTV;
     };
+#if(DIRECT3D_VERSION >= 0x0500)
 #if (defined __cplusplus) && (defined D3D_OVERLOADS)
     _D3DVERTEX() { }
     _D3DVERTEX(const D3DVECTOR& v, const D3DVECTOR& n, float _tu, float _tv)
@@ -404,6 +412,7 @@ typedef struct _D3DVERTEX {
           tu = _tu; tv = _tv;
         }
 #endif
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DVERTEX, *LPD3DVERTEX;
 
 
@@ -412,16 +421,19 @@ typedef struct _D3DVERTEX {
  */
 
 typedef struct _D3DMATRIX {
+#if(DIRECT3D_VERSION >= 0x0500)
 #if (defined __cplusplus) && (defined D3D_OVERLOADS)
     union {
         struct {
 #endif
 
+#endif /* DIRECT3D_VERSION >= 0x0500 */
             D3DVALUE        _11, _12, _13, _14;
             D3DVALUE        _21, _22, _23, _24;
             D3DVALUE        _31, _32, _33, _34;
             D3DVALUE        _41, _42, _43, _44;
 
+#if(DIRECT3D_VERSION >= 0x0500)
 #if (defined __cplusplus) && (defined D3D_OVERLOADS)
         };
         D3DVALUE m[4][4];
@@ -441,8 +453,11 @@ typedef struct _D3DMATRIX {
 
     D3DVALUE& operator()(int iRow, int iColumn) { return m[iRow][iColumn]; }
     const D3DVALUE& operator()(int iRow, int iColumn) const { return m[iRow][iColumn]; }
+#if(DIRECT3D_VERSION >= 0x0600)
     friend _D3DMATRIX operator* (const _D3DMATRIX&, const _D3DMATRIX&);
+#endif /* DIRECT3D_VERSION >= 0x0600 */
 #endif
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DMATRIX, *LPD3DMATRIX;
 
 #if (defined __cplusplus) && (defined D3D_OVERLOADS)
@@ -463,6 +478,7 @@ typedef struct _D3DVIEWPORT {
     D3DVALUE    dvMaxZ;     /* Min/max homogeneous z coord */
 } D3DVIEWPORT, *LPD3DVIEWPORT;
 
+#if(DIRECT3D_VERSION >= 0x0500)
 typedef struct _D3DVIEWPORT2 {
     DWORD       dwSize;
     DWORD       dwX;
@@ -476,10 +492,39 @@ typedef struct _D3DVIEWPORT2 {
     D3DVALUE    dvMinZ;         /* Min/max of clip Volume */
     D3DVALUE    dvMaxZ;
 } D3DVIEWPORT2, *LPD3DVIEWPORT2;
+#endif /* DIRECT3D_VERSION >= 0x0500 */
+
+#if(DIRECT3D_VERSION >= 0x0700)
+typedef struct _D3DVIEWPORT7 {
+    DWORD       dwX;
+    DWORD       dwY;            /* Viewport Top left */
+    DWORD       dwWidth;
+    DWORD       dwHeight;       /* Viewport Dimensions */
+    D3DVALUE    dvMinZ;         /* Min/max of clip Volume */
+    D3DVALUE    dvMaxZ;
+} D3DVIEWPORT7, *LPD3DVIEWPORT7;
+#endif /* DIRECT3D_VERSION >= 0x0700 */
 
 /*
  * Values for clip fields.
  */
+
+#if(DIRECT3D_VERSION >= 0x0700)
+
+// Max number of user clipping planes, supported in D3D.
+#define D3DMAXUSERCLIPPLANES 32
+
+// These bits could be ORed together to use with D3DRENDERSTATE_CLIPPLANEENABLE
+//
+#define D3DCLIPPLANE0 (1 << 0)
+#define D3DCLIPPLANE1 (1 << 1)
+#define D3DCLIPPLANE2 (1 << 2)
+#define D3DCLIPPLANE3 (1 << 3)
+#define D3DCLIPPLANE4 (1 << 4)
+#define D3DCLIPPLANE5 (1 << 5)
+
+#endif /* DIRECT3D_VERSION >= 0x0700 */
+
 #define D3DCLIP_LEFT                0x00000001L
 #define D3DCLIP_RIGHT               0x00000002L
 #define D3DCLIP_TOP             0x00000004L
@@ -615,10 +660,39 @@ typedef struct _D3DMATERIAL {
     DWORD           dwRampSize;
 } D3DMATERIAL, *LPD3DMATERIAL;
 
+#if(DIRECT3D_VERSION >= 0x0700)
+
+typedef struct _D3DMATERIAL7 {
+    union {
+    D3DCOLORVALUE   diffuse;        /* Diffuse color RGBA */
+    D3DCOLORVALUE   dcvDiffuse;
+    };
+    union {
+    D3DCOLORVALUE   ambient;        /* Ambient color RGB */
+    D3DCOLORVALUE   dcvAmbient;
+    };
+    union {
+    D3DCOLORVALUE   specular;       /* Specular 'shininess' */
+    D3DCOLORVALUE   dcvSpecular;
+    };
+    union {
+    D3DCOLORVALUE   emissive;       /* Emissive color RGB */
+    D3DCOLORVALUE   dcvEmissive;
+    };
+    union {
+    D3DVALUE        power;          /* Sharpness if specular highlight */
+    D3DVALUE        dvPower;
+    };
+} D3DMATERIAL7, *LPD3DMATERIAL7;
+
+#endif /* DIRECT3D_VERSION >= 0x0700 */
+
 typedef enum _D3DLIGHTTYPE {
     D3DLIGHT_POINT          = 1,
     D3DLIGHT_SPOT           = 2,
     D3DLIGHT_DIRECTIONAL    = 3,
+// Note: The following light type (D3DLIGHT_PARALLELPOINT)
+// is no longer supported from D3D for DX7 onwards.
     D3DLIGHT_PARALLELPOINT  = 4,
 #if(DIRECT3D_VERSION < 0x0500) // For backward compatible headers
     D3DLIGHT_GLSPOT         = 5,
@@ -632,8 +706,8 @@ typedef enum _D3DLIGHTTYPE {
 typedef struct _D3DLIGHT {
     DWORD           dwSize;
     D3DLIGHTTYPE    dltType;            /* Type of light source */
-    D3DCOLORVALUE   dcvColor;       /* Color of light */
-    D3DVECTOR       dvPosition;     /* Position in world space */
+    D3DCOLORVALUE   dcvColor;           /* Color of light */
+    D3DVECTOR       dvPosition;         /* Position in world space */
     D3DVECTOR       dvDirection;        /* Direction in world space */
     D3DVALUE        dvRange;            /* Cutoff range */
     D3DVALUE        dvFalloff;          /* Falloff */
@@ -644,6 +718,27 @@ typedef struct _D3DLIGHT {
     D3DVALUE        dvPhi;              /* Outer angle of spotlight cone */
 } D3DLIGHT, *LPD3DLIGHT;
 
+#if(DIRECT3D_VERSION >= 0x0700)
+
+typedef struct _D3DLIGHT7 {
+    D3DLIGHTTYPE    dltType;            /* Type of light source */
+    D3DCOLORVALUE   dcvDiffuse;         /* Diffuse color of light */
+    D3DCOLORVALUE   dcvSpecular;        /* Specular color of light */
+    D3DCOLORVALUE   dcvAmbient;         /* Ambient color of light */
+    D3DVECTOR       dvPosition;         /* Position in world space */
+    D3DVECTOR       dvDirection;        /* Direction in world space */
+    D3DVALUE        dvRange;            /* Cutoff range */
+    D3DVALUE        dvFalloff;          /* Falloff */
+    D3DVALUE        dvAttenuation0;     /* Constant attenuation */
+    D3DVALUE        dvAttenuation1;     /* Linear attenuation */
+    D3DVALUE        dvAttenuation2;     /* Quadratic attenuation */
+    D3DVALUE        dvTheta;            /* Inner angle of spotlight cone */
+    D3DVALUE        dvPhi;              /* Outer angle of spotlight cone */
+} D3DLIGHT7, *LPD3DLIGHT7;
+
+#endif /* DIRECT3D_VERSION >= 0x0700 */
+
+#if(DIRECT3D_VERSION >= 0x0500)
 /*
  * Structure defining a light source and its properties.
  */
@@ -651,6 +746,7 @@ typedef struct _D3DLIGHT {
 /* flags bits */
 #define D3DLIGHT_ACTIVE         0x00000001
 #define D3DLIGHT_NO_SPECULAR    0x00000002
+#define D3DLIGHT_ALL (D3DLIGHT_ACTIVE | D3DLIGHT_NO_SPECULAR)
 
 /* maximum valid light range */
 #define D3DLIGHT_RANGE_MAX      ((float)sqrt(FLT_MAX))
@@ -671,6 +767,7 @@ typedef struct _D3DLIGHT2 {
     DWORD           dwFlags;
 } D3DLIGHT2, *LPD3DLIGHT2;
 
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 typedef struct _D3DLIGHTDATA {
     DWORD                dwSize;
     LPD3DLIGHTINGELEMENT lpIn;      /* Input positions and normals */
@@ -679,6 +776,7 @@ typedef struct _D3DLIGHTDATA {
     DWORD                dwOutSize; /* Stride of output colors */
 } D3DLIGHTDATA, *LPD3DLIGHTDATA;
 
+#if(DIRECT3D_VERSION >= 0x0500)
 /*
  * Before DX5, these values were in an enum called
  * D3DCOLORMODEL. This was not correct, since they are
@@ -689,13 +787,16 @@ typedef struct _D3DLIGHTDATA {
 #define D3DCOLOR_RGB    2
 
 typedef DWORD D3DCOLORMODEL;
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 
 /*
  * Options for clearing
  */
 #define D3DCLEAR_TARGET            0x00000001l  /* Clear target surface */
 #define D3DCLEAR_ZBUFFER           0x00000002l  /* Clear target z buffer */
+#if(DIRECT3D_VERSION >= 0x0600)
 #define D3DCLEAR_STENCIL           0x00000004l  /* Clear stencil planes */
+#endif /* DIRECT3D_VERSION >= 0x0600 */
 
 /*
  * Execute buffers are allocated via Direct3D.  These buffers may then
@@ -721,7 +822,9 @@ typedef enum _D3DOPCODE {
     D3DOP_BRANCHFORWARD     = 12,
     D3DOP_SPAN          = 13,
     D3DOP_SETSTATUS     = 14,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DOP_FORCE_DWORD           = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DOPCODE;
 
 typedef struct _D3DINSTRUCTION {
@@ -757,14 +860,18 @@ typedef enum _D3DSHADEMODE {
     D3DSHADE_FLAT              = 1,
     D3DSHADE_GOURAUD           = 2,
     D3DSHADE_PHONG             = 3,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DSHADE_FORCE_DWORD       = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DSHADEMODE;
 
 typedef enum _D3DFILLMODE {
     D3DFILL_POINT          = 1,
     D3DFILL_WIREFRAME          = 2,
     D3DFILL_SOLID          = 3,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DFILL_FORCE_DWORD        = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DFILLMODE;
 
 typedef struct _D3DLINEPATTERN {
@@ -779,7 +886,9 @@ typedef enum _D3DTEXTUREFILTER {
     D3DFILTER_MIPLINEAR        = 4,
     D3DFILTER_LINEARMIPNEAREST = 5,
     D3DFILTER_LINEARMIPLINEAR  = 6,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DFILTER_FORCE_DWORD      = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DTEXTUREFILTER;
 
 typedef enum _D3DBLEND {
@@ -796,7 +905,9 @@ typedef enum _D3DBLEND {
     D3DBLEND_SRCALPHASAT       = 11,
     D3DBLEND_BOTHSRCALPHA      = 12,
     D3DBLEND_BOTHINVSRCALPHA   = 13,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DBLEND_FORCE_DWORD       = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DBLEND;
 
 typedef enum _D3DTEXTUREBLEND {
@@ -807,23 +918,29 @@ typedef enum _D3DTEXTUREBLEND {
     D3DTBLEND_DECALMASK        = 5,
     D3DTBLEND_MODULATEMASK     = 6,
     D3DTBLEND_COPY             = 7,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DTBLEND_ADD              = 8,
     D3DTBLEND_FORCE_DWORD      = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DTEXTUREBLEND;
 
 typedef enum _D3DTEXTUREADDRESS {
     D3DTADDRESS_WRAP           = 1,
     D3DTADDRESS_MIRROR         = 2,
     D3DTADDRESS_CLAMP          = 3,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DTADDRESS_BORDER         = 4,
     D3DTADDRESS_FORCE_DWORD    = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DTEXTUREADDRESS;
 
 typedef enum _D3DCULL {
     D3DCULL_NONE               = 1,
     D3DCULL_CW                 = 2,
     D3DCULL_CCW                = 3,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DCULL_FORCE_DWORD        = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DCULL;
 
 typedef enum _D3DCMPFUNC {
@@ -835,9 +952,12 @@ typedef enum _D3DCMPFUNC {
     D3DCMP_NOTEQUAL            = 6,
     D3DCMP_GREATEREQUAL        = 7,
     D3DCMP_ALWAYS              = 8,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DCMP_FORCE_DWORD         = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DCMPFUNC;
 
+#if(DIRECT3D_VERSION >= 0x0600)
 typedef enum _D3DSTENCILOP {
     D3DSTENCILOP_KEEP           = 1,
     D3DSTENCILOP_ZERO           = 2,
@@ -849,22 +969,28 @@ typedef enum _D3DSTENCILOP {
     D3DSTENCILOP_DECR           = 8,
     D3DSTENCILOP_FORCE_DWORD    = 0x7fffffff, /* force 32-bit size enum */
 } D3DSTENCILOP;
+#endif /* DIRECT3D_VERSION >= 0x0600 */
 
 typedef enum _D3DFOGMODE {
     D3DFOG_NONE                = 0,
     D3DFOG_EXP                 = 1,
     D3DFOG_EXP2                = 2,
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DFOG_LINEAR              = 3,
     D3DFOG_FORCE_DWORD         = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DFOGMODE;
 
+#if(DIRECT3D_VERSION >= 0x0600)
 typedef enum _D3DZBUFFERTYPE {
     D3DZB_FALSE                 = 0,
     D3DZB_TRUE                  = 1, // Z buffering
     D3DZB_USEW                  = 2, // W buffering
     D3DZB_FORCE_DWORD           = 0x7fffffff, /* force 32-bit size enum */
 } D3DZBUFFERTYPE;
+#endif /* DIRECT3D_VERSION >= 0x0600 */
 
+#if(DIRECT3D_VERSION >= 0x0500)
 typedef enum _D3DANTIALIASMODE {
     D3DANTIALIAS_NONE          = 0,
     D3DANTIALIAS_SORTDEPENDENT = 1,
@@ -891,6 +1017,7 @@ typedef enum _D3DPRIMITIVETYPE {
     D3DPT_FORCE_DWORD   = 0x7fffffff, /* force 32-bit size enum */
 } D3DPRIMITIVETYPE;
 
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 /*
  * Amount to add to a state to generate the override for that state.
  */
@@ -902,10 +1029,25 @@ typedef enum _D3DPRIMITIVETYPE {
 #define D3DSTATE_OVERRIDE(type) (D3DRENDERSTATETYPE)(((DWORD) (type) + D3DSTATE_OVERRIDE_BIAS))
 
 typedef enum _D3DTRANSFORMSTATETYPE {
-    D3DTRANSFORMSTATE_WORLD           = 1,
-    D3DTRANSFORMSTATE_VIEW            = 2,
-    D3DTRANSFORMSTATE_PROJECTION      = 3,
+    D3DTRANSFORMSTATE_WORLD         = 1,
+    D3DTRANSFORMSTATE_VIEW          = 2,
+    D3DTRANSFORMSTATE_PROJECTION    = 3,
+#if(DIRECT3D_VERSION >= 0x0700)
+    D3DTRANSFORMSTATE_WORLD1        = 4,  // 2nd matrix to blend
+    D3DTRANSFORMSTATE_WORLD2        = 5,  // 3rd matrix to blend
+    D3DTRANSFORMSTATE_WORLD3        = 6,  // 4th matrix to blend
+    D3DTRANSFORMSTATE_TEXTURE0      = 16,
+    D3DTRANSFORMSTATE_TEXTURE1      = 17,
+    D3DTRANSFORMSTATE_TEXTURE2      = 18,
+    D3DTRANSFORMSTATE_TEXTURE3      = 19,
+    D3DTRANSFORMSTATE_TEXTURE4      = 20,
+    D3DTRANSFORMSTATE_TEXTURE5      = 21,
+    D3DTRANSFORMSTATE_TEXTURE6      = 22,
+    D3DTRANSFORMSTATE_TEXTURE7      = 23,
+#endif /* DIRECT3D_VERSION >= 0x0700 */
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DTRANSFORMSTATE_FORCE_DWORD     = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DTRANSFORMSTATETYPE;
 
 typedef enum _D3DLIGHTSTATETYPE {
@@ -916,61 +1058,53 @@ typedef enum _D3DLIGHTSTATETYPE {
     D3DLIGHTSTATE_FOGSTART          = 5,
     D3DLIGHTSTATE_FOGEND            = 6,
     D3DLIGHTSTATE_FOGDENSITY        = 7,
+#if(DIRECT3D_VERSION >= 0x0600)
     D3DLIGHTSTATE_COLORVERTEX       = 8,
+#endif /* DIRECT3D_VERSION >= 0x0600 */
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DLIGHTSTATE_FORCE_DWORD         = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DLIGHTSTATETYPE;
 
 typedef enum _D3DRENDERSTATETYPE {
-    D3DRENDERSTATE_TEXTUREHANDLE      = 1,    /* Texture handle for legacy interfaces (Texture,Texture2) */
     D3DRENDERSTATE_ANTIALIAS          = 2,    /* D3DANTIALIASMODE */
-    D3DRENDERSTATE_TEXTUREADDRESS     = 3,    /* D3DTEXTUREADDRESS  */
     D3DRENDERSTATE_TEXTUREPERSPECTIVE = 4,    /* TRUE for perspective correction */
-    D3DRENDERSTATE_WRAPU          = 5,    /* TRUE for wrapping in u */
-    D3DRENDERSTATE_WRAPV          = 6,    /* TRUE for wrapping in v */
     D3DRENDERSTATE_ZENABLE            = 7,    /* D3DZBUFFERTYPE (or TRUE/FALSE for legacy) */
     D3DRENDERSTATE_FILLMODE           = 8,    /* D3DFILL_MODE        */
     D3DRENDERSTATE_SHADEMODE          = 9,    /* D3DSHADEMODE */
     D3DRENDERSTATE_LINEPATTERN        = 10,   /* D3DLINEPATTERN */
-    D3DRENDERSTATE_MONOENABLE         = 11,   /* TRUE to enable mono rasterization */
-    D3DRENDERSTATE_ROP2               = 12,   /* ROP2 */
-    D3DRENDERSTATE_PLANEMASK          = 13,   /* DWORD physical plane mask */
     D3DRENDERSTATE_ZWRITEENABLE       = 14,   /* TRUE to enable z writes */
     D3DRENDERSTATE_ALPHATESTENABLE    = 15,   /* TRUE to enable alpha tests */
     D3DRENDERSTATE_LASTPIXEL          = 16,   /* TRUE for last-pixel on lines */
-    D3DRENDERSTATE_TEXTUREMAG         = 17,   /* D3DTEXTUREFILTER */
-    D3DRENDERSTATE_TEXTUREMIN         = 18,   /* D3DTEXTUREFILTER */
     D3DRENDERSTATE_SRCBLEND           = 19,   /* D3DBLEND */
     D3DRENDERSTATE_DESTBLEND          = 20,   /* D3DBLEND */
-    D3DRENDERSTATE_TEXTUREMAPBLEND    = 21,   /* D3DTEXTUREBLEND */
     D3DRENDERSTATE_CULLMODE           = 22,   /* D3DCULL */
     D3DRENDERSTATE_ZFUNC              = 23,   /* D3DCMPFUNC */
     D3DRENDERSTATE_ALPHAREF           = 24,   /* D3DFIXED */
     D3DRENDERSTATE_ALPHAFUNC          = 25,   /* D3DCMPFUNC */
     D3DRENDERSTATE_DITHERENABLE       = 26,   /* TRUE to enable dithering */
-    D3DRENDERSTATE_ALPHABLENDENABLE        = 27,   /* TRUE to enable alpha blending */
-    D3DRENDERSTATE_FOGENABLE          = 28,   /* TRUE to enable fog */
+#if(DIRECT3D_VERSION >= 0x0500)
+    D3DRENDERSTATE_ALPHABLENDENABLE   = 27,   /* TRUE to enable alpha blending */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
+    D3DRENDERSTATE_FOGENABLE          = 28,   /* TRUE to enable fog blending */
     D3DRENDERSTATE_SPECULARENABLE     = 29,   /* TRUE to enable specular */
     D3DRENDERSTATE_ZVISIBLE           = 30,   /* TRUE to enable z checking */
-    D3DRENDERSTATE_SUBPIXEL       = 31,   /* TRUE to enable subpixel correction */
-    D3DRENDERSTATE_SUBPIXELX          = 32,   /* TRUE to enable correction in X only */
-    D3DRENDERSTATE_STIPPLEDALPHA      = 33,   /* TRUE to enable stippled alpha */
+    D3DRENDERSTATE_STIPPLEDALPHA      = 33,   /* TRUE to enable stippled alpha (RGB device only) */
     D3DRENDERSTATE_FOGCOLOR           = 34,   /* D3DCOLOR */
     D3DRENDERSTATE_FOGTABLEMODE       = 35,   /* D3DFOGMODE */
-    D3DRENDERSTATE_FOGTABLESTART      = 36,   /* Fog table start    */
-    D3DRENDERSTATE_FOGTABLEEND        = 37,   /* Fog table end      */
-    D3DRENDERSTATE_FOGTABLEDENSITY    = 38,   /* Fog table density  */
-    D3DRENDERSTATE_STIPPLEENABLE      = 39,   /* TRUE to enable stippling */
+#if(DIRECT3D_VERSION >= 0x0700)
+    D3DRENDERSTATE_FOGSTART           = 36,   /* Fog start (for both vertex and pixel fog) */
+    D3DRENDERSTATE_FOGEND             = 37,   /* Fog end      */
+    D3DRENDERSTATE_FOGDENSITY         = 38,   /* Fog density  */
+#endif /* DIRECT3D_VERSION >= 0x0700 */
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DRENDERSTATE_EDGEANTIALIAS      = 40,   /* TRUE to enable edge antialiasing */
     D3DRENDERSTATE_COLORKEYENABLE     = 41,   /* TRUE to enable source colorkeyed textures */
-    D3DRENDERSTATE_BORDERCOLOR        = 43,   /* Border color for texturing w/border */
-    D3DRENDERSTATE_TEXTUREADDRESSU    = 44,   /* Texture addressing mode for U coordinate */
-    D3DRENDERSTATE_TEXTUREADDRESSV    = 45,   /* Texture addressing mode for V coordinate */
-    D3DRENDERSTATE_MIPMAPLODBIAS      = 46,   /* D3DVALUE Mipmap LOD bias */
     D3DRENDERSTATE_ZBIAS              = 47,   /* LONG Z bias */
     D3DRENDERSTATE_RANGEFOGENABLE     = 48,   /* Enables range-based fog */
-    D3DRENDERSTATE_ANISOTROPY         = 49,   /* Max. anisotropy. 1 = no anisotropy */
-    D3DRENDERSTATE_FLUSHBATCH         = 50,   /* Explicit flush for DP batching (DX5 Only) */
-    D3DRENDERSTATE_TRANSLUCENTSORTINDEPENDENT=51, /* BOOL enable sort-independent transparency */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
+
+#if(DIRECT3D_VERSION >= 0x0600)
     D3DRENDERSTATE_STENCILENABLE      = 52,   /* BOOL enable/disable stenciling */
     D3DRENDERSTATE_STENCILFAIL        = 53,   /* D3DSTENCILOP to do if stencil test fails */
     D3DRENDERSTATE_STENCILZFAIL       = 54,   /* D3DSTENCILOP to do if stencil test passes and Z test fails */
@@ -980,6 +1114,71 @@ typedef enum _D3DRENDERSTATETYPE {
     D3DRENDERSTATE_STENCILMASK        = 58,   /* Mask value used in stencil test */
     D3DRENDERSTATE_STENCILWRITEMASK   = 59,   /* Write mask applied to values written to stencil buffer */
     D3DRENDERSTATE_TEXTUREFACTOR      = 60,   /* D3DCOLOR used for multi-texture blend */
+#endif /* DIRECT3D_VERSION >= 0x0600 */
+
+#if(DIRECT3D_VERSION >= 0x0600)
+
+    /*
+     * 128 values [128, 255] are reserved for texture coordinate wrap flags.
+     * These are constructed with the D3DWRAP_U and D3DWRAP_V macros. Using
+     * a flags word preserves forward compatibility with texture coordinates
+     * that are >2D.
+     */
+    D3DRENDERSTATE_WRAP0              = 128,  /* wrap for 1st texture coord. set */
+    D3DRENDERSTATE_WRAP1              = 129,  /* wrap for 2nd texture coord. set */
+    D3DRENDERSTATE_WRAP2              = 130,  /* wrap for 3rd texture coord. set */
+    D3DRENDERSTATE_WRAP3              = 131,  /* wrap for 4th texture coord. set */
+    D3DRENDERSTATE_WRAP4              = 132,  /* wrap for 5th texture coord. set */
+    D3DRENDERSTATE_WRAP5              = 133,  /* wrap for 6th texture coord. set */
+    D3DRENDERSTATE_WRAP6              = 134,  /* wrap for 7th texture coord. set */
+    D3DRENDERSTATE_WRAP7              = 135,  /* wrap for 8th texture coord. set */
+#endif /* DIRECT3D_VERSION >= 0x0600 */
+#if(DIRECT3D_VERSION >= 0x0700)
+    D3DRENDERSTATE_CLIPPING            = 136,
+    D3DRENDERSTATE_LIGHTING            = 137,
+    D3DRENDERSTATE_EXTENTS             = 138,
+    D3DRENDERSTATE_AMBIENT             = 139,
+    D3DRENDERSTATE_FOGVERTEXMODE       = 140,
+    D3DRENDERSTATE_COLORVERTEX         = 141,
+    D3DRENDERSTATE_LOCALVIEWER         = 142,
+    D3DRENDERSTATE_NORMALIZENORMALS    = 143,
+    D3DRENDERSTATE_COLORKEYBLENDENABLE = 144,
+    D3DRENDERSTATE_DIFFUSEMATERIALSOURCE    = 145,
+    D3DRENDERSTATE_SPECULARMATERIALSOURCE   = 146,
+    D3DRENDERSTATE_AMBIENTMATERIALSOURCE    = 147,
+    D3DRENDERSTATE_EMISSIVEMATERIALSOURCE   = 148,
+    D3DRENDERSTATE_VERTEXBLEND              = 151,
+    D3DRENDERSTATE_CLIPPLANEENABLE          = 152,
+
+#endif /* DIRECT3D_VERSION >= 0x0700 */
+
+//
+// retired renderstates - not supported for DX7 interfaces
+//
+    D3DRENDERSTATE_TEXTUREHANDLE      = 1,    /* Texture handle for legacy interfaces (Texture,Texture2) */
+    D3DRENDERSTATE_TEXTUREADDRESS     = 3,    /* D3DTEXTUREADDRESS  */
+    D3DRENDERSTATE_WRAPU              = 5,    /* TRUE for wrapping in u */
+    D3DRENDERSTATE_WRAPV              = 6,    /* TRUE for wrapping in v */
+    D3DRENDERSTATE_MONOENABLE         = 11,   /* TRUE to enable mono rasterization */
+    D3DRENDERSTATE_ROP2               = 12,   /* ROP2 */
+    D3DRENDERSTATE_PLANEMASK          = 13,   /* DWORD physical plane mask */
+    D3DRENDERSTATE_TEXTUREMAG         = 17,   /* D3DTEXTUREFILTER */
+    D3DRENDERSTATE_TEXTUREMIN         = 18,   /* D3DTEXTUREFILTER */
+    D3DRENDERSTATE_TEXTUREMAPBLEND    = 21,   /* D3DTEXTUREBLEND */
+    D3DRENDERSTATE_SUBPIXEL           = 31,   /* TRUE to enable subpixel correction */
+    D3DRENDERSTATE_SUBPIXELX          = 32,   /* TRUE to enable correction in X only */
+    D3DRENDERSTATE_STIPPLEENABLE      = 39,   /* TRUE to enable stippling */
+#if(DIRECT3D_VERSION >= 0x0500)
+    D3DRENDERSTATE_BORDERCOLOR        = 43,   /* Border color for texturing w/border */
+    D3DRENDERSTATE_TEXTUREADDRESSU    = 44,   /* Texture addressing mode for U coordinate */
+    D3DRENDERSTATE_TEXTUREADDRESSV    = 45,   /* Texture addressing mode for V coordinate */
+    D3DRENDERSTATE_MIPMAPLODBIAS      = 46,   /* D3DVALUE Mipmap LOD bias */
+    D3DRENDERSTATE_ANISOTROPY         = 49,   /* Max. anisotropy. 1 = no anisotropy */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
+    D3DRENDERSTATE_FLUSHBATCH         = 50,   /* Explicit flush for DP batching (DX5 Only) */
+#if(DIRECT3D_VERSION >= 0x0600)
+    D3DRENDERSTATE_TRANSLUCENTSORTINDEPENDENT=51, /* BOOL enable sort-independent transparency */
+#endif /* DIRECT3D_VERSION >= 0x0600 */
     D3DRENDERSTATE_STIPPLEPATTERN00   = 64,   /* Stipple pattern 01...  */
     D3DRENDERSTATE_STIPPLEPATTERN01   = 65,
     D3DRENDERSTATE_STIPPLEPATTERN02   = 66,
@@ -1013,26 +1212,34 @@ typedef enum _D3DRENDERSTATETYPE {
     D3DRENDERSTATE_STIPPLEPATTERN30   = 94,
     D3DRENDERSTATE_STIPPLEPATTERN31   = 95,
 
-    /*
-     * 128 values [128, 255] are reserved for texture coordinate wrap flags.
-     * These are constructed with the D3DWRAP_U and D3DWRAP_V macros. Using
-     * a flags word preserves forward compatibility with texture coordinates
-     * that are >2D.
-     */
-    D3DRENDERSTATE_WRAP0              = 128,  /* wrap for 1st texture coord. set */
-    D3DRENDERSTATE_WRAP1              = 129,  /* wrap for 2nd texture coord. set */
-    D3DRENDERSTATE_WRAP2              = 130,  /* wrap for 3rd texture coord. set */
-    D3DRENDERSTATE_WRAP3              = 131,  /* wrap for 4th texture coord. set */
-    D3DRENDERSTATE_WRAP4              = 132,  /* wrap for 5th texture coord. set */
-    D3DRENDERSTATE_WRAP5              = 133,  /* wrap for 6th texture coord. set */
-    D3DRENDERSTATE_WRAP6              = 134,  /* wrap for 7th texture coord. set */
-    D3DRENDERSTATE_WRAP7              = 135,  /* wrap for 8th texture coord. set */
+//
+// retired renderstate names - the values are still used under new naming conventions
+//
+    D3DRENDERSTATE_FOGTABLESTART      = 36,   /* Fog table start    */
+    D3DRENDERSTATE_FOGTABLEEND        = 37,   /* Fog table end      */
+    D3DRENDERSTATE_FOGTABLEDENSITY    = 38,   /* Fog table density  */
+
+#if(DIRECT3D_VERSION >= 0x0500)
     D3DRENDERSTATE_FORCE_DWORD        = 0x7fffffff, /* force 32-bit size enum */
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 } D3DRENDERSTATETYPE;
 
+// Values for material source
+typedef enum _D3DMATERIALCOLORSOURCE
+{
+    D3DMCS_MATERIAL = 0,                // Color from material is used
+    D3DMCS_COLOR1   = 1,                // Diffuse vertex color is used
+    D3DMCS_COLOR2   = 2,                // Specular vertex color is used
+    D3DMCS_FORCE_DWORD = 0x7fffffff,    // force 32-bit size enum
+} D3DMATERIALCOLORSOURCE;
+
+
+#if(DIRECT3D_VERSION >= 0x0500)
 // For back-compatibility with legacy compilations
 #define D3DRENDERSTATE_BLENDENABLE      D3DRENDERSTATE_ALPHABLENDENABLE
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 
+#if(DIRECT3D_VERSION >= 0x0600)
 
 // Bias to apply to the texture coordinate set to apply a wrap to.
 #define D3DRENDERSTATE_WRAPBIAS                 128UL
@@ -1041,6 +1248,17 @@ typedef enum _D3DRENDERSTATETYPE {
 #define D3DWRAP_U   0x00000001L
 #define D3DWRAP_V   0x00000002L
 
+#endif /* DIRECT3D_VERSION >= 0x0600 */
+
+#if(DIRECT3D_VERSION >= 0x0700)
+
+/* Flags to construct the WRAP render states for 1D thru 4D texture coordinates */
+#define D3DWRAPCOORD_0   0x00000001L    // same as D3DWRAP_U
+#define D3DWRAPCOORD_1   0x00000002L    // same as D3DWRAP_V
+#define D3DWRAPCOORD_2   0x00000004L
+#define D3DWRAPCOORD_3   0x00000008L
+
+#endif /* DIRECT3D_VERSION >= 0x0700 */
 
 #define D3DRENDERSTATE_STIPPLEPATTERN(y) (D3DRENDERSTATE_STIPPLEPATTERN00 + (y))
 
@@ -1095,6 +1313,7 @@ typedef struct _D3DPROCESSVERTICES {
 #define D3DPROCESSVERTICES_NOCOLOR      0x00000010L
 
 
+#if(DIRECT3D_VERSION >= 0x0600)
 
 
 /*
@@ -1125,8 +1344,22 @@ typedef enum _D3DTEXTURESTAGESTATETYPE
     D3DTSS_MAXANISOTROPY  = 21, /* DWORD maximum anisotropy */
     D3DTSS_BUMPENVLSCALE  = 22, /* D3DVALUE scale for bump map luminance */
     D3DTSS_BUMPENVLOFFSET = 23, /* D3DVALUE offset for bump map luminance */
+#if(DIRECT3D_VERSION >= 0x0700)
+    D3DTSS_TEXTURETRANSFORMFLAGS = 24, /* D3DTEXTURETRANSFORMFLAGS controls texture transform */
+#endif /* DIRECT3D_VERSION >= 0x0700 */
     D3DTSS_FORCE_DWORD   = 0x7fffffff, /* force 32-bit size enum */
 } D3DTEXTURESTAGESTATETYPE;
+
+#if(DIRECT3D_VERSION >= 0x0700)
+// Values, used with D3DTSS_TEXCOORDINDEX, to specify that the vertex data(position
+// and normal in the camera space) should be taken as texture coordinates
+// Low 16 bits are used to specify texture coordinate index, to take the WRAP mode from
+//
+#define D3DTSS_TCI_PASSTHRU                             0x00000000
+#define D3DTSS_TCI_CAMERASPACENORMAL                    0x00010000
+#define D3DTSS_TCI_CAMERASPACEPOSITION                  0x00020000
+#define D3DTSS_TCI_CAMERASPACEREFLECTIONVECTOR          0x00030000
+#endif /* DIRECT3D_VERSION >= 0x0700 */
 
 /*
  * Enumerations for COLOROP and ALPHAOP texture blending operations set in
@@ -1194,9 +1427,12 @@ typedef enum _D3DTEXTUREOP
 #define D3DTA_CURRENT           0x00000001  // select result of previous stage
 #define D3DTA_TEXTURE           0x00000002  // select texture color
 #define D3DTA_TFACTOR           0x00000003  // select RENDERSTATE_TEXTUREFACTOR
-
+#if(DIRECT3D_VERSION >= 0x0700)
+#define D3DTA_SPECULAR          0x00000004  // select specular color
+#endif /* DIRECT3D_VERSION >= 0x0700 */
 #define D3DTA_COMPLEMENT        0x00000010  // take 1.0 - x
 #define D3DTA_ALPHAREPLICATE    0x00000020  // replicate alpha to color components
+
 
 /*
  *  IDirect3DTexture2 State Filter Types
@@ -1208,6 +1444,8 @@ typedef enum _D3DTEXTUREMAGFILTER
     D3DTFG_FLATCUBIC    = 3,    // cubic
     D3DTFG_GAUSSIANCUBIC = 4,   // different cubic kernel
     D3DTFG_ANISOTROPIC  = 5,    //
+#if(DIRECT3D_VERSION >= 0x0700)
+#endif /* DIRECT3D_VERSION >= 0x0700 */
     D3DTFG_FORCE_DWORD  = 0x7fffffff,   // force 32-bit size enum
 } D3DTEXTUREMAGFILTER;
 
@@ -1227,6 +1465,7 @@ typedef enum _D3DTEXTUREMIPFILTER
     D3DTFP_FORCE_DWORD  = 0x7fffffff,   // force 32-bit size enum
 } D3DTEXTUREMIPFILTER;
 
+#endif /* DIRECT3D_VERSION >= 0x0600 */
 
 /*
  * Triangle flags
@@ -1340,6 +1579,7 @@ typedef struct _D3DSTATUS {
 #define D3DSETSTATUS_EXTENTS        0x00000002L
 #define D3DSETSTATUS_ALL    (D3DSETSTATUS_STATUS | D3DSETSTATUS_EXTENTS)
 
+#if(DIRECT3D_VERSION >= 0x0500)
 typedef struct _D3DCLIPSTATUS {
     DWORD dwFlags; /* Do we set 2d extents, 3D extents or status */
     DWORD dwStatus; /* Clip status */
@@ -1352,6 +1592,7 @@ typedef struct _D3DCLIPSTATUS {
 #define D3DCLIPSTATUS_EXTENTS2      0x00000002L
 #define D3DCLIPSTATUS_EXTENTS3      0x00000004L
 
+#endif /* DIRECT3D_VERSION >= 0x0500 */
 /*
  * Statistics structure
  */
@@ -1391,6 +1632,7 @@ typedef struct _D3DEXECUTEDATA {
 #define D3DPAL_RESERVED 0x80    /* Renderer may not use this entry */
 
 
+#if(DIRECT3D_VERSION >= 0x0600)
 
 typedef struct _D3DVERTEXBUFFERDESC {
     DWORD dwSize;
@@ -1399,10 +1641,10 @@ typedef struct _D3DVERTEXBUFFERDESC {
     DWORD dwNumVertices;
 } D3DVERTEXBUFFERDESC, *LPD3DVERTEXBUFFERDESC;
 
-/* These correspond to DDSCAPS_* flags */
 #define D3DVBCAPS_SYSTEMMEMORY      0x00000800l
 #define D3DVBCAPS_WRITEONLY         0x00010000l
 #define D3DVBCAPS_OPTIMIZED         0x80000000l
+#define D3DVBCAPS_DONOTCLIP         0x00000001l
 
 /* Vertex Operations for ProcessVertices */
 #define D3DVOP_LIGHT       (1 << 10)
@@ -1410,6 +1652,21 @@ typedef struct _D3DVERTEXBUFFERDESC {
 #define D3DVOP_CLIP        (1 << 2)
 #define D3DVOP_EXTENTS     (1 << 3)
 
+/* The maximum number of vertices user can pass to any d3d
+   drawing function or to create vertex buffer with
+*/
+#define D3DMAXNUMVERTICES    ((1<<16) - 1)
+/* The maximum number of primitives user can pass to any d3d
+   drawing function.
+*/
+#define D3DMAXNUMPRIMITIVES  ((1<<16) - 1)
+
+#if(DIRECT3D_VERSION >= 0x0700)
+
+/* Bits for dwFlags in ProcessVertices call */
+#define D3DPV_DONOTCOPYDATA (1 << 0)
+
+#endif /* DIRECT3D_VERSION >= 0x0700 */
 //-------------------------------------------------------------------
 
 // Flexible vertex format bits
@@ -1418,6 +1675,14 @@ typedef struct _D3DVERTEXBUFFERDESC {
 #define D3DFVF_POSITION_MASK    0x00E
 #define D3DFVF_XYZ              0x002
 #define D3DFVF_XYZRHW           0x004
+#if(DIRECT3D_VERSION >= 0x0700)
+#define D3DFVF_XYZB1            0x006
+#define D3DFVF_XYZB2            0x008
+#define D3DFVF_XYZB3            0x00a
+#define D3DFVF_XYZB4            0x00c
+#define D3DFVF_XYZB5            0x00e
+
+#endif /* DIRECT3D_VERSION >= 0x0700 */
 #define D3DFVF_NORMAL           0x010
 #define D3DFVF_RESERVED1        0x020
 #define D3DFVF_DIFFUSE          0x040
@@ -1492,7 +1757,60 @@ typedef struct _D3DDRAWPRIMITIVESTRIDEDDATA
 #define D3DVIS_MASK_NEAR            (3 << 10)
 #define D3DVIS_MASK_FAR             (3 << 12)
 
+#endif /* DIRECT3D_VERSION >= 0x0600 */
+
+#if(DIRECT3D_VERSION >= 0x0700)
+
+// To be used with GetInfo()
+#define D3DDEVINFOID_TEXTUREMANAGER    1
+#define D3DDEVINFOID_D3DTEXTUREMANAGER 2
+#define D3DDEVINFOID_TEXTURING         3
+
+typedef enum _D3DSTATEBLOCKTYPE
+{
+    D3DSBT_ALL           = 1, // capture all state
+    D3DSBT_PIXELSTATE    = 2, // capture pixel state
+    D3DSBT_VERTEXSTATE   = 3, // capture vertex state
+    D3DSBT_FORCE_DWORD   = 0xffffffff
+} D3DSTATEBLOCKTYPE;
+
+// The D3DVERTEXBLENDFLAGS type is used with D3DRENDERSTATE_VERTEXBLEND state.
+//
+typedef enum _D3DVERTEXBLENDFLAGS
+{
+    D3DVBLEND_DISABLE  = 0, // Disable vertex blending
+    D3DVBLEND_1WEIGHT  = 1, // blend between 2 matrices
+    D3DVBLEND_2WEIGHTS = 2, // blend between 3 matrices
+    D3DVBLEND_3WEIGHTS = 3, // blend between 4 matrices
+} D3DVERTEXBLENDFLAGS;
+
+typedef enum _D3DTEXTURETRANSFORMFLAGS {
+    D3DTTFF_DISABLE         = 0,    // texture coordinates are passed directly
+    D3DTTFF_COUNT1          = 1,    // rasterizer should expect 1-D texture coords
+    D3DTTFF_COUNT2          = 2,    // rasterizer should expect 2-D texture coords
+    D3DTTFF_COUNT3          = 3,    // rasterizer should expect 3-D texture coords
+    D3DTTFF_COUNT4          = 4,    // rasterizer should expect 4-D texture coords
+    D3DTTFF_PROJECTED       = 256,  // texcoords to be divided by COUNTth element
+    D3DTTFF_FORCE_DWORD     = 0x7fffffff,
+} D3DTEXTURETRANSFORMFLAGS;
+
+// Macros to set texture coordinate format bits in the FVF id
+
+#define D3DFVF_TEXTUREFORMAT2 0         // Two floating point values
+#define D3DFVF_TEXTUREFORMAT1 3         // One floating point value
+#define D3DFVF_TEXTUREFORMAT3 1         // Three floating point values
+#define D3DFVF_TEXTUREFORMAT4 2         // Four floating point values
+
+#define D3DFVF_TEXCOORDSIZE3(CoordIndex) (D3DFVF_TEXTUREFORMAT3 << (CoordIndex*2 + 16))
+#define D3DFVF_TEXCOORDSIZE2(CoordIndex) (D3DFVF_TEXTUREFORMAT2)
+#define D3DFVF_TEXCOORDSIZE4(CoordIndex) (D3DFVF_TEXTUREFORMAT4 << (CoordIndex*2 + 16))
+#define D3DFVF_TEXCOORDSIZE1(CoordIndex) (D3DFVF_TEXTUREFORMAT1 << (CoordIndex*2 + 16))
+
+
+#endif /* DIRECT3D_VERSION >= 0x0700 */
 
 #pragma pack()
+#pragma warning(default:4201)
+
 #endif /* _D3DTYPES_H_ */
 

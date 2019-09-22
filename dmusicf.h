@@ -105,6 +105,14 @@ typedef struct _DMUS_COMMAND_PARAM
     BYTE bGrooveRange;
 } DMUS_COMMAND_PARAM;
 
+typedef struct _DMUS_COMMAND_PARAM_2
+{
+	MUSIC_TIME mtTime;
+    BYTE bCommand;
+    BYTE bGrooveLevel;
+    BYTE bGrooveRange;
+} DMUS_COMMAND_PARAM_2;
+
 typedef DMUS_CHORD_KEY DMUS_CHORD_PARAM; /* DMUS_CHORD_KEY defined in dmusici.h */
 
 typedef struct _DMUS_RHYTHM_PARAM

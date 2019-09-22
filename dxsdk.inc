@@ -4,20 +4,20 @@ rc = brc32
 link = ilink32
 bldlib = tlib
 cflags = -c -3 -j1 -X -Vd -I$(INCLUDE)
+cflags = $(cflags) -Dsinf=(FLOAT)sin
+cflags = $(cflags) -Dcosf=(FLOAT)cos
+cflags = $(cflags) -Dasinf=(FLOAT)asin
+cflags = $(cflags) -Dacosf=(FLOAT)acos
+cflags = $(cflags) -Dsqrtf=(FLOAT)sqrt
+cflags = $(cflags) -Dexpf=(FLOAT)exp
 rcflags = -r -fo
 linkflags = -n -V4.0 -aa 
 !IFDEF main
 linkflags = $(linkflags) -ap
 borobjs=c0x32.obj
 !ELSE
-!IFDEF dll
-linkflags = $(linkflags) -Tpd
-borobjs=c0w32.obj
-def = $(deffile)
-!ELSE
 linkflags = $(linkflags) -Tpe
 borobjs=c0w32.obj
-!ENDIF
 !ENDIF
 linkflags = $(linkflags) -j$(LIB) -L$(LIB)
 libflags=$(OBJ_DIR)\$(proj).lib
@@ -25,7 +25,7 @@ outobj = -o
 commas =,
 outexe=
 borlib=+
-deflibs = import32.lib cw32mt.lib ole2w32.lib
+deflibs = import32.lib cw32mti.lib ole2w32.lib
 !IFDEF MFC
 cflags =$(cflags) -VF -w-hid -w-par -w-aus -w-inl -w-inq -WM -Vd /D_NO_VCL;_RTLDLL;_AFXDLL;_X86_;_WINDOWS;_MSC_VER=1100;WIN32;
 !IFDEF NODEBUG
@@ -55,6 +55,12 @@ link = link
 bldlib = lib
 deflibs = kernel32.lib gdi32.lib user32.lib advapi32.lib gdi32.lib comdlg32.lib winspool.lib shell32.lib winmm.lib comctl32.lib ole32.lib oleaut32.lib
 cflags = -c /D "WIN32" /D "_WINDOWS"
+cflags = $(cflags) -Dsinf=sin
+cflags = $(cflags) -Dcosf=cos
+cflags = $(cflags) -Dasinf=asin
+cflags = $(cflags) -Dacosf=acos
+cflags = $(cflags) -Dsqrtf=sqrt
+cflags = $(cflags) -Dexpf=exp
 !IFDEF NODEBUG
 cflags =$(cflags) /D "NDEBUG"
 cdebug = -Ox
@@ -80,9 +86,6 @@ linkflags = /INCREMENTAL:NO /NOLOGO
 linkflags = $(linkflags) /SUBSYSTEM:CONSOLE
 !ELSE
 linkflags = $(linkflags) /SUBSYSTEM:WINDOWS
-!IFDEF dll
-linkflags = $(linkflags) /DLL /DEF:$(deffile)
-!ENDIF
 !ENDIF
 libflags=/OUT:$(OBJ_DIR)\$(proj).lib
 outobj = -Fo
@@ -127,9 +130,6 @@ linkflags = $(linkflags) /INCREMENTAL:NO /PDB:NONE /NOLOGO
 linkflags = $(linkflags) /SUBSYSTEM:CONSOLE
 !ELSE
 linkflags = $(linkflags) /SUBSYSTEM:WINDOWS
-!IFDEF dll
-linkflags = $(linkflags) /DLL /DEF:$(deffile)
-!ENDIF
 !ENDIF
 libflags=/OUT:$(OBJ_DIR)\$(proj).lib /SUBSYSTEM:WINDOWS
 outobj = -Fo

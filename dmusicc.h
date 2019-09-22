@@ -20,6 +20,7 @@
 #include "dmerror.h"
 #include "dmdls.h"
 #include "dsound.h"
+#include "dmusbuff.h"
 
 #include <pshpack8.h>
 
@@ -61,6 +62,7 @@ typedef struct _DMUS_BUFFERDESC{
 #define DMUS_PC_XGINHARDWARE     (0x00000040)
 #define DMUS_PC_DIRECTSOUND      (0x00000080)
 #define DMUS_PC_SHAREABLE        (0x00000100)
+#define DMUS_PC_DLS2             (0x00000200)
 #define DMUS_PC_SYSTEMMEMORY     (0x7FFFFFFF)
 
 
@@ -170,18 +172,21 @@ typedef struct _DMUS_CLOCKINFO
     WCHAR           wszDescription[DMUS_MAX_DESCRIPTION];
 } DMUS_CLOCKINFO;
 
+interface IDirectMusic;
 interface IDirectMusicBuffer;
 interface IDirectMusicPort;
 interface IDirectMusicThru;
 interface IReferenceClock;
 
 #ifndef __cplusplus 
+typedef interface IDirectMusic IDirectMusic;
 typedef interface IDirectMusicBuffer IDirectMusicBuffer;
 typedef interface IDirectMusicPort IDirectMusicPort;
 typedef interface IDirectMusicThru IDirectMusicThru;
 typedef interface IReferenceClock IReferenceClock;
 #endif
 
+typedef IDirectMusic *LPDIRECTMUSIC;
 typedef IDirectMusicBuffer *LPDIRECTMUSICBUFFER;
 typedef IDirectMusicPort *LPDIRECTMUSICPORT;
 
@@ -253,31 +258,6 @@ DECLARE_INTERFACE_(IDirectMusicBuffer, IUnknown)
     STDMETHOD(SetStartTime)         (THIS_ REFERENCE_TIME rt) PURE;
     STDMETHOD(SetUsedBytes)         (THIS_ DWORD cb) PURE;
 };
-
-/* Format of DirectMusic events in a buffer
- *
- * A buffer contains 1 or more events, each with the following header.
- * Immediately following the header is the event data. The header+data
- * size is rounded to the nearest quadword (8 bytes).
- */
- 
-#include <pshpack4.h>                       /* Do not pad at end - that's where the data is */ 
-typedef struct _DMUS_EVENTHEADER *LPDMUS_EVENTHEADER;
-typedef struct _DMUS_EVENTHEADER
-{
-    DWORD           cbEvent;                /* Unrounded bytes in event */
-    DWORD           dwChannelGroup;         /* Channel group of event */
-    REFERENCE_TIME  rtDelta;                /* Delta from start time of entire buffer */
-    DWORD           dwFlags;                /* Flags DMUS_EVENT_xxx */
-} DMUS_EVENTHEADER;
-#include <poppack.h>
-
-#define DMUS_EVENT_STRUCTURED   0x00000001  /* Unstructured data (SysEx, etc.) */
-
-/* The number of bytes to allocate for an event with 'cb' data bytes.
- */ 
-#define QWORD_ALIGN(x) (((x) + 7) & ~7)
-#define DMUS_EVENT_SIZE(cb) QWORD_ALIGN(sizeof(DMUS_EVENTHEADER) + cb)
 
 #undef  INTERFACE
 #define INTERFACE  IDirectMusicInstrument
@@ -530,10 +510,15 @@ DEFINE_GUID(IID_IDirectMusicCollection,0xd2ac287c, 0xb39b, 0x11d1, 0x87, 0x4, 0x
 DEFINE_GUID(IID_IDirectMusicInstrument,0xd2ac287d, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicDownloadedInstrument,0xd2ac287e, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 
+/* Alternate interface ID for IID_IDirectMusic, available in DX7 release and after. */
+DEFINE_GUID(IID_IDirectMusic2,0x6fc2cae1, 0xbc78, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
+
+
 /* Property Query GUID_DMUS_PROP_GM_Hardware - Local GM set, no need to download
  * Property Query GUID_DMUS_PROP_GS_Hardware - Local GS set, no need to download
  * Property Query GUID_DMUS_PROP_XG_Hardware - Local XG set, no need to download
  * Property Query GUID_DMUS_PROP_DLS1        - Support DLS level 1
+ * Property Query GUID_DMUS_PROP_INSTRUMENT2 - Support new INSTRUMENT2 download format
  * Property Query GUID_DMUS_PROP_XG_Capable  - Support minimum requirements of XG
  * Property Query GUID_DMUS_PROP_GS_Capable  - Support minimum requirements of GS
  * Property Query GUID_DMUS_PROP_SynthSink_DSOUND - Synthsink talks to DSound
@@ -548,8 +533,12 @@ DEFINE_GUID(GUID_DMUS_PROP_XG_Hardware, 0x178f2f26, 0xc364, 0x11d1, 0xa7, 0x60, 
 DEFINE_GUID(GUID_DMUS_PROP_XG_Capable,  0x6496aba1, 0x61b0, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
 DEFINE_GUID(GUID_DMUS_PROP_GS_Capable,  0x6496aba2, 0x61b0, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
 DEFINE_GUID(GUID_DMUS_PROP_DLS1,        0x178f2f27, 0xc364, 0x11d1, 0xa7, 0x60, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
+DEFINE_GUID(GUID_DMUS_PROP_DLS2,        0xf14599e5, 0x4689, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
+DEFINE_GUID(GUID_DMUS_PROP_INSTRUMENT2, 0x865fd372, 0x9f67, 0x11d2, 0x87, 0x2a, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(GUID_DMUS_PROP_SynthSink_DSOUND,0xaa97844, 0xc877, 0x11d1, 0x87, 0xc, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(GUID_DMUS_PROP_SynthSink_WAVE,0xaa97845, 0xc877, 0x11d1, 0x87, 0xc, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(GUID_DMUS_PROP_SampleMemorySize, 0x178f2f28, 0xc364, 0x11d1, 0xa7, 0x60, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
+DEFINE_GUID(GUID_DMUS_PROP_SamplePlaybackRate, 0x2a91f713, 0xa4bf, 0x11d2, 0xbb, 0xdf, 0x0, 0x60, 0x8, 0x33, 0xdb, 0xd8);
 
 /* Property Get/Set GUID_DMUS_PROP_WriteLatency
  *
@@ -597,12 +586,17 @@ DEFINE_GUID(GUID_DMUS_PROP_Effects, 0xcda8d611, 0x684a, 0x11d2, 0x87, 0x1e, 0x0,
 
 DEFINE_GUID(GUID_DMUS_PROP_LegacyCaps,0xcfa7cdc2, 0x00a1, 0x11d2, 0xaa, 0xd5, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
 
-/* Property Set GUID_DMUS_Volume
+/* Property Set GUID_DMUS_PROP_Volume
  *
  * Item 0: A long which contains an offset, in 1/100 dB, to be added to the final volume
  *
  */
 DEFINE_GUID(GUID_DMUS_PROP_Volume, 0xfedfae25L, 0xe46e, 0x11d1, 0xaa, 0xce, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
+
+/* Min and Max values for setting volume with GUID_DMUS_PROP_Volume */
+
+#define DMUS_VOLUME_MAX     2000        /* +20 dB */
+#define DMUS_VOLUME_MIN   -20000        /* -200 dB */
 
 #ifdef __cplusplus
 }; /* extern "C" */

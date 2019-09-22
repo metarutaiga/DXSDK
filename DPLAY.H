@@ -12,9 +12,17 @@
 
 #include <ole2.h>       // for DECLARE_INTERFACE and HRESULT
 
+/* avoid warnings in MSVC at Level4 */
+#pragma warning(disable:4201)
+
+
 /*
  * Some types
  */
+
+#ifndef _WIN64
+#define DWORD_PTR DWORD
+#endif
 
 typedef LPVOID (*LPRGLPVOID)[];
 typedef LPRGLPVOID PRGPVOID, LPRGPVOID, PRGLPVOID, PAPVOID, LPAPVOID, PALPVOID, LPALPVOID;
@@ -246,12 +254,12 @@ typedef struct
         LPWSTR  lpszPassword;       // Unicode
         LPSTR   lpszPasswordA;      // ANSI
     };
-    DWORD   dwReserved1;        // Reserved for future MS use.
-    DWORD   dwReserved2;
-    DWORD   dwUser1;            // For use by the application
-    DWORD   dwUser2;
-    DWORD   dwUser3;
-    DWORD   dwUser4;
+    DWORD_PTR   dwReserved1;        // Reserved for future MS use.
+    DWORD_PTR   dwReserved2;
+    DWORD_PTR   dwUser1;            // For use by the application
+    DWORD_PTR   dwUser2;
+    DWORD_PTR   dwUser3;
+    DWORD_PTR   dwUser4;
 } DPSESSIONDESC2, FAR *LPDPSESSIONDESC2;
 
 typedef DPSESSIONDESC2 * VOL LPDPSESSIONDESC2_V;
@@ -949,7 +957,7 @@ DECLARE_INTERFACE_( IDirectPlay4, IDirectPlay3 )
     /*** IDirectPlay4 methods ***/
     STDMETHOD(GetGroupOwner)        (THIS_ DPID, LPDPID) PURE;
     STDMETHOD(SetGroupOwner)        (THIS_ DPID, DPID) PURE;
-    STDMETHOD(SendEx)               (THIS_ DPID, DPID, DWORD, LPVOID, DWORD, DWORD, DWORD, LPVOID, LPDWORD) PURE;
+    STDMETHOD(SendEx)               (THIS_ DPID, DPID, DWORD, LPVOID, DWORD, DWORD, DWORD, LPVOID, DWORD_PTR *) PURE;
     STDMETHOD(GetMessageQueue)      (THIS_ DPID, DPID, DWORD, LPDWORD, LPDWORD) PURE;
     STDMETHOD(CancelMessage)        (THIS_ DWORD, DWORD) PURE;
     STDMETHOD(CancelPriority)       (THIS_ DWORD, DWORD, DWORD) PURE;
@@ -1977,19 +1985,19 @@ typedef struct
 {
     DWORD   dwSize;
     GUID    guidSession;                  
-    DWORD   dwSession;                    
+    DWORD_PTR dwSession;                    
     DWORD   dwMaxPlayers;                 
     DWORD   dwCurrentPlayers;             
     DWORD   dwFlags;                      
     char    szSessionName[DPSESSIONNAMELEN];
     char    szUserField[DPUSERRESERVED];
-    DWORD   dwReserved1;                  
+    DWORD_PTR   dwReserved1;                  
     char    szPassword[DPPASSWORDLEN];    
-    DWORD   dwReserved2;                  
-    DWORD   dwUser1;
-    DWORD   dwUser2;
-    DWORD   dwUser3;
-    DWORD   dwUser4;
+    DWORD_PTR   dwReserved2;                  
+    DWORD_PTR   dwUser1;
+    DWORD_PTR   dwUser2;
+    DWORD_PTR   dwUser3;
+    DWORD_PTR   dwUser4;
 } DPSESSIONDESC,*LPDPSESSIONDESC;
 
 typedef BOOL (PASCAL * LPDPENUMSESSIONSCALLBACK)(
@@ -2123,5 +2131,6 @@ DEFINE_GUID(IID_IDirectPlay, 0x5454e9a0, 0xdb65, 0x11ce, 0x92, 0x1c, 0x00, 0xaa,
 };
 #endif
 
-#endif
+#pragma warning(default:4201)
 
+#endif

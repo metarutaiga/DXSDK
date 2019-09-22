@@ -16,7 +16,7 @@
 #include <objbase.h>
 
 #include <mmsystem.h>
-#include <dmusicc.h>
+#include "dmusicc.h"
 
 #include <pshpack8.h>
 
@@ -364,11 +364,11 @@ typedef struct _DMUS_TEMPO_PMSG
     double  dblTempo;                       /* the tempo */
 } DMUS_TEMPO_PMSG;
 
-#define DMUS_TEMPO_MAX          350
-#define DMUS_TEMPO_MIN          10
+#define DMUS_TEMPO_MAX          1000
+#define DMUS_TEMPO_MIN          1
 
-#define DMUS_MASTERTEMPO_MAX    2.0
-#define DMUS_MASTERTEMPO_MIN    0.25
+#define DMUS_MASTERTEMPO_MAX    100.0f
+#define DMUS_MASTERTEMPO_MIN    0.01f
 
 /* DMUS_SYSEX_PMSG */
 typedef struct _DMUS_SYSEX_PMSG
@@ -966,10 +966,10 @@ DECLARE_INTERFACE_(IDirectMusicComposer, IUnknown)
 
     /*  IDirectMusicComposer */
     STDMETHOD(ComposeSegmentFromTemplate)   (THIS_ IDirectMusicStyle* pStyle, 
-                                                   IDirectMusicSegment* pTempSeg, 
+                                                   IDirectMusicSegment* pTemplate, 
                                                    WORD wActivity, 
                                                    IDirectMusicChordMap* pChordMap, 
-                                                   IDirectMusicSegment** ppSectionSeg) PURE;
+                                                   IDirectMusicSegment** ppSegment) PURE;
     STDMETHOD(ComposeSegmentFromShape)      (THIS_ IDirectMusicStyle* pStyle, 
                                                    WORD wNumMeasures, 
                                                    WORD wShape, 
@@ -977,14 +977,14 @@ DECLARE_INTERFACE_(IDirectMusicComposer, IUnknown)
                                                    BOOL fIntro, 
                                                    BOOL fEnd, 
                                                    IDirectMusicChordMap* pChordMap, 
-                                                   IDirectMusicSegment** ppSectionSeg ) PURE;
+                                                   IDirectMusicSegment** ppSegment ) PURE;
     STDMETHOD(ComposeTransition)            (THIS_ IDirectMusicSegment* pFromSeg, 
                                                    IDirectMusicSegment* pToSeg, 
                                                    MUSIC_TIME mtTime, 
                                                    WORD wCommand, 
                                                    DWORD dwFlags, 
                                                    IDirectMusicChordMap* pChordMap, 
-                                                   IDirectMusicSegment** ppSectionSeg) PURE;
+                                                   IDirectMusicSegment** ppTransSeg) PURE;
     STDMETHOD(AutoTransition)               (THIS_ IDirectMusicPerformance* pPerformance, 
                                                    IDirectMusicSegment* pToSeg, 
                                                    WORD wCommand, 
@@ -998,8 +998,8 @@ DECLARE_INTERFACE_(IDirectMusicComposer, IUnknown)
                                                    BOOL fIntro, 
                                                    BOOL fEnd, 
                                                    WORD wEndLength, 
-                                                   IDirectMusicSegment** ppTempSeg) PURE;
-    STDMETHOD(ChangeChordMap)            (THIS_ IDirectMusicSegment* pSectionSeg, 
+                                                   IDirectMusicSegment** ppTemplate) PURE;
+    STDMETHOD(ChangeChordMap)            (THIS_ IDirectMusicSegment* pSegment, 
                                                    BOOL fTrackScale, 
                                                    IDirectMusicChordMap* pChordMap) PURE;
 };
@@ -1040,6 +1040,9 @@ DEFINE_GUID(GUID_NOTIFICATION_COMMAND,0xd2ac289c, 0xb39b, 0x11d1, 0x87, 0x4, 0x0
 /* Track param type guids */
 /* Use to get/set a DMUS_COMMAND_PARAM param in the Command track */
 DEFINE_GUID(GUID_CommandParam,0xd2ac289d, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Use to get a DMUS_COMMAND_PARAM_2 param in the Command track */
+DEFINE_GUID(GUID_CommandParam2, 0x28f97ef7, 0x9538, 0x11d2, 0x97, 0xa9, 0x0, 0xc0, 0x4f, 0xa3, 0x6e, 0x58);
 
 /* Use to get/set a DMUS_CHORD_PARAM param in the Chord track */
 DEFINE_GUID(GUID_ChordParam,0xd2ac289e, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
@@ -1096,6 +1099,12 @@ DEFINE_GUID(GUID_EnableTimeSig, 0x45fc707c, 0x1db4, 0x11d2, 0xbc, 0xac, 0x0, 0xa
 DEFINE_GUID(GUID_DisableTempo, 0x45fc707d, 0x1db4, 0x11d2, 0xbc, 0xac, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
 DEFINE_GUID(GUID_EnableTempo, 0x45fc707e, 0x1db4, 0x11d2, 0xbc, 0xac, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
 
+/* Used in SetParam calls for pattern-based tracks.  A nonzero value seeds the random number 
+generator for variation selection; a value of zero reverts to the default behavior of 
+getting the seed from the system clock.
+*/
+DEFINE_GUID(GUID_SeedVariations, 0x65b76fa5, 0xff37, 0x11d2, 0x81, 0x4e, 0x0, 0xc0, 0x4f, 0xa3, 0x6e, 0x58);
+
 /* Global data guids */
 DEFINE_GUID(GUID_PerfMasterTempo,0xd2ac28b0, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(GUID_PerfMasterVolume,0xd2ac28b1, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
@@ -1119,6 +1128,10 @@ DEFINE_GUID(IID_IDirectMusicStyle,0xd2ac28bd, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x
 DEFINE_GUID(IID_IDirectMusicChordMap,0xd2ac28be, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicComposer,0xd2ac28bf, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicBand,0xd2ac28c0, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Alternate interface IDs, available in DX7 release and after. */
+DEFINE_GUID(IID_IDirectMusicPerformance2,0x6fc2cae0, 0xbc78, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
+DEFINE_GUID(IID_IDirectMusicSegment2, 0xd38894d1, 0xc052, 0x11d2, 0x87, 0x2f, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 
 #ifdef __cplusplus
 }; /* extern "C" */

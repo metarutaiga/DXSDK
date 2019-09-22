@@ -38,6 +38,7 @@ typedef struct _DMUS_DOWNLOADINFO
 
 #define DMUS_DOWNLOADINFO_INSTRUMENT    1
 #define DMUS_DOWNLOADINFO_WAVE          2
+#define DMUS_DOWNLOADINFO_INSTRUMENT2   3   /* New version for better DLS2 support. */
 
 #define DMUS_DEFAULT_SIZE_OFFSETTABLE   1
 
@@ -118,11 +119,18 @@ typedef struct _DMUS_ARTICPARAMS
     DMUS_MSCPARAMS   Misc;
 } DMUS_ARTICPARAMS;
 
-typedef struct _DMUS_ARTICULATION
+typedef struct _DMUS_ARTICULATION           /* Articulation chunk for DMUS_DOWNLOADINFO_INSTRUMENT format. */
 {
-    ULONG           ulArt1Idx;              /* If zero no DLS Level 1 articulation chunk */
-    ULONG           ulFirstExtCkIdx;        /* If zero no 3rd party entenstion chunks associated with the articulation */
+    ULONG           ulArt1Idx;              /* DLS Level 1 articulation chunk */
+    ULONG           ulFirstExtCkIdx;        /* 3rd party extenstion chunks associated with the articulation */
 } DMUS_ARTICULATION;
+
+typedef struct _DMUS_ARTICULATION2          /* Articulation chunk for DMUS_DOWNLOADINFO_INSTRUMENT2 format. */
+{
+    ULONG           ulArtIdx;               /* DLS Level 1/2 articulation chunk */
+    ULONG           ulFirstExtCkIdx;        /* 3rd party extenstion chunks associated with the articulation */
+    ULONG           ulNextArtIdx;           /* Additional articulation chunks */
+} DMUS_ARTICULATION2;
 
 #define DMUS_MIN_DATA_SIZE 4       
 /*  The actual number is determined by cbSize of struct _DMUS_EXTENSIONCHUNK */

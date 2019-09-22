@@ -10,6 +10,9 @@
 
 #include "dplay.h"
 
+/* avoid warnings at Level 4 */
+#pragma warning(disable:4201)
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -133,6 +136,49 @@ typedef struct DPAPPLICATIONDESC
     LPSTR       lpszDescriptionA;
     LPWSTR      lpszDescriptionW;
 } DPAPPLICATIONDESC, *LPDPAPPLICATIONDESC;
+
+/*
+ * LPDPAPPLICATIONDESC2
+ * Used to register a DirectPlay application
+ */
+typedef struct DPAPPLICATIONDESC2
+{
+    DWORD       dwSize;
+    DWORD       dwFlags;
+    union
+    {
+        LPSTR       lpszApplicationNameA;
+        LPWSTR      lpszApplicationName;
+    };
+    GUID        guidApplication;
+    union
+    {
+        LPSTR       lpszFilenameA;
+        LPWSTR      lpszFilename;
+    };
+    union
+    {
+        LPSTR       lpszCommandLineA;
+        LPWSTR      lpszCommandLine;
+    };
+    union
+    {
+        LPSTR       lpszPathA;
+        LPWSTR      lpszPath;
+    };
+    union
+    {
+        LPSTR       lpszCurrentDirectoryA;
+        LPWSTR      lpszCurrentDirectory;
+    };
+    LPSTR       lpszDescriptionA;
+    LPWSTR      lpszDescriptionW;
+    union
+    {
+    	LPSTR		lpszAppLauncherNameA;
+    	LPWSTR      lpszAppLauncherName;
+    };
+} DPAPPLICATIONDESC2, *LPDPAPPLICATIONDESC2;
 
 
 /****************************************************************************
@@ -274,7 +320,7 @@ DECLARE_INTERFACE_( IDirectPlayLobby3, IDirectPlayLobby )
 
     /*  IDirectPlayLobby3 Methods	*/
     STDMETHOD(ConnectEx)            (THIS_ DWORD, REFIID, LPVOID *, IUnknown FAR *) PURE;
-    STDMETHOD(RegisterApplication)  (THIS_ DWORD, LPDPAPPLICATIONDESC) PURE;
+    STDMETHOD(RegisterApplication)  (THIS_ DWORD, LPVOID) PURE;
     STDMETHOD(UnregisterApplication)(THIS_ DWORD, REFGUID) PURE;
     STDMETHOD(WaitForConnectionSettings)(THIS_ DWORD) PURE;
 };
@@ -769,5 +815,6 @@ DEFINE_GUID(DPAID_ComPort,
 };
 #endif /* __cplusplus */
 
-#endif /* __DPLOBBY_INCLUDED__ */
+#pragma warning(default:4201)
 
+#endif /* __DPLOBBY_INCLUDED__ */
