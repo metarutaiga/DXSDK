@@ -39,21 +39,21 @@ DEFINE_GUID(IID_ID3DX10PatchMesh,
 
 // Mesh options - lower 3 bytes only, upper byte used by _D3DX10MESHOPT option flags
 enum _D3DX10MESH {
-    D3DX10MESH_32BIT                  = 0x001, // If set, then use 32 bit indices, if not set use 16 bit indices.
-    D3DX10MESH_GS_ADJACENCY			  = 0x004, // If set, mesh contains GS adjacency info. Not valid on input.
+    D3DX10_MESH_32_BIT                  = 0x001, // If set, then use 32 bit indices, if not set use 16 bit indices.
+    D3DX10_MESH_GS_ADJACENCY			  = 0x004, // If set, mesh contains GS adjacency info. Not valid on input.
 
 };
 
-typedef struct _D3DX10ATTRIBUTERANGE
+typedef struct _D3DX10_ATTRIBUTE_RANGE
 {
     UINT  AttribId;
     UINT  FaceStart;
     UINT  FaceCount;
     UINT  VertexStart;
     UINT  VertexCount;
-} D3DX10ATTRIBUTERANGE;
+} D3DX10_ATTRIBUTE_RANGE;
 
-typedef D3DX10ATTRIBUTERANGE* LPD3DX10ATTRIBUTERANGE;
+typedef D3DX10_ATTRIBUTE_RANGE* LPD3DX10_ATTRIBUTE_RANGE;
 
 typedef enum _D3DX10_MESH_DISCARD_FLAGS
 {
@@ -65,7 +65,7 @@ typedef enum _D3DX10_MESH_DISCARD_FLAGS
 
 } D3DX10_MESH_DISCARD_FLAGS;
 
-typedef struct _D3DX10WELDEPSILONS
+typedef struct _D3DX10_WELD_EPSILONS
 {
     FLOAT Position;                 // NOTE: This does NOT replace the epsilon in GenerateAdjacency
                                             // in general, it should be the same value or greater than the one passed to GeneratedAdjacency
@@ -78,17 +78,17 @@ typedef struct _D3DX10WELDEPSILONS
     FLOAT Tangent;
     FLOAT Binormal;
     FLOAT TessFactor;
-} D3DX10WELDEPSILONS;
+} D3DX10_WELD_EPSILONS;
 
-typedef D3DX10WELDEPSILONS* LPD3DX10WELDEPSILONS;
+typedef D3DX10_WELD_EPSILONS* LPD3DX10_WELD_EPSILONS;
 
-typedef struct _D3DX10INTERSECTINFO
+typedef struct _D3DX10_INTERSECT_INFO
 {
     UINT  FaceIndex;                // index of face intersected
     FLOAT U;                        // Barycentric Hit Coordinates    
     FLOAT V;                        // Barycentric Hit Coordinates
     FLOAT Dist;                     // Ray-Intersection Parameter Distance
-} D3DX10INTERSECTINFO, *LPD3DX10INTERSECTINFO;
+} D3DX10_INTERSECT_INFO, *LPD3DX10_INTERSECT_INFO;
 
 // ID3DX10MeshBuffer is used by D3DX10Mesh vertex and index buffers
 #undef INTERFACE
@@ -102,8 +102,8 @@ DECLARE_INTERFACE_(ID3DX10MeshBuffer, IUnknown)
     STDMETHOD_(ULONG, Release)(THIS) PURE;
     
     // ID3DX10MeshBuffer
-    STDMETHOD(Lock)(THIS_ void **ppData, SIZE_T *pSize) PURE;
-    STDMETHOD(Unlock)(THIS) PURE;
+    STDMETHOD(Map)(THIS_ void **ppData, SIZE_T *pSize) PURE;
+    STDMETHOD(Unmap)(THIS) PURE;
     STDMETHOD_(SIZE_T, GetSize)(THIS) PURE;
 };
 
@@ -134,8 +134,8 @@ DECLARE_INTERFACE_(ID3DX10Mesh, IUnknown)
     STDMETHOD(SetAttributeData)(THIS_ CONST UINT *pData) PURE;
     STDMETHOD(GetAttributeBuffer)(THIS_ ID3DX10MeshBuffer **ppAttributeBuffer) PURE;
 
-    STDMETHOD(SetAttributeTable)(THIS_ CONST D3DX10ATTRIBUTERANGE *pAttribTable, UINT  cAttribTableSize) PURE;
-    STDMETHOD(GetAttributeTable)(THIS_ D3DX10ATTRIBUTERANGE *pAttribTable, UINT  *pAttribTableSize) PURE;
+    STDMETHOD(SetAttributeTable)(THIS_ CONST D3DX10_ATTRIBUTE_RANGE *pAttribTable, UINT  cAttribTableSize) PURE;
+    STDMETHOD(GetAttributeTable)(THIS_ D3DX10_ATTRIBUTE_RANGE *pAttribTable, UINT  *pAttribTableSize) PURE;
 
     STDMETHOD(GenerateAdjacencyAndPointReps)(THIS_ FLOAT Epsilon) PURE;
     STDMETHOD(GenerateGSAdjacency)(THIS) PURE;
@@ -190,15 +190,15 @@ HRESULT WINAPI
 
 // ID3DX10Mesh::Optimize options - upper byte only, lower 3 bytes used from _D3DX10MESH option flags
 enum _D3DX10MESHOPT {
-    D3DX10MESHOPT_COMPACT       = 0x01000000,
-    D3DX10MESHOPT_ATTRSORT      = 0x02000000,
-    D3DX10MESHOPT_VERTEXCACHE   = 0x04000000,
-    D3DX10MESHOPT_STRIPREORDER  = 0x08000000,
-    D3DX10MESHOPT_IGNOREVERTS   = 0x10000000,  // optimize faces only, don't touch vertices
-    D3DX10MESHOPT_DONOTSPLIT    = 0x20000000,  // do not split vertices shared between attribute groups when attribute sorting
-    D3DX10MESHOPT_DEVICEINDEPENDENT = 0x00400000,  // Only affects VCache.  uses a static known good cache size for all cards
+    D3DX10_MESHOPT_COMPACT       = 0x01000000,
+    D3DX10_MESHOPT_ATTR_SORT     = 0x02000000,
+    D3DX10_MESHOPT_VERTEX_CACHE   = 0x04000000,
+    D3DX10_MESHOPT_STRIP_REORDER  = 0x08000000,
+    D3DX10_MESHOPT_IGNORE_VERTS   = 0x10000000,  // optimize faces only, don't touch vertices
+    D3DX10_MESHOPT_DO_NOT_SPLIT    = 0x20000000,  // do not split vertices shared between attribute groups when attribute sorting
+    D3DX10_MESHOPT_DEVICE_INDEPENDENT = 0x00400000,  // Only affects VCache.  uses a static known good cache size for all cards
                             
-    // D3DX10MESHOPT_SHAREVB has been removed, please use D3DX10MESH_VB_SHARE instead
+    // D3DX10_MESHOPT_SHAREVB has been removed, please use D3DX10MESH_VB_SHARE instead
 
 };
 
@@ -269,7 +269,7 @@ HRESULT WINAPI
 }
 #endif //__cplusplus
 
-typedef struct _D3DX10ATTRIBUTEWEIGHTS
+typedef struct _D3DX10_ATTRIBUTE_WEIGHTS
 {
     FLOAT Position;
     FLOAT Boundary;
@@ -279,7 +279,7 @@ typedef struct _D3DX10ATTRIBUTEWEIGHTS
     FLOAT Texcoord[8];
     FLOAT Tangent;
     FLOAT Binormal;
-} D3DX10ATTRIBUTEWEIGHTS, *LPD3DX10ATTRIBUTEWEIGHTS;
+} D3DX10_ATTRIBUTE_WEIGHTS, *LPD3DX10_ATTRIBUTE_WEIGHTS;
 
 #endif //__D3DX10MESH_H__
 

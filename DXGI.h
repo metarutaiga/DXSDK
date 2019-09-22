@@ -3,7 +3,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0480 */
+ /* File created by MIDL compiler version 7.00.0485 */
 /* Compiler settings for dxgi.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -500,6 +500,20 @@ EXTERN_C const IID IID_IDXGIResource;
 #endif 	/* __IDXGIResource_INTERFACE_DEFINED__ */
 
 
+/* interface __MIDL_itf_dxgi_0000_0003 */
+/* [local] */ 
+
+#define	DXGI_MAP_READ	( 1UL )
+
+#define	DXGI_MAP_WRITE	( 2UL )
+
+#define	DXGI_MAP_DISCARD	( 4UL )
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_dxgi_0000_0003_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxgi_0000_0003_v0_0_s_ifspec;
+
 #ifndef __IDXGISurface_INTERFACE_DEFINED__
 #define __IDXGISurface_INTERFACE_DEFINED__
 
@@ -518,12 +532,11 @@ EXTERN_C const IID IID_IDXGISurface;
         virtual HRESULT STDMETHODCALLTYPE GetDesc( 
             /* [out] */ DXGI_SURFACE_DESC *pDesc) = 0;
         
-        virtual HRESULT STDMETHODCALLTYPE LockRect( 
-            /* [out] */ DXGI_LOCKED_RECT *pLockedRect,
-            /* [in] */ RECT *pRect,
+        virtual HRESULT STDMETHODCALLTYPE Map( 
+            /* [out] */ DXGI_MAPPED_RECT *pLockedRect,
             /* [in] */ UINT Flags) = 0;
         
-        virtual HRESULT STDMETHODCALLTYPE UnlockRect( void) = 0;
+        virtual HRESULT STDMETHODCALLTYPE Unmap( void) = 0;
         
     };
     
@@ -576,13 +589,12 @@ EXTERN_C const IID IID_IDXGISurface;
             IDXGISurface * This,
             /* [out] */ DXGI_SURFACE_DESC *pDesc);
         
-        HRESULT ( STDMETHODCALLTYPE *LockRect )( 
+        HRESULT ( STDMETHODCALLTYPE *Map )( 
             IDXGISurface * This,
-            /* [out] */ DXGI_LOCKED_RECT *pLockedRect,
-            /* [in] */ RECT *pRect,
+            /* [out] */ DXGI_MAPPED_RECT *pLockedRect,
             /* [in] */ UINT Flags);
         
-        HRESULT ( STDMETHODCALLTYPE *UnlockRect )( 
+        HRESULT ( STDMETHODCALLTYPE *Unmap )( 
             IDXGISurface * This);
         
         END_INTERFACE
@@ -628,11 +640,11 @@ EXTERN_C const IID IID_IDXGISurface;
 #define IDXGISurface_GetDesc(This,pDesc)	\
     ( (This)->lpVtbl -> GetDesc(This,pDesc) ) 
 
-#define IDXGISurface_LockRect(This,pLockedRect,pRect,Flags)	\
-    ( (This)->lpVtbl -> LockRect(This,pLockedRect,pRect,Flags) ) 
+#define IDXGISurface_Map(This,pLockedRect,Flags)	\
+    ( (This)->lpVtbl -> Map(This,pLockedRect,Flags) ) 
 
-#define IDXGISurface_UnlockRect(This)	\
-    ( (This)->lpVtbl -> UnlockRect(This) ) 
+#define IDXGISurface_Unmap(This)	\
+    ( (This)->lpVtbl -> Unmap(This) ) 
 
 #endif /* COBJMACROS */
 

@@ -49,15 +49,15 @@ typedef enum _D3D10_DEVICE_STATE_TYPES
     D3D10_DST_IA_INPUT_LAYOUT,          // Single-value state
     D3D10_DST_IA_PRIMITIVE_TOPOLOGY,    // Single-value state
 
-    D3D10_DST_OM_RENDER_TARGETS,        // Single-value state
+    D3D10_DST_OM_RENDER_TARGETS,        // Single-value state (atomical gets/sets)
     D3D10_DST_OM_DEPTH_STENCIL_STATE,   // Single-value state
     D3D10_DST_OM_BLEND_STATE,           // Single-value state
 
-    D3D10_DST_RS_VIEWPORTS,             // Single-value state
-    D3D10_DST_RS_SCISSOR_RECTS,         // Single-value state
+    D3D10_DST_RS_VIEWPORTS,             // Single-value state (atomical gets/sets)
+    D3D10_DST_RS_SCISSOR_RECTS,         // Single-value state (atomical gets/sets)
     D3D10_DST_RS_RASTERIZER_STATE,      // Single-value state
 
-    D3D10_DST_SO_BUFFERS,               // Single-value state
+    D3D10_DST_SO_BUFFERS,               // Single-value state (atomical gets/sets)
 
     D3D10_DST_PREDICATION,              // Single-value state
 } D3D10_DEVICE_STATE_TYPES;

@@ -46,49 +46,47 @@ UINT WINAPI D3DX10GetDriverLevel(ID3D10Device *pDevice);
 }
 #endif //__cplusplus
 
+
 //////////////////////////////////////////////////////////////////////////////
-// D3DX10SPRITE flags:
+// D3DX10_SPRITE flags:
 // -----------------
-// D3DX10SPRITE_DONOTSAVESTATE
-//   Specifies device state is not to be saved and restored in Begin/End.
-// D3DX10SPRITE_DONOTMODIFY_RENDERSTATE
-//   Specifies device render state is not to be changed in Begin.  The device
-//   is assumed to be in a valid state to draw vertices containing POSITION0, 
-//   TEXCOORD0, and COLOR0 data.
-// D3DX10SPRITE_OBJECTSPACE
-//   The WORLD, VIEW, and PROJECTION transforms are NOT modified.  The 
-//   transforms currently set to the device are used to transform the sprites 
-//   when the batch is drawn (at Flush or End).  If this is not specified, 
-//   WORLD, VIEW, and PROJECTION transforms are modified so that sprites are 
-//   drawn in screenspace coordinates.
-// D3DX10SPRITE_BILLBOARD
-//   Rotates each sprite about its center so that it is facing the viewer.
-// D3DX10SPRITE_BLEND
-//   Enables BLEND(SRCALPHA, INVSRCALPHA) and ALPHATEST(alpha > 0).
-//   ID3DX10Font expects this to be set when drawing text.
+// D3DX10_SPRITE_SAVE_STATE
+//   Specifies device state should be saved and restored in Begin/End.
 // D3DX10SPRITE_SORT_TEXTURE
 //   Sprites are sorted by texture prior to drawing.  This is recommended when
 //   drawing non-overlapping sprites of uniform depth.  For example, drawing
 //   screen-aligned text with ID3DX10Font.
-// D3DX10SPRITE_SORT_DEPTH_FRONTTOBACK
+// D3DX10SPRITE_SORT_DEPTH_FRONT_TO_BACK
 //   Sprites are sorted by depth front-to-back prior to drawing.  This is 
 //   recommended when drawing opaque sprites of varying depths.
-// D3DX10SPRITE_SORT_DEPTH_BACKTOFRONT
+// D3DX10SPRITE_SORT_DEPTH_BACK_TO_FRONT
 //   Sprites are sorted by depth back-to-front prior to drawing.  This is 
 //   recommended when drawing transparent sprites of varying depths.
+// D3DX10SPRITE_ADDREF_TEXTURES
+//   AddRef/Release all textures passed in to DrawSpritesBuffered
 //////////////////////////////////////////////////////////////////////////////
 
-typedef enum D3DX10SPRITE_FLAG
+enum
 {
-    D3DX10SPRITE_DONOTSAVESTATE              =    (1 << 0),
-    D3DX10SPRITE_DONOTMODIFY_RENDERSTATE     =    (1 << 1),
-    D3DX10SPRITE_OBJECTSPACE                 =    (1 << 2),
-    D3DX10SPRITE_BILLBOARD                   =    (1 << 3),
-    D3DX10SPRITE_BLEND                       =    (1 << 4),
-    D3DX10SPRITE_SORT_TEXTURE                =    (1 << 5),
-    D3DX10SPRITE_SORT_DEPTH_FRONTTOBACK      =    (1 << 6),
-    D3DX10SPRITE_SORT_DEPTH_BACKTOFRONT      =    (1 << 7),
-} D3DX10SPRITE_FLAG;
+    D3DX10_SPRITE_SORT_TEXTURE              = 0x01,
+    D3DX10_SPRITE_SORT_DEPTH_BACK_TO_FRONT  = 0x02,
+    D3DX10_SPRITE_SORT_DEPTH_FRONT_TO_BACK  = 0x04,
+    D3DX10_SPRITE_SAVE_STATE                = 0x08,
+    D3DX10_SPRITE_ADDREF_TEXTURES           = 0x10,
+};
+
+typedef struct _D3DX10_SPRITE
+{
+    D3DXMATRIX  matWorld;
+
+    D3DXVECTOR2 TexCoord;
+    D3DXVECTOR2 TexSize;
+
+    D3DXCOLOR   ColorModulate;
+
+    ID3D10ShaderResourceView *pTexture;
+    UINT        TextureIndex;
+} D3DX10_SPRITE;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -100,11 +98,7 @@ typedef enum D3DX10SPRITE_FLAG
 //    Prepares device for drawing sprites.
 //
 // Draw -
-//    Draws a sprite.  Before transformation, the sprite is the size of 
-//    SrcRect, with its top-left corner specified by Position.  The color 
-//    and alpha channels are modulated by Color. Center is used to determine
-//    the point of rotation of the sprite in texels from its upper left (NULL
-//    means to use 0,0 which is the upper left).
+//    Draws a sprite
 //
 // Flush -
 //    Forces all batched sprites to submitted to the device.
@@ -118,9 +112,9 @@ typedef interface ID3DX10Sprite ID3DX10Sprite;
 typedef interface ID3DX10Sprite *LPD3DX10SPRITE;
 
 
-// {BA0B762D-7D28-43ec-B9DC-2F84443B0614}
+// {BA0B762D-8D28-43ec-B9DC-2F84443B0614}
 DEFINE_GUID(IID_ID3DX10Sprite, 
-0xba0b762d, 0x7d28, 0x43ec, 0xb9, 0xdc, 0x2f, 0x84, 0x44, 0x3b, 0x6, 0x14);
+0xba0b762d, 0x8d28, 0x43ec, 0xb9, 0xdc, 0x2f, 0x84, 0x44, 0x3b, 0x6, 0x14);
 
 
 #undef INTERFACE
@@ -134,21 +128,20 @@ DECLARE_INTERFACE_(ID3DX10Sprite, IUnknown)
     STDMETHOD_(ULONG, Release)(THIS) PURE;
 
     // ID3DX10Sprite
-    STDMETHOD(GetDevice)(THIS_ ID3D10Device** ppDevice) PURE;
-
-    STDMETHOD(GetTransform)(THIS_ D3DXMATRIX *pTransform) PURE;
-    STDMETHOD(SetTransform)(THIS_ CONST D3DXMATRIX *pTransform) PURE;
+    STDMETHOD(Begin)(THIS_ UINT flags) PURE;
     
-    STDMETHOD(SetWorldViewRH)(THIS_ CONST D3DXMATRIX *pWorld, CONST D3DXMATRIX *pView) PURE;
-    STDMETHOD(SetWorldViewLH)(THIS_ CONST D3DXMATRIX *pWorld, CONST D3DXMATRIX *pView) PURE;
-    
-    STDMETHOD(GetProjection)(THIS_ D3DXMATRIX *pProjection) PURE;
-    STDMETHOD(SetProjection)(THIS_ CONST D3DXMATRIX *pProjection) PURE;
-
-    STDMETHOD(Begin)(THIS_ UINT Flags) PURE;
-    STDMETHOD(Draw)(THIS_ ID3D10ShaderResourceView* pTexture, CONST RECT *pSrcRect, CONST D3DXVECTOR3 *pCenter, CONST D3DXVECTOR3 *pPosition, D3DXCOLOR Color) PURE;
+    STDMETHOD(DrawSpritesBuffered)(THIS_ D3DX10_SPRITE *pSprites, UINT cSprites) PURE;
     STDMETHOD(Flush)(THIS) PURE;
+
+    STDMETHOD(DrawSpritesImmediate)(THIS_ D3DX10_SPRITE *pSprites, UINT cSprites, UINT cbSprite, UINT flags) PURE;
     STDMETHOD(End)(THIS) PURE;
+
+    STDMETHOD(GetViewTransform)(THIS_ D3DXMATRIX *pViewTransform) PURE;
+    STDMETHOD(SetViewTransform)(THIS_ D3DXMATRIX *pViewTransform) PURE;
+    STDMETHOD(GetProjectionTransform)(THIS_ D3DXMATRIX *pProjectionTransform) PURE;
+    STDMETHOD(SetProjectionTransform)(THIS_ D3DXMATRIX *pProjectionTransform) PURE;
+
+    STDMETHOD(GetDevice)(THIS_ ID3D10Device** ppDevice) PURE;
 };
 
 
@@ -159,6 +152,7 @@ extern "C" {
 HRESULT WINAPI 
     D3DX10CreateSprite( 
         ID3D10Device*         pDevice, 
+        UINT                  cDeviceBufferSize,
         LPD3DX10SPRITE*       ppSprite);
 
 #ifdef __cplusplus
@@ -207,16 +201,16 @@ DECLARE_INTERFACE_(ID3DX10ThreadPump, IUnknown)
     // ID3DX10ThreadPump
     STDMETHOD(AddWorkItem)(THIS_ ID3DX10DataLoader *pDataLoader, ID3DX10DataProcessor *pDataProcessor, HRESULT *pHResult, void **ppDeviceObject) PURE;
     STDMETHOD_(UINT, GetWorkItemCount)(THIS) PURE;
-
+      
     STDMETHOD(WaitForAllItems)(THIS) PURE;
-    STDMETHOD(ProcessDeviceObjectCreation)(THIS_ UINT iWorkItemCount);
+    STDMETHOD(ProcessDeviceWorkItems)(THIS_ UINT iWorkItemCount);
 
     STDMETHOD(PurgeAllItems)(THIS) PURE;
     STDMETHOD(GetQueueStatus)(THIS_ UINT *pIoQueue, UINT *pProcessQueue, UINT *pDeviceQueue) PURE;
     
 };
 
-HRESULT WINAPI D3DX10CreateThreadPump(ID3DX10ThreadPump **ppThreadPump, UINT cIoThreads, UINT cProcThreads, UINT cDeviceThreads);
+HRESULT WINAPI D3DX10CreateThreadPump(UINT cIoThreads, UINT cProcThreads, ID3DX10ThreadPump **ppThreadPump);
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -239,7 +233,7 @@ HRESULT WINAPI D3DX10CreateThreadPump(ID3DX10ThreadPump **ppThreadPump, UINT cIo
 //
 //////////////////////////////////////////////////////////////////////////////
 
-typedef struct _D3DX10FONT_DESCA
+typedef struct _D3DX10_FONT_DESCA
 {
     INT Height;
     UINT Width;
@@ -252,9 +246,9 @@ typedef struct _D3DX10FONT_DESCA
     BYTE PitchAndFamily;
     CHAR FaceName[LF_FACESIZE];
 
-} D3DX10FONT_DESCA, *LPD3DX10FONT_DESCA;
+} D3DX10_FONT_DESCA, *LPD3DX10_FONT_DESCA;
 
-typedef struct _D3DX10FONT_DESCW
+typedef struct _D3DX10_FONT_DESCW
 {
     INT Height;
     UINT Width;
@@ -267,14 +261,14 @@ typedef struct _D3DX10FONT_DESCW
     BYTE PitchAndFamily;
     WCHAR FaceName[LF_FACESIZE];
 
-} D3DX10FONT_DESCW, *LPD3DX10FONT_DESCW;
+} D3DX10_FONT_DESCW, *LPD3DX10_FONT_DESCW;
 
 #ifdef UNICODE
-typedef D3DX10FONT_DESCW D3DX10FONT_DESC;
-typedef LPD3DX10FONT_DESCW LPD3DX10FONT_DESC;
+typedef D3DX10_FONT_DESCW D3DX10_FONT_DESC;
+typedef LPD3DX10_FONT_DESCW LPD3DX10_FONT_DESC;
 #else
-typedef D3DX10FONT_DESCA D3DX10FONT_DESC;
-typedef LPD3DX10FONT_DESCA LPD3DX10FONT_DESC;
+typedef D3DX10_FONT_DESCA D3DX10_FONT_DESC;
+typedef LPD3DX10_FONT_DESCA LPD3DX10_FONT_DESC;
 #endif
 
 
@@ -299,8 +293,8 @@ DECLARE_INTERFACE_(ID3DX10Font, IUnknown)
 
     // ID3DX10Font
     STDMETHOD(GetDevice)(THIS_ ID3D10Device** ppDevice) PURE;
-    STDMETHOD(GetDescA)(THIS_ D3DX10FONT_DESCA *pDesc) PURE;
-    STDMETHOD(GetDescW)(THIS_ D3DX10FONT_DESCW *pDesc) PURE;
+    STDMETHOD(GetDescA)(THIS_ D3DX10_FONT_DESCA *pDesc) PURE;
+    STDMETHOD(GetDescW)(THIS_ D3DX10_FONT_DESCW *pDesc) PURE;
     STDMETHOD_(BOOL, GetTextMetricsA)(THIS_ TEXTMETRICA *pTextMetrics) PURE;
     STDMETHOD_(BOOL, GetTextMetricsW)(THIS_ TEXTMETRICW *pTextMetrics) PURE;
 
@@ -317,10 +311,10 @@ DECLARE_INTERFACE_(ID3DX10Font, IUnknown)
 
 #ifdef __cplusplus
 #ifdef UNICODE
-    HRESULT GetDesc(D3DX10FONT_DESCW *pDesc) { return GetDescW(pDesc); }
+    HRESULT GetDesc(D3DX10_FONT_DESCW *pDesc) { return GetDescW(pDesc); }
     HRESULT PreloadText(LPCWSTR pString, INT Count) { return PreloadTextW(pString, Count); }
 #else
-    HRESULT GetDesc(D3DX10FONT_DESCA *pDesc) { return GetDescA(pDesc); }
+    HRESULT GetDesc(D3DX10_FONT_DESCA *pDesc) { return GetDescA(pDesc); }
     HRESULT PreloadText(LPCSTR pString, INT Count) { return PreloadTextA(pString, Count); }
 #endif
 #endif //__cplusplus
@@ -388,13 +382,13 @@ HRESULT WINAPI
 HRESULT WINAPI 
     D3DX10CreateFontIndirectA( 
         ID3D10Device*             pDevice,  
-        CONST D3DX10FONT_DESCA*   pDesc, 
+        CONST D3DX10_FONT_DESCA*   pDesc, 
         LPD3DX10FONT*             ppFont);
 
 HRESULT WINAPI 
     D3DX10CreateFontIndirectW( 
         ID3D10Device*             pDevice,  
-        CONST D3DX10FONT_DESCW*   pDesc, 
+        CONST D3DX10_FONT_DESCW*   pDesc, 
         LPD3DX10FONT*             ppFont);
 
 #ifdef UNICODE

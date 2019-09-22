@@ -1395,7 +1395,7 @@ D3DXCOLOR::operator UINT () const
     UINT dwB = b >= 1.0f ? 0xff : b <= 0.0f ? 0x00 : (UINT) (b * 255.0f + 0.5f);
     UINT dwA = a >= 1.0f ? 0xff : a <= 0.0f ? 0x00 : (UINT) (a * 255.0f + 0.5f);
 
-    return (dwA << 24) | (dwB << 16) | (dwG << 8) | dwR;
+    return (dwA << 24) | (dwR << 16) | (dwG << 8) | (dwB << 0);
 }
 
 

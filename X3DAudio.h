@@ -48,9 +48,39 @@
     #endif
     #include <d3d9types.h>
 
-    #if defined(_XBOX)
-        #define SPEAKER_XENON 0x3f // xenon speaker geometry configuration, used with X3DAudioInitialize
+    // speaker geometry configuration flags, specifies assignment of channels to speaker positions, defined as per WAVEFORMATEXTENSIBLE.dwChannelMask
+    #if !defined(SPEAKER_FRONT_LEFT)
+        #define SPEAKER_FRONT_LEFT            0x00000001
+        #define SPEAKER_FRONT_RIGHT           0x00000002
+        #define SPEAKER_FRONT_CENTER          0x00000004
+        #define SPEAKER_LOW_FREQUENCY         0x00000008
+        #define SPEAKER_BACK_LEFT             0x00000010
+        #define SPEAKER_BACK_RIGHT            0x00000020
+        #define SPEAKER_FRONT_LEFT_OF_CENTER  0x00000040
+        #define SPEAKER_FRONT_RIGHT_OF_CENTER 0x00000080
+        #define SPEAKER_BACK_CENTER           0x00000100
+        #define SPEAKER_SIDE_LEFT             0x00000200
+        #define SPEAKER_SIDE_RIGHT            0x00000400
+        #define SPEAKER_TOP_CENTER            0x00000800
+        #define SPEAKER_TOP_FRONT_LEFT        0x00001000
+        #define SPEAKER_TOP_FRONT_CENTER      0x00002000
+        #define SPEAKER_TOP_FRONT_RIGHT       0x00004000
+        #define SPEAKER_TOP_BACK_LEFT         0x00008000
+        #define SPEAKER_TOP_BACK_CENTER       0x00010000
+        #define SPEAKER_TOP_BACK_RIGHT        0x00020000
     #endif
+
+    // standard speaker geometry configurations, used with X3DAudioInitialize
+    #if !defined(SPEAKER_STEREO) && !defined(SPEAKER_5POINT1)
+        #define SPEAKER_STEREO  (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT)
+        #define SPEAKER_5POINT1 (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT)
+    #endif
+
+    // xenon speaker geometry configuration, used with X3DAudioInitialize
+    #if defined(_XBOX)
+        #define SPEAKER_XENON SPEAKER_5POINT1
+    #endif
+
 
     #define X3DAUDIO_HANDLE_BYTESIZE 16 // size of instance handle in bytes
 

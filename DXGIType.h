@@ -3,7 +3,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0480 */
+ /* File created by MIDL compiler version 7.00.0485 */
 /* Compiler settings for dxgitype.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -72,12 +72,11 @@ extern "C"{
 #define DXGI_ERROR_WAS_STILL_DRAWING    MAKE_DXGI_HRESULT( 10 )
 #define DXGI_ERROR_DRIVER_INTERNAL_ERROR    MAKE_DXGI_HRESULT( 32 )
 #define DXGI_ERROR_NONEXCLUSIVE    MAKE_DXGI_HRESULT( 33 )
-#define DXGI_CPU_ACCESS_NONE    ( 1 )
-#define DXGI_CPU_ACCESS_INVARIANT    ( 2 )
-#define DXGI_CPU_ACCESS_STATIC    ( 3 )
-#define DXGI_CPU_ACCESS_DYNAMIC    ( 4 )
-#define DXGI_CPU_ACCESS_READ_WRITE    ( 5 )
-#define DXGI_CPU_ACCESS_SCRATCH    ( 6 )
+#define DXGI_CPU_ACCESS_NONE    ( 0 )
+#define DXGI_CPU_ACCESS_DYNAMIC    ( 1 )
+#define DXGI_CPU_ACCESS_READ_WRITE    ( 2 )
+#define DXGI_CPU_ACCESS_SCRATCH    ( 3 )
+#define DXGI_CPU_ACCESS_FIELD        15
 #define DXGI_USAGE_SHADER_INPUT    ( 1L << (0 + 4) )
 #define DXGI_USAGE_RENDER_TARGET_OUTPUT    ( 1L << (1 + 4) )
 #define DXGI_USAGE_BACK_BUFFER    ( 1L << (2 + 4) )
@@ -251,11 +250,11 @@ typedef struct DXGI_MODE_DESC
     DXGI_MODE_SCALING Scaling;
     } 	DXGI_MODE_DESC;
 
-typedef struct DXGI_LOCKED_RECT
+typedef struct DXGI_MAPPED_RECT
     {
     INT Pitch;
     BYTE *pBits;
-    } 	DXGI_LOCKED_RECT;
+    } 	DXGI_MAPPED_RECT;
 
 typedef struct DXGI_ADAPTER_DESC
     {

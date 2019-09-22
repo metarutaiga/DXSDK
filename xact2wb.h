@@ -123,7 +123,7 @@ namespace XACTWaveBank
 
 #ifdef _X86_
 
-        __asm 
+        __asm
         {
             mov edi, dw
             mov eax, [edi]
@@ -144,7 +144,7 @@ namespace XACTWaveBank
 
 #ifdef _X86_
 
-        __asm 
+        __asm
         {
             mov edi, w
             mov ax, [edi]
@@ -240,6 +240,18 @@ typedef union WAVEBANKMINIWAVEFORMAT
         XACTWaveBank::SwapBytes(dwValue);
     }
 
+    WORD BitsPerSample() const
+    {
+        return wBitsPerSample == WAVEBANKMINIFORMAT_BITDEPTH_16 ? 16 : 8;
+    }
+
+    #define ADPCM_MINIWAVEFORMAT_BLOCKALIGN_CONVERSION_OFFSET 22
+    DWORD BlockAlign() const
+    {
+        return wFormatTag != WAVEBANKMINIFORMAT_TAG_ADPCM ? wBlockAlign :
+               (wBlockAlign + ADPCM_MINIWAVEFORMAT_BLOCKALIGN_CONVERSION_OFFSET) * nChannels;
+    }
+
 #endif // __cplusplus
 
 } WAVEBANKMINIWAVEFORMAT, *LPWAVEBANKMINIWAVEFORMAT;
@@ -257,15 +269,15 @@ typedef struct WAVEBANKENTRY
         struct
         {
             // Entry flags
-            DWORD                   dwFlags  :  4;  
+            DWORD                   dwFlags  :  4;
 
             // Duration of the wave, in units of one sample.
             // For instance, a ten second long wave sampled
-            // at 48KHz would have a duration of 480,000. 
+            // at 48KHz would have a duration of 480,000.
             // This value is not affected by the number of
             // channels, the number of bits per sample, or the
             // compression format of the wave.
-            DWORD                   Duration : 28;  
+            DWORD                   Duration : 28;
         };
         DWORD dwFlagsAndDuration;
     };
@@ -278,14 +290,14 @@ typedef struct WAVEBANKENTRY
         WAVEBANKREGION          LoopRegion; // Region within the wave data that should loop
 
         // XMA loop region
-        // Note: this is not the same memory layout as the XMA loop region 
+        // Note: this is not the same memory layout as the XMA loop region
         // passed to the XMA driver--it is more compact. The named values
         // map correctly and there are enough bits to store the entire
         // range of values that XMA considers valid, with one exception:
         // valid values for nSubframeSkip are 1, 2, 3, or 4. In order to
         // store this in two bits, XACT subtracts 1 from the value, then adds
 
-        struct 
+        struct
         {
             DWORD   dwStartOffset;          // loop start offset (in bits)
 

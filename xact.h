@@ -24,6 +24,7 @@ Abstract:
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
     DEFINE_CLSID(XACTEngine,         0AA000AA, F404, 11D9, BD, 7A, 00, 10, DC, 4F, 8F, 81);
     DEFINE_CLSID(XACTAuditionEngine, 0AA000AB, F404, 11D9, BD, 7A, 00, 10, DC, 4F, 8F, 81);
+    DEFINE_CLSID(XACTDebugEngine,    0AA000AC, F404, 11D9, BD, 7A, 00, 10, DC, 4F, 8F, 81);
     DEFINE_IID(IXACTEngine,          0AA000A0, F404, 11D9, BD, 7A, 00, 10, DC, 4F, 8F, 81);
 #endif
 
@@ -100,7 +101,7 @@ static const XACTVARIABLEVALUE XACTPARAMETERVALUE_MAX = FLT_MAX;
 static const XAUDIOVOICEINDEX XACTMAXOUTPUTVOICECOUNT = 3;
 #endif // _XBOX
 
-#define XACT_CONTENT_VERSION    35
+#define XACT_CONTENT_VERSION    37
 
 //------------------------------------------------------------------------------
 // XACT Parameters
@@ -131,6 +132,7 @@ typedef struct XACT_RENDERER_DETAILS
 {
     WCHAR rendererID[XACT_RENDERER_ID_LENGTH];      // The string ID for the rendering device.
     WCHAR displayName[XACT_RENDERER_NAME_LENGTH];   // A friendly name suitable for display to a human.
+    BOOL  defaultDevice;                            // Set to TRUE if this device is the primary audio device on the system.
 } XACT_RENDERER_DETAILS, *LPXACT_RENDERER_DETAILS;
 #endif
 
@@ -218,20 +220,21 @@ typedef const XACTCHANNELVOLUME *LPCXACTCHANNELVOLUME;
 // Notifications
 //------------------------------------------------------------------------------
 
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEPREPARED           = 1;  // None, SoundBank, SoundBank & cue index, cue instance
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEPLAY               = 2;  // None, SoundBank, SoundBank & cue index, cue instance
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUESTOP               = 3;  // None, SoundBank, SoundBank & cue index, cue instance
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEDESTROYED          = 4;  // None, SoundBank, SoundBank & cue index, cue instance
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_MARKER                = 5;  // None, SoundBank, SoundBank & cue index, cue instance
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED    = 6;  // None, SoundBank
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKDESTROYED     = 7;  // None, WaveBank
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_LOCALVARIABLECHANGED  = 8;  // None, SoundBank, SoundBank & cue index, cue instance
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GLOBALVARIABLECHANGED = 9;  // None
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GUICONNECTED          = 10; // None
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GUIDISCONNECTED       = 11; // None
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEPLAY              = 12; // None, SoundBank, SoundBank & cue index, cue instance, WaveBank
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVESTOP              = 13; // None, SoundBank, SoundBank & cue index, cue instance, WaveBank
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKPREPARED      = 14; // None, WaveBank
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEPREPARED                      = 1;  // None, SoundBank, SoundBank & cue index, cue instance
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEPLAY                          = 2;  // None, SoundBank, SoundBank & cue index, cue instance
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUESTOP                          = 3;  // None, SoundBank, SoundBank & cue index, cue instance
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEDESTROYED                     = 4;  // None, SoundBank, SoundBank & cue index, cue instance
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_MARKER                           = 5;  // None, SoundBank, SoundBank & cue index, cue instance
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED               = 6;  // None, SoundBank
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKDESTROYED                = 7;  // None, WaveBank
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_LOCALVARIABLECHANGED             = 8;  // None, SoundBank, SoundBank & cue index, cue instance
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GLOBALVARIABLECHANGED            = 9;  // None
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GUICONNECTED                     = 10; // None
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GUIDISCONNECTED                  = 11; // None
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEPLAY                         = 12; // None, SoundBank, SoundBank & cue index, cue instance, WaveBank
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVESTOP                         = 13; // None, SoundBank, SoundBank & cue index, cue instance, WaveBank
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKPREPARED                 = 14; // None, WaveBank
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKSTREAMING_INVALIDCONTENT = 15; // None, WaveBank
 
 static const BYTE XACT_FLAG_NOTIFICATION_PERSIST = 0x01;
 
@@ -440,8 +443,9 @@ __inline HRESULT __stdcall IXACTSoundBank_GetState(IXACTSoundBank* pSoundBank, D
 // IXACTWaveBank
 //------------------------------------------------------------------------------
 
-static const DWORD XACT_WAVEBANKSTATE_INUSE    = 0x00000001;  // Currently in-use
-static const DWORD XACT_WAVEBANKSTATE_PREPARED = 0x00000002;  // Prepared
+static const DWORD XACT_WAVEBANKSTATE_INUSE         = 0x00000001;  // Currently in-use
+static const DWORD XACT_WAVEBANKSTATE_PREPARED      = 0x00000002;  // Prepared
+static const DWORD XACT_WAVEBANKSTATE_PREPAREFAILED = 0x00000004;  // Prepare failed.
 
 STDAPI IXACTWaveBank_Destroy(IXACTWaveBank* pWaveBank);
 STDAPI IXACTWaveBank_GetState(IXACTWaveBank* pWaveBank, DWORD* pdwState);
@@ -724,6 +728,10 @@ static const DWORD XACT_FLAG_ENGINE_STOP_IMMEDIATE     = 0x00000002;
 
 STDAPI_(ULONG) IXACTEngine_AddRef(IXACTEngine* pEngine);
 STDAPI_(ULONG) IXACTEngine_Release(IXACTEngine* pEngine);
+#ifndef _XBOX
+STDAPI IXACTEngine_GetRendererCount(IXACTEngine* pEngine, XACTINDEX* pnRendererCount);
+STDAPI IXACTEngine_GetRendererDetails(IXACTEngine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails);
+#endif
 STDAPI IXACTEngine_Initialize(IXACTEngine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams);
 STDAPI IXACTEngine_ShutDown(IXACTEngine* pEngine);
 STDAPI IXACTEngine_DoWork(IXACTEngine* pEngine);
@@ -793,6 +801,18 @@ __inline ULONG __stdcall IXACTEngine_Release(IXACTEngine* pEngine)
 {
     return pEngine->Release();
 }
+
+#ifndef _XBOX
+__inline HRESULT __stdcall IXACTEngine_GetRendererCount(IXACTEngine* pEngine, XACTINDEX* pnRendererCount)
+{
+    return pEngine->GetRendererCount(pnRendererCount);
+}
+
+__inline HRESULT __stdcall IXACTEngine_GetRendererDetails(IXACTEngine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails)
+{
+    return pEngine->GetRendererDetails(nRendererIndex, pRendererDetails);
+}
+#endif
 
 __inline HRESULT __stdcall IXACTEngine_Initialize(IXACTEngine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams)
 {
@@ -880,6 +900,18 @@ __inline ULONG __stdcall IXACTEngine_Release(IXACTEngine* pEngine)
 {
     return pEngine->lpVtbl->Release(pEngine);
 }
+
+#ifndef _XBOX
+__inline HRESULT __stdcall IXACTEngine_GetRendererCount(IXACTEngine* pEngine, XACTINDEX* pnRendererCount)
+{
+    return pEngine->lpVtbl->GetRendererCount(pEngine, pnRendererCount);
+}
+
+__inline HRESULT __stdcall IXACTEngine_GetRendererDetails(IXACTEngine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails)
+{
+    return pEngine->lpVtbl->GetRendererDetails(pEngine, nRendererIndex, pRendererDetails);
+}
+#endif
 
 __inline HRESULT __stdcall IXACTEngine_Initialize(IXACTEngine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams)
 {
@@ -993,21 +1025,51 @@ STDAPI XACTGetGlobalVariable(XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* pnValu
 // Create Engine
 //------------------------------------------------------------------------------
 
-// Flag used only in XACTCreateEngine below.  This flag is valid but ignored
+// Flags used only in XACTCreateEngine below.  These flags are valid but ignored
 // when building for Xbox 360; to enable auditioning on that platform you must
 // link explicitly to an auditioning version of the XACT static library.
 static const DWORD XACT_FLAG_API_AUDITION_MODE = 0x00000001;
+static const DWORD XACT_FLAG_API_DEBUG_MODE    = 0x00000002;
 
 STDAPI XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine);
 
 #ifndef _XBOX
+
+#if defined (UNICODE)
+#   define XACT_DEBUGENGINE_REGISTRY_KEY   L"Software\\Microsoft\\XACT"
+#   define XACT_DEBUGENGINE_REGISTRY_VALUE L"DebugEngine"
+#else
+#   define XACT_DEBUGENGINE_REGISTRY_KEY   "Software\\Microsoft\\XACT"
+#   define XACT_DEBUGENGINE_REGISTRY_VALUE "DebugEngine"
+#endif
+
 #ifdef __cplusplus
 
 __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine)
 {
-    return CoCreateInstance(dwCreationFlags & XACT_FLAG_API_AUDITION_MODE
-                            ? __uuidof(XACTAuditionEngine)
-                            : __uuidof(XACTEngine),
+    HKEY    key;
+    DWORD   data;
+    DWORD   type     = REG_DWORD;
+    DWORD   dataSize = sizeof(DWORD);
+    BOOL    debug    = (dwCreationFlags & XACT_FLAG_API_DEBUG_MODE) ? TRUE : FALSE;
+    BOOL    audition = (dwCreationFlags & XACT_FLAG_API_AUDITION_MODE) ? TRUE : FALSE;
+
+    // If neither the debug nor audition flags are set, see if the debug registry key is set
+    if(!debug && !audition &&
+       (RegOpenKeyEx(HKEY_LOCAL_MACHINE, XACT_DEBUGENGINE_REGISTRY_KEY, 0, KEY_READ, &key) == ERROR_SUCCESS))
+    {
+        if(RegQueryValueEx(key, XACT_DEBUGENGINE_REGISTRY_VALUE, NULL, &type, (LPBYTE)&data, &dataSize) == ERROR_SUCCESS)
+        {
+            if(data)
+            {
+                debug = TRUE;
+            }
+        }
+        RegCloseKey(key);
+    }
+
+    return CoCreateInstance(audition ? __uuidof(XACTAuditionEngine)
+                            : (debug ? __uuidof(XACTDebugEngine) : __uuidof(XACTEngine)),
                             NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACTEngine), (void**)ppEngine);
 }
 
@@ -1015,9 +1077,29 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
 
 __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine)
 {
-    return CoCreateInstance(dwCreationFlags & XACT_FLAG_API_AUDITION_MODE
-                            ? &CLSID_XACTAuditionEngine
-                            : &CLSID_XACTEngine,
+    HKEY    key;
+    DWORD   data;
+    DWORD   type     = REG_DWORD;
+    DWORD   dataSize = sizeof(DWORD);
+    BOOL    debug    = (dwCreationFlags & XACT_FLAG_API_DEBUG_MODE) ? TRUE : FALSE;
+    BOOL    audition = (dwCreationFlags & XACT_FLAG_API_AUDITION_MODE) ? TRUE : FALSE;
+
+    // If neither the debug nor audition flags are set, see if the debug registry key is set
+    if(!debug && !audition &&
+       (RegOpenKeyEx(HKEY_LOCAL_MACHINE, XACT_DEBUGENGINE_REGISTRY_KEY, 0, KEY_READ, &key) == ERROR_SUCCESS))
+    {
+        if(RegQueryValueEx(key, XACT_DEBUGENGINE_REGISTRY_VALUE, NULL, &type, (LPBYTE)&data, &dataSize) == ERROR_SUCCESS)
+        {
+            if(data)
+            {
+                debug = TRUE;
+            }
+        }
+        RegCloseKey(key);
+    }
+
+    return CoCreateInstance(audition ? &CLSID_XACTAuditionEngine
+                            : (debug ? &CLSID_XACTDebugEngine : &CLSID_XACTEngine),
                             NULL, CLSCTX_INPROC_SERVER, &IID_IXACTEngine, (void**)ppEngine);
 }
 
