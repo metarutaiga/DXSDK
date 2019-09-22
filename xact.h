@@ -18,14 +18,14 @@ Abstract:
 #define _XACT_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs (Version 2.7)
+// XACT class and interface IDs (Version 2.8)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         cd0d66ec, 8057, 43f5, ac, bd, 66, df, b3, 6f, d7, 8c);
-    DEFINE_CLSID(XACTAuditionEngine, 9b94bf7a, ce0f, 4c68, 8b, 5e, d0, 62, cb, 37, 30, c3);
-    DEFINE_CLSID(XACTDebugEngine,    1bd54a4b, a1dc, 4e4c, 92, a2, 73, ed, 33, 55, 21, 48);
-    DEFINE_IID(IXACTEngine,          c2f0af68, 1f6d, 40ed, 96, 4f, 26, 25, 68, 42, ed, c4);
+    DEFINE_CLSID(XACTEngine,             77c56bf4, 18a1, 42b0, 88, af, 50, 72, ce, 81, 49, 49);
+    DEFINE_CLSID(XACTAuditionEngine,     46f7c2b1, 774b, 419e, 9a, be, a4, 8f, b0, 42, a3, b0);
+    DEFINE_CLSID(XACTDebugEngine,        307473ef, c3d4, 4d97, 9b, 9c, ce, 23, 92, 85, 21, db);
+    DEFINE_IID(IXACTEngine,              f1fff4f0, ec75, 45cb, 98, 6d, e6, 37, f7, e7, cd, d5);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
@@ -172,7 +172,7 @@ static const XAUDIOVOICEINDEX       XACTMAXOUTPUTVOICECOUNT         = 3;
 // -----------------------------------------------------------------------------
 // Current Content Tool Version
 // -----------------------------------------------------------------------------
-#define XACT_CONTENT_VERSION        42
+#define XACT_CONTENT_VERSION        43
 
 // -----------------------------------------------------------------------------
 // XACT Stop Flags

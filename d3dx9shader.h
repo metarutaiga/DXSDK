@@ -108,7 +108,11 @@
 // Strings can be used as handles.  However, handles are not always strings.
 //----------------------------------------------------------------------------
 
+#ifndef D3DXFX_LARGEADDRESS_HANDLE
 typedef LPCSTR D3DXHANDLE;
+#else
+typedef UINT_PTR D3DXHANDLE;
+#endif
 typedef D3DXHANDLE *LPD3DXHANDLE;
 
 

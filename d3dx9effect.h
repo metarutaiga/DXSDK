@@ -36,7 +36,9 @@
 #define D3DXFX_DONOTSAVESTATE         (1 << 0)
 #define D3DXFX_DONOTSAVESHADERSTATE   (1 << 1)
 #define D3DXFX_DONOTSAVESAMPLERSTATE  (1 << 2)
+
 #define D3DXFX_NOT_CLONEABLE          (1 << 11)
+#define D3DXFX_LARGEADDRESSAWARE      (1 << 17)
 
 //----------------------------------------------------------------------------
 // D3DX_PARAMETER_SHARED

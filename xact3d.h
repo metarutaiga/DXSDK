@@ -163,6 +163,8 @@
     //    X3DAUDIO_EMITTER.OrientTop, if emitter is multi-channel
     //    X3DAUDIO_EMITTER.Position
     //    X3DAUDIO_EMITTER.Velocity
+    //    X3DAUDIO_EMITTER.InnerRadius
+    //    X3DAUDIO_EMITTER.InnerRadiusAngle
     //    X3DAUDIO_EMITTER.ChannelCount
     //    X3DAUDIO_EMITTER.CurveDistanceScaler
     //    X3DAUDIO_EMITTER.DopplerScaler

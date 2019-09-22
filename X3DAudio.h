@@ -2,7 +2,7 @@
  |                               - X3DAUDIO -                               |
  |        Copyright (c) Microsoft Corporation.  All rights reserved.        |
  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
- |VERSION:  1.1                         MODEL:   Unmanaged User-mode        |
+ |VERSION:  1.2                         MODEL:   Unmanaged User-mode        |
  |CONTRACT: N / A                       EXCEPT:  No Exceptions              |
  |PARENT:   N / A                       MINREQ:  Win2000, Xenon             |
  |PROJECT:  X3DAudio                    DIALECT: MS Visual C++ 7.0          |
@@ -52,7 +52,8 @@
 #ifndef __X3DAUDIO_H__
 #define __X3DAUDIO_H__
 //--------------<D-E-F-I-N-I-T-I-O-N-S>-------------------------------------//
-    #if defined(_XBOX)
+    #include <windef.h>    // general windows types
+    #if defined(_XBOX)     // for D3DVECTOR
         #include <vectorintrinsics.h>
     #endif
     #include <d3d9types.h>
@@ -138,9 +139,7 @@
 
 //--------------<D-A-T-A---T-Y-P-E-S>---------------------------------------//
     // primitive types
-    typedef INT_PTR  NWORD;   // natural machine word, bytesize platform specific
-    typedef UINT_PTR UNWORD;  // unsigned natural machine word, bytesize platform specific
-    typedef float    FLOAT32; // 32-bit IEEE float
+    typedef float FLOAT32; // 32-bit IEEE float
     typedef D3DVECTOR X3DAUDIO_VECTOR; // float 3D vector
 
     // instance handle to precalculated constants
@@ -177,8 +176,8 @@
     static const X3DAUDIO_DISTANCE_CURVE       X3DAudioDefault_LinearCurve          = { (X3DAUDIO_DISTANCE_CURVE_POINT*)&X3DAudioDefault_LinearCurvePoints[0], 2 };
 
     // Cone:
-    // Specifies directionality for a single-channel emitter by
-    // scaling DSP behaviour with respect to the emitter's front orientation.
+    // Specifies directionality for an emitter by modifying DSP behaviour
+    // with respect to the emitter and/or listener front orientation.
     // This is modeled using two sound cones: an inner cone and an outer cone.
     // On/within the inner cone, DSP settings are scaled by the inner values.
     // On/beyond the outer cone, DSP settings are scaled by the outer values.
@@ -203,6 +202,8 @@
 
     // Listener:
     // Defines a point of 3D audio reception.
+    //
+    // The cone is directed by the listener's front orientation.
     typedef struct X3DAUDIO_LISTENER
     {
         X3DAUDIO_VECTOR OrientFront; // orientation of front direction, used only for matrix and delay calculations, must be orthonormal with OrientTop when used
@@ -210,6 +211,8 @@
 
         X3DAUDIO_VECTOR Position; // position in user-defined world units, does not affect Velocity
         X3DAUDIO_VECTOR Velocity; // velocity vector in user-defined world units/second, used only for doppler calculations, does not affect Position
+
+        X3DAUDIO_CONE* pCone; // sound cone, used only for matrix, LPF (both direct and reverb paths), and reverb calculations, NULL specifies omnidirectionality
     } X3DAUDIO_LISTENER, *LPX3DAUDIO_LISTENER;
 
     // Emitter:
@@ -250,6 +253,9 @@
 
         X3DAUDIO_VECTOR Position; // position in user-defined world units, does not affect Velocity
         X3DAUDIO_VECTOR Velocity; // velocity vector in user-defined world units/second, used only for doppler calculations, does not affect Position
+
+        FLOAT32 InnerRadius;      // inner radius, must be within [0.0f, FLT_MAX]
+        FLOAT32 InnerRadiusAngle; // inner radius angle, must be within [0.0f, X3DAUDIO_PI/4.0)
 
         UINT32 ChannelCount;       // number of sound channels, must be > 0
         FLOAT32 ChannelRadius;     // channel radius, used only with multi-channel emitters for matrix calculations, must be >= 0.0f when used
