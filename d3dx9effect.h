@@ -49,7 +49,6 @@
 #define D3DX_PARAMETER_LITERAL      (1 << 1)
 #define D3DX_PARAMETER_ANNOTATION   (1 << 2)
 
-
 //----------------------------------------------------------------------------
 // D3DXEFFECT_DESC:
 //----------------------------------------------------------------------------
@@ -567,6 +566,14 @@ HRESULT WINAPI
 //      Size of the effect description in bytes
 //  pDefines
 //      Optional NULL-terminated array of preprocessor macro definitions.
+//  Flags
+//      See D3DXSHADER_xxx flags.
+//  pSkipConstants
+//      A list of semi-colon delimited variable names.  The effect will
+//      not set these variables to the device when they are referenced
+//      by a shader.  NOTE: the variables specified here must be
+//      register bound in the file and must not be used in expressions
+//      in passes or samplers or the file will not load.
 //  pInclude
 //      Optional interface pointer to use for handling #include directives.
 //      If this parameter is NULL, #includes will be honored when compiling
@@ -654,7 +661,86 @@ HRESULT WINAPI
         LPD3DXEFFECT*                   ppEffect,
         LPD3DXBUFFER*                   ppCompilationErrors);
 
+//
+// Ex functions that accept pSkipConstants in addition to other parameters
+//
 
+HRESULT WINAPI
+    D3DXCreateEffectFromFileExA(
+        LPDIRECT3DDEVICE9               pDevice,
+        LPCSTR                          pSrcFile,
+        CONST D3DXMACRO*                pDefines,
+        LPD3DXINCLUDE                   pInclude,
+        LPCSTR                          pSkipConstants, 
+        DWORD                           Flags,
+        LPD3DXEFFECTPOOL                pPool,
+        LPD3DXEFFECT*                   ppEffect,
+        LPD3DXBUFFER*                   ppCompilationErrors);
+
+HRESULT WINAPI
+    D3DXCreateEffectFromFileExW(
+        LPDIRECT3DDEVICE9               pDevice,
+        LPCWSTR                         pSrcFile,
+        CONST D3DXMACRO*                pDefines,
+        LPD3DXINCLUDE                   pInclude,
+        LPCSTR                          pSkipConstants, 
+        DWORD                           Flags,
+        LPD3DXEFFECTPOOL                pPool,
+        LPD3DXEFFECT*                   ppEffect,
+        LPD3DXBUFFER*                   ppCompilationErrors);
+
+#ifdef UNICODE
+#define D3DXCreateEffectFromFileEx D3DXCreateEffectFromFileExW
+#else
+#define D3DXCreateEffectFromFileEx D3DXCreateEffectFromFileExA
+#endif
+
+
+HRESULT WINAPI
+    D3DXCreateEffectFromResourceExA(
+        LPDIRECT3DDEVICE9               pDevice,
+        HMODULE                         hSrcModule,
+        LPCSTR                          pSrcResource,
+        CONST D3DXMACRO*                pDefines,
+        LPD3DXINCLUDE                   pInclude,
+        LPCSTR                          pSkipConstants, 
+        DWORD                           Flags,
+        LPD3DXEFFECTPOOL                pPool,
+        LPD3DXEFFECT*                   ppEffect,
+        LPD3DXBUFFER*                   ppCompilationErrors);
+
+HRESULT WINAPI
+    D3DXCreateEffectFromResourceExW(
+        LPDIRECT3DDEVICE9               pDevice,
+        HMODULE                         hSrcModule,
+        LPCWSTR                         pSrcResource,
+        CONST D3DXMACRO*                pDefines,
+        LPD3DXINCLUDE                   pInclude,
+        LPCSTR                          pSkipConstants, 
+        DWORD                           Flags,
+        LPD3DXEFFECTPOOL                pPool,
+        LPD3DXEFFECT*                   ppEffect,
+        LPD3DXBUFFER*                   ppCompilationErrors);
+
+#ifdef UNICODE
+#define D3DXCreateEffectFromResourceEx D3DXCreateEffectFromResourceExW
+#else
+#define D3DXCreateEffectFromResourceEx D3DXCreateEffectFromResourceExA
+#endif
+
+
+HRESULT WINAPI
+    D3DXCreateEffectEx(
+        LPDIRECT3DDEVICE9               pDevice,
+        LPCVOID                         pSrcData,
+        UINT                            SrcDataLen,
+        CONST D3DXMACRO*                pDefines,
+        LPD3DXINCLUDE                   pInclude,
+        LPCSTR                          pSkipConstants, 
+        DWORD                           Flags,
+        LPD3DXEFFECTPOOL                pPool,
+        LPD3DXEFFECT*                   ppEffect,
+        LPD3DXBUFFER*                   ppCompilationErrors);
 
 //----------------------------------------------------------------------------
 // D3DXCreateEffectCompiler:

@@ -1288,9 +1288,9 @@ DEFINE_GUID(IID_ID3DXPRTCompBuffer,
 DEFINE_GUID(IID_ID3DXTextureGutterHelper, 
 0x6f57e0a, 0xbd95, 0x43f1, 0xa3, 0xda, 0x79, 0x1c, 0xf6, 0xca, 0x29, 0x7b);
 
-// {C3F4ADBF-E6D2-4b7b-BFE8-9E7208746ADF}
+// {683A4278-CD5F-4d24-90AD-C4E1B6855D53}
 DEFINE_GUID(IID_ID3DXPRTEngine, 
-0xc3f4adbf, 0xe6d2, 0x4b7b, 0xbf, 0xe8, 0x9e, 0x72, 0x8, 0x74, 0x6a, 0xdf);
+0x683a4278, 0xcd5f, 0x4d24, 0x90, 0xad, 0xc4, 0xe1, 0xb6, 0x85, 0x5d, 0x53);
 
 // interface defenitions
 
@@ -1914,6 +1914,31 @@ DECLARE_INTERFACE_(ID3DXPRTEngine, IUnknown)
     //  will be invoked
     // lpUserContext - will be passed back to the users call back
     STDMETHOD(SetCallBack)(THIS_ LPD3DXSHPRTSIMCB pCB, FLOAT Frequency,  LPVOID lpUserContext) PURE;
+    
+    // Returns TRUE if the ray intersects the mesh, FALSE if it does not.  This function
+    // takes into account settings from SetMinMaxIntersection.  If the closest intersection
+    // is not needed this function is more efficient compared to the ClosestRayIntersection
+    // method.
+    // pRayPos - origin of ray
+    // pRayDir - normalized ray direction (normalization required for SetMinMax to be meaningful)
+    
+    STDMETHOD_(BOOL, ShadowRayIntersects)(THIS_ CONST D3DXVECTOR3 *pRayPos, CONST D3DXVECTOR3 *pRayDir) PURE;
+    
+    // Returns TRUE if the ray intersects the mesh, FALSE if it does not.  If there is an
+    // intersection the closest face that was intersected and its first two barycentric coordinates
+    // are returned.  This function takes into account settings from SetMinMaxIntersection.
+    // This is a slower function compared to ShadowRayIntersects and should only be used where
+    // needed.  The third vertices barycentric coordinates will be 1 - pU - pV.
+    // pRayPos     - origin of ray
+    // pRayDir     - normalized ray direction (normalization required for SetMinMax to be meaningful)
+    // pFaceIndex  - Closest face that intersects.  This index is based on stacking the pBlockerMesh
+    //  faces before the faces from pMesh
+    // pU          - Barycentric coordinate for vertex 0
+    // pV          - Barycentric coordinate for vertex 1
+    // pDist       - Distance along ray where the intersection occured
+    
+    STDMETHOD_(BOOL, ClosestRayIntersects)(THIS_ CONST D3DXVECTOR3 *pRayPos, CONST D3DXVECTOR3 *pRayDir,
+                                           DWORD *pFaceIndex, FLOAT *pU, FLOAT *pV, FLOAT *pDist) PURE;
 };
 
 
