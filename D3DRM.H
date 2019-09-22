@@ -10,6 +10,7 @@
 #ifndef __D3DRM_H__
 #define __D3DRM_H__
 
+#include "ddraw.h"
 #include "d3drmobj.h"
 
 #ifdef __cplusplus
@@ -18,7 +19,7 @@ struct IDirect3DRM;
 #endif
 
 
-typedef void (*D3DRMDEVICEPALETTECALLBACK)
+typedef void (CDECL *D3DRMDEVICEPALETTECALLBACK)
     (LPDIRECT3DRMDEVICE lpDirect3DRMDev, LPVOID lpArg, DWORD dwIndex, LONG red, LONG green, LONG blue);
 
 DEFINE_GUID(IID_IDirect3DRM,    0x2bc49361, 0x8327, 0x11cf, 0xac, 0x4a, 0x0, 0x0, 0xc0, 0x38, 0x25, 0xa1);

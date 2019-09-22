@@ -255,10 +255,10 @@ typedef struct _DDPIXELFORMAT
     DWORD       dwFourCC;               // (FOURCC code)
     union
     {
-        DWORD   dwRGBBitCount;          // how many bits per pixel (BD_4,8,16,24,32)
-        DWORD   dwYUVBitCount;          // how many bits per pixel (BD_4,8,16,24,32)
-        DWORD   dwZBufferBitDepth;      // how many bits for z buffers (BD_8,16,24,32)
-        DWORD   dwAlphaBitDepth;        // how many bits for alpha channels (BD_1,2,4,8)
+        DWORD   dwRGBBitCount;          // how many bits per pixel
+        DWORD   dwYUVBitCount;          // how many bits per pixel
+        DWORD   dwZBufferBitDepth;      // how many bits for z buffers
+        DWORD   dwAlphaBitDepth;        // how many bits for alpha channels
     };
     union
     {
@@ -462,7 +462,7 @@ DECLARE_INTERFACE_( IDirectDraw2, IUnknown )
 #define IDirectDraw2_Initialize(p, a)                (p)->lpVtbl->Initialize(p, a)
 #define IDirectDraw2_RestoreDisplayMode(p)           (p)->lpVtbl->RestoreDisplayMode(p)
 #define IDirectDraw2_SetCooperativeLevel(p, a, b)    (p)->lpVtbl->SetCooperativeLevel(p, a, b)
-#define IDirectDraw2_SetDisplayMode(p, a, b, c, d)   (p)->lpVtbl->SetDisplayMode(p, a, b, c, d)
+#define IDirectDraw2_SetDisplayMode(p, a, b, c, d, e) (p)->lpVtbl->SetDisplayMode(p, a, b, c, d, e)
 #define IDirectDraw2_WaitForVerticalBlank(p, a, b)   (p)->lpVtbl->WaitForVerticalBlank(p, a, b)
 #define IDirectDraw2_GetAvailableVidMem(p, a, b, c)  (p)->lpVtbl->GetAvailableVidMem(p, a, b, c)
 #endif
