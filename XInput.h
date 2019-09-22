@@ -207,47 +207,47 @@ extern "C" {
 
 DWORD WINAPI XInputGetState
 (
-    DWORD         dwUserIndex,  // [in] Index of the gamer associated with the device
-    XINPUT_STATE* pState        // [out] Receives the current state
+    __in  DWORD         dwUserIndex,  // Index of the gamer associated with the device
+    __out XINPUT_STATE* pState        // Receives the current state
 );
 
 DWORD WINAPI XInputSetState
 (
-    DWORD             dwUserIndex,  // [in] Index of the gamer associated with the device
-    XINPUT_VIBRATION* pVibration    // [in, out] The vibration information to send to the controller
+    __in DWORD             dwUserIndex,  // Index of the gamer associated with the device
+    __in XINPUT_VIBRATION* pVibration    // The vibration information to send to the controller
 );
 
 DWORD WINAPI XInputGetCapabilities
 (
-    DWORD                dwUserIndex,   // [in] Index of the gamer associated with the device
-    DWORD                dwFlags,       // [in] Input flags that identify the device type
-    XINPUT_CAPABILITIES* pCapabilities  // [out] Receives the capabilities
+    __in  DWORD                dwUserIndex,   // Index of the gamer associated with the device
+    __in  DWORD                dwFlags,       // Input flags that identify the device type
+    __out XINPUT_CAPABILITIES* pCapabilities  // Receives the capabilities
 );
 
 void WINAPI XInputEnable
 (
-    BOOL enable     // [in] Indicates whether xinput is enabled or disabled. 
+    __in BOOL enable     // [in] Indicates whether xinput is enabled or disabled. 
 );
 
 DWORD WINAPI XInputGetDSoundAudioDeviceGuids
 (
-    DWORD dwUserIndex,          // [in] Index of the gamer associated with the device
-    GUID* pDSoundRenderGuid,    // [out] DSound device ID for render
-    GUID* pDSoundCaptureGuid    // [out] DSound device ID for capture
+    __in  DWORD dwUserIndex,          // Index of the gamer associated with the device
+    __out GUID* pDSoundRenderGuid,    // DSound device ID for render
+    __out GUID* pDSoundCaptureGuid    // DSound device ID for capture
 );
 
 DWORD WINAPI XInputGetBatteryInformation
 (
-    DWORD                       dwUserIndex,        // [in]  Index of the gamer associated with the device
-    BYTE                        devType,            // [in]  Which device on this user index
-    XINPUT_BATTERY_INFORMATION* pBatteryInformation // [out] Contains the level and types of batteries
+    __in  DWORD                       dwUserIndex,        // Index of the gamer associated with the device
+    __in  BYTE                        devType,            // Which device on this user index
+    __out XINPUT_BATTERY_INFORMATION* pBatteryInformation // Contains the level and types of batteries
 );
 
 DWORD WINAPI XInputGetKeystroke
 (
-    DWORD dwUserIndex,              // [in]  Index of the gamer associated with the device
-    DWORD dwReserved,               // [in]  Reserved for future use
-    PXINPUT_KEYSTROKE pKeystroke    // [out] Pointer to an XINPUT_KEYSTROKE structure that receives an input event.
+    __in       DWORD dwUserIndex,              // Index of the gamer associated with the device
+    __reserved DWORD dwReserved,               // Reserved for future use
+    __out      PXINPUT_KEYSTROKE pKeystroke    // Pointer to an XINPUT_KEYSTROKE structure that receives an input event.
 );
 
 #ifdef __cplusplus
