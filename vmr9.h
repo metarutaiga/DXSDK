@@ -4,7 +4,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0357 */
+ /* File created by MIDL compiler version 6.00.0347 */
 /* Compiler settings for vmr9.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -52,6 +52,12 @@ typedef interface IVMRImagePresenter9 IVMRImagePresenter9;
 #define __IVMRSurfaceAllocator9_FWD_DEFINED__
 typedef interface IVMRSurfaceAllocator9 IVMRSurfaceAllocator9;
 #endif 	/* __IVMRSurfaceAllocator9_FWD_DEFINED__ */
+
+
+#ifndef __IVMRSurfaceAllocatorEx9_FWD_DEFINED__
+#define __IVMRSurfaceAllocatorEx9_FWD_DEFINED__
+typedef interface IVMRSurfaceAllocatorEx9 IVMRSurfaceAllocatorEx9;
+#endif 	/* __IVMRSurfaceAllocatorEx9_FWD_DEFINED__ */
 
 
 #ifndef __IVMRSurfaceAllocatorNotify9_FWD_DEFINED__
@@ -174,12 +180,14 @@ typedef /* [public][public][public] */ struct __MIDL___MIDL_itf_vmr9_0000_0001
 
 
 
+
 typedef /* [public] */ 
 enum __MIDL___MIDL_itf_vmr9_0000_0002
     {	VMR9Sample_SyncPoint	= 0x1,
 	VMR9Sample_Preroll	= 0x2,
 	VMR9Sample_Discontinuity	= 0x4,
-	VMR9Sample_TimeValid	= 0x8
+	VMR9Sample_TimeValid	= 0x8,
+	VMR9Sample_SrcDstRectsValid	= 0x10
     } 	VMR9PresentationFlags;
 
 typedef struct _VMR9PresentationInfo
@@ -346,7 +354,8 @@ enum __MIDL___MIDL_itf_vmr9_0009_0001
 	VMR9AllocFlag_DXVATarget	= 0x2,
 	VMR9AllocFlag_TextureSurface	= 0x4,
 	VMR9AllocFlag_OffscreenSurface	= 0x8,
-	VMR9AllocFlag_UsageReserved	= 0xf0,
+	VMR9AllocFlag_RGBDynamicSwitch	= 0x10,
+	VMR9AllocFlag_UsageReserved	= 0xe0,
 	VMR9AllocFlag_UsageMask	= 0xff
     } 	VMR9SurfaceAllocationFlags;
 
@@ -536,6 +545,142 @@ void __RPC_STUB IVMRSurfaceAllocator9_AdviseNotify_Stub(
 
 
 #endif 	/* __IVMRSurfaceAllocator9_INTERFACE_DEFINED__ */
+
+
+#ifndef __IVMRSurfaceAllocatorEx9_INTERFACE_DEFINED__
+#define __IVMRSurfaceAllocatorEx9_INTERFACE_DEFINED__
+
+/* interface IVMRSurfaceAllocatorEx9 */
+/* [unique][helpstring][uuid][local][object][local] */ 
+
+
+EXTERN_C const IID IID_IVMRSurfaceAllocatorEx9;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("6de9a68a-a928-4522-bf57-655ae3866456")
+    IVMRSurfaceAllocatorEx9 : public IVMRSurfaceAllocator9
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE GetSurfaceEx( 
+            /* [in] */ DWORD_PTR dwUserID,
+            /* [in] */ DWORD SurfaceIndex,
+            /* [in] */ DWORD SurfaceFlags,
+            /* [out] */ IDirect3DSurface9 **lplpSurface,
+            /* [out] */ RECT *lprcDst) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IVMRSurfaceAllocatorEx9Vtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IVMRSurfaceAllocatorEx9 * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IVMRSurfaceAllocatorEx9 * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IVMRSurfaceAllocatorEx9 * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *InitializeDevice )( 
+            IVMRSurfaceAllocatorEx9 * This,
+            /* [in] */ DWORD_PTR dwUserID,
+            /* [in] */ VMR9AllocationInfo *lpAllocInfo,
+            /* [out][in] */ DWORD *lpNumBuffers);
+        
+        HRESULT ( STDMETHODCALLTYPE *TerminateDevice )( 
+            IVMRSurfaceAllocatorEx9 * This,
+            /* [in] */ DWORD_PTR dwID);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetSurface )( 
+            IVMRSurfaceAllocatorEx9 * This,
+            /* [in] */ DWORD_PTR dwUserID,
+            /* [in] */ DWORD SurfaceIndex,
+            /* [in] */ DWORD SurfaceFlags,
+            /* [out] */ IDirect3DSurface9 **lplpSurface);
+        
+        HRESULT ( STDMETHODCALLTYPE *AdviseNotify )( 
+            IVMRSurfaceAllocatorEx9 * This,
+            /* [in] */ IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetSurfaceEx )( 
+            IVMRSurfaceAllocatorEx9 * This,
+            /* [in] */ DWORD_PTR dwUserID,
+            /* [in] */ DWORD SurfaceIndex,
+            /* [in] */ DWORD SurfaceFlags,
+            /* [out] */ IDirect3DSurface9 **lplpSurface,
+            /* [out] */ RECT *lprcDst);
+        
+        END_INTERFACE
+    } IVMRSurfaceAllocatorEx9Vtbl;
+
+    interface IVMRSurfaceAllocatorEx9
+    {
+        CONST_VTBL struct IVMRSurfaceAllocatorEx9Vtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IVMRSurfaceAllocatorEx9_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IVMRSurfaceAllocatorEx9_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IVMRSurfaceAllocatorEx9_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IVMRSurfaceAllocatorEx9_InitializeDevice(This,dwUserID,lpAllocInfo,lpNumBuffers)	\
+    (This)->lpVtbl -> InitializeDevice(This,dwUserID,lpAllocInfo,lpNumBuffers)
+
+#define IVMRSurfaceAllocatorEx9_TerminateDevice(This,dwID)	\
+    (This)->lpVtbl -> TerminateDevice(This,dwID)
+
+#define IVMRSurfaceAllocatorEx9_GetSurface(This,dwUserID,SurfaceIndex,SurfaceFlags,lplpSurface)	\
+    (This)->lpVtbl -> GetSurface(This,dwUserID,SurfaceIndex,SurfaceFlags,lplpSurface)
+
+#define IVMRSurfaceAllocatorEx9_AdviseNotify(This,lpIVMRSurfAllocNotify)	\
+    (This)->lpVtbl -> AdviseNotify(This,lpIVMRSurfAllocNotify)
+
+
+#define IVMRSurfaceAllocatorEx9_GetSurfaceEx(This,dwUserID,SurfaceIndex,SurfaceFlags,lplpSurface,lprcDst)	\
+    (This)->lpVtbl -> GetSurfaceEx(This,dwUserID,SurfaceIndex,SurfaceFlags,lplpSurface,lprcDst)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+HRESULT STDMETHODCALLTYPE IVMRSurfaceAllocatorEx9_GetSurfaceEx_Proxy( 
+    IVMRSurfaceAllocatorEx9 * This,
+    /* [in] */ DWORD_PTR dwUserID,
+    /* [in] */ DWORD SurfaceIndex,
+    /* [in] */ DWORD SurfaceFlags,
+    /* [out] */ IDirect3DSurface9 **lplpSurface,
+    /* [out] */ RECT *lprcDst);
+
+
+void __RPC_STUB IVMRSurfaceAllocatorEx9_GetSurfaceEx_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IVMRSurfaceAllocatorEx9_INTERFACE_DEFINED__ */
 
 
 #ifndef __IVMRSurfaceAllocatorNotify9_INTERFACE_DEFINED__
@@ -737,19 +882,19 @@ void __RPC_STUB IVMRSurfaceAllocatorNotify9_NotifyEvent_Stub(
 #endif 	/* __IVMRSurfaceAllocatorNotify9_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_vmr9_0011 */
+/* interface __MIDL_itf_vmr9_0012 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_vmr9_0011_0001
+enum __MIDL___MIDL_itf_vmr9_0012_0001
     {	VMR9ARMode_None	= 0,
 	VMR9ARMode_LetterBox	= VMR9ARMode_None + 1
     } 	VMR9AspectRatioMode;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0011_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0011_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0012_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0012_v0_0_s_ifspec;
 
 #ifndef __IVMRWindowlessControl9_INTERFACE_DEFINED__
 #define __IVMRWindowlessControl9_INTERFACE_DEFINED__
@@ -1126,14 +1271,15 @@ void __RPC_STUB IVMRWindowlessControl9_GetBorderColor_Stub(
 #endif 	/* __IVMRWindowlessControl9_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_vmr9_0012 */
+/* interface __MIDL_itf_vmr9_0013 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_vmr9_0012_0001
+enum __MIDL___MIDL_itf_vmr9_0013_0001
     {	MixerPref9_NoDecimation	= 0x1,
 	MixerPref9_DecimateOutput	= 0x2,
-	MixerPref9_DecimationReserved	= 0xc,
+	MixerPref9_ARAdjustXorY	= 0x4,
+	MixerPref9_NonSquareMixing	= 0x8,
 	MixerPref9_DecimateMask	= 0xf,
 	MixerPref9_BiLinearFiltering	= 0x10,
 	MixerPref9_PointFiltering	= 0x20,
@@ -1143,8 +1289,13 @@ enum __MIDL___MIDL_itf_vmr9_0012_0001
 	MixerPref9_FilteringReserved	= 0xe00,
 	MixerPref9_FilteringMask	= 0xff0,
 	MixerPref9_RenderTargetRGB	= 0x1000,
-	MixerPref9_RenderTargetReserved	= 0xfe000,
-	MixerPref9_RenderTargetMask	= 0xff000
+	MixerPref9_RenderTargetYUV	= 0x2000,
+	MixerPref9_RenderTargetReserved	= 0xfc000,
+	MixerPref9_RenderTargetMask	= 0xff000,
+	MixerPref9_DynamicSwitchToBOB	= 0x100000,
+	MixerPref9_DynamicDecimateBy2	= 0x200000,
+	MixerPref9_DynamicReserved	= 0xc00000,
+	MixerPref9_DynamicMask	= 0xf00000
     } 	VMR9MixerPrefs;
 
 typedef struct _VMR9NormalizedRect
@@ -1156,7 +1307,7 @@ typedef struct _VMR9NormalizedRect
     } 	VMR9NormalizedRect;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_vmr9_0012_0002
+enum __MIDL___MIDL_itf_vmr9_0013_0002
     {	ProcAmpControl9_Brightness	= 0x1,
 	ProcAmpControl9_Contrast	= 0x2,
 	ProcAmpControl9_Hue	= 0x4,
@@ -1186,8 +1337,8 @@ typedef struct _VMR9ProcAmpControlRange
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0012_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0012_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0013_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0013_v0_0_s_ifspec;
 
 #ifndef __IVMRMixerControl9_INTERFACE_DEFINED__
 #define __IVMRMixerControl9_INTERFACE_DEFINED__
@@ -1570,7 +1721,7 @@ void __RPC_STUB IVMRMixerControl9_GetProcAmpControlRange_Stub(
 #endif 	/* __IVMRMixerControl9_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_vmr9_0013 */
+/* interface __MIDL_itf_vmr9_0014 */
 /* [local] */ 
 
 typedef struct _VMR9AlphaBitmap
@@ -1586,7 +1737,7 @@ typedef struct _VMR9AlphaBitmap
     } 	VMR9AlphaBitmap;
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_vmr9_0013_0001
+enum __MIDL___MIDL_itf_vmr9_0014_0001
     {	VMR9AlphaBitmap_Disable	= 0x1,
 	VMR9AlphaBitmap_hDC	= 0x2,
 	VMR9AlphaBitmap_EntireDDS	= 0x4,
@@ -1597,8 +1748,8 @@ enum __MIDL___MIDL_itf_vmr9_0013_0001
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0013_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0013_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0014_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0014_v0_0_s_ifspec;
 
 #ifndef __IVMRMixerBitmap9_INTERFACE_DEFINED__
 #define __IVMRMixerBitmap9_INTERFACE_DEFINED__
@@ -1884,19 +2035,19 @@ void __RPC_STUB IVMRSurface9_GetSurface_Stub(
 #endif 	/* __IVMRSurface9_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_vmr9_0015 */
+/* interface __MIDL_itf_vmr9_0016 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_vmr9_0015_0001
+enum __MIDL___MIDL_itf_vmr9_0016_0001
     {	RenderPrefs9_DoNotRenderBorder	= 0x1,
 	RenderPrefs9_Mask	= 0x1
     } 	VMR9RenderPrefs;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0015_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0015_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0016_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0016_v0_0_s_ifspec;
 
 #ifndef __IVMRImagePresenterConfig9_INTERFACE_DEFINED__
 #define __IVMRImagePresenterConfig9_INTERFACE_DEFINED__
@@ -2122,11 +2273,11 @@ void __RPC_STUB IVMRVideoStreamControl9_GetStreamActiveState_Stub(
 #endif 	/* __IVMRVideoStreamControl9_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_vmr9_0017 */
+/* interface __MIDL_itf_vmr9_0018 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_vmr9_0017_0001
+enum __MIDL___MIDL_itf_vmr9_0018_0001
     {	VMR9Mode_Windowed	= 0x1,
 	VMR9Mode_Windowless	= 0x2,
 	VMR9Mode_Renderless	= 0x4,
@@ -2135,8 +2286,8 @@ enum __MIDL___MIDL_itf_vmr9_0017_0001
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0017_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0017_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0018_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0018_v0_0_s_ifspec;
 
 #ifndef __IVMRFilterConfig9_INTERFACE_DEFINED__
 #define __IVMRFilterConfig9_INTERFACE_DEFINED__
@@ -2472,7 +2623,7 @@ void __RPC_STUB IVMRAspectRatioControl9_SetAspectRatioMode_Stub(
 #endif 	/* __IVMRAspectRatioControl9_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_vmr9_0019 */
+/* interface __MIDL_itf_vmr9_0020 */
 /* [local] */ 
 
 typedef struct _VMR9MonitorInfo
@@ -2492,8 +2643,8 @@ typedef struct _VMR9MonitorInfo
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0019_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0019_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0020_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0020_v0_0_s_ifspec;
 
 #ifndef __IVMRMonitorConfig9_INTERFACE_DEFINED__
 #define __IVMRMonitorConfig9_INTERFACE_DEFINED__
@@ -2679,11 +2830,11 @@ void __RPC_STUB IVMRMonitorConfig9_GetAvailableMonitors_Stub(
 #endif 	/* __IVMRMonitorConfig9_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_vmr9_0020 */
+/* interface __MIDL_itf_vmr9_0021 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_vmr9_0020_0001
+enum __MIDL___MIDL_itf_vmr9_0021_0001
     {	DeinterlacePref9_NextBest	= 0x1,
 	DeinterlacePref9_BOB	= 0x2,
 	DeinterlacePref9_Weave	= 0x4,
@@ -2691,7 +2842,7 @@ enum __MIDL___MIDL_itf_vmr9_0020_0001
     } 	VMR9DeinterlacePrefs;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_vmr9_0020_0002
+enum __MIDL___MIDL_itf_vmr9_0021_0002
     {	DeinterlaceTech9_Unknown	= 0,
 	DeinterlaceTech9_BOBLineReplicate	= 0x1,
 	DeinterlaceTech9_BOBVerticalStretch	= 0x2,
@@ -2740,8 +2891,8 @@ typedef struct _VMR9DeinterlaceCaps
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0020_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0020_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0021_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0021_v0_0_s_ifspec;
 
 #ifndef __IVMRDeinterlaceControl9_INTERFACE_DEFINED__
 #define __IVMRDeinterlaceControl9_INTERFACE_DEFINED__
@@ -2986,7 +3137,7 @@ void __RPC_STUB IVMRDeinterlaceControl9_GetActualDeinterlaceMode_Stub(
 #endif 	/* __IVMRDeinterlaceControl9_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_vmr9_0021 */
+/* interface __MIDL_itf_vmr9_0022 */
 /* [local] */ 
 
 typedef struct _VMR9VideoStreamInfo
@@ -3004,8 +3155,8 @@ typedef struct _VMR9VideoStreamInfo
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0021_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_vmr9_0021_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0022_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_vmr9_0022_v0_0_s_ifspec;
 
 #ifndef __IVMRImageCompositor9_INTERFACE_DEFINED__
 #define __IVMRImageCompositor9_INTERFACE_DEFINED__

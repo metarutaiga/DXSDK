@@ -4,7 +4,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0357 */
+ /* File created by MIDL compiler version 6.00.0347 */
 /* Compiler settings for strmif.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -670,6 +670,12 @@ typedef interface IVideoEncoder IVideoEncoder;
 #define __IAMDecoderCaps_FWD_DEFINED__
 typedef interface IAMDecoderCaps IAMDecoderCaps;
 #endif 	/* __IAMDecoderCaps_FWD_DEFINED__ */
+
+
+#ifndef __IAMCertifiedOutputProtection_FWD_DEFINED__
+#define __IAMCertifiedOutputProtection_FWD_DEFINED__
+typedef interface IAMCertifiedOutputProtection IAMCertifiedOutputProtection;
+#endif 	/* __IAMCertifiedOutputProtection_FWD_DEFINED__ */
 
 
 #ifndef __IDvdControl_FWD_DEFINED__
@@ -4995,6 +5001,7 @@ enum tagAM_MEDIAEVENT_FLAGS
 {
     AM_MEDIAEVENT_NONOTIFY = 0x01
 };
+
 
 
 
@@ -15313,15 +15320,15 @@ void __RPC_STUB IAMPhysicalPinInfo_GetPhysicalType_Stub(
 #endif 	/* __IAMPhysicalPinInfo_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0329 */
+/* interface __MIDL_itf_strmif_0331 */
 /* [local] */ 
 
 typedef IAMPhysicalPinInfo *PAMPHYSICALPININFO;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0329_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0329_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0331_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0331_v0_0_s_ifspec;
 
 #ifndef __IAMExtDevice_INTERFACE_DEFINED__
 #define __IAMExtDevice_INTERFACE_DEFINED__
@@ -15579,15 +15586,15 @@ void __RPC_STUB IAMExtDevice_get_DevicePort_Stub(
 #endif 	/* __IAMExtDevice_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0330 */
+/* interface __MIDL_itf_strmif_0332 */
 /* [local] */ 
 
 typedef IAMExtDevice *PEXTDEVICE;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0330_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0330_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0332_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0332_v0_0_s_ifspec;
 
 #ifndef __IAMExtTransport_INTERFACE_DEFINED__
 #define __IAMExtTransport_INTERFACE_DEFINED__
@@ -16342,7 +16349,7 @@ void __RPC_STUB IAMExtTransport_put_EditStart_Stub(
 #endif 	/* __IAMExtTransport_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0331 */
+/* interface __MIDL_itf_strmif_0333 */
 /* [local] */ 
 
 typedef IAMExtTransport *PIAMEXTTRANSPORT;
@@ -16384,8 +16391,8 @@ typedef TIMECODE_SAMPLE *PTIMECODE_SAMPLE;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0331_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0331_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0333_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0333_v0_0_s_ifspec;
 
 #ifndef __IAMTimecodeReader_INTERFACE_DEFINED__
 #define __IAMTimecodeReader_INTERFACE_DEFINED__
@@ -16571,15 +16578,15 @@ void __RPC_STUB IAMTimecodeReader_GetTimecode_Stub(
 #endif 	/* __IAMTimecodeReader_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0332 */
+/* interface __MIDL_itf_strmif_0334 */
 /* [local] */ 
 
 typedef IAMTimecodeReader *PIAMTIMECODEREADER;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0332_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0332_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0334_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0334_v0_0_s_ifspec;
 
 #ifndef __IAMTimecodeGenerator_INTERFACE_DEFINED__
 #define __IAMTimecodeGenerator_INTERFACE_DEFINED__
@@ -16787,15 +16794,15 @@ void __RPC_STUB IAMTimecodeGenerator_GetTimecode_Stub(
 #endif 	/* __IAMTimecodeGenerator_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0333 */
+/* interface __MIDL_itf_strmif_0335 */
 /* [local] */ 
 
 typedef IAMTimecodeGenerator *PIAMTIMECODEGENERATOR;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0333_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0333_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0335_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0335_v0_0_s_ifspec;
 
 #ifndef __IAMTimecodeDisplay_INTERFACE_DEFINED__
 #define __IAMTimecodeDisplay_INTERFACE_DEFINED__
@@ -16959,15 +16966,15 @@ void __RPC_STUB IAMTimecodeDisplay_SetTCDisplay_Stub(
 #endif 	/* __IAMTimecodeDisplay_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0334 */
+/* interface __MIDL_itf_strmif_0336 */
 /* [local] */ 
 
 typedef IAMTimecodeDisplay *PIAMTIMECODEDISPLAY;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0334_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0334_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0336_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0336_v0_0_s_ifspec;
 
 #ifndef __IAMDevMemoryAllocator_INTERFACE_DEFINED__
 #define __IAMDevMemoryAllocator_INTERFACE_DEFINED__
@@ -17162,15 +17169,15 @@ void __RPC_STUB IAMDevMemoryAllocator_GetDevMemoryObject_Stub(
 #endif 	/* __IAMDevMemoryAllocator_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0335 */
+/* interface __MIDL_itf_strmif_0337 */
 /* [local] */ 
 
 typedef IAMDevMemoryAllocator *PAMDEVMEMORYALLOCATOR;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0335_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0335_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0337_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0337_v0_0_s_ifspec;
 
 #ifndef __IAMDevMemoryControl_INTERFACE_DEFINED__
 #define __IAMDevMemoryControl_INTERFACE_DEFINED__
@@ -17300,7 +17307,7 @@ void __RPC_STUB IAMDevMemoryControl_GetDevId_Stub(
 #endif 	/* __IAMDevMemoryControl_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0336 */
+/* interface __MIDL_itf_strmif_0338 */
 /* [local] */ 
 
 typedef IAMDevMemoryControl *PAMDEVMEMORYCONTROL;
@@ -17317,8 +17324,8 @@ enum _AMSTREAMSELECTENABLEFLAGS
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0336_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0336_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0338_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0338_v0_0_s_ifspec;
 
 #ifndef __IAMStreamSelect_INTERFACE_DEFINED__
 #define __IAMStreamSelect_INTERFACE_DEFINED__
@@ -17478,7 +17485,7 @@ void __RPC_STUB IAMStreamSelect_Enable_Stub(
 #endif 	/* __IAMStreamSelect_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0337 */
+/* interface __MIDL_itf_strmif_0339 */
 /* [local] */ 
 
 typedef IAMStreamSelect *PAMSTREAMSELECT;
@@ -17490,8 +17497,8 @@ enum _AMRESCTL_RESERVEFLAGS
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0337_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0337_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0339_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0339_v0_0_s_ifspec;
 
 #ifndef __IAMResourceControl_INTERFACE_DEFINED__
 #define __IAMResourceControl_INTERFACE_DEFINED__
@@ -17676,7 +17683,7 @@ void __RPC_STUB IAMClockAdjust_SetClockDelta_Stub(
 #endif 	/* __IAMClockAdjust_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0339 */
+/* interface __MIDL_itf_strmif_0341 */
 /* [local] */ 
 
 
@@ -17686,8 +17693,8 @@ enum _AM_FILTER_MISC_FLAGS
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0339_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0339_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0341_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0341_v0_0_s_ifspec;
 
 #ifndef __IAMFilterMiscFlags_INTERFACE_DEFINED__
 #define __IAMFilterMiscFlags_INTERFACE_DEFINED__
@@ -18022,7 +18029,7 @@ void __RPC_STUB IDecimateVideoImage_ResetDecimationImageSize_Stub(
 #endif 	/* __IDecimateVideoImage_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0342 */
+/* interface __MIDL_itf_strmif_0344 */
 /* [local] */ 
 
 typedef 
@@ -18036,8 +18043,8 @@ enum _DECIMATION_USAGE
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0342_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0342_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0344_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0344_v0_0_s_ifspec;
 
 #ifndef __IAMVideoDecimationProperties_INTERFACE_DEFINED__
 #define __IAMVideoDecimationProperties_INTERFACE_DEFINED__
@@ -18288,7 +18295,7 @@ void __RPC_STUB IVideoFrameStep_CancelStep_Stub(
 #endif 	/* __IVideoFrameStep_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0344 */
+/* interface __MIDL_itf_strmif_0346 */
 /* [local] */ 
 
 
@@ -18296,12 +18303,13 @@ enum _AM_PUSHSOURCE_FLAGS
     {	AM_PUSHSOURCECAPS_INTERNAL_RM	= 0x1,
 	AM_PUSHSOURCECAPS_NOT_LIVE	= 0x2,
 	AM_PUSHSOURCECAPS_PRIVATE_CLOCK	= 0x4,
-	AM_PUSHSOURCEREQS_USE_STREAM_CLOCK	= 0x10000
+	AM_PUSHSOURCEREQS_USE_STREAM_CLOCK	= 0x10000,
+	AM_PUSHSOURCEREQS_USE_CLOCK_CHAIN	= 0x20000
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0344_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0344_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0346_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0346_v0_0_s_ifspec;
 
 #ifndef __IAMLatency_INTERFACE_DEFINED__
 #define __IAMLatency_INTERFACE_DEFINED__
@@ -18732,10 +18740,10 @@ void __RPC_STUB IAMDeviceRemoval_Disassociate_Stub(
 #endif 	/* __IAMDeviceRemoval_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0346 */
+/* interface __MIDL_itf_strmif_0348 */
 /* [local] */ 
 
-typedef /* [public][public][public] */ struct __MIDL___MIDL_itf_strmif_0346_0001
+typedef /* [public][public][public] */ struct __MIDL___MIDL_itf_strmif_0348_0001
     {
     DWORD dwDVAAuxSrc;
     DWORD dwDVAAuxCtl;
@@ -18746,7 +18754,7 @@ typedef /* [public][public][public] */ struct __MIDL___MIDL_itf_strmif_0346_0001
     DWORD dwDVReserved[ 2 ];
     } 	DVINFO;
 
-typedef struct __MIDL___MIDL_itf_strmif_0346_0001 *PDVINFO;
+typedef struct __MIDL___MIDL_itf_strmif_0348_0001 *PDVINFO;
 
 
 enum _DVENCODERRESOLUTION
@@ -18768,8 +18776,8 @@ enum _DVENCODERFORMAT
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0346_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0346_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0348_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0348_v0_0_s_ifspec;
 
 #ifndef __IDVEnc_INTERFACE_DEFINED__
 #define __IDVEnc_INTERFACE_DEFINED__
@@ -18907,7 +18915,7 @@ void __RPC_STUB IDVEnc_put_IFormatResolution_Stub(
 #endif 	/* __IDVEnc_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0347 */
+/* interface __MIDL_itf_strmif_0349 */
 /* [local] */ 
 
 
@@ -18926,8 +18934,8 @@ enum _DVRESOLUTION
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0347_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0347_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0349_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0349_v0_0_s_ifspec;
 
 #ifndef __IIPDVDec_INTERFACE_DEFINED__
 #define __IIPDVDec_INTERFACE_DEFINED__
@@ -19221,7 +19229,7 @@ void __RPC_STUB IDVSplitter_DiscardAlternateVideoFrames_Stub(
 #endif 	/* __IDVSplitter_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0350 */
+/* interface __MIDL_itf_strmif_0352 */
 /* [local] */ 
 
 
@@ -19241,8 +19249,8 @@ enum _AM_AUDIO_RENDERER_STAT_PARAM
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0350_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0350_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0352_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0352_v0_0_s_ifspec;
 
 #ifndef __IAMAudioRendererStats_INTERFACE_DEFINED__
 #define __IAMAudioRendererStats_INTERFACE_DEFINED__
@@ -19340,7 +19348,7 @@ void __RPC_STUB IAMAudioRendererStats_GetStatParam_Stub(
 #endif 	/* __IAMAudioRendererStats_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0352 */
+/* interface __MIDL_itf_strmif_0354 */
 /* [local] */ 
 
 
@@ -19351,8 +19359,8 @@ enum _AM_INTF_SEARCH_FLAGS
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0352_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0352_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0354_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0354_v0_0_s_ifspec;
 
 #ifndef __IAMGraphStreams_INTERFACE_DEFINED__
 #define __IAMGraphStreams_INTERFACE_DEFINED__
@@ -19497,7 +19505,7 @@ void __RPC_STUB IAMGraphStreams_SetMaxGraphLatency_Stub(
 #endif 	/* __IAMGraphStreams_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0353 */
+/* interface __MIDL_itf_strmif_0355 */
 /* [local] */ 
 
 
@@ -19509,8 +19517,8 @@ enum AMOVERLAYFX
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0353_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0353_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0355_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0355_v0_0_s_ifspec;
 
 #ifndef __IAMOverlayFX_INTERFACE_DEFINED__
 #define __IAMOverlayFX_INTERFACE_DEFINED__
@@ -19901,7 +19909,7 @@ void __RPC_STUB IMpeg2Demultiplexer_DeleteOutputPin_Stub(
 #endif 	/* __IMpeg2Demultiplexer_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0356 */
+/* interface __MIDL_itf_strmif_0358 */
 /* [local] */ 
 
 #define MPEG2_PROGRAM_STREAM_MAP                 0x00000000
@@ -19911,7 +19919,7 @@ void __RPC_STUB IMpeg2Demultiplexer_DeleteOutputPin_Stub(
 #define MPEG2_PROGRAM_PES_STREAM                 0x00000004
 #define MPEG2_PROGRAM_SYSTEM_HEADER              0x00000005
 #define SUBSTREAM_FILTER_VAL_NONE                0x10000000
-typedef /* [public][public] */ struct __MIDL___MIDL_itf_strmif_0356_0001
+typedef /* [public][public] */ struct __MIDL___MIDL_itf_strmif_0358_0001
     {
     ULONG stream_id;
     DWORD dwMediaSampleContent;
@@ -19921,8 +19929,8 @@ typedef /* [public][public] */ struct __MIDL___MIDL_itf_strmif_0356_0001
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0356_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0356_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0358_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0358_v0_0_s_ifspec;
 
 #ifndef __IEnumStreamIdMap_INTERFACE_DEFINED__
 #define __IEnumStreamIdMap_INTERFACE_DEFINED__
@@ -20546,7 +20554,7 @@ void __RPC_STUB IAMGraphBuilderCallback_CreatedFilter_Stub(
 #endif 	/* __IAMGraphBuilderCallback_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0361 */
+/* interface __MIDL_itf_strmif_0363 */
 /* [local] */ 
 
 #ifdef __cplusplus
@@ -20572,8 +20580,8 @@ struct CodecAPIEventData
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0361_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0361_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0363_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0363_v0_0_s_ifspec;
 
 #ifndef __ICodecAPI_INTERFACE_DEFINED__
 #define __ICodecAPI_INTERFACE_DEFINED__
@@ -21477,13 +21485,13 @@ EXTERN_C const IID IID_IVideoEncoder;
 #endif 	/* __IVideoEncoder_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0365 */
+/* interface __MIDL_itf_strmif_0367 */
 /* [local] */ 
 
 #ifndef __ENCODER_API_DEFINES__
 #define __ENCODER_API_DEFINES__
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0365_0001
+enum __MIDL___MIDL_itf_strmif_0367_0001
     {	ConstantBitRate	= 0,
 	VariableBitRateAverage	= ConstantBitRate + 1,
 	VariableBitRatePeak	= VariableBitRateAverage + 1
@@ -21503,8 +21511,8 @@ enum __MIDL___MIDL_itf_strmif_0365_0001
 #define      DECODER_CAP_SUPPORTED           0x00000001
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0365_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0365_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0367_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0367_v0_0_s_ifspec;
 
 #ifndef __IAMDecoderCaps_INTERFACE_DEFINED__
 #define __IAMDecoderCaps_INTERFACE_DEFINED__
@@ -21599,7 +21607,216 @@ void __RPC_STUB IAMDecoderCaps_GetDecoderCaps_Stub(
 #endif 	/* __IAMDecoderCaps_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0366 */
+/* interface __MIDL_itf_strmif_0368 */
+/* [local] */ 
+
+typedef struct _AMCOPPSignature
+    {
+    BYTE Signature[ 256 ];
+    } 	AMCOPPSignature;
+
+typedef struct _AMCOPPCommand
+    {
+    GUID macKDI;
+    GUID guidCommandID;
+    DWORD dwSequence;
+    DWORD cbSizeData;
+    BYTE CommandData[ 4056 ];
+    } 	AMCOPPCommand;
+
+typedef struct _AMCOPPCommand *LPAMCOPPCommand;
+
+typedef struct _AMCOPPStatusInput
+    {
+    GUID rApp;
+    GUID guidStatusRequestID;
+    DWORD dwSequence;
+    DWORD cbSizeData;
+    BYTE StatusData[ 4056 ];
+    } 	AMCOPPStatusInput;
+
+typedef struct _AMCOPPStatusInput *LPAMCOPPStatusInput;
+
+typedef struct _AMCOPPStatusOutput
+    {
+    GUID macKDI;
+    DWORD cbSizeData;
+    BYTE COPPStatus[ 4076 ];
+    } 	AMCOPPStatusOutput;
+
+typedef struct _AMCOPPStatusOutput *LPAMCOPPStatusOutput;
+
+
+
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0368_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0368_v0_0_s_ifspec;
+
+#ifndef __IAMCertifiedOutputProtection_INTERFACE_DEFINED__
+#define __IAMCertifiedOutputProtection_INTERFACE_DEFINED__
+
+/* interface IAMCertifiedOutputProtection */
+/* [unique][uuid][local][object] */ 
+
+
+EXTERN_C const IID IID_IAMCertifiedOutputProtection;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("6feded3e-0ff1-4901-a2f1-43f7012c8515")
+    IAMCertifiedOutputProtection : public IUnknown
+    {
+    public:
+        virtual HRESULT STDMETHODCALLTYPE KeyExchange( 
+            /* [out] */ GUID *pRandom,
+            /* [out] */ BYTE **VarLenCertGH,
+            /* [out] */ DWORD *pdwLengthCertGH) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE SessionSequenceStart( 
+            /* [in] */ AMCOPPSignature *pSig) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ProtectionCommand( 
+            /* [in] */ const AMCOPPCommand *cmd) = 0;
+        
+        virtual HRESULT STDMETHODCALLTYPE ProtectionStatus( 
+            /* [in] */ const AMCOPPStatusInput *pStatusInput,
+            /* [out] */ AMCOPPStatusOutput *pStatusOutput) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IAMCertifiedOutputProtectionVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IAMCertifiedOutputProtection * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IAMCertifiedOutputProtection * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IAMCertifiedOutputProtection * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *KeyExchange )( 
+            IAMCertifiedOutputProtection * This,
+            /* [out] */ GUID *pRandom,
+            /* [out] */ BYTE **VarLenCertGH,
+            /* [out] */ DWORD *pdwLengthCertGH);
+        
+        HRESULT ( STDMETHODCALLTYPE *SessionSequenceStart )( 
+            IAMCertifiedOutputProtection * This,
+            /* [in] */ AMCOPPSignature *pSig);
+        
+        HRESULT ( STDMETHODCALLTYPE *ProtectionCommand )( 
+            IAMCertifiedOutputProtection * This,
+            /* [in] */ const AMCOPPCommand *cmd);
+        
+        HRESULT ( STDMETHODCALLTYPE *ProtectionStatus )( 
+            IAMCertifiedOutputProtection * This,
+            /* [in] */ const AMCOPPStatusInput *pStatusInput,
+            /* [out] */ AMCOPPStatusOutput *pStatusOutput);
+        
+        END_INTERFACE
+    } IAMCertifiedOutputProtectionVtbl;
+
+    interface IAMCertifiedOutputProtection
+    {
+        CONST_VTBL struct IAMCertifiedOutputProtectionVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IAMCertifiedOutputProtection_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IAMCertifiedOutputProtection_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IAMCertifiedOutputProtection_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IAMCertifiedOutputProtection_KeyExchange(This,pRandom,VarLenCertGH,pdwLengthCertGH)	\
+    (This)->lpVtbl -> KeyExchange(This,pRandom,VarLenCertGH,pdwLengthCertGH)
+
+#define IAMCertifiedOutputProtection_SessionSequenceStart(This,pSig)	\
+    (This)->lpVtbl -> SessionSequenceStart(This,pSig)
+
+#define IAMCertifiedOutputProtection_ProtectionCommand(This,cmd)	\
+    (This)->lpVtbl -> ProtectionCommand(This,cmd)
+
+#define IAMCertifiedOutputProtection_ProtectionStatus(This,pStatusInput,pStatusOutput)	\
+    (This)->lpVtbl -> ProtectionStatus(This,pStatusInput,pStatusOutput)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+HRESULT STDMETHODCALLTYPE IAMCertifiedOutputProtection_KeyExchange_Proxy( 
+    IAMCertifiedOutputProtection * This,
+    /* [out] */ GUID *pRandom,
+    /* [out] */ BYTE **VarLenCertGH,
+    /* [out] */ DWORD *pdwLengthCertGH);
+
+
+void __RPC_STUB IAMCertifiedOutputProtection_KeyExchange_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+HRESULT STDMETHODCALLTYPE IAMCertifiedOutputProtection_SessionSequenceStart_Proxy( 
+    IAMCertifiedOutputProtection * This,
+    /* [in] */ AMCOPPSignature *pSig);
+
+
+void __RPC_STUB IAMCertifiedOutputProtection_SessionSequenceStart_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+HRESULT STDMETHODCALLTYPE IAMCertifiedOutputProtection_ProtectionCommand_Proxy( 
+    IAMCertifiedOutputProtection * This,
+    /* [in] */ const AMCOPPCommand *cmd);
+
+
+void __RPC_STUB IAMCertifiedOutputProtection_ProtectionCommand_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+HRESULT STDMETHODCALLTYPE IAMCertifiedOutputProtection_ProtectionStatus_Proxy( 
+    IAMCertifiedOutputProtection * This,
+    /* [in] */ const AMCOPPStatusInput *pStatusInput,
+    /* [out] */ AMCOPPStatusOutput *pStatusOutput);
+
+
+void __RPC_STUB IAMCertifiedOutputProtection_ProtectionStatus_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IAMCertifiedOutputProtection_INTERFACE_DEFINED__ */
+
+
+/* interface __MIDL_itf_strmif_0369 */
 /* [local] */ 
 
 #include <ddraw.h>
@@ -21719,7 +21936,7 @@ typedef struct tagDVD_PLAYBACK_LOCATION
 typedef DWORD VALID_UOP_SOMTHING_OR_OTHER;
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0366_0001
+enum __MIDL___MIDL_itf_strmif_0369_0001
     {	UOP_FLAG_Play_Title_Or_AtTime	= 0x1,
 	UOP_FLAG_Play_Chapter	= 0x2,
 	UOP_FLAG_Play_Title	= 0x4,
@@ -21748,7 +21965,7 @@ enum __MIDL___MIDL_itf_strmif_0366_0001
     } 	VALID_UOP_FLAG;
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0366_0002
+enum __MIDL___MIDL_itf_strmif_0369_0002
     {	DVD_CMD_FLAG_None	= 0,
 	DVD_CMD_FLAG_Flush	= 0x1,
 	DVD_CMD_FLAG_SendEvents	= 0x2,
@@ -21758,7 +21975,7 @@ enum __MIDL___MIDL_itf_strmif_0366_0002
     } 	DVD_CMD_FLAGS;
 
 typedef /* [public][public] */ 
-enum __MIDL___MIDL_itf_strmif_0366_0003
+enum __MIDL___MIDL_itf_strmif_0369_0003
     {	DVD_ResetOnStop	= 1,
 	DVD_NotifyParentalLevelChange	= 2,
 	DVD_HMSF_TimeCodeEvents	= 3,
@@ -21766,7 +21983,7 @@ enum __MIDL___MIDL_itf_strmif_0366_0003
     } 	DVD_OPTION_FLAG;
 
 typedef /* [public][public] */ 
-enum __MIDL___MIDL_itf_strmif_0366_0004
+enum __MIDL___MIDL_itf_strmif_0369_0004
     {	DVD_Relative_Upper	= 1,
 	DVD_Relative_Lower	= 2,
 	DVD_Relative_Left	= 3,
@@ -21992,8 +22209,8 @@ typedef struct tagDVD_MenuAttributes
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0366_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0366_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0369_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0369_v0_0_s_ifspec;
 
 #ifndef __IDvdControl_INTERFACE_DEFINED__
 #define __IDvdControl_INTERFACE_DEFINED__
@@ -24732,7 +24949,7 @@ void __RPC_STUB IDvdControl2_SelectDefaultSubpictureLanguage_Stub(
 #endif 	/* __IDvdControl2_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0377 */
+/* interface __MIDL_itf_strmif_0380 */
 /* [local] */ 
 
 
@@ -24806,8 +25023,8 @@ typedef struct tagDVD_DECODER_CAPS
 #define DVD_AUDIO_CAPS_SDDS		0x00000010
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0377_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0377_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0380_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0380_v0_0_s_ifspec;
 
 #ifndef __IDvdInfo2_INTERFACE_DEFINED__
 #define __IDvdInfo2_INTERFACE_DEFINED__
@@ -25867,7 +26084,7 @@ void __RPC_STUB IDvdInfo2_IsSubpictureStreamEnabled_Stub(
 #endif 	/* __IDvdInfo2_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0379 */
+/* interface __MIDL_itf_strmif_0382 */
 /* [local] */ 
 
 typedef 
@@ -25887,7 +26104,7 @@ enum _AM_DVD_STREAM_FLAGS
 	AM_DVD_STREAM_SUBPIC	= 0x4
     } 	AM_DVD_STREAM_FLAGS;
 
-typedef /* [public][public] */ struct __MIDL___MIDL_itf_strmif_0379_0001
+typedef /* [public][public] */ struct __MIDL___MIDL_itf_strmif_0382_0001
     {
     HRESULT hrVPEStatus;
     BOOL bDvdVolInvalid;
@@ -25901,8 +26118,8 @@ typedef /* [public][public] */ struct __MIDL___MIDL_itf_strmif_0379_0001
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0379_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0379_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0382_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0382_v0_0_s_ifspec;
 
 #ifndef __IDvdGraphBuilder_INTERFACE_DEFINED__
 #define __IDvdGraphBuilder_INTERFACE_DEFINED__
@@ -26290,7 +26507,7 @@ void __RPC_STUB IDDrawExclModeVideo_SetCallbackInterface_Stub(
 #endif 	/* __IDDrawExclModeVideo_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0381 */
+/* interface __MIDL_itf_strmif_0384 */
 /* [local] */ 
 
 
@@ -26301,8 +26518,8 @@ enum _AM_OVERLAY_NOTIFY_FLAGS
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0381_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0381_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0384_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0384_v0_0_s_ifspec;
 
 #ifndef __IDDrawExclModeVideoCallback_INTERFACE_DEFINED__
 #define __IDDrawExclModeVideoCallback_INTERFACE_DEFINED__
@@ -26471,7 +26688,7 @@ void __RPC_STUB IDDrawExclModeVideoCallback_OnUpdateSize_Stub(
 #endif 	/* __IDDrawExclModeVideoCallback_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0382 */
+/* interface __MIDL_itf_strmif_0385 */
 /* [local] */ 
 
 
@@ -26480,8 +26697,8 @@ void __RPC_STUB IDDrawExclModeVideoCallback_OnUpdateSize_Stub(
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0382_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0382_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0385_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0385_v0_0_s_ifspec;
 
 #ifndef __IPinConnection_INTERFACE_DEFINED__
 #define __IPinConnection_INTERFACE_DEFINED__
@@ -26726,7 +26943,7 @@ void __RPC_STUB IPinFlowControl_Block_Stub(
 #endif 	/* __IPinFlowControl_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0384 */
+/* interface __MIDL_itf_strmif_0387 */
 /* [local] */ 
 
 
@@ -26751,8 +26968,8 @@ enum _AM_FILTER_FLAGS
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0384_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0384_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0387_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0387_v0_0_s_ifspec;
 
 #ifndef __IGraphConfig_INTERFACE_DEFINED__
 #define __IGraphConfig_INTERFACE_DEFINED__
@@ -27342,7 +27559,7 @@ void __RPC_STUB IFilterChain_RemoveChain_Stub(
 #endif 	/* __IFilterChain_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0387 */
+/* interface __MIDL_itf_strmif_0390 */
 /* [local] */ 
 
 #if 0
@@ -27354,7 +27571,7 @@ typedef DWORD *LPDDPIXELFORMAT;
 
 typedef DWORD *LPBITMAPINFOHEADER;
 
-typedef /* [public][public][public][public][public][public] */ struct __MIDL___MIDL_itf_strmif_0387_0001
+typedef /* [public][public][public][public][public][public] */ struct __MIDL___MIDL_itf_strmif_0390_0001
     {
     DWORD dw1;
     DWORD dw2;
@@ -27379,11 +27596,12 @@ typedef DDCOLORKEY *LPDDCOLORKEY;
 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0387_0002
+enum __MIDL___MIDL_itf_strmif_0390_0002
     {	VMRSample_SyncPoint	= 0x1,
 	VMRSample_Preroll	= 0x2,
 	VMRSample_Discontinuity	= 0x4,
-	VMRSample_TimeValid	= 0x8
+	VMRSample_TimeValid	= 0x8,
+	VMRSample_SrcDstRectsValid	= 0x10
     } 	VMRPresentationFlags;
 
 typedef struct tagVMRPRESENTATIONINFO
@@ -27401,8 +27619,8 @@ typedef struct tagVMRPRESENTATIONINFO
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0387_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0387_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0390_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0390_v0_0_s_ifspec;
 
 #ifndef __IVMRImagePresenter_INTERFACE_DEFINED__
 #define __IVMRImagePresenter_INTERFACE_DEFINED__
@@ -27541,11 +27759,11 @@ void __RPC_STUB IVMRImagePresenter_PresentImage_Stub(
 #endif 	/* __IVMRImagePresenter_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0388 */
+/* interface __MIDL_itf_strmif_0391 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0388_0001
+enum __MIDL___MIDL_itf_strmif_0391_0001
     {	AMAP_PIXELFORMAT_VALID	= 0x1,
 	AMAP_3D_TARGET	= 0x2,
 	AMAP_ALLOW_SYSMEM	= 0x4,
@@ -27568,8 +27786,8 @@ typedef struct tagVMRALLOCATIONINFO
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0388_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0388_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0391_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0391_v0_0_s_ifspec;
 
 #ifndef __IVMRSurfaceAllocator_INTERFACE_DEFINED__
 #define __IVMRSurfaceAllocator_INTERFACE_DEFINED__
@@ -27954,19 +28172,19 @@ void __RPC_STUB IVMRSurfaceAllocatorNotify_SetBorderColor_Stub(
 #endif 	/* __IVMRSurfaceAllocatorNotify_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0390 */
+/* interface __MIDL_itf_strmif_0393 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0390_0001
+enum __MIDL___MIDL_itf_strmif_0393_0001
     {	VMR_ARMODE_NONE	= 0,
 	VMR_ARMODE_LETTER_BOX	= VMR_ARMODE_NONE + 1
     } 	VMR_ASPECT_RATIO_MODE;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0390_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0390_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0393_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0393_v0_0_s_ifspec;
 
 #ifndef __IVMRWindowlessControl_INTERFACE_DEFINED__
 #define __IVMRWindowlessControl_INTERFACE_DEFINED__
@@ -28387,23 +28605,30 @@ void __RPC_STUB IVMRWindowlessControl_GetColorKey_Stub(
 #endif 	/* __IVMRWindowlessControl_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0391 */
+/* interface __MIDL_itf_strmif_0394 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0391_0001
+enum __MIDL___MIDL_itf_strmif_0394_0001
     {	MixerPref_NoDecimation	= 0x1,
 	MixerPref_DecimateOutput	= 0x2,
+	MixerPref_ARAdjustXorY	= 0x4,
+	MixerPref_DecimationReserved	= 0x8,
 	MixerPref_DecimateMask	= 0xf,
 	MixerPref_BiLinearFiltering	= 0x10,
 	MixerPref_PointFiltering	= 0x20,
 	MixerPref_FilteringMask	= 0xf0,
 	MixerPref_RenderTargetRGB	= 0x100,
+	MixerPref_RenderTargetYUV	= 0x1000,
 	MixerPref_RenderTargetYUV420	= 0x200,
 	MixerPref_RenderTargetYUV422	= 0x400,
 	MixerPref_RenderTargetYUV444	= 0x800,
-	MixerPref_RenderTargetReserved	= 0xf000,
-	MixerPref_RenderTargetMask	= 0xff00
+	MixerPref_RenderTargetReserved	= 0xe000,
+	MixerPref_RenderTargetMask	= 0xff00,
+	MixerPref_DynamicSwitchToBOB	= 0x10000,
+	MixerPref_DynamicDecimateBy2	= 0x20000,
+	MixerPref_DynamicReserved	= 0xc0000,
+	MixerPref_DynamicMask	= 0xf0000
     } 	VMRMixerPrefs;
 
 typedef struct _NORMALIZEDRECT
@@ -28418,8 +28643,8 @@ typedef struct _NORMALIZEDRECT *PNORMALIZEDRECT;
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0391_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0391_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0394_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0394_v0_0_s_ifspec;
 
 #ifndef __IVMRMixerControl_INTERFACE_DEFINED__
 #define __IVMRMixerControl_INTERFACE_DEFINED__
@@ -28727,7 +28952,7 @@ void __RPC_STUB IVMRMixerControl_GetMixingPrefs_Stub(
 #endif 	/* __IVMRMixerControl_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0392 */
+/* interface __MIDL_itf_strmif_0395 */
 /* [local] */ 
 
 typedef struct tagVMRGUID
@@ -28753,8 +28978,8 @@ typedef struct tagVMRMONITORINFO
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0392_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0392_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0395_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0395_v0_0_s_ifspec;
 
 #ifndef __IVMRMonitorConfig_INTERFACE_DEFINED__
 #define __IVMRMonitorConfig_INTERFACE_DEFINED__
@@ -28940,11 +29165,11 @@ void __RPC_STUB IVMRMonitorConfig_GetAvailableMonitors_Stub(
 #endif 	/* __IVMRMonitorConfig_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0393 */
+/* interface __MIDL_itf_strmif_0396 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0393_0001
+enum __MIDL___MIDL_itf_strmif_0396_0001
     {	RenderPrefs_RestrictToInitialMonitor	= 0,
 	RenderPrefs_ForceOffscreen	= 0x1,
 	RenderPrefs_ForceOverlays	= 0x2,
@@ -28957,7 +29182,7 @@ enum __MIDL___MIDL_itf_strmif_0393_0001
     } 	VMRRenderPrefs;
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0393_0002
+enum __MIDL___MIDL_itf_strmif_0396_0002
     {	VMRMode_Windowed	= 0x1,
 	VMRMode_Windowless	= 0x2,
 	VMRMode_Renderless	= 0x4,
@@ -28965,13 +29190,13 @@ enum __MIDL___MIDL_itf_strmif_0393_0002
     } 	VMRMode;
 
 
-enum __MIDL___MIDL_itf_strmif_0393_0003
+enum __MIDL___MIDL_itf_strmif_0396_0003
     {	MAX_NUMBER_OF_STREAMS	= 16
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0393_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0393_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0396_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0396_v0_0_s_ifspec;
 
 #ifndef __IVMRFilterConfig_INTERFACE_DEFINED__
 #define __IVMRFilterConfig_INTERFACE_DEFINED__
@@ -29307,11 +29532,11 @@ void __RPC_STUB IVMRAspectRatioControl_SetAspectRatioMode_Stub(
 #endif 	/* __IVMRAspectRatioControl_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0395 */
+/* interface __MIDL_itf_strmif_0398 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_strmif_0395_0001
+enum __MIDL___MIDL_itf_strmif_0398_0001
     {	DeinterlacePref_NextBest	= 0x1,
 	DeinterlacePref_BOB	= 0x2,
 	DeinterlacePref_Weave	= 0x4,
@@ -29319,7 +29544,7 @@ enum __MIDL___MIDL_itf_strmif_0395_0001
     } 	VMRDeinterlacePrefs;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_strmif_0395_0002
+enum __MIDL___MIDL_itf_strmif_0398_0002
     {	DeinterlaceTech_Unknown	= 0,
 	DeinterlaceTech_BOBLineReplicate	= 0x1,
 	DeinterlaceTech_BOBVerticalStretch	= 0x2,
@@ -29358,8 +29583,8 @@ typedef struct _VMRDeinterlaceCaps
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0395_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0395_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0398_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0398_v0_0_s_ifspec;
 
 #ifndef __IVMRDeinterlaceControl_INTERFACE_DEFINED__
 #define __IVMRDeinterlaceControl_INTERFACE_DEFINED__
@@ -29604,7 +29829,7 @@ void __RPC_STUB IVMRDeinterlaceControl_GetActualDeinterlaceMode_Stub(
 #endif 	/* __IVMRDeinterlaceControl_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0396 */
+/* interface __MIDL_itf_strmif_0399 */
 /* [local] */ 
 
 typedef struct _VMRALPHABITMAP
@@ -29627,8 +29852,8 @@ typedef struct _VMRALPHABITMAP *PVMRALPHABITMAP;
 #define VMRBITMAP_SRCRECT            0x00000010
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0396_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0396_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0399_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0399_v0_0_s_ifspec;
 
 #ifndef __IVMRMixerBitmap_INTERFACE_DEFINED__
 #define __IVMRMixerBitmap_INTERFACE_DEFINED__
@@ -29764,7 +29989,7 @@ void __RPC_STUB IVMRMixerBitmap_GetAlphaBitmapParameters_Stub(
 #endif 	/* __IVMRMixerBitmap_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0397 */
+/* interface __MIDL_itf_strmif_0400 */
 /* [local] */ 
 
 typedef struct _VMRVIDEOSTREAMINFO
@@ -29780,8 +30005,8 @@ typedef struct _VMRVIDEOSTREAMINFO
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0397_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0397_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0400_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0400_v0_0_s_ifspec;
 
 #ifndef __IVMRImageCompositor_INTERFACE_DEFINED__
 #define __IVMRImageCompositor_INTERFACE_DEFINED__
@@ -30635,15 +30860,15 @@ void __RPC_STUB IVPManager_GetVideoPortIndex_Stub(
 #endif 	/* __IVPManager_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_strmif_0403 */
+/* interface __MIDL_itf_strmif_0406 */
 /* [local] */ 
 
 // Restore the previous setting for C4201 compiler warning
 #pragma warning(pop)
 
 
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0403_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_strmif_0403_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0406_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_strmif_0406_v0_0_s_ifspec;
 
 /* Additional Prototypes for ALL interfaces */
 

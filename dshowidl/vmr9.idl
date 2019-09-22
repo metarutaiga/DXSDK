@@ -27,6 +27,7 @@ cpp_quote ("#endif")
 interface IVMRSurface9;
 
 interface IVMRSurfaceAllocator9;
+interface IVMRSurfaceAllocatorEx9;
 interface IVMRSurfaceAllocatorNotify9;
 interface IVMRImagePresenter9;
 interface IVMRImagePresenterConfig9;
@@ -110,7 +111,10 @@ interface IVMRImagePresenter9 : IUnknown
 //
 //=====================================================================
 typedef enum {
+
+    //
     // surface types/usage
+    //
     VMR9AllocFlag_3DRenderTarget        = 0x0001,
     VMR9AllocFlag_DXVATarget            = 0x0002,
 
@@ -120,7 +124,17 @@ typedef enum {
     //
     VMR9AllocFlag_TextureSurface        = 0x0004,
     VMR9AllocFlag_OffscreenSurface      = 0x0008,
-    VMR9AllocFlag_UsageReserved         = 0x00F0,
+
+    //
+    // The following flag applies to YUV mixing mode only
+    // and indicates that VMR9's mixer can accept RGB formats
+    // as well as the specified YUV format.
+    // The allocator-present can switch between the two
+    // surface formats dynamically.
+    //
+    VMR9AllocFlag_RGBDynamicSwitch      = 0x0010,
+
+    VMR9AllocFlag_UsageReserved         = 0x00E0,
     VMR9AllocFlag_UsageMask             = 0x00FF
 
     // surface
@@ -169,6 +183,25 @@ interface IVMRSurfaceAllocator9 : IUnknown
         [in] IVMRSurfaceAllocatorNotify9* lpIVMRSurfAllocNotify
         );
 };
+
+[
+    local,
+    object,
+    local,
+    uuid(6de9a68a-a928-4522-bf57-655ae3866456),
+    helpstring("IVMRSurfaceAllocatorEx9 Interface"),
+    pointer_default(unique)
+]
+interface IVMRSurfaceAllocatorEx9 : IVMRSurfaceAllocator9
+{
+    HRESULT GetSurfaceEx(
+        [in] DWORD_PTR dwUserID,
+        [in] DWORD SurfaceIndex,
+        [in] DWORD SurfaceFlags,
+        [out] IDirect3DSurface9** lplpSurface,
+        [out] RECT* lprcDst
+        );
+}
 
 
 //=====================================================================
