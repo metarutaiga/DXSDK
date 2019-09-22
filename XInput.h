@@ -13,8 +13,13 @@
 
 // Current name of the DLL shipped in the same SDK as this header.
 // The name reflects the current version
+#ifndef XINPUT_USE_9_1_0
 #define XINPUT_DLL_A  "xinput1_3.dll"
 #define XINPUT_DLL_W L"xinput1_3.dll"
+#else
+#define XINPUT_DLL_A  "xinput9_1_0.dll"
+#define XINPUT_DLL_W L"xinput9_1_0.dll"
+#endif
 #ifdef UNICODE
     #define XINPUT_DLL XINPUT_DLL_W
 #else
@@ -30,12 +35,19 @@
 // Device subtypes available in XINPUT_CAPABILITIES
 //
 #define XINPUT_DEVSUBTYPE_GAMEPAD       0x01
+
+#ifndef XINPUT_USE_9_1_0
+
 #define XINPUT_DEVSUBTYPE_WHEEL         0x02
 #define XINPUT_DEVSUBTYPE_ARCADE_STICK  0x03
 #define XINPUT_DEVSUBTYPE_FLIGHT_SICK   0x04
 #define XINPUT_DEVSUBTYPE_DANCE_PAD     0x05
 #define XINPUT_DEVSUBTYPE_GUITAR        0x06
 #define XINPUT_DEVSUBTYPE_DRUM_KIT      0x08
+
+#endif // !XINPUT_USE_9_1_0
+
+
 
 //
 // Flags for XINPUT_CAPABILITIES
@@ -72,6 +84,9 @@
 // Flags to pass to XInputGetCapabilities
 //
 #define XINPUT_FLAG_GAMEPAD             0x00000001
+
+
+#ifndef XINPUT_USE_9_1_0
 
 //
 // Devices that support batteries
@@ -148,6 +163,8 @@
 #define XINPUT_KEYSTROKE_KEYUP          0x0002
 #define XINPUT_KEYSTROKE_REPEAT         0x0004
 
+#endif //!XINPUT_USE_9_1_0
+
 //
 // Structures used by XInput APIs
 //
@@ -183,6 +200,8 @@ typedef struct _XINPUT_CAPABILITIES
     XINPUT_VIBRATION                    Vibration;
 } XINPUT_CAPABILITIES, *PXINPUT_CAPABILITIES;
 
+#ifndef XINPUT_USE_9_1_0
+
 typedef struct _XINPUT_BATTERY_INFORMATION
 {
     BYTE BatteryType;
@@ -197,6 +216,8 @@ typedef struct _XINPUT_KEYSTROKE
     BYTE    UserIndex;
     BYTE    HidCode;
 } XINPUT_KEYSTROKE, *PXINPUT_KEYSTROKE;
+
+#endif // !XINPUT_USE_9_1_0
 
 //
 // XInput APIs
@@ -236,6 +257,8 @@ DWORD WINAPI XInputGetDSoundAudioDeviceGuids
     __out GUID* pDSoundCaptureGuid    // DSound device ID for capture
 );
 
+#ifndef XINPUT_USE_9_1_0
+
 DWORD WINAPI XInputGetBatteryInformation
 (
     __in  DWORD                       dwUserIndex,        // Index of the gamer associated with the device
@@ -249,6 +272,8 @@ DWORD WINAPI XInputGetKeystroke
     __reserved DWORD dwReserved,               // Reserved for future use
     __out      PXINPUT_KEYSTROKE pKeystroke    // Pointer to an XINPUT_KEYSTROKE structure that receives an input event.
 );
+
+#endif //!XINPUT_USE_9_1_0
 
 #ifdef __cplusplus
 }
