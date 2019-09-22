@@ -8,9 +8,9 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0553 */
+ /* File created by MIDL compiler version 7.00.0555 */
 /* Compiler settings for d3d11.idl:
-    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 7.00.0553 
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 7.00.0555 
     protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
@@ -445,7 +445,7 @@ extern "C"{
 #define	D3D11_DEFAULT_DEPTH_BIAS	( 0 )
 
 #define D3D11_DEFAULT_DEPTH_BIAS_CLAMP	( 0.0f )
-#define D3D11_DEFAULT_MAX_ANISOTROPY	( 16.0f )
+#define D3D11_DEFAULT_MAX_ANISOTROPY	( 16 )
 #define D3D11_DEFAULT_MIP_LOD_BIAS	( 0.0f )
 #define	D3D11_DEFAULT_RENDER_TARGET_ARRAY_INDEX	( 0 )
 
@@ -805,7 +805,9 @@ extern "C"{
 
 #define	D3D11_SHADER_MAX_INSTANCES	( 65535 )
 
-#define	D3D11_SHADER_MAX_INTERFACES	( 256 )
+#define	D3D11_SHADER_MAX_INTERFACES	( 253 )
+
+#define	D3D11_SHADER_MAX_INTERFACE_CALL_SITES	( 4096 )
 
 #define	D3D11_SHADER_MAX_TYPES	( 65535 )
 
@@ -831,13 +833,13 @@ extern "C"{
 
 #define	D3D11_SO_STREAM_COUNT	( 4 )
 
-#define	D3D11_SPEC_DATE_DAY	( 22 )
+#define	D3D11_SPEC_DATE_DAY	( 04 )
 
-#define	D3D11_SPEC_DATE_MONTH	( 10 )
+#define	D3D11_SPEC_DATE_MONTH	( 06 )
 
-#define	D3D11_SPEC_DATE_YEAR	( 2008 )
+#define	D3D11_SPEC_DATE_YEAR	( 2009 )
 
-#define D3D11_SPEC_VERSION	( 0.01 )
+#define D3D11_SPEC_VERSION	( 1.0 )
 #define D3D11_SRGB_GAMMA	( 2.2f )
 #define D3D11_SRGB_TO_FLOAT_DENOMINATOR_1	( 12.92f )
 #define D3D11_SRGB_TO_FLOAT_DENOMINATOR_2	( 1.055f )
@@ -1034,19 +1036,19 @@ enum D3D11_PRIMITIVE
 	D3D11_PRIMITIVE_17_CONTROL_POINT_PATCH	= 24,
 	D3D11_PRIMITIVE_18_CONTROL_POINT_PATCH	= 25,
 	D3D11_PRIMITIVE_19_CONTROL_POINT_PATCH	= 26,
-	D3D11_PRIMITIVE_20_CONTROL_POINT_PATCH	= 28,
-	D3D11_PRIMITIVE_21_CONTROL_POINT_PATCH	= 29,
-	D3D11_PRIMITIVE_22_CONTROL_POINT_PATCH	= 30,
-	D3D11_PRIMITIVE_23_CONTROL_POINT_PATCH	= 31,
-	D3D11_PRIMITIVE_24_CONTROL_POINT_PATCH	= 32,
-	D3D11_PRIMITIVE_25_CONTROL_POINT_PATCH	= 33,
-	D3D11_PRIMITIVE_26_CONTROL_POINT_PATCH	= 34,
-	D3D11_PRIMITIVE_27_CONTROL_POINT_PATCH	= 35,
-	D3D11_PRIMITIVE_28_CONTROL_POINT_PATCH	= 36,
-	D3D11_PRIMITIVE_29_CONTROL_POINT_PATCH	= 37,
-	D3D11_PRIMITIVE_30_CONTROL_POINT_PATCH	= 38,
-	D3D11_PRIMITIVE_31_CONTROL_POINT_PATCH	= 39,
-	D3D11_PRIMITIVE_32_CONTROL_POINT_PATCH	= 40
+	D3D11_PRIMITIVE_20_CONTROL_POINT_PATCH	= 27,
+	D3D11_PRIMITIVE_21_CONTROL_POINT_PATCH	= 28,
+	D3D11_PRIMITIVE_22_CONTROL_POINT_PATCH	= 29,
+	D3D11_PRIMITIVE_23_CONTROL_POINT_PATCH	= 30,
+	D3D11_PRIMITIVE_24_CONTROL_POINT_PATCH	= 31,
+	D3D11_PRIMITIVE_25_CONTROL_POINT_PATCH	= 32,
+	D3D11_PRIMITIVE_26_CONTROL_POINT_PATCH	= 33,
+	D3D11_PRIMITIVE_27_CONTROL_POINT_PATCH	= 34,
+	D3D11_PRIMITIVE_28_CONTROL_POINT_PATCH	= 35,
+	D3D11_PRIMITIVE_29_CONTROL_POINT_PATCH	= 36,
+	D3D11_PRIMITIVE_30_CONTROL_POINT_PATCH	= 37,
+	D3D11_PRIMITIVE_31_CONTROL_POINT_PATCH	= 38,
+	D3D11_PRIMITIVE_32_CONTROL_POINT_PATCH	= 39
     } 	D3D11_PRIMITIVE;
 
 typedef 
@@ -4513,7 +4515,8 @@ EXTERN_C const IID IID_ID3D11DepthStencilView;
 typedef 
 enum D3D11_BUFFER_UAV_FLAG
     {	D3D11_BUFFER_UAV_FLAG_RAW	= 0x1,
-	D3D11_BUFFER_UAV_FLAG_APPEND	= 0x2
+	D3D11_BUFFER_UAV_FLAG_APPEND	= 0x2,
+	D3D11_BUFFER_UAV_FLAG_COUNTER	= 0x4
     } 	D3D11_BUFFER_UAV_FLAG;
 
 typedef struct D3D11_BUFFER_UAV
@@ -7689,7 +7692,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         
         virtual void STDMETHODCALLTYPE PSGetShader( 
             /* [annotation] */ 
-            __out_opt  ID3D11PixelShader **ppPixelShader,
+            __out  ID3D11PixelShader **ppPixelShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -7705,7 +7708,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         
         virtual void STDMETHODCALLTYPE VSGetShader( 
             /* [annotation] */ 
-            __out_opt  ID3D11VertexShader **ppVertexShader,
+            __out  ID3D11VertexShader **ppVertexShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -7753,7 +7756,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         
         virtual void STDMETHODCALLTYPE GSGetShader( 
             /* [annotation] */ 
-            __out_opt  ID3D11GeometryShader **ppGeometryShader,
+            __out  ID3D11GeometryShader **ppGeometryShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -7869,7 +7872,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         
         virtual void STDMETHODCALLTYPE HSGetShader( 
             /* [annotation] */ 
-            __out_opt  ID3D11HullShader **ppHullShader,
+            __out  ID3D11HullShader **ppHullShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -7901,7 +7904,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         
         virtual void STDMETHODCALLTYPE DSGetShader( 
             /* [annotation] */ 
-            __out_opt  ID3D11DomainShader **ppDomainShader,
+            __out  ID3D11DomainShader **ppDomainShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -7941,7 +7944,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         
         virtual void STDMETHODCALLTYPE CSGetShader( 
             /* [annotation] */ 
-            __out_opt  ID3D11ComputeShader **ppComputeShader,
+            __out  ID3D11ComputeShader **ppComputeShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -8608,7 +8611,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         void ( STDMETHODCALLTYPE *PSGetShader )( 
             ID3D11DeviceContext * This,
             /* [annotation] */ 
-            __out_opt  ID3D11PixelShader **ppPixelShader,
+            __out  ID3D11PixelShader **ppPixelShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -8626,7 +8629,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         void ( STDMETHODCALLTYPE *VSGetShader )( 
             ID3D11DeviceContext * This,
             /* [annotation] */ 
-            __out_opt  ID3D11VertexShader **ppVertexShader,
+            __out  ID3D11VertexShader **ppVertexShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -8680,7 +8683,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         void ( STDMETHODCALLTYPE *GSGetShader )( 
             ID3D11DeviceContext * This,
             /* [annotation] */ 
-            __out_opt  ID3D11GeometryShader **ppGeometryShader,
+            __out  ID3D11GeometryShader **ppGeometryShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -8812,7 +8815,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         void ( STDMETHODCALLTYPE *HSGetShader )( 
             ID3D11DeviceContext * This,
             /* [annotation] */ 
-            __out_opt  ID3D11HullShader **ppHullShader,
+            __out  ID3D11HullShader **ppHullShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -8848,7 +8851,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         void ( STDMETHODCALLTYPE *DSGetShader )( 
             ID3D11DeviceContext * This,
             /* [annotation] */ 
-            __out_opt  ID3D11DomainShader **ppDomainShader,
+            __out  ID3D11DomainShader **ppDomainShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 
@@ -8893,7 +8896,7 @@ EXTERN_C const IID IID_ID3D11DeviceContext;
         void ( STDMETHODCALLTYPE *CSGetShader )( 
             ID3D11DeviceContext * This,
             /* [annotation] */ 
-            __out_opt  ID3D11ComputeShader **ppComputeShader,
+            __out  ID3D11ComputeShader **ppComputeShader,
             /* [annotation] */ 
             __out_ecount_opt(*pNumClassInstances)  ID3D11ClassInstance **ppClassInstances,
             /* [annotation] */ 

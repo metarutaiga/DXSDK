@@ -32,7 +32,7 @@
 
 
 //--------------<D-A-T-A---T-Y-P-E-S>---------------------------------------//
-#pragma pack(push, 8) // set packing alignment to ensure consistency across arbitrary build environments
+#pragma pack(push, 8) // set packing alignment to ensure consistency across arbitrary build environments, and ensure synchronization variables used by Interlocked functionality are correctly aligned
 
 
 // primitive types

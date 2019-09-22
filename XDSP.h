@@ -3,7 +3,7 @@
  |        Copyright (c) Microsoft Corporation.  All rights reserved.        |
  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
  |PROJECT: XDSP                         MODEL:   Unmanaged User-mode        |
- |VERSION: 1.0                          EXCEPT:  No Exceptions              |
+ |VERSION: 1.1                          EXCEPT:  No Exceptions              |
  |CLASS:   N / A                        MINREQ:  WinXP, Xbox360             |
  |BASE:    N / A                        DIALECT: MSC++ 14.00                |
  |>------------------------------------------------------------------------<|
@@ -57,11 +57,12 @@ namespace XDSP {
     // primitive types
     typedef __m128 XVECTOR;
     typedef XVECTOR& XVECTORREF;
+    typedef const XVECTOR& XVECTORREFC;
 
 
     // Parallel multiplication of four complex numbers, assuming
     // real and imaginary values are stored in separate vectors.
-    __forceinline void vmulComplex (__out XVECTORREF rResult, __out XVECTORREF iResult, __in XVECTORREF r1, __in XVECTORREF i1, __in XVECTORREF r2, __in XVECTORREF i2)
+    __forceinline void vmulComplex (__out XVECTORREF rResult, __out XVECTORREF iResult, __in XVECTORREFC r1, __in XVECTORREFC i1, __in XVECTORREFC r2, __in XVECTORREFC i2)
     {
         // (r1, i1) * (r2, i2) = (r1r2 - i1i2, r1i2 + r2i1)
         XVECTOR vi1i2 = _mm_mul_ps(i1, i2);
@@ -71,7 +72,7 @@ namespace XDSP {
         rResult = _mm_sub_ps(vr1r2, vi1i2); // real:      (r1*r2 - i1*i2)
         iResult = _mm_add_ps(vr1i2, vr2i1); // imaginary: (r1*i2 + r2*i1)
     }
-    __forceinline void vmulComplex (__inout XVECTORREF r1, __inout XVECTORREF i1, __in XVECTORREF r2, __in XVECTORREF i2)
+    __forceinline void vmulComplex (__inout XVECTORREF r1, __inout XVECTORREF i1, __in XVECTORREFC r2, __in XVECTORREFC i2)
     {
         // (r1, i1) * (r2, i2) = (r1r2 - i1i2, r1i2 + r2i1)
         XVECTOR vi1i2 = _mm_mul_ps(i1, i2);
@@ -162,8 +163,8 @@ namespace XDSP {
                                         __inout XVECTORREF i1,
                                         __inout XVECTORREF i2,
                                         __inout XVECTORREF i3,
-                                        __in_ecount(uStride*4) XVECTOR* __restrict pUnityTableReal,
-                                        __in_ecount(uStride*4) XVECTOR* __restrict pUnityTableImaginary,
+                                        __in_ecount(uStride*4) const XVECTOR* __restrict pUnityTableReal,
+                                        __in_ecount(uStride*4) const XVECTOR* __restrict pUnityTableImaginary,
                                         const UINT32 uStride, const BOOL fLast)
     {
         DSPASSERT(pUnityTableReal != NULL);
@@ -254,10 +255,10 @@ namespace XDSP {
         DSPASSERT((UINT_PTR)pImaginary % 16 == 0);
         DSPASSERT(ISPOWEROF2(uCount));
 
-        static XVECTOR wr1 = {  1.0f,  0.707168f,  0.0f, -0.707168f };
-        static XVECTOR wi1 = {  0.0f, -0.707168f, -1.0f, -0.707168f };
-        static XVECTOR wr2 = { -1.0f, -0.707168f,  0.0f,  0.707168f };
-        static XVECTOR wi2 = {  0.0f,  0.707168f,  1.0f,  0.707168f };
+        static XVECTOR wr1 = {  1.0f,  0.70710677f,  0.0f, -0.70710677f };
+        static XVECTOR wi1 = {  0.0f, -0.70710677f, -1.0f, -0.70710677f };
+        static XVECTOR wr2 = { -1.0f, -0.70710677f,  0.0f,  0.70710677f };
+        static XVECTOR wi2 = {  0.0f,  0.70710677f,  1.0f,  0.70710677f };
 
 
         for (UINT32 uIndex=0; uIndex<uCount; ++uIndex) {
@@ -342,7 +343,7 @@ namespace XDSP {
       // RETURN VALUE:
       //  void
       ////
-    inline void FFT (__inout_ecount((uLength*uCount)/4) XVECTOR* __restrict pReal, __inout_ecount((uLength*uCount)/4) XVECTOR* __restrict pImaginary, __in_ecount(uLength*uCount) XVECTOR* __restrict pUnityTable, const UINT32 uLength, const UINT32 uCount=1)
+    inline void FFT (__inout_ecount((uLength*uCount)/4) XVECTOR* __restrict pReal, __inout_ecount((uLength*uCount)/4) XVECTOR* __restrict pImaginary, __in_ecount(uLength*uCount) const XVECTOR* __restrict pUnityTable, const UINT32 uLength, const UINT32 uCount=1)
     {
         DSPASSERT(pReal != NULL);
         DSPASSERT(pImaginary != NULL);
@@ -354,8 +355,8 @@ namespace XDSP {
         DSPASSERT(ISPOWEROF2(uLength));
         DSPASSERT(ISPOWEROF2(uCount));
 
-        XVECTOR* __restrict pUnityTableReal      = pUnityTable;
-        XVECTOR* __restrict pUnityTableImaginary = pUnityTable + (uLength>>2);
+        const XVECTOR* __restrict pUnityTableReal      = pUnityTable;
+        const XVECTOR* __restrict pUnityTableImaginary = pUnityTable + (uLength>>2);
         const UINT32 uTotal         = uCount * uLength;
         const UINT32 uTotal_vectors = uTotal >> 2;
         const UINT32 uStage_vectors = uLength >> 2;
@@ -402,17 +403,20 @@ namespace XDSP {
   //  respective FFT functions and so need not be initialized.
   //
   // PARAMETERS:
-  //  pUnityTable - [out] unity table, receives unity roots lookup table, must have at least uLength XVECTORs
+  //  pUnityTable - [out] unity table, receives unity roots lookup table, must have at least uLength elements
   //  uLength     - [in]  FFT length in samples, must be a power of 2 > 16
   //
   // RETURN VALUE:
   //  void
   ////
-inline void FFTInitializeUnityTable (__out_bcount(uLength*sizeof(XVECTOR)) FLOAT32* __restrict pUnityTable, UINT32 uLength)
+inline void FFTInitializeUnityTable (__out_ecount(uLength) XVECTOR* __restrict pUnityTable, UINT32 uLength)
 {
     DSPASSERT(pUnityTable != NULL);
     DSPASSERT(uLength > 16);
     DSPASSERT(ISPOWEROF2(uLength));
+
+    FLOAT32* __restrict pfUnityTable = (FLOAT32* __restrict)pUnityTable;
+
 
     // initialize unity table for recursive FFT lengths: uLength, uLength/4, uLength/16... > 16
     do {
@@ -424,11 +428,11 @@ inline void FFTInitializeUnityTable (__out_bcount(uLength*sizeof(XVECTOR)) FLOAT
         for (UINT32 i=0; i<4; ++i) {
             for (UINT32 j=0; j<uLength; ++j) {
                 UINT32 uIndex = (i*uLength) + j;
-                pUnityTable[uIndex]             = cosf(FLOAT32(i)*FLOAT32(j)*flStep);  // real component
-                pUnityTable[uIndex + uLength*4] = -sinf(FLOAT32(i)*FLOAT32(j)*flStep); // imaginary component
+                pfUnityTable[uIndex]             = cosf(FLOAT32(i)*FLOAT32(j)*flStep);  // real component
+                pfUnityTable[uIndex + uLength*4] = -sinf(FLOAT32(i)*FLOAT32(j)*flStep); // imaginary component
             }
         }
-        pUnityTable += uLength*8;
+        pfUnityTable += uLength*8;
     } while (uLength > 16);
 }
 
@@ -446,13 +450,13 @@ inline void FFTInitializeUnityTable (__out_bcount(uLength*sizeof(XVECTOR)) FLOAT
   // RETURN VALUE:
   //  void
   ////
-inline void FFTUnswizzle (__out_ecount(1<<uLog2Length) FLOAT32* __restrict pOutput, __in_ecount(1<<uLog2Length) const FLOAT32* __restrict pInput, UINT32 uLog2Length)
+inline void FFTUnswizzle (__out_ecount(1<<uLog2Length) FLOAT32* __restrict pOutput, __in_ecount(1<<uLog2Length) const FLOAT32* __restrict pInput, const UINT32 uLog2Length)
 {
     DSPASSERT(pOutput != NULL);
     DSPASSERT(pInput != NULL);
     DSPASSERT(uLog2Length > 0);
 
-    UINT32 uLength = UINT32(1 << uLog2Length);
+    const UINT32 uLength = UINT32(1 << uLog2Length);
 
 
     if ((uLog2Length & 0x1) == 0) {
@@ -495,7 +499,7 @@ inline void FFTUnswizzle (__out_ecount(1<<uLog2Length) FLOAT32* __restrict pOutp
   // RETURN VALUE:
   //  void
   ////
-inline void FFTPolar (__out_ecount(uLength/4) XVECTOR* __restrict pOutput, __in_ecount(uLength/4) const XVECTOR* __restrict pInputReal, __in_ecount(uLength/4) const XVECTOR* __restrict pInputImaginary, UINT32 uLength)
+inline void FFTPolar (__out_ecount(uLength/4) XVECTOR* __restrict pOutput, __in_ecount(uLength/4) const XVECTOR* __restrict pInputReal, __in_ecount(uLength/4) const XVECTOR* __restrict pInputImaginary, const UINT32 uLength)
 {
     DSPASSERT(pOutput != NULL);
     DSPASSERT(pInputReal != NULL);

@@ -13,8 +13,8 @@
 // Current name of the DLL shipped in the same SDK as this header.
 
 
-#define D3DCOMPILER_DLL_W L"d3dcompiler_41.dll"
-#define D3DCOMPILER_DLL_A "d3dcompiler_41.dll"
+#define D3DCOMPILER_DLL_W L"d3dcompiler_42.dll"
+#define D3DCOMPILER_DLL_A "d3dcompiler_42.dll"
 
 #ifdef UNICODE
     #define D3DCOMPILER_DLL D3DCOMPILER_DLL_W 
@@ -133,8 +133,10 @@ D3DReflect(__in_bcount(SrcDataSize) LPCVOID pSrcData,
 // Takes a binary shader and returns a buffer containing text assembly.
 //----------------------------------------------------------------------------
 
-#define D3D_DISASM_ENABLE_COLOR_CODE           0x00000001
-#define D3D_DISASM_ENABLE_DEFAULT_VALUE_PRINTS 0x00000002
+#define D3D_DISASM_ENABLE_COLOR_CODE            0x00000001
+#define D3D_DISASM_ENABLE_DEFAULT_VALUE_PRINTS  0x00000002
+#define D3D_DISASM_ENABLE_INSTRUCTION_NUMBERING 0x00000004
+#define D3D_DISASM_ENABLE_INSTRUCTION_CYCLE     0x00000008
 
 HRESULT WINAPI 
 D3DDisassemble(__in_bcount(SrcDataSize) LPCVOID pSrcData,
