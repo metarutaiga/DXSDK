@@ -4,7 +4,7 @@ Copyright (c) Microsoft Corporation. All rights reserved.
 
 Module Name:
 
-    xact.h
+    xact3.h
 
 Abstract:
 
@@ -18,14 +18,14 @@ Abstract:
 #define _XACT_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs (Version 2.10)
+// XACT class and interface IDs (Version 3 beta)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         65d822a4, 4799, 42c6, 9b, 18, d2, 6c, f6, 6d, d3, 20);
-    DEFINE_CLSID(XACTAuditionEngine, 03dd980d, eca1, 4de0, 98, 22, eb, 22, 44, a0, e2, 75);
-    DEFINE_CLSID(XACTDebugEngine,    87d1c2b3, c947, 4aed, bf, ad, a1, 79, 18, fb, cf, 05);
-    DEFINE_IID(IXACTEngine,          5ac3994b, ac77, 4c40, b9, fd, 7d, 5a, fb, e9, 64, c5);
+    DEFINE_CLSID(XACTEngine,         3b80ee2a, b0f5, 4780, 9e, 30, 90, cb, 39, 68, 5b, 03);
+    DEFINE_CLSID(XACTAuditionEngine, c0845fa8, 5588, 4e01, 9c, 74, 79, 1a, 7d, de, 13, 21);
+    DEFINE_CLSID(XACTDebugEngine,    4537bdca, 91a6, 404c, a3, f9, 67, 49, 36, d2, 11, 7d);
+    DEFINE_IID(IXACT3Engine,         9e33f661, 2d07, 43ec, 97, 04, bb, cb, 71, a5, 49, 72);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
@@ -44,16 +44,17 @@ Abstract:
 #endif
 #include <limits.h>
 #include <xact2wb.h>
+#include <xaudio2.h>
 
 //------------------------------------------------------------------------------
 // Forward Declarations
 //------------------------------------------------------------------------------
 
-typedef struct IXACTSoundBank       IXACTSoundBank;
-typedef struct IXACTWaveBank        IXACTWaveBank;
-typedef struct IXACTCue             IXACTCue;
-typedef struct IXACTWave            IXACTWave;
-typedef struct IXACTEngine          IXACTEngine;
+typedef struct IXACT3SoundBank       IXACT3SoundBank;
+typedef struct IXACT3WaveBank        IXACT3WaveBank;
+typedef struct IXACT3Cue             IXACT3Cue;
+typedef struct IXACT3Wave            IXACT3Wave;
+typedef struct IXACT3Engine          IXACT3Engine;
 typedef struct XACT_NOTIFICATION    XACT_NOTIFICATION;
 
 
@@ -232,8 +233,6 @@ typedef const XACT_FILEIO_CALLBACKS *PCXACT_FILEIO_CALLBACKS;
 // -----------------------------------------------------------------------------
 typedef void (__stdcall * XACT_NOTIFICATION_CALLBACK)(const XACT_NOTIFICATION* pNotification);
 
-#ifndef _XBOX
-
 #define XACT_RENDERER_ID_LENGTH                 0xff    // Maximum number of characters allowed in the renderer ID
 #define XACT_RENDERER_NAME_LENGTH               0xff    // Maximum number of characters allowed in the renderer display name.
 
@@ -247,7 +246,6 @@ typedef struct XACT_RENDERER_DETAILS
     BOOL  defaultDevice;                                // Set to TRUE if this device is the primary audio device on the system.
 
 } XACT_RENDERER_DETAILS, *LPXACT_RENDERER_DETAILS;
-#endif
 
 // -----------------------------------------------------------------------------
 // Engine Look-Ahead Time
@@ -266,9 +264,9 @@ typedef struct XACT_RUNTIME_PARAMETERS
     DWORD                           globalSettingsAllocAttributes;  // Global settings buffer allocation attributes (see XMemAlloc)
     XACT_FILEIO_CALLBACKS           fileIOCallbacks;                // File I/O callbacks
     XACT_NOTIFICATION_CALLBACK      fnNotificationCallback;         // Callback that receives notifications.
-#ifndef _XBOX
     PWSTR                           pRendererID;                    // Ptr to the ID for the audio renderer the engine should connect to.
-#endif
+    IXAudio2*                       pXAudio2;                       // XAudio2 object to be used by the engine (NULL if one needs to be created)
+    IXAudio2MasteringVoice*         pMasteringVoice;                // Mastering voice to be used by the engine, if pXAudio2 is not NULL.
 
 } XACT_RUNTIME_PARAMETERS, *LPXACT_RUNTIME_PARAMETERS;
 typedef const XACT_RUNTIME_PARAMETERS *LPCXACT_RUNTIME_PARAMETERS;
@@ -444,10 +442,10 @@ typedef struct XACT_NOTIFICATION_DESCRIPTION
 {
     XACTNOTIFICATIONTYPE type;          // Notification type
     BYTE                 flags;         // Flags
-    IXACTSoundBank*      pSoundBank;    // SoundBank instance
-    IXACTWaveBank*       pWaveBank;     // WaveBank instance
-    IXACTCue*            pCue;          // Cue instance
-    IXACTWave*           pWave;         // Wave instance
+    IXACT3SoundBank*      pSoundBank;    // SoundBank instance
+    IXACT3WaveBank*       pWaveBank;     // WaveBank instance
+    IXACT3Cue*            pCue;          // Cue instance
+    IXACT3Wave*           pWave;         // Wave instance
     XACTINDEX            cueIndex;      // Cue index
     XACTINDEX            waveIndex;     // Wave index
     PVOID                pvContext;     // User context (optional)
@@ -459,8 +457,8 @@ typedef const XACT_NOTIFICATION_DESCRIPTION *LPCXACT_NOTIFICATION_DESCRIPTION;
 typedef struct XACT_NOTIFICATION_CUE
 {
     XACTINDEX       cueIndex;   // Cue index
-    IXACTSoundBank* pSoundBank; // SoundBank instance
-    IXACTCue*       pCue;       // Cue instance
+    IXACT3SoundBank* pSoundBank; // SoundBank instance
+    IXACT3Cue*       pCue;       // Cue instance
 
 } XACT_NOTIFICATION_CUE, *LPXACT_NOTIFICATION_CUE;
 typedef const XACT_NOTIFICATION_CUE *LPCXACT_NOTIFICATION_CUE;
@@ -469,8 +467,8 @@ typedef const XACT_NOTIFICATION_CUE *LPCXACT_NOTIFICATION_CUE;
 typedef struct XACT_NOTIFICATION_MARKER
 {
     XACTINDEX       cueIndex;   // Cue index
-    IXACTSoundBank* pSoundBank; // SoundBank instance
-    IXACTCue*       pCue;       // Cue instance
+    IXACT3SoundBank* pSoundBank; // SoundBank instance
+    IXACT3Cue*       pCue;       // Cue instance
     DWORD           marker;     // Marker value
 
 } XACT_NOTIFICATION_MARKER, *LPXACT_NOTIFICATION_MARKER;
@@ -479,7 +477,7 @@ typedef const XACT_NOTIFICATION_MARKER *LPCXACT_NOTIFICATION_MARKER;
 // Notification structure for all XACTNOTIFICATIONTYPE_SOUNDBANK* notifications
 typedef struct XACT_NOTIFICATION_SOUNDBANK
 {
-    IXACTSoundBank* pSoundBank; // SoundBank instance
+    IXACT3SoundBank* pSoundBank; // SoundBank instance
 
 } XACT_NOTIFICATION_SOUNDBANK, *LPXACT_NOTIFICATION_SOUNDBANK;
 typedef const XACT_NOTIFICATION_SOUNDBANK *LPCXACT_NOTIFICATION_SOUNDBANK;
@@ -487,7 +485,7 @@ typedef const XACT_NOTIFICATION_SOUNDBANK *LPCXACT_NOTIFICATION_SOUNDBANK;
 // Notification structure for all XACTNOTIFICATIONTYPE_WAVEBANK* notifications
 typedef struct XACT_NOTIFICATION_WAVEBANK
 {
-    IXACTWaveBank*  pWaveBank;  // WaveBank instance
+    IXACT3WaveBank*  pWaveBank;  // WaveBank instance
 
 } XACT_NOTIFICATION_WAVEBANK, *LPXACT_NOTIFICATION_WAVEBANK;
 typedef const XACT_NOTIFICATION_WAVEBANK *LPCXACT_NOTIFICATION_WAVEBANK;
@@ -496,8 +494,8 @@ typedef const XACT_NOTIFICATION_WAVEBANK *LPCXACT_NOTIFICATION_WAVEBANK;
 typedef struct XACT_NOTIFICATION_VARIABLE
 {
     XACTINDEX           cueIndex;       // Cue index
-    IXACTSoundBank*     pSoundBank;     // SoundBank instance
-    IXACTCue*           pCue;           // Cue instance
+    IXACT3SoundBank*     pSoundBank;     // SoundBank instance
+    IXACT3Cue*           pCue;           // Cue instance
     XACTVARIABLEINDEX   variableIndex;  // Variable index
     XACTVARIABLEVALUE   variableValue;  // Variable value
     BOOL                local;          // TRUE if a local variable
@@ -515,12 +513,12 @@ typedef const XACT_NOTIFICATION_GUI *LPCXACT_NOTIFICATION_GUI;
 // Notification structure for all XACTNOTIFICATIONTYPE_WAVE* notifications
 typedef struct XACT_NOTIFICATION_WAVE
 {
-    IXACTWaveBank*  pWaveBank;  // WaveBank
+    IXACT3WaveBank*  pWaveBank;  // WaveBank
     XACTINDEX       waveIndex;  // Wave index
     XACTINDEX       cueIndex;   // Cue index
-    IXACTSoundBank* pSoundBank; // SoundBank instance
-    IXACTCue*       pCue;       // Cue instance
-    IXACTWave*      pWave;      // Wave instance
+    IXACT3SoundBank* pSoundBank; // SoundBank instance
+    IXACT3Cue*       pCue;       // Cue instance
+    IXACT3Wave*      pWave;      // Wave instance
 
 } XACT_NOTIFICATION_WAVE, *LPXACT_NOTIFICATION_WAVE;
 typedef const XACT_NOTIFICATION_WAVE *LPCXACT_NOTIFICATION_WAVE;
@@ -547,31 +545,31 @@ typedef const XACT_NOTIFICATION *LPCXACT_NOTIFICATION;
 #pragma pack(pop)
 
 //------------------------------------------------------------------------------
-// IXACTSoundBank
+// IXACT3SoundBank
 //------------------------------------------------------------------------------
 
 #define XACT_FLAG_SOUNDBANK_STOP_IMMEDIATE  XACT_FLAG_STOP_IMMEDIATE
 #define XACT_SOUNDBANKSTATE_INUSE           XACT_STATE_INUSE
 
-STDAPI_(XACTINDEX) IXACTSoundBank_GetCueIndex(IXACTSoundBank* pSoundBank, PCSTR szFriendlyName);
-STDAPI IXACTSoundBank_GetNumCues(IXACTSoundBank* pSoundBank, XACTINDEX* pnNumCues);
-STDAPI IXACTSoundBank_GetCueProperties(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, LPXACT_CUE_PROPERTIES pProperties);
-STDAPI IXACTSoundBank_Prepare(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue);
-STDAPI IXACTSoundBank_Play(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue);
-STDAPI IXACTSoundBank_Stop(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags);
-STDAPI IXACTSoundBank_Destroy(IXACTSoundBank* pSoundBank);
-STDAPI IXACTSoundBank_GetState(IXACTSoundBank* pSoundBank, DWORD* pdwState);
+STDAPI_(XACTINDEX) IXACT3SoundBank_GetCueIndex(IXACT3SoundBank* pSoundBank, PCSTR szFriendlyName);
+STDAPI IXACT3SoundBank_GetNumCues(IXACT3SoundBank* pSoundBank, XACTINDEX* pnNumCues);
+STDAPI IXACT3SoundBank_GetCueProperties(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, LPXACT_CUE_PROPERTIES pProperties);
+STDAPI IXACT3SoundBank_Prepare(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACT3Cue** ppCue);
+STDAPI IXACT3SoundBank_Play(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACT3Cue** ppCue);
+STDAPI IXACT3SoundBank_Stop(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags);
+STDAPI IXACT3SoundBank_Destroy(IXACT3SoundBank* pSoundBank);
+STDAPI IXACT3SoundBank_GetState(IXACT3SoundBank* pSoundBank, DWORD* pdwState);
 
 #undef INTERFACE
-#define INTERFACE IXACTSoundBank
+#define INTERFACE IXACT3SoundBank
 
-DECLARE_INTERFACE(IXACTSoundBank)
+DECLARE_INTERFACE(IXACT3SoundBank)
 {
     STDMETHOD_(XACTINDEX, GetCueIndex)(THIS_ PCSTR szFriendlyName) PURE;
     STDMETHOD(GetNumCues)(THIS_ XACTINDEX* pnNumCues) PURE;
     STDMETHOD(GetCueProperties)(THIS_ XACTINDEX nCueIndex, LPXACT_CUE_PROPERTIES pProperties) PURE;
-    STDMETHOD(Prepare)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue) PURE;
-    STDMETHOD(Play)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue) PURE;
+    STDMETHOD(Prepare)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACT3Cue** ppCue) PURE;
+    STDMETHOD(Play)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACT3Cue** ppCue) PURE;
     STDMETHOD(Stop)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags) PURE;
     STDMETHOD(Destroy)(THIS) PURE;
     STDMETHOD(GetState)(THIS_ DWORD* pdwState) PURE;
@@ -579,84 +577,84 @@ DECLARE_INTERFACE(IXACTSoundBank)
 
 #ifdef __cplusplus
 
-__inline HRESULT __stdcall IXACTSoundBank_Destroy(IXACTSoundBank* pSoundBank)
+__inline HRESULT __stdcall IXACT3SoundBank_Destroy(IXACT3SoundBank* pSoundBank)
 {
     return pSoundBank->Destroy();
 }
 
-__inline XACTINDEX __stdcall IXACTSoundBank_GetCueIndex(IXACTSoundBank* pSoundBank, PCSTR szFriendlyName)
+__inline XACTINDEX __stdcall IXACT3SoundBank_GetCueIndex(IXACT3SoundBank* pSoundBank, PCSTR szFriendlyName)
 {
     return pSoundBank->GetCueIndex(szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_GetNumCues(IXACTSoundBank* pSoundBank, XACTINDEX* pnNumCues)
+__inline HRESULT __stdcall IXACT3SoundBank_GetNumCues(IXACT3SoundBank* pSoundBank, XACTINDEX* pnNumCues)
 {
     return pSoundBank->GetNumCues(pnNumCues);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_GetCueProperties(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, LPXACT_CUE_PROPERTIES pProperties)
+__inline HRESULT __stdcall IXACT3SoundBank_GetCueProperties(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, LPXACT_CUE_PROPERTIES pProperties)
 {
     return pSoundBank->GetCueProperties(nCueIndex, pProperties);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Prepare(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue)
+__inline HRESULT __stdcall IXACT3SoundBank_Prepare(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACT3Cue** ppCue)
 {
     return pSoundBank->Prepare(nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Play(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue)
+__inline HRESULT __stdcall IXACT3SoundBank_Play(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACT3Cue** ppCue)
 {
     return pSoundBank->Play(nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Stop(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3SoundBank_Stop(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags)
 {
     return pSoundBank->Stop(nCueIndex, dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_GetState(IXACTSoundBank* pSoundBank, DWORD* pdwState)
+__inline HRESULT __stdcall IXACT3SoundBank_GetState(IXACT3SoundBank* pSoundBank, DWORD* pdwState)
 {
     return pSoundBank->GetState(pdwState);
 }
 
 #else // __cplusplus
 
-__inline HRESULT __stdcall IXACTSoundBank_Destroy(IXACTSoundBank* pSoundBank)
+__inline HRESULT __stdcall IXACT3SoundBank_Destroy(IXACT3SoundBank* pSoundBank)
 {
     return pSoundBank->lpVtbl->Destroy(pSoundBank);
 }
 
-__inline XACTINDEX __stdcall IXACTSoundBank_GetCueIndex(IXACTSoundBank* pSoundBank, PCSTR szFriendlyName)
+__inline XACTINDEX __stdcall IXACT3SoundBank_GetCueIndex(IXACT3SoundBank* pSoundBank, PCSTR szFriendlyName)
 {
     return pSoundBank->lpVtbl->GetCueIndex(pSoundBank, szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_GetNumCues(IXACTSoundBank* pSoundBank, XACTINDEX* pnNumCues)
+__inline HRESULT __stdcall IXACT3SoundBank_GetNumCues(IXACT3SoundBank* pSoundBank, XACTINDEX* pnNumCues)
 {
     return pSoundBank->lpVtbl->GetNumCues(pSoundBank, pnNumCues);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_GetCueProperties(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, LPXACT_CUE_PROPERTIES pProperties)
+__inline HRESULT __stdcall IXACT3SoundBank_GetCueProperties(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, LPXACT_CUE_PROPERTIES pProperties)
 {
     return pSoundBank->lpVtbl->GetCueProperties(pSoundBank, nCueIndex, pProperties);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Prepare(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue)
+__inline HRESULT __stdcall IXACT3SoundBank_Prepare(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACT3Cue** ppCue)
 {
     return pSoundBank->lpVtbl->Prepare(pSoundBank, nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Play(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue)
+__inline HRESULT __stdcall IXACT3SoundBank_Play(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACT3Cue** ppCue)
 {
     return pSoundBank->lpVtbl->Play(pSoundBank, nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Stop(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3SoundBank_Stop(IXACT3SoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags)
 {
     return pSoundBank->lpVtbl->Stop(pSoundBank, nCueIndex, dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_GetState(IXACTSoundBank* pSoundBank, DWORD* pdwState)
+__inline HRESULT __stdcall IXACT3SoundBank_GetState(IXACT3SoundBank* pSoundBank, DWORD* pdwState)
 {
     return pSoundBank->lpVtbl->GetState(pSoundBank, pdwState);
 }
@@ -664,117 +662,117 @@ __inline HRESULT __stdcall IXACTSoundBank_GetState(IXACTSoundBank* pSoundBank, D
 #endif // __cplusplus
 
 //------------------------------------------------------------------------------
-// IXACTWaveBank
+// IXACT3WaveBank
 //------------------------------------------------------------------------------
 #define XACT_WAVEBANKSTATE_INUSE            XACT_STATE_INUSE         // Currently in-use
 #define XACT_WAVEBANKSTATE_PREPARED         XACT_STATE_PREPARED      // Prepared
 #define XACT_WAVEBANKSTATE_PREPAREFAILED    XACT_STATE_PREPAREFAILED // Prepare failed.
 
 
-STDAPI IXACTWaveBank_Destroy(IXACTWaveBank* pWaveBank);
-STDAPI IXACTWaveBank_GetState(IXACTWaveBank* pWaveBank, DWORD* pdwState);
-STDAPI IXACTWaveBank_GetNumWaves(IXACTWaveBank* pWaveBank, XACTINDEX* pnNumWaves);
-STDAPI_(XACTINDEX) IXACTWaveBank_GetWaveIndex(IXACTWaveBank* pWaveBank, PCSTR szFriendlyName);
-STDAPI IXACTWaveBank_GetWaveProperties(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, LPXACT_WAVE_PROPERTIES pWaveProperties);
-STDAPI IXACTWaveBank_Prepare(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave);
-STDAPI IXACTWaveBank_Play(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave);
-STDAPI IXACTWaveBank_Stop(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags);
+STDAPI IXACT3WaveBank_Destroy(IXACT3WaveBank* pWaveBank);
+STDAPI IXACT3WaveBank_GetState(IXACT3WaveBank* pWaveBank, DWORD* pdwState);
+STDAPI IXACT3WaveBank_GetNumWaves(IXACT3WaveBank* pWaveBank, XACTINDEX* pnNumWaves);
+STDAPI_(XACTINDEX) IXACT3WaveBank_GetWaveIndex(IXACT3WaveBank* pWaveBank, PCSTR szFriendlyName);
+STDAPI IXACT3WaveBank_GetWaveProperties(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, LPXACT_WAVE_PROPERTIES pWaveProperties);
+STDAPI IXACT3WaveBank_Prepare(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave);
+STDAPI IXACT3WaveBank_Play(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave);
+STDAPI IXACT3WaveBank_Stop(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags);
 
 #undef INTERFACE
-#define INTERFACE IXACTWaveBank
+#define INTERFACE IXACT3WaveBank
 
-DECLARE_INTERFACE(IXACTWaveBank)
+DECLARE_INTERFACE(IXACT3WaveBank)
 {
     STDMETHOD(Destroy)(THIS) PURE;
     STDMETHOD(GetNumWaves)(THIS_ XACTINDEX* pnNumWaves) PURE;
     STDMETHOD_(XACTINDEX, GetWaveIndex)(THIS_ PCSTR szFriendlyName) PURE;
     STDMETHOD(GetWaveProperties)(THIS_ XACTINDEX nWaveIndex, LPXACT_WAVE_PROPERTIES pWaveProperties) PURE;
-    STDMETHOD(Prepare)(THIS_ XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave) PURE;
-    STDMETHOD(Play)(THIS_ XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave) PURE;
+    STDMETHOD(Prepare)(THIS_ XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave) PURE;
+    STDMETHOD(Play)(THIS_ XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave) PURE;
     STDMETHOD(Stop)(THIS_ XACTINDEX nWaveIndex, DWORD dwFlags) PURE;
     STDMETHOD(GetState)(THIS_ DWORD* pdwState) PURE;
 };
 
 #ifdef __cplusplus
 
-__inline HRESULT __stdcall IXACTWaveBank_Destroy(IXACTWaveBank* pWaveBank)
+__inline HRESULT __stdcall IXACT3WaveBank_Destroy(IXACT3WaveBank* pWaveBank)
 {
     return pWaveBank->Destroy();
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_GetNumWaves(IXACTWaveBank* pWaveBank, XACTINDEX* pnNumWaves)
+__inline HRESULT __stdcall IXACT3WaveBank_GetNumWaves(IXACT3WaveBank* pWaveBank, XACTINDEX* pnNumWaves)
 {
     return pWaveBank->GetNumWaves(pnNumWaves);
 }
 
-__inline XACTINDEX __stdcall IXACTWaveBank_GetWaveIndex(IXACTWaveBank* pWaveBank, PCSTR szFriendlyName)
+__inline XACTINDEX __stdcall IXACT3WaveBank_GetWaveIndex(IXACT3WaveBank* pWaveBank, PCSTR szFriendlyName)
 {
     return pWaveBank->GetWaveIndex(szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_GetWaveProperties(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, LPXACT_WAVE_PROPERTIES pWaveProperties)
+__inline HRESULT __stdcall IXACT3WaveBank_GetWaveProperties(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, LPXACT_WAVE_PROPERTIES pWaveProperties)
 {
     return pWaveBank->GetWaveProperties(nWaveIndex, pWaveProperties);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_Prepare(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave)
+__inline HRESULT __stdcall IXACT3WaveBank_Prepare(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave)
 {
     return pWaveBank->Prepare(nWaveIndex, dwFlags, dwPlayOffset, nLoopCount, ppWave);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_Play(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave)
+__inline HRESULT __stdcall IXACT3WaveBank_Play(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave)
 {
     return pWaveBank->Play(nWaveIndex, dwFlags, dwPlayOffset, nLoopCount, ppWave);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_Stop(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3WaveBank_Stop(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags)
 {
     return pWaveBank->Stop(nWaveIndex, dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_GetState(IXACTWaveBank* pWaveBank, DWORD* pdwState)
+__inline HRESULT __stdcall IXACT3WaveBank_GetState(IXACT3WaveBank* pWaveBank, DWORD* pdwState)
 {
     return pWaveBank->GetState(pdwState);
 }
 
 #else // __cplusplus
 
-__inline HRESULT __stdcall IXACTWaveBank_Destroy(IXACTWaveBank* pWaveBank)
+__inline HRESULT __stdcall IXACT3WaveBank_Destroy(IXACT3WaveBank* pWaveBank)
 {
     return pWaveBank->lpVtbl->Destroy(pWaveBank);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_GetNumWaves(IXACTWaveBank* pWaveBank, XACTINDEX* pnNumWaves)
+__inline HRESULT __stdcall IXACT3WaveBank_GetNumWaves(IXACT3WaveBank* pWaveBank, XACTINDEX* pnNumWaves)
 {
     return pWaveBank->lpVtbl->GetNumWaves(pWaveBank, pnNumWaves);
 }
 
-__inline XACTINDEX __stdcall IXACTWaveBank_GetWaveIndex(IXACTWaveBank* pWaveBank, PCSTR szFriendlyName)
+__inline XACTINDEX __stdcall IXACT3WaveBank_GetWaveIndex(IXACT3WaveBank* pWaveBank, PCSTR szFriendlyName)
 {
     return pWaveBank->lpVtbl->GetWaveIndex(pWaveBank, szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_GetWaveProperties(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, LPXACT_WAVE_PROPERTIES pWaveProperties)
+__inline HRESULT __stdcall IXACT3WaveBank_GetWaveProperties(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, LPXACT_WAVE_PROPERTIES pWaveProperties)
 {
     return pWaveBank->lpVtbl->GetWaveProperties(pWaveBank, nWaveIndex, pWaveProperties);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_Prepare(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave)
+__inline HRESULT __stdcall IXACT3WaveBank_Prepare(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave)
 {
     return pWaveBank->lpVtbl->Prepare(pWaveBank, nWaveIndex, dwFlags, dwPlayOffset, nLoopCount, ppWave);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_Play(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave)
+__inline HRESULT __stdcall IXACT3WaveBank_Play(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave)
 {
     return pWaveBank->lpVtbl->Play(pWaveBank, nWaveIndex, dwFlags, dwPlayOffset, nLoopCount, ppWave);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_Stop(IXACTWaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3WaveBank_Stop(IXACT3WaveBank* pWaveBank, XACTINDEX nWaveIndex, DWORD dwFlags)
 {
     return pWaveBank->lpVtbl->Stop(pWaveBank, nWaveIndex, dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTWaveBank_GetState(IXACTWaveBank* pWaveBank, DWORD* pdwState)
+__inline HRESULT __stdcall IXACT3WaveBank_GetState(IXACT3WaveBank* pWaveBank, DWORD* pdwState)
 {
     return pWaveBank->lpVtbl->GetState(pWaveBank, pdwState);
 }
@@ -782,23 +780,23 @@ __inline HRESULT __stdcall IXACTWaveBank_GetState(IXACTWaveBank* pWaveBank, DWOR
 
 
 //------------------------------------------------------------------------------
-// IXACTWave
+// IXACT3Wave
 //------------------------------------------------------------------------------
 
-STDAPI IXACTWave_Destroy(IXACTWave* pWave);
-STDAPI IXACTWave_Play(IXACTWave* pWave);
-STDAPI IXACTWave_Stop(IXACTWave* pWave, DWORD dwFlags);
-STDAPI IXACTWave_Pause(IXACTWave* pWave, BOOL fPause);
-STDAPI IXACTWave_GetState(IXACTWave* pWave, DWORD* pdwState);
-STDAPI IXACTWave_SetPitch(IXACTWave* pWave, XACTPITCH pitch);
-STDAPI IXACTWave_SetVolume(IXACTWave* pWave, XACTVOLUME volume);
-STDAPI IXACTWave_SetMatrixCoefficients(IXACTWave* pWave, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients);
-STDAPI IXACTWave_GetProperties(IXACTWave* pWave, LPXACT_WAVE_INSTANCE_PROPERTIES pProperties);
+STDAPI IXACT3Wave_Destroy(IXACT3Wave* pWave);
+STDAPI IXACT3Wave_Play(IXACT3Wave* pWave);
+STDAPI IXACT3Wave_Stop(IXACT3Wave* pWave, DWORD dwFlags);
+STDAPI IXACT3Wave_Pause(IXACT3Wave* pWave, BOOL fPause);
+STDAPI IXACT3Wave_GetState(IXACT3Wave* pWave, DWORD* pdwState);
+STDAPI IXACT3Wave_SetPitch(IXACT3Wave* pWave, XACTPITCH pitch);
+STDAPI IXACT3Wave_SetVolume(IXACT3Wave* pWave, XACTVOLUME volume);
+STDAPI IXACT3Wave_SetMatrixCoefficients(IXACT3Wave* pWave, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients);
+STDAPI IXACT3Wave_GetProperties(IXACT3Wave* pWave, LPXACT_WAVE_INSTANCE_PROPERTIES pProperties);
 
 #undef INTERFACE
-#define INTERFACE IXACTWave
+#define INTERFACE IXACT3Wave
 
-DECLARE_INTERFACE(IXACTWave)
+DECLARE_INTERFACE(IXACT3Wave)
 {
     STDMETHOD(Destroy)(THIS) PURE;
     STDMETHOD(Play)(THIS) PURE;
@@ -813,101 +811,101 @@ DECLARE_INTERFACE(IXACTWave)
 
 #ifdef __cplusplus
 
-__inline HRESULT __stdcall IXACTWave_Destroy(IXACTWave* pWave)
+__inline HRESULT __stdcall IXACT3Wave_Destroy(IXACT3Wave* pWave)
 {
     return pWave->Destroy();
 }
 
-__inline HRESULT __stdcall IXACTWave_Play(IXACTWave* pWave)
+__inline HRESULT __stdcall IXACT3Wave_Play(IXACT3Wave* pWave)
 {
     return pWave->Play();
 }
 
-__inline HRESULT __stdcall IXACTWave_Stop(IXACTWave* pWave, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3Wave_Stop(IXACT3Wave* pWave, DWORD dwFlags)
 {
     return pWave->Stop(dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTWave_Pause(IXACTWave* pWave, BOOL fPause)
+__inline HRESULT __stdcall IXACT3Wave_Pause(IXACT3Wave* pWave, BOOL fPause)
 {
     return pWave->Pause(fPause);
 }
 
-__inline HRESULT __stdcall IXACTWave_GetState(IXACTWave* pWave, DWORD* pdwState)
+__inline HRESULT __stdcall IXACT3Wave_GetState(IXACT3Wave* pWave, DWORD* pdwState)
 {
     return pWave->GetState(pdwState);
 }
 
-__inline HRESULT __stdcall IXACTWave_SetPitch(IXACTWave* pWave, XACTPITCH pitch)
+__inline HRESULT __stdcall IXACT3Wave_SetPitch(IXACT3Wave* pWave, XACTPITCH pitch)
 {
     return pWave->SetPitch(pitch);
 }
 
-__inline HRESULT __stdcall IXACTWave_SetVolume(IXACTWave* pWave, XACTVOLUME volume)
+__inline HRESULT __stdcall IXACT3Wave_SetVolume(IXACT3Wave* pWave, XACTVOLUME volume)
 {
     return pWave->SetVolume(volume);
 }
 
-__inline HRESULT __stdcall IXACTWave_SetMatrixCoefficients(IXACTWave* pWave, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
+__inline HRESULT __stdcall IXACT3Wave_SetMatrixCoefficients(IXACT3Wave* pWave, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
 {
     return pWave->SetMatrixCoefficients(uSrcChannelCount, uDstChannelCount, pMatrixCoefficients);
 }
 
-__inline HRESULT __stdcall IXACTWave_GetProperties(IXACTWave* pWave, LPXACT_WAVE_INSTANCE_PROPERTIES pProperties)
+__inline HRESULT __stdcall IXACT3Wave_GetProperties(IXACT3Wave* pWave, LPXACT_WAVE_INSTANCE_PROPERTIES pProperties)
 {
     return pWave->GetProperties(pProperties);
 }
 
 #else // __cplusplus
 
-__inline HRESULT __stdcall IXACTWave_Destroy(IXACTWave* pWave)
+__inline HRESULT __stdcall IXACT3Wave_Destroy(IXACT3Wave* pWave)
 {
     return pWave->lpVtbl->Destroy(pWave);
 }
 
-__inline HRESULT __stdcall IXACTWave_Play(IXACTWave* pWave)
+__inline HRESULT __stdcall IXACT3Wave_Play(IXACT3Wave* pWave)
 {
     return pWave->lpVtbl->Play(pWave);
 }
 
-__inline HRESULT __stdcall IXACTWave_Stop(IXACTWave* pWave, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3Wave_Stop(IXACT3Wave* pWave, DWORD dwFlags)
 {
     return pWave->lpVtbl->Stop(pWave, dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTWave_Pause(IXACTWave* pWave, BOOL fPause)
+__inline HRESULT __stdcall IXACT3Wave_Pause(IXACT3Wave* pWave, BOOL fPause)
 {
     return pWave->lpVtbl->Pause(pWave, fPause);
 }
 
-__inline HRESULT __stdcall IXACTWave_GetState(IXACTWave* pWave, DWORD* pdwState)
+__inline HRESULT __stdcall IXACT3Wave_GetState(IXACT3Wave* pWave, DWORD* pdwState)
 {
     return pWave->lpVtbl->GetState(pWave, pdwState);
 }
 
-__inline HRESULT __stdcall IXACTWave_SetPitch(IXACTWave* pWave, XACTPITCH pitch)
+__inline HRESULT __stdcall IXACT3Wave_SetPitch(IXACT3Wave* pWave, XACTPITCH pitch)
 {
     return pWave->lpVtbl->SetPitch(pWave, pitch);
 }
 
-__inline HRESULT __stdcall IXACTWave_SetVolume(IXACTWave* pWave, XACTVOLUME volume)
+__inline HRESULT __stdcall IXACT3Wave_SetVolume(IXACT3Wave* pWave, XACTVOLUME volume)
 {
     return pWave->lpVtbl->SetVolume(pWave, volume);
 }
 
-__inline HRESULT __stdcall IXACTWave_SetMatrixCoefficients(IXACTWave* pWave, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
+__inline HRESULT __stdcall IXACT3Wave_SetMatrixCoefficients(IXACT3Wave* pWave, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
 {
     return pWave->lpVtbl->SetMatrixCoefficients(pWave, uSrcChannelCount, uDstChannelCount, pMatrixCoefficients);
 }
 
-__inline HRESULT __stdcall IXACTWave_GetProperties(IXACTWave* pWave, LPXACT_WAVE_INSTANCE_PROPERTIES pProperties)
+__inline HRESULT __stdcall IXACT3Wave_GetProperties(IXACT3Wave* pWave, LPXACT_WAVE_INSTANCE_PROPERTIES pProperties)
 {
     return pWave->lpVtbl->GetProperties(pWave, pProperties);
 }
 #endif // __cplusplus
 
 //------------------------------------------------------------------------------
-// IXACTCue
+// IXACT3Cue
 //------------------------------------------------------------------------------
 
 // Cue Flags
@@ -923,262 +921,180 @@ __inline HRESULT __stdcall IXACTWave_GetProperties(IXACTWave* pWave, LPXACT_WAVE
 #define XACT_CUESTATE_STOPPED           XACT_STATE_STOPPED   // Stopped
 #define XACT_CUESTATE_PAUSED            XACT_STATE_PAUSED    // Paused (can be combined with other states)
 
-STDAPI IXACTCue_Destroy(IXACTCue* pCue);
-STDAPI IXACTCue_Play(IXACTCue* pCue);
-STDAPI IXACTCue_Stop(IXACTCue* pCue, DWORD dwFlags);
-STDAPI IXACTCue_GetState(IXACTCue* pCue, DWORD* pdwState);
-STDAPI IXACTCue_GetChannelMap(IXACTCue*, LPXACTCHANNELMAP pChannelMap, DWORD BufferSize, LPDWORD pRequiredSize);
-STDAPI IXACTCue_SetChannelMap(IXACTCue*, LPCXACTCHANNELMAP pChannelMap);
-STDAPI IXACTCue_GetChannelVolume(IXACTCue*, LPXACTCHANNELVOLUME pVolume);
-STDAPI IXACTCue_SetChannelVolume(IXACTCue*, LPCXACTCHANNELVOLUME pVolume);
-STDAPI IXACTCue_SetMatrixCoefficients(IXACTCue*, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients);
-STDAPI_(XACTVARIABLEINDEX) IXACTCue_GetVariableIndex(IXACTCue* pCue, PCSTR szFriendlyName);
-STDAPI IXACTCue_SetVariable(IXACTCue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue);
-STDAPI IXACTCue_GetVariable(IXACTCue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* nValue);
-STDAPI IXACTCue_Pause(IXACTCue* pCue, BOOL fPause);
-STDAPI IXACTCue_GetProperties(IXACTCue* pCue, LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties);
-#ifdef _XBOX
-STDAPI IXACTCue_SetVoiceOutput(IXACTCue*, LPCXAUDIOVOICEOUTPUT pVoiceOutput);
-STDAPI IXACTCue_SetVoiceOutputVolume(IXACTCue*, LPCXAUDIOVOICEOUTPUTVOLUME pVolume);
-#endif // _XBOX
+STDAPI IXACT3Cue_Destroy(IXACT3Cue* pCue);
+STDAPI IXACT3Cue_Play(IXACT3Cue* pCue);
+STDAPI IXACT3Cue_Stop(IXACT3Cue* pCue, DWORD dwFlags);
+STDAPI IXACT3Cue_GetState(IXACT3Cue* pCue, DWORD* pdwState);
+STDAPI IXACT3Cue_SetMatrixCoefficients(IXACT3Cue*, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients);
+STDAPI_(XACTVARIABLEINDEX) IXACT3Cue_GetVariableIndex(IXACT3Cue* pCue, PCSTR szFriendlyName);
+STDAPI IXACT3Cue_SetVariable(IXACT3Cue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue);
+STDAPI IXACT3Cue_GetVariable(IXACT3Cue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* nValue);
+STDAPI IXACT3Cue_Pause(IXACT3Cue* pCue, BOOL fPause);
+STDAPI IXACT3Cue_GetProperties(IXACT3Cue* pCue, LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties);
 
 #undef INTERFACE
-#define INTERFACE IXACTCue
+#define INTERFACE IXACT3Cue
 
-DECLARE_INTERFACE(IXACTCue)
+DECLARE_INTERFACE(IXACT3Cue)
 {
     STDMETHOD(Play)(THIS) PURE;
     STDMETHOD(Stop)(THIS_ DWORD dwFlags) PURE;
     STDMETHOD(GetState)(THIS_ DWORD* pdwState) PURE;
     STDMETHOD(Destroy)(THIS) PURE;
-    STDMETHOD(GetChannelMap)(THIS_ LPXACTCHANNELMAP pChannelMap, DWORD BufferSize, LPDWORD pRequiredSize) PURE;
-    STDMETHOD(SetChannelMap)(THIS_ LPCXACTCHANNELMAP pChannelMap) PURE;
-    STDMETHOD(GetChannelVolume)(THIS_ LPXACTCHANNELVOLUME pVolume) PURE;
-    STDMETHOD(SetChannelVolume)(THIS_ LPCXACTCHANNELVOLUME pVolume) PURE;
     STDMETHOD(SetMatrixCoefficients)(THIS_ UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients) PURE;
     STDMETHOD_(XACTVARIABLEINDEX, GetVariableIndex)(THIS_ PCSTR szFriendlyName) PURE;
     STDMETHOD(SetVariable)(THIS_ XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue) PURE;
     STDMETHOD(GetVariable)(THIS_ XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* nValue) PURE;
     STDMETHOD(Pause)(THIS_ BOOL fPause) PURE;
     STDMETHOD(GetProperties)(THIS_ LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties) PURE;
-#ifdef _XBOX
-    STDMETHOD(SetVoiceOutput)(THIS_ LPCXAUDIOVOICEOUTPUT pVoiceOutput) PURE;
-    STDMETHOD(SetVoiceOutputVolume)(THIS_ LPCXAUDIOVOICEOUTPUTVOLUME pVolume) PURE;
-#endif // _XBOX
 };
 
 #ifdef __cplusplus
 
-__inline HRESULT __stdcall IXACTCue_Play(IXACTCue* pCue)
+__inline HRESULT __stdcall IXACT3Cue_Play(IXACT3Cue* pCue)
 {
     return pCue->Play();
 }
 
-__inline HRESULT __stdcall IXACTCue_Stop(IXACTCue* pCue, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3Cue_Stop(IXACT3Cue* pCue, DWORD dwFlags)
 {
     return pCue->Stop(dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTCue_GetState(IXACTCue* pCue, DWORD* pdwState)
+__inline HRESULT __stdcall IXACT3Cue_GetState(IXACT3Cue* pCue, DWORD* pdwState)
 {
     return pCue->GetState(pdwState);
 }
 
-__inline HRESULT __stdcall IXACTCue_Destroy(IXACTCue* pCue)
+__inline HRESULT __stdcall IXACT3Cue_Destroy(IXACT3Cue* pCue)
 {
     return pCue->Destroy();
 }
 
-__inline HRESULT __stdcall IXACTCue_GetChannelMap(IXACTCue* pCue, LPXACTCHANNELMAP pChannelMap, DWORD BufferSize, LPDWORD pRequiredSize)
-{
-    return pCue->GetChannelMap(pChannelMap, BufferSize, pRequiredSize);
-}
-
-__inline HRESULT __stdcall IXACTCue_SetChannelMap(IXACTCue* pCue, LPCXACTCHANNELMAP pChannelMap)
-{
-    return pCue->SetChannelMap(pChannelMap);
-}
-
-__inline HRESULT __stdcall IXACTCue_GetChannelVolume(IXACTCue* pCue, LPXACTCHANNELVOLUME pVolume)
-{
-    return pCue->GetChannelVolume(pVolume);
-}
-
-__inline HRESULT __stdcall IXACTCue_SetChannelVolume(IXACTCue* pCue, LPCXACTCHANNELVOLUME pVolume)
-{
-    return pCue->SetChannelVolume(pVolume);
-}
-
-__inline HRESULT __stdcall IXACTCue_SetMatrixCoefficients(IXACTCue* pCue, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
+__inline HRESULT __stdcall IXACT3Cue_SetMatrixCoefficients(IXACT3Cue* pCue, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
 {
     return pCue->SetMatrixCoefficients(uSrcChannelCount, uDstChannelCount, pMatrixCoefficients);
 }
 
-__inline XACTVARIABLEINDEX __stdcall IXACTCue_GetVariableIndex(IXACTCue* pCue, PCSTR szFriendlyName)
+__inline XACTVARIABLEINDEX __stdcall IXACT3Cue_GetVariableIndex(IXACT3Cue* pCue, PCSTR szFriendlyName)
 {
     return pCue->GetVariableIndex(szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTCue_SetVariable(IXACTCue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue)
+__inline HRESULT __stdcall IXACT3Cue_SetVariable(IXACT3Cue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue)
 {
     return pCue->SetVariable(nIndex, nValue);
 }
 
-__inline HRESULT __stdcall IXACTCue_GetVariable(IXACTCue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* pnValue)
+__inline HRESULT __stdcall IXACT3Cue_GetVariable(IXACT3Cue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* pnValue)
 {
     return pCue->GetVariable(nIndex, pnValue);
 }
 
-__inline HRESULT __stdcall IXACTCue_Pause(IXACTCue* pCue, BOOL fPause)
+__inline HRESULT __stdcall IXACT3Cue_Pause(IXACT3Cue* pCue, BOOL fPause)
 {
     return pCue->Pause(fPause);
 }
 
-__inline HRESULT __stdcall IXACTCue_GetProperties(IXACTCue* pCue, LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties)
+__inline HRESULT __stdcall IXACT3Cue_GetProperties(IXACT3Cue* pCue, LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties)
 {
     return pCue->GetProperties(ppProperties);
 }
 
-#ifdef _XBOX
-__inline HRESULT __stdcall IXACTCue_SetVoiceOutput(IXACTCue* pCue, LPCXAUDIOVOICEOUTPUT pVoiceOutput)
-{
-    return pCue->SetVoiceOutput(pVoiceOutput);
-}
-
-__inline HRESULT __stdcall IXACTCue_SetVoiceOutputVolume(IXACTCue* pCue, LPCXAUDIOVOICEOUTPUTVOLUME pVolume)
-{
-    return pCue->SetVoiceOutputVolume(pVolume);
-}
-#endif // _XBOX
-
 #else // __cplusplus
 
-__inline HRESULT __stdcall IXACTCue_Play(IXACTCue* pCue)
+__inline HRESULT __stdcall IXACT3Cue_Play(IXACT3Cue* pCue)
 {
     return pCue->lpVtbl->Play(pCue);
 }
 
-__inline HRESULT __stdcall IXACTCue_Stop(IXACTCue* pCue, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3Cue_Stop(IXACT3Cue* pCue, DWORD dwFlags)
 {
     return pCue->lpVtbl->Stop(pCue, dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTCue_GetState(IXACTCue* pCue, DWORD* pdwState)
+__inline HRESULT __stdcall IXACT3Cue_GetState(IXACT3Cue* pCue, DWORD* pdwState)
 {
     return pCue->lpVtbl->GetState(pCue, pdwState);
 }
 
-__inline HRESULT __stdcall IXACTCue_Destroy(IXACTCue* pCue)
+__inline HRESULT __stdcall IXACT3Cue_Destroy(IXACT3Cue* pCue)
 {
     return pCue->lpVtbl->Destroy(pCue);
 }
 
-__inline HRESULT __stdcall IXACTCue_GetChannelMap(IXACTCue* pCue, LPXACTCHANNELMAP pChannelMap, DWORD BufferSize, LPDWORD pRequiredSize)
-{
-    return pCue->lpVtbl->GetChannelMap(pCue, pChannelMap, BufferSize, pRequiredSize);
-}
-
-__inline HRESULT __stdcall IXACTCue_SetChannelMap(IXACTCue* pCue, LPCXACTCHANNELMAP pChannelMap)
-{
-    return pCue->lpVtbl->SetChannelMap(pCue, pChannelMap);
-}
-
-__inline HRESULT __stdcall IXACTCue_GetChannelVolume(IXACTCue* pCue, LPXACTCHANNELVOLUME pVolume)
-{
-    return pCue->lpVtbl->GetChannelVolume(pCue, pVolume);
-}
-
-__inline HRESULT __stdcall IXACTCue_SetChannelVolume(IXACTCue* pCue, LPCXACTCHANNELVOLUME pVolume)
-{
-    return pCue->lpVtbl->SetChannelVolume(pCue, pVolume);
-}
-
-__inline HRESULT __stdcall IXACTCue_SetMatrixCoefficients(IXACTCue* pCue, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
+__inline HRESULT __stdcall IXACT3Cue_SetMatrixCoefficients(IXACT3Cue* pCue, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
 {
     return pCue->lpVtbl->SetMatrixCoefficients(pCue, uSrcChannelCount, uDstChannelCount, pMatrixCoefficients);
 }
 
-__inline XACTVARIABLEINDEX __stdcall IXACTCue_GetVariableIndex(IXACTCue* pCue, PCSTR szFriendlyName)
+__inline XACTVARIABLEINDEX __stdcall IXACT3Cue_GetVariableIndex(IXACT3Cue* pCue, PCSTR szFriendlyName)
 {
     return pCue->lpVtbl->GetVariableIndex(pCue, szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTCue_SetVariable(IXACTCue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue)
+__inline HRESULT __stdcall IXACT3Cue_SetVariable(IXACT3Cue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue)
 {
     return pCue->lpVtbl->SetVariable(pCue, nIndex, nValue);
 }
 
-__inline HRESULT __stdcall IXACTCue_GetVariable(IXACTCue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* pnValue)
+__inline HRESULT __stdcall IXACT3Cue_GetVariable(IXACT3Cue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* pnValue)
 {
     return pCue->lpVtbl->GetVariable(pCue, nIndex, pnValue);
 }
 
-__inline HRESULT __stdcall IXACTCue_Pause(IXACTCue* pCue, BOOL fPause)
+__inline HRESULT __stdcall IXACT3Cue_Pause(IXACT3Cue* pCue, BOOL fPause)
 {
     return pCue->lpVtbl->Pause(pCue, fPause);
 }
 
-__inline HRESULT __stdcall IXACTCue_GetProperties(IXACTCue* pCue, LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties)
+__inline HRESULT __stdcall IXACT3Cue_GetProperties(IXACT3Cue* pCue, LPXACT_CUE_INSTANCE_PROPERTIES* ppProperties)
 {
     return pCue->lpVtbl->GetProperties(pCue, ppProperties);
 }
 
-#ifdef _XBOX
-__inline HRESULT __stdcall IXACTCue_SetVoiceOutput(IXACTCue* pCue, LPCXAUDIOVOICEOUTPUT pVoiceOutput)
-{
-    return pCue->lpVtbl->SetVoiceOutput(pCue, pVoiceOutput);
-}
-
-__inline HRESULT __stdcall IXACTCue_SetVoiceOutputVolume(IXACTCue* pCue, LPCXAUDIOVOICEOUTPUTVOLUME pVolume)
-{
-    return pCue->lpVtbl->SetVoiceOutputVolume(pCue, pVolume);
-}
-#endif // _XBOX
-
 #endif // __cplusplus
 
 //------------------------------------------------------------------------------
-// IXACTEngine
+// IXACT3Engine
 //------------------------------------------------------------------------------
 
 // Engine flags
 #define XACT_FLAG_ENGINE_CREATE_MANAGEDATA    XACT_FLAG_MANAGEDATA
 #define XACT_FLAG_ENGINE_STOP_IMMEDIATE       XACT_FLAG_STOP_IMMEDIATE
 
-STDAPI_(ULONG) IXACTEngine_AddRef(IXACTEngine* pEngine);
-STDAPI_(ULONG) IXACTEngine_Release(IXACTEngine* pEngine);
-#ifndef _XBOX
-STDAPI IXACTEngine_GetRendererCount(IXACTEngine* pEngine, XACTINDEX* pnRendererCount);
-STDAPI IXACTEngine_GetRendererDetails(IXACTEngine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails);
-#endif
-STDAPI IXACTEngine_GetFinalMixFormat(IXACTEngine* pEngine, WAVEFORMATEXTENSIBLE* pFinalMixFormat);
-STDAPI IXACTEngine_Initialize(IXACTEngine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams);
-STDAPI IXACTEngine_ShutDown(IXACTEngine* pEngine);
-STDAPI IXACTEngine_DoWork(IXACTEngine* pEngine);
-STDAPI IXACTEngine_CreateSoundBank(IXACTEngine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTSoundBank** ppSoundBank);
-STDAPI IXACTEngine_CreateInMemoryWaveBank(IXACTEngine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTWaveBank** ppWaveBank);
-STDAPI IXACTEngine_CreateStreamingWaveBank(IXACTEngine* pEngine, const XACT_WAVEBANK_STREAMING_PARAMETERS* pParms, IXACTWaveBank** ppWaveBank);
-STDAPI IXACTEngine_PrepareWave(IXACTEngine* pEngine, DWORD dwFlags, PCSTR szWavePath, WORD wStreamingPacketSize, DWORD dwAlignment, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave);
-STDAPI IXACTEngine_PrepareInMemoryWave(IXACTEngine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, DWORD* pdwSeekTable, BYTE* pbWaveData, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave);
-STDAPI IXACTEngine_PrepareStreamingWave(IXACTEngine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, XACT_STREAMING_PARAMETERS streamingParams, DWORD dwAlignment, DWORD* pdwSeekTable, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave);
-STDAPI IXACTEngine_RegisterNotification(IXACTEngine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc);
-STDAPI IXACTEngine_UnRegisterNotification(IXACTEngine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc);
-STDAPI_(XACTCATEGORY) IXACTEngine_GetCategory(IXACTEngine* pEngine, PCSTR szFriendlyName);
-STDAPI IXACTEngine_Stop(IXACTEngine* pEngine, XACTCATEGORY nCategory, DWORD dwFlags);
-STDAPI IXACTEngine_SetVolume(IXACTEngine* pEngine, XACTCATEGORY nCategory, XACTVOLUME nVolume);
-STDAPI IXACTEngine_Pause(IXACTEngine* pEngine, XACTCATEGORY nCategory, BOOL fPause);
-STDAPI_(XACTVARIABLEINDEX) IXACTEngine_GetGlobalVariableIndex(IXACTEngine* pEngine, PCSTR szFriendlyName);
-STDAPI IXACTEngine_SetGlobalVariable(IXACTEngine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue);
-STDAPI IXACTEngine_GetGlobalVariable(IXACTEngine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* pnValue);
+STDAPI_(ULONG) IXACT3Engine_AddRef(IXACT3Engine* pEngine);
+STDAPI_(ULONG) IXACT3Engine_Release(IXACT3Engine* pEngine);
+STDAPI IXACT3Engine_GetRendererCount(IXACT3Engine* pEngine, XACTINDEX* pnRendererCount);
+STDAPI IXACT3Engine_GetRendererDetails(IXACT3Engine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails);
+STDAPI IXACT3Engine_GetFinalMixFormat(IXACT3Engine* pEngine, WAVEFORMATEXTENSIBLE* pFinalMixFormat);
+STDAPI IXACT3Engine_Initialize(IXACT3Engine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams);
+STDAPI IXACT3Engine_ShutDown(IXACT3Engine* pEngine);
+STDAPI IXACT3Engine_DoWork(IXACT3Engine* pEngine);
+STDAPI IXACT3Engine_CreateSoundBank(IXACT3Engine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACT3SoundBank** ppSoundBank);
+STDAPI IXACT3Engine_CreateInMemoryWaveBank(IXACT3Engine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACT3WaveBank** ppWaveBank);
+STDAPI IXACT3Engine_CreateStreamingWaveBank(IXACT3Engine* pEngine, const XACT_WAVEBANK_STREAMING_PARAMETERS* pParms, IXACT3WaveBank** ppWaveBank);
+STDAPI IXACT3Engine_PrepareWave(IXACT3Engine* pEngine, DWORD dwFlags, PCSTR szWavePath, WORD wStreamingPacketSize, DWORD dwAlignment, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave);
+STDAPI IXACT3Engine_PrepareInMemoryWave(IXACT3Engine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, DWORD* pdwSeekTable, BYTE* pbWaveData, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave);
+STDAPI IXACT3Engine_PrepareStreamingWave(IXACT3Engine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, XACT_STREAMING_PARAMETERS streamingParams, DWORD dwAlignment, DWORD* pdwSeekTable, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave);
+STDAPI IXACT3Engine_RegisterNotification(IXACT3Engine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc);
+STDAPI IXACT3Engine_UnRegisterNotification(IXACT3Engine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc);
+STDAPI_(XACTCATEGORY) IXACT3Engine_GetCategory(IXACT3Engine* pEngine, PCSTR szFriendlyName);
+STDAPI IXACT3Engine_Stop(IXACT3Engine* pEngine, XACTCATEGORY nCategory, DWORD dwFlags);
+STDAPI IXACT3Engine_SetVolume(IXACT3Engine* pEngine, XACTCATEGORY nCategory, XACTVOLUME nVolume);
+STDAPI IXACT3Engine_Pause(IXACT3Engine* pEngine, XACTCATEGORY nCategory, BOOL fPause);
+STDAPI_(XACTVARIABLEINDEX) IXACT3Engine_GetGlobalVariableIndex(IXACT3Engine* pEngine, PCSTR szFriendlyName);
+STDAPI IXACT3Engine_SetGlobalVariable(IXACT3Engine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue);
+STDAPI IXACT3Engine_GetGlobalVariable(IXACT3Engine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* pnValue);
 
 #undef INTERFACE
-#define INTERFACE IXACTEngine
+#define INTERFACE IXACT3Engine
 
 #ifdef _XBOX
-DECLARE_INTERFACE(IXACTEngine)
+DECLARE_INTERFACE(IXACT3Engine)
 {
 #else
-DECLARE_INTERFACE_(IXACTEngine, IUnknown)
+DECLARE_INTERFACE_(IXACT3Engine, IUnknown)
 {
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, OUT void** ppvObj) PURE;
 #endif
@@ -1186,10 +1102,8 @@ DECLARE_INTERFACE_(IXACTEngine, IUnknown)
     STDMETHOD_(ULONG, AddRef)(THIS) PURE;
     STDMETHOD_(ULONG, Release)(THIS) PURE;
 
-#ifndef _XBOX
     STDMETHOD(GetRendererCount)(THIS_ XACTINDEX* pnRendererCount) PURE;
     STDMETHOD(GetRendererDetails)(THIS_ XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails) PURE;
-#endif
 
     STDMETHOD(GetFinalMixFormat)(THIS_ WAVEFORMATEXTENSIBLE* pFinalMixFormat) PURE;
     STDMETHOD(Initialize)(THIS_ const XACT_RUNTIME_PARAMETERS* pParams) PURE;
@@ -1197,13 +1111,13 @@ DECLARE_INTERFACE_(IXACTEngine, IUnknown)
 
     STDMETHOD(DoWork)(THIS) PURE;
 
-    STDMETHOD(CreateSoundBank)(THIS_ const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTSoundBank** ppSoundBank) PURE;
-    STDMETHOD(CreateInMemoryWaveBank)(THIS_ const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTWaveBank** ppWaveBank) PURE;
-    STDMETHOD(CreateStreamingWaveBank)(THIS_ const XACT_WAVEBANK_STREAMING_PARAMETERS* pParms, IXACTWaveBank** ppWaveBank) PURE;
+    STDMETHOD(CreateSoundBank)(THIS_ const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACT3SoundBank** ppSoundBank) PURE;
+    STDMETHOD(CreateInMemoryWaveBank)(THIS_ const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACT3WaveBank** ppWaveBank) PURE;
+    STDMETHOD(CreateStreamingWaveBank)(THIS_ const XACT_WAVEBANK_STREAMING_PARAMETERS* pParms, IXACT3WaveBank** ppWaveBank) PURE;
 
-    STDMETHOD(PrepareWave)(THIS_ DWORD dwFlags, PCSTR szWavePath, WORD wStreamingPacketSize, DWORD dwAlignment, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave) PURE;
-    STDMETHOD(PrepareInMemoryWave)(THIS_ DWORD dwFlags, WAVEBANKENTRY entry, DWORD* pdwSeekTable, BYTE* pbWaveData, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave) PURE;
-    STDMETHOD(PrepareStreamingWave)(THIS_ DWORD dwFlags, WAVEBANKENTRY entry, XACT_STREAMING_PARAMETERS streamingParams, DWORD dwAlignment, DWORD* pdwSeekTable, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave) PURE;
+    STDMETHOD(PrepareWave)(THIS_ DWORD dwFlags, PCSTR szWavePath, WORD wStreamingPacketSize, DWORD dwAlignment, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave) PURE;
+    STDMETHOD(PrepareInMemoryWave)(THIS_ DWORD dwFlags, WAVEBANKENTRY entry, DWORD* pdwSeekTable, BYTE* pbWaveData, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave) PURE;
+    STDMETHOD(PrepareStreamingWave)(THIS_ DWORD dwFlags, WAVEBANKENTRY entry, XACT_STREAMING_PARAMETERS streamingParams, DWORD dwAlignment, DWORD* pdwSeekTable, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave) PURE;
 
     STDMETHOD(RegisterNotification)(THIS_ const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc) PURE;
     STDMETHOD(UnRegisterNotification)(THIS_ const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc) PURE;
@@ -1220,239 +1134,235 @@ DECLARE_INTERFACE_(IXACTEngine, IUnknown)
 
 #ifdef __cplusplus
 
-__inline ULONG __stdcall IXACTEngine_AddRef(IXACTEngine* pEngine)
+__inline ULONG __stdcall IXACT3Engine_AddRef(IXACT3Engine* pEngine)
 {
     return pEngine->AddRef();
 }
 
-__inline ULONG __stdcall IXACTEngine_Release(IXACTEngine* pEngine)
+__inline ULONG __stdcall IXACT3Engine_Release(IXACT3Engine* pEngine)
 {
     return pEngine->Release();
 }
 
-#ifndef _XBOX
-__inline HRESULT __stdcall IXACTEngine_GetRendererCount(IXACTEngine* pEngine, XACTINDEX* pnRendererCount)
+__inline HRESULT __stdcall IXACT3Engine_GetRendererCount(IXACT3Engine* pEngine, XACTINDEX* pnRendererCount)
 {
     return pEngine->GetRendererCount(pnRendererCount);
 }
 
-__inline HRESULT __stdcall IXACTEngine_GetRendererDetails(IXACTEngine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails)
+__inline HRESULT __stdcall IXACT3Engine_GetRendererDetails(IXACT3Engine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails)
 {
     return pEngine->GetRendererDetails(nRendererIndex, pRendererDetails);
 }
-#endif
 
-__inline HRESULT __stdcall IXACTEngine_GetFinalMixFormat(IXACTEngine* pEngine, WAVEFORMATEXTENSIBLE* pFinalMixFormat)
+__inline HRESULT __stdcall IXACT3Engine_GetFinalMixFormat(IXACT3Engine* pEngine, WAVEFORMATEXTENSIBLE* pFinalMixFormat)
 {
     return pEngine->GetFinalMixFormat(pFinalMixFormat);
 }
 
-__inline HRESULT __stdcall IXACTEngine_Initialize(IXACTEngine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams)
+__inline HRESULT __stdcall IXACT3Engine_Initialize(IXACT3Engine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams)
 {
     return pEngine->Initialize(pParams);
 }
 
-__inline HRESULT __stdcall IXACTEngine_ShutDown(IXACTEngine* pEngine)
+__inline HRESULT __stdcall IXACT3Engine_ShutDown(IXACT3Engine* pEngine)
 {
     return pEngine->ShutDown();
 }
 
-__inline HRESULT __stdcall IXACTEngine_DoWork(IXACTEngine* pEngine)
+__inline HRESULT __stdcall IXACT3Engine_DoWork(IXACT3Engine* pEngine)
 {
     return pEngine->DoWork();
 }
 
-__inline HRESULT __stdcall IXACTEngine_CreateSoundBank(IXACTEngine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTSoundBank** ppSoundBank)
+__inline HRESULT __stdcall IXACT3Engine_CreateSoundBank(IXACT3Engine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACT3SoundBank** ppSoundBank)
 {
     return pEngine->CreateSoundBank(pvBuffer, dwSize, dwFlags, dwAllocAttributes, ppSoundBank);
 }
 
-__inline HRESULT __stdcall IXACTEngine_CreateInMemoryWaveBank(IXACTEngine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTWaveBank** ppWaveBank)
+__inline HRESULT __stdcall IXACT3Engine_CreateInMemoryWaveBank(IXACT3Engine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACT3WaveBank** ppWaveBank)
 {
     return pEngine->CreateInMemoryWaveBank(pvBuffer, dwSize, dwFlags, dwAllocAttributes, ppWaveBank);
 }
 
-__inline HRESULT __stdcall IXACTEngine_CreateStreamingWaveBank(IXACTEngine* pEngine, const XACT_WAVEBANK_STREAMING_PARAMETERS* pParms, IXACTWaveBank** ppWaveBank)
+__inline HRESULT __stdcall IXACT3Engine_CreateStreamingWaveBank(IXACT3Engine* pEngine, const XACT_WAVEBANK_STREAMING_PARAMETERS* pParms, IXACT3WaveBank** ppWaveBank)
 {
     return pEngine->CreateStreamingWaveBank(pParms, ppWaveBank);
 }
 
-__inline HRESULT __stdcall IXACTEngine_PrepareWave(IXACTEngine* pEngine, DWORD dwFlags, PCSTR szWavePath, WORD wStreamingPacketSize, DWORD dwAlignment, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave * * ppWave)
+__inline HRESULT __stdcall IXACT3Engine_PrepareWave(IXACT3Engine* pEngine, DWORD dwFlags, PCSTR szWavePath, WORD wStreamingPacketSize, DWORD dwAlignment, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave * * ppWave)
 {
     return pEngine->PrepareWave(dwFlags, szWavePath, wStreamingPacketSize, dwAlignment, dwPlayOffset, nLoopCount, ppWave);
 }
 
-__inline HRESULT __stdcall IXACTEngine_PrepareInMemoryWave(IXACTEngine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, DWORD* pdwSeekTable, BYTE* pbWaveData, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave)
+__inline HRESULT __stdcall IXACT3Engine_PrepareInMemoryWave(IXACT3Engine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, DWORD* pdwSeekTable, BYTE* pbWaveData, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave)
 {
     return pEngine->PrepareInMemoryWave(dwFlags, entry, pdwSeekTable, pbWaveData, dwPlayOffset, nLoopCount, ppWave);
 }
 
-__inline HRESULT __stdcall IXACTEngine_PrepareStreamingWave(IXACTEngine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, XACT_STREAMING_PARAMETERS streamingParams, DWORD dwAlignment, DWORD* pdwSeekTable, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave)
+__inline HRESULT __stdcall IXACT3Engine_PrepareStreamingWave(IXACT3Engine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, XACT_STREAMING_PARAMETERS streamingParams, DWORD dwAlignment, DWORD* pdwSeekTable, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave)
 {
     return pEngine->PrepareStreamingWave(dwFlags, entry, streamingParams, dwAlignment, pdwSeekTable, dwPlayOffset, nLoopCount, ppWave);
 }
 
-__inline HRESULT __stdcall IXACTEngine_RegisterNotification(IXACTEngine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc)
+__inline HRESULT __stdcall IXACT3Engine_RegisterNotification(IXACT3Engine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc)
 {
     return pEngine->RegisterNotification(pNotificationDesc);
 }
 
-__inline HRESULT __stdcall IXACTEngine_UnRegisterNotification(IXACTEngine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc)
+__inline HRESULT __stdcall IXACT3Engine_UnRegisterNotification(IXACT3Engine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc)
 {
     return pEngine->UnRegisterNotification(pNotificationDesc);
 }
 
-__inline XACTCATEGORY __stdcall IXACTEngine_GetCategory(IXACTEngine* pEngine, PCSTR szFriendlyName)
+__inline XACTCATEGORY __stdcall IXACT3Engine_GetCategory(IXACT3Engine* pEngine, PCSTR szFriendlyName)
 {
     return pEngine->GetCategory(szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTEngine_Stop(IXACTEngine* pEngine, XACTCATEGORY nCategory, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3Engine_Stop(IXACT3Engine* pEngine, XACTCATEGORY nCategory, DWORD dwFlags)
 {
     return pEngine->Stop(nCategory, dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTEngine_SetVolume(IXACTEngine* pEngine, XACTCATEGORY nCategory, XACTVOLUME nVolume)
+__inline HRESULT __stdcall IXACT3Engine_SetVolume(IXACT3Engine* pEngine, XACTCATEGORY nCategory, XACTVOLUME nVolume)
 {
     return pEngine->SetVolume(nCategory, nVolume);
 }
 
-__inline HRESULT __stdcall IXACTEngine_Pause(IXACTEngine* pEngine, XACTCATEGORY nCategory, BOOL fPause)
+__inline HRESULT __stdcall IXACT3Engine_Pause(IXACT3Engine* pEngine, XACTCATEGORY nCategory, BOOL fPause)
 {
     return pEngine->Pause(nCategory, fPause);
 }
 
-__inline XACTVARIABLEINDEX __stdcall IXACTEngine_GetGlobalVariableIndex(IXACTEngine* pEngine, PCSTR szFriendlyName)
+__inline XACTVARIABLEINDEX __stdcall IXACT3Engine_GetGlobalVariableIndex(IXACT3Engine* pEngine, PCSTR szFriendlyName)
 {
     return pEngine->GetGlobalVariableIndex(szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTEngine_SetGlobalVariable(IXACTEngine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue)
+__inline HRESULT __stdcall IXACT3Engine_SetGlobalVariable(IXACT3Engine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue)
 {
     return pEngine->SetGlobalVariable(nIndex, nValue);
 }
 
-__inline HRESULT __stdcall IXACTEngine_GetGlobalVariable(IXACTEngine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* nValue)
+__inline HRESULT __stdcall IXACT3Engine_GetGlobalVariable(IXACT3Engine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* nValue)
 {
     return pEngine->GetGlobalVariable(nIndex, nValue);
 }
 
 #else // __cplusplus
 
-__inline ULONG __stdcall IXACTEngine_AddRef(IXACTEngine* pEngine)
+__inline ULONG __stdcall IXACT3Engine_AddRef(IXACT3Engine* pEngine)
 {
     return pEngine->lpVtbl->AddRef(pEngine);
 }
 
-__inline ULONG __stdcall IXACTEngine_Release(IXACTEngine* pEngine)
+__inline ULONG __stdcall IXACT3Engine_Release(IXACT3Engine* pEngine)
 {
     return pEngine->lpVtbl->Release(pEngine);
 }
 
-#ifndef _XBOX
-__inline HRESULT __stdcall IXACTEngine_GetRendererCount(IXACTEngine* pEngine, XACTINDEX* pnRendererCount)
+__inline HRESULT __stdcall IXACT3Engine_GetRendererCount(IXACT3Engine* pEngine, XACTINDEX* pnRendererCount)
 {
     return pEngine->lpVtbl->GetRendererCount(pEngine, pnRendererCount);
 }
 
-__inline HRESULT __stdcall IXACTEngine_GetRendererDetails(IXACTEngine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails)
+__inline HRESULT __stdcall IXACT3Engine_GetRendererDetails(IXACT3Engine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails)
 {
     return pEngine->lpVtbl->GetRendererDetails(pEngine, nRendererIndex, pRendererDetails);
 }
-#endif
 
-__inline HRESULT __stdcall IXACTEngine_GetFinalMixFormat(IXACTEngine* pEngine, WAVEFORMATEXTENSIBLE* pFinalMixFormat)
+__inline HRESULT __stdcall IXACT3Engine_GetFinalMixFormat(IXACT3Engine* pEngine, WAVEFORMATEXTENSIBLE* pFinalMixFormat)
 {
     return pEngine->lpVtbl->GetFinalMixFormat(pEngine, pFinalMixFormat);
 }
 
-__inline HRESULT __stdcall IXACTEngine_Initialize(IXACTEngine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams)
+__inline HRESULT __stdcall IXACT3Engine_Initialize(IXACT3Engine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams)
 {
     return pEngine->lpVtbl->Initialize(pEngine, pParams);
 }
 
-__inline HRESULT __stdcall IXACTEngine_ShutDown(IXACTEngine* pEngine)
+__inline HRESULT __stdcall IXACT3Engine_ShutDown(IXACT3Engine* pEngine)
 {
     return pEngine->lpVtbl->ShutDown(pEngine);
 }
 
-__inline HRESULT __stdcall IXACTEngine_DoWork(IXACTEngine* pEngine)
+__inline HRESULT __stdcall IXACT3Engine_DoWork(IXACT3Engine* pEngine)
 {
     return pEngine->lpVtbl->DoWork(pEngine);
 }
 
-__inline HRESULT __stdcall IXACTEngine_CreateSoundBank(IXACTEngine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTSoundBank** ppSoundBank)
+__inline HRESULT __stdcall IXACT3Engine_CreateSoundBank(IXACT3Engine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACT3SoundBank** ppSoundBank)
 {
     return pEngine->lpVtbl->CreateSoundBank(pEngine, pvBuffer, dwSize, dwFlags, dwAllocAttributes, ppSoundBank);
 }
 
-__inline HRESULT __stdcall IXACTEngine_CreateInMemoryWaveBank(IXACTEngine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTWaveBank** ppWaveBank)
+__inline HRESULT __stdcall IXACT3Engine_CreateInMemoryWaveBank(IXACT3Engine* pEngine, const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACT3WaveBank** ppWaveBank)
 {
     return pEngine->lpVtbl->CreateInMemoryWaveBank(pEngine, pvBuffer, dwSize, dwFlags, dwAllocAttributes, ppWaveBank);
 }
 
-__inline HRESULT __stdcall IXACTEngine_CreateStreamingWaveBank(IXACTEngine* pEngine, const XACT_WAVEBANK_STREAMING_PARAMETERS* pParms, IXACTWaveBank** ppWaveBank)
+__inline HRESULT __stdcall IXACT3Engine_CreateStreamingWaveBank(IXACT3Engine* pEngine, const XACT_WAVEBANK_STREAMING_PARAMETERS* pParms, IXACT3WaveBank** ppWaveBank)
 {
     return pEngine->lpVtbl->CreateStreamingWaveBank(pEngine, pParms, ppWaveBank);
 }
 
-__inline HRESULT __stdcall IXACTEngine_PrepareWave(IXACTEngine* pEngine, DWORD dwFlags, PCSTR szWavePath, WORD wStreamingPacketSize, DWORD dwAlignment, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave * * ppWave)
+__inline HRESULT __stdcall IXACT3Engine_PrepareWave(IXACT3Engine* pEngine, DWORD dwFlags, PCSTR szWavePath, WORD wStreamingPacketSize, DWORD dwAlignment, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave * * ppWave)
 {
     return pEngine->lpVtbl->PrepareWave(pEngine, dwFlags, szWavePath, wStreamingPacketSize, dwAlignment, dwPlayOffset, nLoopCount, ppWave);
 }
 
-__inline HRESULT __stdcall IXACTEngine_PrepareInMemoryWave(IXACTEngine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, DWORD* pdwSeekTable, BYTE* pbWaveData, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave)
+__inline HRESULT __stdcall IXACT3Engine_PrepareInMemoryWave(IXACT3Engine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, DWORD* pdwSeekTable, BYTE* pbWaveData, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave)
 {
     return pEngine->lpVtbl->PrepareInMemoryWave(pEngine, dwFlags, entry, pdwSeekTable, pbWaveData, dwPlayOffset, nLoopCount, ppWave);
 }
 
-__inline HRESULT __stdcall IXACTEngine_PrepareStreamingWave(IXACTEngine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, XACT_STREAMING_PARAMETERS streamingParams, DWORD dwAlignment, DWORD* pdwSeekTable, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACTWave** ppWave)
+__inline HRESULT __stdcall IXACT3Engine_PrepareStreamingWave(IXACT3Engine* pEngine, DWORD dwFlags, WAVEBANKENTRY entry, XACT_STREAMING_PARAMETERS streamingParams, DWORD dwAlignment, DWORD* pdwSeekTable, DWORD dwPlayOffset, XACTLOOPCOUNT nLoopCount, IXACT3Wave** ppWave)
 {
     return pEngine->lpVtbl->PrepareStreamingWave(pEngine, dwFlags, entry, streamingParams, dwAlignment, pdwSeekTable, dwPlayOffset, nLoopCount, ppWave);
 }
 
 
-__inline HRESULT __stdcall IXACTEngine_RegisterNotification(IXACTEngine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc)
+__inline HRESULT __stdcall IXACT3Engine_RegisterNotification(IXACT3Engine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc)
 {
     return pEngine->lpVtbl->RegisterNotification(pEngine, pNotificationDesc);
 }
 
-__inline HRESULT __stdcall IXACTEngine_UnRegisterNotification(IXACTEngine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc)
+__inline HRESULT __stdcall IXACT3Engine_UnRegisterNotification(IXACT3Engine* pEngine, const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc)
 {
     return pEngine->lpVtbl->UnRegisterNotification(pEngine, pNotificationDesc);
 }
 
-__inline XACTCATEGORY __stdcall IXACTEngine_GetCategory(IXACTEngine* pEngine, PCSTR szFriendlyName)
+__inline XACTCATEGORY __stdcall IXACT3Engine_GetCategory(IXACT3Engine* pEngine, PCSTR szFriendlyName)
 {
     return pEngine->lpVtbl->GetCategory(pEngine, szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTEngine_Stop(IXACTEngine* pEngine, XACTCATEGORY nCategory, DWORD dwFlags)
+__inline HRESULT __stdcall IXACT3Engine_Stop(IXACT3Engine* pEngine, XACTCATEGORY nCategory, DWORD dwFlags)
 {
     return pEngine->lpVtbl->Stop(pEngine, nCategory, dwFlags);
 }
 
-__inline HRESULT __stdcall IXACTEngine_SetVolume(IXACTEngine* pEngine, XACTCATEGORY nCategory, XACTVOLUME nVolume)
+__inline HRESULT __stdcall IXACT3Engine_SetVolume(IXACT3Engine* pEngine, XACTCATEGORY nCategory, XACTVOLUME nVolume)
 {
     return pEngine->lpVtbl->SetVolume(pEngine, nCategory, nVolume);
 }
 
-__inline HRESULT __stdcall IXACTEngine_Pause(IXACTEngine* pEngine, XACTCATEGORY nCategory, BOOL fPause)
+__inline HRESULT __stdcall IXACT3Engine_Pause(IXACT3Engine* pEngine, XACTCATEGORY nCategory, BOOL fPause)
 {
     return pEngine->lpVtbl->Pause(pEngine, nCategory, fPause);
 }
 
-__inline XACTVARIABLEINDEX __stdcall IXACTEngine_GetGlobalVariableIndex(IXACTEngine* pEngine, PCSTR szFriendlyName)
+__inline XACTVARIABLEINDEX __stdcall IXACT3Engine_GetGlobalVariableIndex(IXACT3Engine* pEngine, PCSTR szFriendlyName)
 {
     return pEngine->lpVtbl->GetGlobalVariableIndex(pEngine, szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTEngine_SetGlobalVariable(IXACTEngine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue)
+__inline HRESULT __stdcall IXACT3Engine_SetGlobalVariable(IXACT3Engine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue)
 {
     return pEngine->lpVtbl->SetGlobalVariable(pEngine, nIndex, nValue);
 }
 
-__inline HRESULT __stdcall IXACTEngine_GetGlobalVariable(IXACTEngine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* nValue)
+__inline HRESULT __stdcall IXACT3Engine_GetGlobalVariable(IXACT3Engine* pEngine, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* nValue)
 {
     return pEngine->lpVtbl->GetGlobalVariable(pEngine, nIndex, nValue);
 }
@@ -1460,47 +1370,16 @@ __inline HRESULT __stdcall IXACTEngine_GetGlobalVariable(IXACTEngine* pEngine, X
 #endif // __cplusplus
 
 //------------------------------------------------------------------------------
-// XACT API's (these are deprecated and will be removed in a future release)
-//------------------------------------------------------------------------------
-
-#ifdef _XBOX
-
-#define XACT_FLAG_API_CREATE_MANAGEDATA     XACT_FLAG_MANAGEDATA
-#define XACT_FLAG_API_STOP_IMMEDIATE        XACT_FLAG_STOP_IMMEDIATE
-
-STDAPI XACTInitialize(const XACT_RUNTIME_PARAMETERS* pParams);
-STDAPI XACTShutDown(void);
-STDAPI XACTDoWork(void);
-
-STDAPI XACTCreateSoundBank(const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTSoundBank** ppSoundBank);
-STDAPI XACTCreateInMemoryWaveBank(const void* pvBuffer, DWORD dwSize, DWORD dwFlags, DWORD dwAllocAttributes, IXACTWaveBank** ppWaveBank);
-STDAPI XACTCreateStreamingWaveBank(const XACT_WAVEBANK_STREAMING_PARAMETERS* pParms, IXACTWaveBank** ppWaveBank);
-
-STDAPI XACTRegisterNotification(const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc);
-STDAPI XACTUnRegisterNotification(const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc);
-
-STDAPI_(XACTCATEGORY) XACTGetCategory(PCSTR szFriendlyName);
-STDAPI XACTStop(XACTCATEGORY nCategory, DWORD dwFlags);
-STDAPI XACTSetVolume(XACTCATEGORY nCategory, XACTVOLUME nVolume);
-STDAPI XACTPause(XACTCATEGORY nCategory, BOOL fPause);
-
-STDAPI_(XACTVARIABLEINDEX) XACTGetGlobalVariableIndex(PCSTR szFriendlyName);
-STDAPI XACTSetGlobalVariable(XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue);
-STDAPI XACTGetGlobalVariable(XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* pnValue);
-
-#endif // #ifdef _XBOX
-
-//------------------------------------------------------------------------------
 // Create Engine
 //------------------------------------------------------------------------------
 
-// Flags used only in XACTCreateEngine below.  These flags are valid but ignored
+// Flags used only in XACT3CreateEngine below.  These flags are valid but ignored
 // when building for Xbox 360; to enable auditioning on that platform you must
 // link explicitly to an auditioning version of the XACT static library.
 static const DWORD XACT_FLAG_API_AUDITION_MODE = 0x00000001;
 static const DWORD XACT_FLAG_API_DEBUG_MODE    = 0x00000002;
 
-STDAPI XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine);
+STDAPI XACT3CreateEngine(DWORD dwCreationFlags, IXACT3Engine** ppEngine);
 
 #ifndef _XBOX
 
@@ -1509,7 +1388,7 @@ STDAPI XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine);
 
 #ifdef __cplusplus
 
-__inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine)
+__inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, IXACT3Engine** ppEngine)
 {
     HRESULT hr;
     HKEY    key;
@@ -1536,12 +1415,12 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
     // Priority order: Audition, Debug, Retail
     hr = CoCreateInstance(audition ? __uuidof(XACTAuditionEngine)
                           : (debug ? __uuidof(XACTDebugEngine) : __uuidof(XACTEngine)),
-                          NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACTEngine), (void**)ppEngine);
+                          NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACT3Engine), (void**)ppEngine);
 
     // If debug engine does not exist fallback to retail version
     if(FAILED(hr) && debug && !audition)
     {
-        hr = CoCreateInstance(__uuidof(XACTEngine), NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACTEngine), (void**)ppEngine);
+        hr = CoCreateInstance(__uuidof(XACTEngine), NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACT3Engine), (void**)ppEngine);
     }
 
     return hr;
@@ -1549,7 +1428,7 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
 
 #else
 
-__inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine)
+__inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, IXACT3Engine** ppEngine)
 {
     HRESULT hr;
     HKEY    key;
@@ -1576,12 +1455,12 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
     // Priority order: Audition, Debug, Retail
     hr = CoCreateInstance(audition ? &CLSID_XACTAuditionEngine
                           : (debug ? &CLSID_XACTDebugEngine : &CLSID_XACTEngine),
-                          NULL, CLSCTX_INPROC_SERVER, &IID_IXACTEngine, (void**)ppEngine);
+                          NULL, CLSCTX_INPROC_SERVER, &IID_IXACT3Engine, (void**)ppEngine);
 
     // If debug engine does not exist fallback to retail version
     if(FAILED(hr) && debug && !audition)
     {
-        hr = CoCreateInstance(&CLSID_XACTEngine, NULL, CLSCTX_INPROC_SERVER, &IID_IXACTEngine, (void**)ppEngine);
+        hr = CoCreateInstance(&CLSID_XACTEngine, NULL, CLSCTX_INPROC_SERVER, &IID_IXACT3Engine, (void**)ppEngine);
     }
 
     return hr;

@@ -1,6 +1,6 @@
 /***************************************************************************
  *
- *  Copyright (C) Microsoft Corporation.  All Rights Reserved.
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
  *
  *  File:       xact2wb.h
  *  Content:    XACT 2 wave bank definitions.

@@ -100,6 +100,19 @@
 
 
 
+//----------------------------------------------------------------------------
+// D3DXFRAGMENT flags:
+// -------------------
+
+#define D3DXFRAGMENT_LARGEADDRESSAWARE            (1 << 17)
+
+//----------------------------------------------------------------------------
+// D3DXCONSTTABLE flags:
+// -------------------
+
+#define D3DXCONSTTABLE_LARGEADDRESSAWARE          (1 << 17)
+
+
 
 //----------------------------------------------------------------------------
 // D3DXHANDLE:
@@ -862,6 +875,8 @@ HRESULT WINAPI
 // Parameters:
 //  pFunction
 //      Pointer to the function DWORD stream
+//  Flags
+//      See D3DXCONSTTABLE_xxx
 //  ppConstantTable
 //      Returns a ID3DXConstantTable object which can be used to set
 //      shader constants to the device.  Alternatively, an application can
@@ -872,6 +887,12 @@ HRESULT WINAPI
 HRESULT WINAPI
     D3DXGetShaderConstantTable(
         CONST DWORD*                    pFunction,
+        LPD3DXCONSTANTTABLE*            ppConstantTable);
+
+HRESULT WINAPI
+    D3DXGetShaderConstantTableEx(
+        CONST DWORD*                    pFunction,
+        DWORD                           Flags,
         LPD3DXCONSTANTTABLE*            ppConstantTable);
 
 
@@ -1006,6 +1027,8 @@ HRESULT WINAPI
 //      Pointer to the device on which to create the shaders
 //  ShaderCacheSize
 //      Size of the shader cache
+//  Flags
+//      See D3DXFRAGMENT_xxx flags
 //  ppFragmentLinker
 //      pointer to a memory location to put the created interface pointer
 //
@@ -1015,6 +1038,13 @@ HRESULT WINAPI
     D3DXCreateFragmentLinker(
         LPDIRECT3DDEVICE9               pDevice,
         UINT                            ShaderCacheSize,
+        LPD3DXFRAGMENTLINKER*           ppFragmentLinker);
+
+HRESULT WINAPI
+    D3DXCreateFragmentLinkerEx(
+        LPDIRECT3DDEVICE9               pDevice,
+        UINT                            ShaderCacheSize,
+        DWORD                           Flags,
         LPD3DXFRAGMENTLINKER*           ppFragmentLinker);
 
 

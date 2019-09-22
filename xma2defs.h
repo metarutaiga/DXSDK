@@ -61,11 +61,11 @@
 //
 //      XMA frames do not span blocks, so a block is guaranteed to begin with a
 //      set of complete frames, one per stream.  Also, a block in a multi-stream
-//      XMA2 file always contains the same number of samples for each stream in
-//      the file; see Multichannel Audio.
+//      XMA2 file always contains the same number of samples for each stream;
+//      see Multichannel Audio.
 //
 // The 'data' chunk in an XMA2 file is an array of XMA2WAVEFORMAT.BlockCount XMA
-// blocks, all of the same size (as specified in XMA2WAVEFORMAT.BlockSizeInBytes)
+// blocks, all the same size (as specified in XMA2WAVEFORMAT.BlockSizeInBytes)
 // except for the last one, which may be shorter.
 
 
@@ -112,8 +112,8 @@
 //    are variable-sized, this can only be done by traversing all the frames in
 //    the block until we reach frame F.  (See GetXmaFrameBitPosition.)
 //
-// 4. This frame is made up of four 128-sample subframes.  To find the subframe
-//    containing S, we can use the formula (S % 512) / 128.
+// 4. Frame F has four 128-sample subframes.  To find the subframe containing S,
+//    we can use the formula (S % 512) / 128.
 //
 // In the case of multi-stream XMA files, sample S is a multichannel sample with
 // parts coming from several frames, one per stream.  To find all these frames,
@@ -121,7 +121,7 @@
 // first packets in a block are presented in stream order.  The frame traversal
 // in step 3 must be started at the first frame in the Nth packet of the block,
 // which will be the first frame for stream N.  (And the packet header will tell
-// you where within the packet's first frame begins.)
+// you the first frame's start position within the packet.)
 //
 // Step 1 can be performed using the GetXmaBlockContainingSample function below,
 // and steps 2-4 by calling GetXmaDecodePositionForSample once for each stream.
@@ -194,7 +194,8 @@ typedef struct XMA2WAVEFORMATEX
     //    cbSize;            // Size in bytes of the rest of this structure (34)
 
     WORD  NumStreams;        // Number of audio streams (1 or 2 channels each)
-    DWORD ChannelMask;       // Spatial positions of the channels in this file
+    DWORD ChannelMask;       // Spatial positions of the channels in this file,
+                             // stored as SPEAKER_xxx values (see audiodefs.h)
     DWORD SamplesEncoded;    // Total number of PCM samples the file decodes to
     DWORD BytesPerBlock;     // XMA block size (but the last one may be shorter)
     DWORD PlayBegin;         // First valid sample in the decoded audio
@@ -216,7 +217,7 @@ typedef struct XMA2WAVEFORMATEX
 #define WAVE_FORMAT_XMA 0x0165
 
 // Values used in the ChannelMask fields below.  Similar to the SPEAKER_xxx
-// values used in WAVEFORMATEXTENSIBLE, but modified to fit in a single byte.
+// values defined in audiodefs.h, but modified to fit in a single byte.
 #ifndef XMA_SPEAKER_LEFT
     #define XMA_SPEAKER_LEFT            0x01
     #define XMA_SPEAKER_RIGHT           0x02
@@ -599,14 +600,9 @@ __inline DWORD GetXmaSampleRate(DWORD dwGeneralRate)
 }
 
 // Functions to convert between WAVEFORMATEXTENSIBLE channel masks (combinations
-// of the SPEAKER_xxx flags defined in x3daudio.h) and XMA channel masks (which
+// of the SPEAKER_xxx flags defined in audiodefs.h) and XMA channel masks (which
 // are limited to eight possible speaker positions: left, right, center, low
 // frequency, side left, side right, back left and back right).
-
-#ifndef SPEAKER_FRONT_LEFT
-    #include <x3daudio.h>       // Definitions of the SPEAKER_xxx positions
-    #define _SPEAKER_POSITIONS_ // Avoids macro redefinition errors in mmreg.h
-#endif
 
 __inline DWORD GetStandardChannelMaskFromXmaMask(BYTE bXmaMask)
 {

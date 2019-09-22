@@ -53,10 +53,10 @@
 #define __X3DAUDIO_H__
 //--------------<D-E-F-I-N-I-T-I-O-N-S>-------------------------------------//
     #include <windef.h>    // general windows types
-    #if defined(_XBOX)     // for D3DVECTOR
+    #if defined(_XBOX)
         #include <vectorintrinsics.h>
     #endif
-    #include <d3d9types.h>
+    #include <d3d9types.h> // for D3DVECTOR
 
     // speaker geometry configuration flags, specifies assignment of channels to speaker positions, defined as per WAVEFORMATEXTENSIBLE.dwChannelMask
     #if !defined(_SPEAKER_POSITIONS_)
