@@ -78,7 +78,7 @@
 
     // xenon speaker geometry configuration, used with X3DAudioInitialize
     #if defined(_XBOX)
-        #define SPEAKER_XENON SPEAKER_5POINT1
+        #define SPEAKER_XBOX SPEAKER_5POINT1
     #endif
 
 

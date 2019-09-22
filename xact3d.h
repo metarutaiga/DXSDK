@@ -96,6 +96,35 @@
 //--------------<F-U-N-C-T-I-O-N-S>-----------------------------------------//
     ////
     // DESCRIPTION:
+    //  Initializes the 3D API's:
+    //
+    // REMARKS:
+    //  This method only needs to be called once
+    //
+    // PARAMETERS:
+    //  SpeakerChannelMask - [in]  speaker geometry configuration on the final mix, specifies assignment of channels to speaker positions, defined as per WAVEFORMATEXTENSIBLE.dwChannelMask, must be != 0
+    //                             Currently only SPEAKER_STEREO and SPEAKER_5POINT1 is supported by X3DAudio.
+    //  pEngine            - [in]  pointer to the XACT engine
+    //  X3DInstance        - [out] Handle to the X3DAudio instance
+    //
+    // RETURN VALUE:
+    //  HResult error code
+    ////
+    EXTERN_C HRESULT inline XACT3DInitialize (UINT32 SpeakerChannelMask, IXACTEngine* pEngine, X3DAUDIO_HANDLE X3DInstance)
+    {
+        XACTVARIABLEINDEX xactSpeedOfSoundID = pEngine->GetGlobalVariableIndex("SpeedOfSound");
+        XACTVARIABLEVALUE nSpeedOfSound;
+        HRESULT hr = pEngine->GetGlobalVariable(xactSpeedOfSoundID, &nSpeedOfSound);
+
+        if (SUCCEEDED(hr)) {
+            X3DAudioInitialize(SpeakerChannelMask, nSpeedOfSound, X3DInstance);
+        }
+
+        return hr;
+    }
+
+    ////
+    // DESCRIPTION:
     //  Calculates DSP settings with respect to 3D parameters:
     //
     // REMARKS:
@@ -103,39 +132,32 @@
     //  channels expected on the final mix.
     //
     // PARAMETERS:
-    //  SpeakerChannelMask - [in]  speaker geometry configuration on the final mix, specifies assignment of channels to speaker positions, defined as per WAVEFORMATEXTENSIBLE.dwChannelMask, must be != 0
-    //                             Currently only SPEAKER_STEREO and SPEAKER_5POINT1 is supported by X3DAudio.
+    //  X3DInstance        - [in]  X3DAudio instance (returned from XACT3DInitialize)
     //  pListener          - [in]  point of 3D audio reception
     //  pEmitter           - [in]  3D audio source
     //  pDSPSettings       - [out] receives calculation results, applied to an XACT cue via XACT3DApply
-    //  pEngine            - [in]  pointer to the XACT engine
     //
     // RETURN VALUE:
     //  HResult error code
     ////
-    EXTERN_C HRESULT inline XACT3DCalculate (UINT32 SpeakerChannelMask, const X3DAUDIO_LISTENER* pListener, X3DAUDIO_EMITTER* pEmitter, X3DAUDIO_DSP_SETTINGS* pDSPSettings, IXACTEngine* pEngine)
+    EXTERN_C HRESULT inline XACT3DCalculate (X3DAUDIO_HANDLE X3DInstance, const X3DAUDIO_LISTENER* pListener, X3DAUDIO_EMITTER* pEmitter, X3DAUDIO_DSP_SETTINGS* pDSPSettings)
     {
-        XACTVARIABLEINDEX xactSpeedOfSoundID = pEngine->GetGlobalVariableIndex("SpeedOfSound");
-        XACTVARIABLEVALUE nSpeedOfSound;
-        HRESULT hr = pEngine->GetGlobalVariable(xactSpeedOfSoundID, &nSpeedOfSound);
+        HRESULT hr = S_OK;
+        if (pEmitter->ChannelCount > 1 && pEmitter->pChannelAzimuths == NULL) {
+            pEmitter->ChannelRadius = 1.0f;
 
-        if (SUCCEEDED(hr)) {
-            X3DAUDIO_HANDLE X3DInstance;
-            X3DAudioInitialize(SpeakerChannelMask, nSpeedOfSound, X3DInstance);
-
-            if (pEmitter->ChannelCount > 1 && pEmitter->pChannelAzimuths == NULL) {
-                pEmitter->ChannelRadius = 1.0f;
-
-                switch (pEmitter->ChannelCount) {
-                    case 2: pEmitter->pChannelAzimuths = (float*)&aStereoLayout[0]; break;
-                    case 3: pEmitter->pChannelAzimuths = (float*)&a2Point1Layout[0]; break;
-                    case 4: pEmitter->pChannelAzimuths = (float*)&aQuadLayout[0]; break;
-                    case 6: pEmitter->pChannelAzimuths = (float*)&a5Point1Layout[0]; break;
-                    case 8: pEmitter->pChannelAzimuths = (float*)&a7Point1Layout[0]; break;
-                    default: hr = E_FAIL; break;
-                }
+            switch (pEmitter->ChannelCount) {
+                case 2: pEmitter->pChannelAzimuths = (float*)&aStereoLayout[0]; break;
+                case 3: pEmitter->pChannelAzimuths = (float*)&a2Point1Layout[0]; break;
+                case 4: pEmitter->pChannelAzimuths = (float*)&aQuadLayout[0]; break;
+                case 6: pEmitter->pChannelAzimuths = (float*)&a5Point1Layout[0]; break;
+                case 8: pEmitter->pChannelAzimuths = (float*)&a7Point1Layout[0]; break;
+                default: hr = E_FAIL; break;
             }
+        }
 
+        if(SUCCEEDED(hr))
+        {
             static X3DAUDIO_DISTANCE_CURVE_POINT DefaultCurvePoints[2] = { 0.0f, 1.0f, 1.0f, 1.0f };
             static X3DAUDIO_DISTANCE_CURVE       DefaultCurve          = { (X3DAUDIO_DISTANCE_CURVE_POINT*)&DefaultCurvePoints[0], 2 };
             if (pEmitter->pVolumeCurve == NULL) {
@@ -144,10 +166,8 @@
             if (pEmitter->pLFECurve == NULL) {
                 pEmitter->pLFECurve = &DefaultCurve;
             }
-
-            if (SUCCEEDED(hr)) {
-                X3DAudioCalculate(X3DInstance, pListener, pEmitter, X3DAUDIO_CALCULATE_MATRIX | X3DAUDIO_CALCULATE_DOPPLER | X3DAUDIO_CALCULATE_EMITTER_ANGLE, pDSPSettings);
-            }
+    
+            X3DAudioCalculate(X3DInstance, pListener, pEmitter, X3DAUDIO_CALCULATE_MATRIX | X3DAUDIO_CALCULATE_DOPPLER | X3DAUDIO_CALCULATE_EMITTER_ANGLE, pDSPSettings);
         }
 
         return hr;

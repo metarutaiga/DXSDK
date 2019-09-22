@@ -22,10 +22,10 @@ Abstract:
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         0AA000AA, F404, 11D9, BD, 7A, 00, 10, DC, 4F, 8F, 81);
-    DEFINE_CLSID(XACTAuditionEngine, 0AA000AB, F404, 11D9, BD, 7A, 00, 10, DC, 4F, 8F, 81);
-    DEFINE_CLSID(XACTDebugEngine,    0AA000AC, F404, 11D9, BD, 7A, 00, 10, DC, 4F, 8F, 81);
-    DEFINE_IID(IXACTEngine,          0AA000A0, F404, 11D9, BD, 7A, 00, 10, DC, 4F, 8F, 81);
+    DEFINE_CLSID(XACTEngine,         1f1b577e, 5e5a, 4e8a, ba, 73, c6, 57, ea, 8e, 85, 98);
+    DEFINE_CLSID(XACTAuditionEngine, fcecc8be, b09a, 48cb, 92, 08, 95, a7, ed, 45, 82, a6);
+    DEFINE_CLSID(XACTDebugEngine,    2b4a46bb, ae7a, 4072, ae, 18, 11, 28, 15, 4f, ba, 97);
+    DEFINE_IID(IXACTEngine,          7cdd1894, 643b, 4168, 83, 6f, d1, 9d, 59, d0, ce, 53);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
@@ -65,6 +65,7 @@ typedef WORD  XACTVARIABLEINDEX;    // Variable index
 typedef WORD  XACTCATEGORY;         // Sound category
 typedef BYTE  XACTCHANNEL;          // Audio channel
 typedef FLOAT XACTVOLUME;           // Volume value
+typedef LONG  XACTTIME;             // Time (in ms)
 
 //------------------------------------------------------------------------------
 // Constants
@@ -101,7 +102,7 @@ static const XACTVARIABLEVALUE XACTPARAMETERVALUE_MAX = FLT_MAX;
 static const XAUDIOVOICEINDEX XACTMAXOUTPUTVOICECOUNT = 3;
 #endif // _XBOX
 
-#define XACT_CONTENT_VERSION    37
+#define XACT_CONTENT_VERSION    38
 
 //------------------------------------------------------------------------------
 // XACT Parameters
@@ -355,8 +356,8 @@ static const DWORD XACT_SOUNDBANKSTATE_INUSE = 0x00000001;  // Currently in-use
 
 STDAPI IXACTSoundBank_Destroy(IXACTSoundBank* pSoundBank);
 STDAPI_(XACTINDEX) IXACTSoundBank_GetCueIndex(IXACTSoundBank* pSoundBank, PCSTR szFriendlyName);
-STDAPI IXACTSoundBank_Prepare(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, IXACTCue** ppCue);
-STDAPI IXACTSoundBank_Play(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, IXACTCue** ppCue);
+STDAPI IXACTSoundBank_Prepare(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue);
+STDAPI IXACTSoundBank_Play(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue);
 STDAPI IXACTSoundBank_Stop(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags);
 STDAPI IXACTSoundBank_GetState(IXACTSoundBank* pSoundBank, DWORD* pdwState);
 
@@ -366,8 +367,8 @@ STDAPI IXACTSoundBank_GetState(IXACTSoundBank* pSoundBank, DWORD* pdwState);
 DECLARE_INTERFACE(IXACTSoundBank)
 {
     STDMETHOD_(XACTINDEX, GetCueIndex)(THIS_ PCSTR szFriendlyName) PURE;
-    STDMETHOD(Prepare)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, IXACTCue** ppCue) PURE;
-    STDMETHOD(Play)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, IXACTCue** ppCue) PURE;
+    STDMETHOD(Prepare)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue) PURE;
+    STDMETHOD(Play)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue) PURE;
     STDMETHOD(Stop)(THIS_ XACTINDEX nCueIndex, DWORD dwFlags) PURE;
     STDMETHOD(Destroy)(THIS) PURE;
     STDMETHOD(GetState)(THIS_ DWORD* pdwState) PURE;
@@ -385,14 +386,14 @@ __inline XACTINDEX __stdcall IXACTSoundBank_GetCueIndex(IXACTSoundBank* pSoundBa
     return pSoundBank->GetCueIndex(szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Prepare(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, IXACTCue** ppCue)
+__inline HRESULT __stdcall IXACTSoundBank_Prepare(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue)
 {
-    return pSoundBank->Prepare(nCueIndex, dwFlags, ppCue);
+    return pSoundBank->Prepare(nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Play(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, IXACTCue** ppCue)
+__inline HRESULT __stdcall IXACTSoundBank_Play(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue)
 {
-    return pSoundBank->Play(nCueIndex, dwFlags, ppCue);
+    return pSoundBank->Play(nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
 __inline HRESULT __stdcall IXACTSoundBank_Stop(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags)
@@ -417,14 +418,14 @@ __inline XACTINDEX __stdcall IXACTSoundBank_GetCueIndex(IXACTSoundBank* pSoundBa
     return pSoundBank->lpVtbl->GetCueIndex(pSoundBank, szFriendlyName);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Prepare(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, IXACTCue** ppCue)
+__inline HRESULT __stdcall IXACTSoundBank_Prepare(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue)
 {
-    return pSoundBank->lpVtbl->Prepare(pSoundBank, nCueIndex, dwFlags, ppCue);
+    return pSoundBank->lpVtbl->Prepare(pSoundBank, nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
-__inline HRESULT __stdcall IXACTSoundBank_Play(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, IXACTCue** ppCue)
+__inline HRESULT __stdcall IXACTSoundBank_Play(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags, XACTTIME timeOffset, IXACTCue** ppCue)
 {
-    return pSoundBank->lpVtbl->Play(pSoundBank, nCueIndex, dwFlags, ppCue);
+    return pSoundBank->lpVtbl->Play(pSoundBank, nCueIndex, dwFlags, timeOffset, ppCue);
 }
 
 __inline HRESULT __stdcall IXACTSoundBank_Stop(IXACTSoundBank* pSoundBank, XACTINDEX nCueIndex, DWORD dwFlags)
@@ -1142,6 +1143,7 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
 #define XACTENGINE_E_WAVEBANKNOTPREPARED       XACTENGINEERROR(0x016)   // The wavebank is not prepared
 #define XACTENGINE_E_NORENDERER                XACTENGINEERROR(0x017)   // No audio device found on.
 #define XACTENGINE_E_INVALIDENTRYCOUNT         XACTENGINEERROR(0x018)   // Invalid entry count for channel maps
+#define XACTENGINE_E_SEEKTIMEBEYONDCUEEND      XACTENGINEERROR(0x19)    // Time offset for seeking is beyond the cue end.
 
 #define XACTENGINE_E_AUDITION_WRITEFILE        XACTENGINEERROR(0x101)  // Error writing a file during auditioning
 #define XACTENGINE_E_AUDITION_NOSOUNDBANK      XACTENGINEERROR(0x102)  // Missing a soundbank

@@ -13,8 +13,8 @@
 
 // Current name of the DLL shipped in the same SDK as this header.
 // The name reflects the current version
-#define XINPUT_DLL_A  "xinput9_1_0.dll"
-#define XINPUT_DLL_W L"xinput9_1_0.dll"
+#define XINPUT_DLL_A  "xinput1_1.dll"
+#define XINPUT_DLL_W L"xinput1_1.dll"
 #ifdef UNICODE
     #define XINPUT_DLL XINPUT_DLL_W
 #else
@@ -30,6 +30,10 @@
 // Device subtypes available in XINPUT_CAPABILITIES
 //
 #define XINPUT_DEVSUBTYPE_GAMEPAD       0x01
+#define XINPUT_DEVSUBTYPE_WHEEL         0x02
+#define XINPUT_DEVSUBTYPE_ARCADE_STICK  0x03
+#define XINPUT_DEVSUBTYPE_FLIGHT_SICK   0x04
+#define XINPUT_DEVSUBTYPE_DANCE_PAD     0x05
 
 //
 // Flags for XINPUT_CAPABILITIES
@@ -128,6 +132,14 @@ DWORD WINAPI XInputGetCapabilities
     DWORD                dwFlags,       // [in] Input flags that identify the device type
     XINPUT_CAPABILITIES* pCapabilities  // [out] Receives the capabilities
 );
+
+void WINAPI XInputEnable
+(
+    BOOL enable     // [in] Indicates weather xinput is enabled or disabled. 
+);
+
+
+
 
 DWORD WINAPI XInputGetDSoundAudioDeviceGuids
 (
