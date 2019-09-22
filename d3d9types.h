@@ -761,6 +761,13 @@ typedef struct _D3DVERTEXELEMENT9
 // Maximum supported number of texture coordinate sets
 #define D3DDP_MAXTEXCOORD   8
 
+//---------------------------------------------------------------------
+// Values for IDirect3DDevice9::SetStreamSourceFreq's Setting parameter
+//---------------------------------------------------------------------
+#define D3DSTREAMSOURCE_INDEXEDDATA  (1<<30)
+#define D3DSTREAMSOURCE_INSTANCEDATA (2<<30)
+
+
 
 //---------------------------------------------------------------------
 //
@@ -1244,6 +1251,8 @@ typedef enum _D3DDEVTYPE
     D3DDEVTYPE_REF         = 2,
     D3DDEVTYPE_SW          = 3,
 
+    D3DDEVTYPE_NULLREF     = 4,
+
     D3DDEVTYPE_FORCE_DWORD  = 0x7fffffff
 } D3DDEVTYPE;
 
@@ -1290,11 +1299,15 @@ typedef enum _D3DMULTISAMPLE_TYPE
  *      D3DFMT_A8L8 indicates that the high byte of this two byte
  *      format is alpha.
  *
- *      D16 indicates:
+ *      D3DFMT_D16_LOCKABLE indicates:
  *           - An integer 16-bit value.
  *           - An app-lockable surface.
  *
- *      All Depth/Stencil formats except D3DFMT_D16_LOCKABLE indicate:
+ *      D3DFMT_D32F_LOCKABLE indicates:
+ *           - An IEEE 754 floating-point value.
+ *           - An app-lockable surface.
+ *
+ *      All Depth/Stencil formats except D3DFMT_D16_LOCKABLE and D3DFMT_D32F_LOCKABLE indicate:
  *          - no particular bit ordering per pixel, and
  *          - are not app lockable, and
  *          - the driver is allowed to consume more than the indicated
@@ -1520,6 +1533,7 @@ typedef enum _D3DRESOURCETYPE {
 #define D3DUSAGE_QUERY_SRGBWRITE                (0x00040000L)
 #define D3DUSAGE_QUERY_POSTPIXELSHADER_BLENDING (0x00080000L)
 #define D3DUSAGE_QUERY_VERTEXTEXTURE            (0x00100000L)
+#define D3DUSAGE_QUERY_WRAPANDMIP	            (0x00200000L)
 
 /* Usages for Vertex/Index buffers */
 #define D3DUSAGE_WRITEONLY          (0x00000008L)
@@ -1733,6 +1747,15 @@ typedef enum _D3DQUERYTYPE {
     D3DQUERYTYPE_VERTEXSTATS            = 6, /* D3DISSUE_END */
     D3DQUERYTYPE_EVENT                  = 8, /* D3DISSUE_END */
     D3DQUERYTYPE_OCCLUSION              = 9, /* D3DISSUE_BEGIN, D3DISSUE_END */
+    D3DQUERYTYPE_TIMESTAMP              = 10, /* D3DISSUE_END */
+    D3DQUERYTYPE_TIMESTAMPDISJOINT      = 11, /* D3DISSUE_BEGIN, D3DISSUE_END */
+    D3DQUERYTYPE_TIMESTAMPFREQ          = 12, /* D3DISSUE_END */
+    D3DQUERYTYPE_PIPELINETIMINGS        = 13, /* D3DISSUE_BEGIN, D3DISSUE_END */
+    D3DQUERYTYPE_INTERFACETIMINGS       = 14, /* D3DISSUE_BEGIN, D3DISSUE_END */
+    D3DQUERYTYPE_VERTEXTIMINGS          = 15, /* D3DISSUE_BEGIN, D3DISSUE_END */
+    D3DQUERYTYPE_PIXELTIMINGS           = 16, /* D3DISSUE_BEGIN, D3DISSUE_END */
+    D3DQUERYTYPE_BANDWIDTHTIMINGS       = 17, /* D3DISSUE_BEGIN, D3DISSUE_END */
+    D3DQUERYTYPE_CACHEUTILIZATION       = 18, /* D3DISSUE_BEGIN, D3DISSUE_END */
 } D3DQUERYTYPE;
 
 // Flags field for Issue
@@ -1781,6 +1804,44 @@ typedef struct _D3DDEVINFO_VCACHE {
     DWORD   CacheSize;                  /* cache size to optimize for  (only required if type is 1) */
     DWORD   MagicNumber;                /* used to determine when to restart strips (only required if type is 1)*/
 } D3DDEVINFO_VCACHE, *LPD3DDEVINFO_VCACHE;
+
+typedef struct _D3DDEVINFO_D3D9PIPELINETIMINGS
+{
+    FLOAT VertexProcessingTimePercent;
+    FLOAT PixelProcessingTimePercent;
+    FLOAT OtherGPUProcessingTimePercent;
+    FLOAT GPUIdleTimePercent;
+} D3DDEVINFO_D3D9PIPELINETIMINGS;
+
+typedef struct _D3DDEVINFO_D3D9INTERFACETIMINGS
+{
+    FLOAT WaitingForGPUToUseApplicationResourceTimePercent;
+    FLOAT WaitingForGPUToAcceptMoreCommandsTimePercent;
+    FLOAT WaitingForGPUToStayWithinLatencyTimePercent;
+    FLOAT WaitingForGPUExclusiveResourceTimePercent;
+    FLOAT WaitingForGPUOtherTimePercent;
+} D3DDEVINFO_D3D9INTERFACETIMINGS;
+
+typedef struct _D3DDEVINFO_D3D9STAGETIMINGS
+{
+    FLOAT MemoryProcessingPercent;
+    FLOAT ComputationProcessingPercent;
+} D3DDEVINFO_D3D9STAGETIMINGS;
+
+typedef struct _D3DDEVINFO_D3D9BANDWIDTHTIMINGS
+{
+    FLOAT MaxBandwidthUtilized;
+    FLOAT FrontEndUploadMemoryUtilizedPercent;
+    FLOAT VertexRateUtilizedPercent;
+    FLOAT TriangleSetupRateUtilizedPercent;
+    FLOAT FillRateUtilizedPercent;
+} D3DDEVINFO_D3D9BANDWIDTHTIMINGS;
+
+typedef struct _D3DDEVINFO_D3D9CACHEUTILIZATION
+{
+    FLOAT TextureCacheHitRate; // Percentage of cache hits
+    FLOAT PostTransformVertexCacheHitRate;
+} D3DDEVINFO_D3D9CACHEUTILIZATION;
 
 #pragma pack()
 #if _MSC_VER >= 1200

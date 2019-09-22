@@ -973,7 +973,7 @@
 //
 // MessageText:
 //
-//  Either DirectDraw has not been installed or the Video Card capabilities are not suitable. Make sure the display is not in 16 color mode or try changing the graphics mode.%0
+//  Either DirectDraw has not been installed or the Video Card capabilities are not suitable. Make sure the display is not in 16 color mode.%0
 //
 #define VFW_E_DDRAW_CAPS_NOT_SUITABLE    ((HRESULT)0x80040273L)
 
@@ -1301,7 +1301,6 @@
 //  The application has not yet provided the VMR filter with a valid allocator-presenter object.%0
 //
 #define VFW_E_VMR_NO_AP_SUPPLIED         ((HRESULT)0x80040297L)
-
 //
 // MessageId: VFW_E_VMR_NO_DEINTERLACE_HW
 //
@@ -1310,7 +1309,6 @@
 //  The VMR could not find any de-interlacing hardware on the current display device.%0
 //
 #define VFW_E_VMR_NO_DEINTERLACE_HW      ((HRESULT)0x80040298L)
-
 //
 // MessageId: VFW_E_VMR_NO_PROCAMP_HW
 //
@@ -1319,7 +1317,6 @@
 //  The VMR could not find any ProcAmp hardware on the current display device.%0
 //
 #define VFW_E_VMR_NO_PROCAMP_HW          ((HRESULT)0x80040299L)
-
 //
 // MessageId: VFW_E_DVD_VMR9_INCOMPATIBLEDEC
 //
@@ -1328,7 +1325,14 @@
 //  VMR9 does not work with VPE-based hardware decoders.%0
 //
 #define VFW_E_DVD_VMR9_INCOMPATIBLEDEC   ((HRESULT)0x8004029AL)
-
+//
+// MessageId: VFW_E_NO_COPP_HW
+//
+// MessageText:
+//
+//  The current display device does not support Content Output Protection Protocol (COPP) H/W.%0
+//
+#define VFW_E_NO_COPP_HW   ((HRESULT)0x8004029BL)
 //
 //
 // E_PROP_SET_UNSUPPORTED and E_PROP_ID_UNSUPPORTED are added here using

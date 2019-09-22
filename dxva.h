@@ -14,6 +14,24 @@
 extern "C" {
 #endif
 
+#ifdef __DIRECTX_VA_COPP_ONLY
+#define __DIRECTX_VA_DECODER__
+#define __DIRECTX_VA_PROCAMPCONTROL__
+#define __DIRECTX_VA_DEINTERLACE__
+#endif
+
+
+// -------------------------------------------------------------------------
+//
+// The definitions that follow describe the DirectX Video Acceleration
+// decoding interface.
+// This interface is accessable via the IAMVideoAccelerator interface.
+//
+// -------------------------------------------------------------------------
+//
+#ifndef __DIRECTX_VA_DECODER__
+#define __DIRECTX_VA_DECODER__
+
 DEFINE_GUID(DXVA_ModeNone,    0x1b81be00, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeH261_A,  0x1b81be01, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeH261_B,  0x1b81be02, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
@@ -645,6 +663,144 @@ typedef DXVA_MBctrl_P_OffHostIDCT_1 *
 #define readDXVA_Cr_11oflow(ptr)        (((ptr)->wPC_Overflow & 0x0001))
 
 #pragma pack(pop, BeforeDXVApacking)
+#endif  /*   __DIRECTX_VA_DECODER__   */
+
+
+// -------------------------------------------------------------------------
+//
+// D3DFORMAT describes a pixel memory layout, DXVA sample format contains
+// additional information that describes how the pixels should be interpreted.
+//
+// -------------------------------------------------------------------------
+#ifndef __DIRECTX_VA_SAMPLEFORMAT__
+#define __DIRECTX_VA_SAMPLEFORMAT__
+
+#ifndef DXVABit
+#define DXVABit(__x) (1 << __x)
+#endif
+
+typedef enum _DXVA_SampleFormat {
+    DXVA_SampleFormatMask = 0xFF,   // 8 bits used for DXVA Sample format
+    DXVA_SampleUnknown = 0,
+    DXVA_SamplePreviousFrame = 1,
+    DXVA_SampleProgressiveFrame = 2,
+    DXVA_SampleFieldInterleavedEvenFirst = 3,
+    DXVA_SampleFieldInterleavedOddFirst = 4,
+    DXVA_SampleFieldSingleEven = 5,
+    DXVA_SampleFieldSingleOdd = 6,
+    DXVA_SampleSubStream = 7
+} DXVA_SampleFormat;
+
+#define DXVA_ExtractSampleFormat(_sf) ((_sf) & (DXVA_SampleFormatMask))
+
+// -------------------------------------------------------------------------
+//
+// DXVA Extended color data - occupies the HIWORD of the SampleFormat DWORD
+// use the DXVA_ExtractExtColorData macro to extract the individual color
+// data fields.
+//
+// The packed form is:
+//   VideoTransferFunction  (bits 15..12)
+//   VideoPrimaries         (bits 11..8)
+//   VideoLighting          (bits 7..5)
+//   VideoTransferMatrix (Y'Cb'Cr') OR VideoNominalRange (RGB images) (bits 4..2)
+//   VideoChromaSubsampling (bits 1..0)
+//
+// -------------------------------------------------------------------------
+
+#define DXVA_ExtractExtColorData(_sf, _Mask, _Shift) \
+    (((_sf) >> (_Shift)) & (_Mask))
+
+#define DXVA_ExtColorData_ShiftBase 16
+
+typedef enum _DXVA_VideoTransferFunction
+{
+    DXVA_VideoTransFuncMask = DXVABit(15)|DXVABit(14)|DXVABit(13)|DXVABit(12),
+    DXVA_VideoTransFuncShift = (DXVA_ExtColorData_ShiftBase + 12),
+
+    DXVA_VideoTransFunc_Unknown = 0,
+    DXVA_VideoTransFunc_10 = 1,
+    DXVA_VideoTransFunc_18 = 2,
+    DXVA_VideoTransFunc_20 = 3,
+    DXVA_VideoTransFunc_22 = 4,
+    DXVA_VideoTransFunc_22_8bit  = 5,
+    DXVA_VideoTransFunc_22_8bit_240M = 6,
+    DXVA_VideoTransFunc_24_8bit_sRGB = 7,
+    DXVA_VideoTransFunc_28 = 8
+} DXVA_VideoTransferFunction;
+
+
+typedef enum _DXVA_VideoPrimaries
+{
+    DXVA_VideoPrimariesMask = DXVABit(11)|DXVABit(10)|DXVABit(9)|DXVABit(8),
+    DXVA_VideoPrimariesShift = (DXVA_ExtColorData_ShiftBase + 8),
+
+    DXVA_VideoPrimaries_Unknown = 0,
+    DXVA_VideoPrimaries_BT601 = 1,
+    DXVA_VideoPrimaries_BT709 = 2,
+    DXVA_VideoPrimaries_BT470_2_SysM = 3,
+    DXVA_VideoPrimaries_BT470_2_SysBG = 4,
+    DXVA_VideoPrimaries_SMPTE170M = 5,
+    DXVA_VideoPrimaries_SMPTE240M = 6,
+    DXVA_VideoPrimaries_EBU3213 = 7,
+    DXVA_VideoPrimaries_SMPTE_C = 8
+} DXVA_VideoPrimaries;
+
+
+typedef enum _DXVA_VideoLighting
+{
+    DXVA_VideoLightingMask = DXVABit(7)|DXVABit(6)|DXVABit(5),
+    DXVA_VideoLightingShift = (DXVA_ExtColorData_ShiftBase + 5),
+
+    DXVA_VideoLighting_Unknown = 0,
+    DXVA_VideoLighting_bright = 1,
+    DXVA_VideoLighting_office = 2,
+    DXVA_VideoLighting_dim = 3,
+    DXVA_VideoLighting_dark = 4
+} DXVA_VideoLighting;
+
+
+// -------------------------------------------------------------------------
+// Note:
+//
+// DXVA_NominalRange and DXVA_VideoTransferMatrix are unioned together.
+//
+// -------------------------------------------------------------------------
+//
+
+typedef enum _DXVA_VideoTransferMatrix
+{
+    DXVA_VideoTransferMatrixMask = DXVABit(4)|DXVABit(3)|DXVABit(2),
+    DXVA_VideoTransferMatrixShift = (DXVA_ExtColorData_ShiftBase + 2),
+
+    DXVA_VideoTransferMatrix_Unknown = 0,
+    DXVA_VideoTransferMatrix_BT709 = 1,
+    DXVA_VideoTransferMatrix_BT601 = 2,
+    DXVA_VideoTransferMatrix_SMPTE240M = 3
+} DXVA_VideoTransferMatrix;
+
+
+typedef enum _DXVA_NominalRange
+{
+    DXVA_NominalRangeMask = DXVABit(4)|DXVABit(3)|DXVABit(2),
+    DXVA_NominalRangeShift = (DXVA_ExtColorData_ShiftBase + 2),
+
+    DXVA_NominalRange_Normal = 0,
+    DXVA_NominalRange_Wide = 1
+} DXVA_NominalRange;
+
+
+typedef enum _DXVA_VideoChromaSubsampling
+{
+    DXVA_VideoChromaSubsamplingMask = DXVABit(1)|DXVABit(0),
+    DXVA_VideoChromaSubsamplingShift = (DXVA_ExtColorData_ShiftBase + 0),
+
+    DXVA_VideoChromaSubsampling_Unknown = 0,
+    DXVA_VideoChromaSubsampling_non_cosited = 1,
+    DXVA_VideoChromaSubsampling_cosited = 2
+} DXVA_VideoChromaSubsampling;
+
+#endif
 
 
 
@@ -668,7 +824,7 @@ DEFINE_GUID(DXVA_DeinterlaceContainerDevice,
     0x0e85cb93,0x3046,0x4ff0,0xae,0xcc,0xd5,0x8c,0xb5,0xf0,0x35,0xfd);
 
 
-#if(DIRECT3D_VERSION < 0x0800)
+#if (DIRECT3D_VERSION < 0x0800) || !defined(DIRECT3D_VERSION)
 typedef DWORD D3DFORMAT;
 enum {
     D3DPOOL_DEFAULT                 = 0,
@@ -687,15 +843,6 @@ enum {
 // -------------------------------------------------------------------------
 //
 
-typedef enum _DXVA_SampleFormat {
-    DXVA_SamplePreviousFrame = 1,
-    DXVA_SampleProgressiveFrame = 2,
-    DXVA_SampleFieldInterleavedEvenFirst = 3,
-    DXVA_SampleFieldInterleavedOddFirst = 4,
-    DXVA_SampleFieldSingleEven = 5,
-    DXVA_SampleFieldSingleOdd = 6,
-} DXVA_SampleFormat;
-
 typedef struct _DXVA_Frequency {
     DWORD Numerator;
     DWORD Denominator;
@@ -705,19 +852,23 @@ typedef struct _DXVA_VideoDesc {
     DWORD               Size;
     DWORD               SampleWidth;
     DWORD               SampleHeight;
-    DXVA_SampleFormat   SampleFormat;
+    DWORD               SampleFormat; // also contains extend color data
     D3DFORMAT           d3dFormat;
     DXVA_Frequency      InputSampleFreq;
     DXVA_Frequency      OutputFrameFreq;
 } DXVA_VideoDesc, *LPDXVA_VideoDesc;
 
 typedef enum _DXVA_VideoProcessCaps {
-    DXVA_VideoProcess_None       = 0x0000,
-    DXVA_VideoProcess_YUV2RGB    = 0x0001,
-    DXVA_VideoProcess_StretchX   = 0x0002,
-    DXVA_VideoProcess_StretchY   = 0x0004,
-    DXVA_VideoProcess_AlphaBlend = 0x0008,
-    DXVA_VideoProcess_SubRects   = 0x0010
+    DXVA_VideoProcess_None                  = 0x0000,
+    DXVA_VideoProcess_YUV2RGB               = 0x0001,
+    DXVA_VideoProcess_StretchX              = 0x0002,
+    DXVA_VideoProcess_StretchY              = 0x0004,
+    DXVA_VideoProcess_AlphaBlend            = 0x0008,
+    DXVA_VideoProcess_SubRects              = 0x0010,
+    DXVA_VideoProcess_SubStreams            = 0x0020,
+    DXVA_VideoProcess_SubStreamsExtended    = 0x0040,
+    DXVA_VideoProcess_YUV2RGBExtended       = 0x0080,
+    DXVA_VideoProcess_AlphaBlendExtended    = 0x0100
 } DXVA_VideoProcessCaps;
 
 typedef enum _DXVA_DeinterlaceTech {
@@ -730,16 +881,12 @@ typedef enum _DXVA_DeinterlaceTech {
     // isn't recommended
     DXVA_DeinterlaceTech_BOBLineReplicate       = 0x0001,
 
-
-    // the algorithm creates the missing lines by vertically stretching each
-    // video field by a factor of two.  Slight vertical adjustments are made to
-    // ensure that the resulting image does not "bob" up and down.
     // The algorithm creates the missing lines by vertically stretching each
-    // video field by a factor of two, for example by averaging two lines or
-    // using a [-1, 9, 9, -1]/16 filter across four lines.
-    // Slight vertical adjustments are made to ensure that the resulting image
-    // does not "bob" up and down.
+    // video field by a factor of two by averaging two lines
     DXVA_DeinterlaceTech_BOBVerticalStretch     = 0x0002,
+
+    // or using a [-1, 9, 9, -1]/16 filter across four lines.
+    DXVA_DeinterlaceTech_BOBVerticalStretch4Tap = 0x0100,
 
     // the pixels in the missing line are recreated by a median filtering operation
     DXVA_DeinterlaceTech_MedianFiltering        = 0x0004,
@@ -769,12 +916,50 @@ typedef enum _DXVA_DeinterlaceTech {
 
 } DXVA_DeinterlaceTech;
 
+
 typedef struct _DXVA_VideoSample {
     REFERENCE_TIME      rtStart;
     REFERENCE_TIME      rtEnd;
-    DXVA_SampleFormat   SampleFormat;
+    DXVA_SampleFormat   SampleFormat;   // only lower 8 bits used
     VOID*               lpDDSSrcSurface;
 } DXVA_VideoSample, *LPDXVA_VideoSample;
+
+
+
+// -------------------------------------------------------------------------
+// DeinterlaceBltEx declarations
+// -------------------------------------------------------------------------
+//
+
+typedef enum _DXVA_SampleFlags {
+    DXVA_SampleFlagsMask = DXVABit(3)|DXVABit(2)|DXVABit(1)|DXVABit(0),
+
+    DXVA_SampleFlag_Palette_Changed         = 0x0001,
+    DXVA_SampleFlag_SrcRect_Changed         = 0x0002,
+    DXVA_SampleFlag_DstRect_Changed         = 0x0004,
+    DXVA_SampleFlag_ColorData_Changed       = 0x0008,
+} DXVA_SampleFlags;
+
+typedef enum _DXVA_DestinationFlags {
+    DXVA_DestinationFlagMask = DXVABit(3)|DXVABit(2)|DXVABit(1)|DXVABit(0),
+
+    DXVA_DestinationFlag_Background_Changed = 0x0001,
+    DXVA_DestinationFlag_TargetRect_Changed = 0x0002,
+    DXVA_DestinationFlag_ColorData_Changed  = 0x0004,
+    DXVA_DestinationFlag_Alpha_Changed      = 0x0008
+} DXVA_DestinationFlags;
+
+
+typedef struct _DXVA_VideoSample2 {
+    REFERENCE_TIME      rtStart;
+    REFERENCE_TIME      rtEnd;
+    DWORD               SampleFormat;
+    DWORD               SampleFlags;
+    VOID*               lpDDSSrcSurface;
+    RECT                rcSrc;
+    RECT                rcDst;
+    DXVA_AYUVsample2    Palette[16];
+} DXVA_VideoSample2, *LPDXVA_VideoSample2;
 
 typedef struct _DXVA_DeinterlaceCaps {
     DWORD                   Size;
@@ -812,6 +997,23 @@ typedef struct _DXVA_DeinterlaceBlt {
 
 #define DXVA_DeinterlaceBltFnCode                     0x01
 // lpInput => DXVA_DeinterlaceBlt*
+// lpOuput => NULL /* not currently used */
+
+
+typedef struct _DXVA_DeinterlaceBltEx {
+    DWORD               Size;
+    DXVA_AYUVsample2    BackgroundColor;
+    RECT                rcTarget;
+    REFERENCE_TIME      rtTarget;
+    DWORD               NumSourceSurfaces;
+    FLOAT               Alpha;
+    DXVA_VideoSample2   Source[MAX_DEINTERLACE_SURFACES];
+    DWORD               DestinationFormat;
+    DWORD               DestinationFlags;
+} DXVA_DeinterlaceBltEx;
+
+#define DXVA_DeinterlaceBltExFnCode                   0x02
+// lpInput => DXVA_DeinterlaceBltEx*
 // lpOuput => NULL /* not currently used */
 
 
@@ -909,10 +1111,246 @@ typedef struct _DXVA_ProcAmpControlBlt {
 // lpInput => DXVA_ProcAmpControlBlt*
 // lpOuput => NULL /* not currently used */
 
-
-
 #endif /*  __DIRECTX_VA_PROCAMPCONTROL__ */
 
+
+// -------------------------------------------------------------------------
+//
+// The definitions that follow describe the Certified Output Protection
+// Protocol between the VMR and the graphics device driver.  This interface
+// is not accessable via the IAMVideoAccelerator interface.
+//
+// -------------------------------------------------------------------------
+//
+
+#ifndef __DIRECTX_VA_CERTOUTPUTPROTECT__
+#define __DIRECTX_VA_CERTOUTPUTPROTECT__
+
+
+DEFINE_GUID(DXVA_COPPDevice,
+    0xd2457add,0x8999,0x45ed,0x8a,0x8a,0xd1,0xaa,0x04,0x7b,0xa4,0xd5);
+
+
+// -------------------------------------------------------------------------
+// COPPGetCertificateLength
+// -------------------------------------------------------------------------
+#define DXVA_COPPGetCertificateLengthFnCode         0x01
+// lpInput => NULL
+// lpOuput => DWORD*
+
+
+// -------------------------------------------------------------------------
+// COPPKeyExchange
+// -------------------------------------------------------------------------
+#define DXVA_COPPKeyExchangeFnCode                  0x02
+// lpInputData => NULL
+// lpOuputData => GUID*
+
+
+// -------------------------------------------------------------------------
+// COPPSequenceStart
+// -------------------------------------------------------------------------
+typedef struct _DXVA_COPPSignature {
+    UCHAR   Signature[256];
+} DXVA_COPPSignature, *LPDXVA_COPPSignature;
+
+#define DXVA_COPPSequenceStartFnCode                0x03
+// lpInputData => DXVA_COPPSignature*
+// lpOuputData => NULL
+
+
+
+// -------------------------------------------------------------------------
+// COPPCommand
+// -------------------------------------------------------------------------
+typedef struct _DXVA_COPPCommand {
+    GUID    macKDI;             //   16 bytes
+    GUID    guidCommandID;      //   16 bytes
+    ULONG   dwSequence;         //    4 bytes
+    ULONG   cbSizeData;         //    4 bytes
+    UCHAR   CommandData[4056];  // 4056 bytes (4056+4+4+16+16 = 4096)
+}  DXVA_COPPCommand, *LPDXVA_COPPCommand;
+
+#define DXVA_COPPCommandFnCode                      0x04
+// lpInputData => DXVA_COPPCommand*
+// lpOuputData => NULL
+
+
+DEFINE_GUID(DXVA_COPPSetProtectionLevel,
+    0x9bb9327c,0x4eb5,0x4727,0x9f,0x00,0xb4,0x2b,0x09,0x19,0xc0,0xda);
+
+typedef struct _DXVA_COPPSetProtectionLevelCmdData {
+    ULONG   ProtType;
+    ULONG   ProtLevel;
+    ULONG   TypeSpecificMask;
+    ULONG   TypeSpecificInfo;
+} DXVA_COPPSetProtectionLevelCmdData;
+
+
+// Set the HDCP protection level - (0 - 1 DWORD, 4 bytes)
+
+typedef enum _COPP_HDCP_Protection_Level {
+    COPP_HDCP_Level0    = 0,
+    COPP_HDCP_LevelMin  = COPP_HDCP_Level0,
+    COPP_HDCP_Level1    = 1,
+    COPP_HDCP_LevelMax  = COPP_HDCP_Level1,
+    COPP_HDCP_ForceDWORD = 0x7fffffff
+} COPP_HDCP_Protection_Level;
+
+typedef enum _COPP_CGMSA_Protection_Level {
+    COPP_CGMSA_CopyFreely = 0,
+    COPP_CGMSA_LevelMin = COPP_CGMSA_CopyFreely,
+    COPP_CGMSA_CopyOneGeneration   = 2,
+    COPP_CGMSA_CopyNever = 3,
+    COPP_CGMSA_RedistributionControlRequired = 0x04,
+    COPP_CGMSA_LevelMax = (COPP_CGMSA_RedistributionControlRequired + COPP_CGMSA_CopyNever),
+    COPP_CGMSA_ForceDWORD = 0x7fffffff
+} COPP_CGMSA_Protection_Level;
+
+#define COPP_WSS_FLAG   0x01 // used with DXVA_COPPSetProtectionLevelCmdData::TypeSpecificInfo
+
+typedef enum _COPP_ACP_Protection_Level {
+    COPP_ACP_Level0     = 0,
+    COPP_ACP_LevelMin   = COPP_ACP_Level0,
+    COPP_ACP_Level1     = 1,
+    COPP_ACP_Level2     = 2,
+    COPP_ACP_Level3     = 3,
+    COPP_ACP_LevelMax   = COPP_ACP_Level3,
+    COPP_ACP_ForceDWORD = 0x7fffffff
+} COPP_ACP_Protection_Level;
+
+#define COPP_NoProtectionLevelAvailable  -1
+#define COPP_DefaultProtectionLevel 0
+
+
+//
+// Bit flags of possible protection types.  Note that it is possible to apply
+// different protection settings to a single connector.
+//
+enum {
+    COPP_ProtectionType_Unknown      = 0x80000000,
+    COPP_ProtectionType_None         = 0x00000000,
+    COPP_ProtectionType_HDCP         = 0x00000001, 	
+    COPP_ProtectionType_ACP          = 0x00000002,
+    COPP_ProtectionType_CGMSA        = 0x00000004,
+    COPP_ProtectionType_Mask         = 0x80000007,
+    COPP_ProtectionType_Reserved     = 0x7FFFFFF8
+};
+
+// -------------------------------------------------------------------------
+// COPPQueryStatus
+// -------------------------------------------------------------------------
+typedef struct _DXVA_COPPStatusInput {
+    GUID    rApp;               //   16 bytes
+    GUID    guidStatusRequestID;//   16 bytes
+    ULONG   dwSequence;         //    4 bytes
+    ULONG   cbSizeData;         //    4 bytes
+    UCHAR   StatusData[4056];   // 4056 bytes (4056+4+4+16+16 = 4096)
+} DXVA_COPPStatusInput, *LPDXVA_COPPStatusInput;
+
+typedef struct _DXVA_COPPStatusOutput {
+    GUID    macKDI;             //   16 bytes
+    ULONG   cbSizeData;         //    4 bytes
+    UCHAR   COPPStatus[4076];   // 4076 bytes (4076+16+4 = 4096)
+} DXVA_COPPStatusOutput, *LPDXVA_COPPStatusOutput;
+
+typedef enum _COPP_StatusFlags {
+    COPP_StatusNormal           = 0x00,
+    COPP_LinkLost               = 0x01,
+    COPP_RenegotiationRequired  = 0x02,
+    COPP_StatusFlagsReserved    = 0xFFFFFFFC
+} COPP_StatusFlags;
+
+typedef struct _DXVA_COPPStatusData {
+    GUID    rApp;
+    ULONG   dwFlags;    // See COPP_StatusFlags above
+    ULONG   dwData;
+    ULONG   TypeSpecificMask;
+    ULONG   TypeSpecificInfo;
+} DXVA_COPPStatusData;
+
+typedef struct _DXVA_COPPStatusDisplayData {
+    GUID    rApp;
+    ULONG   dwFlags;    // See COPP_StatusFlags above
+    ULONG   DisplayWidth;
+    ULONG   Displayheight;
+    ULONG   Format;     // also contains extended color data
+    ULONG   d3dFormat;
+    ULONG   FreqNumerator;
+    ULONG   FreqDenominator;
+} DXVA_COPPStatusDisplayData;
+
+typedef enum _COPP_StatusHDCPFlags {
+    COPP_HDCPReceiver   = 0x00,
+    COPP_HDCPRepeater   = 0x01
+} COPP_StatusHDCPFlags;
+
+typedef struct _DXVA_COPPStatusHDCPKeyData {
+    GUID    rApp;
+    ULONG   dwFlags;        // See COPP_StatusFlags above
+    ULONG   dwHDCPFlags;    // See COPP_StatusHDCPFlags above
+    GUID    BKey;           // Lower 40 bits
+    GUID    reserved1;
+    GUID    reserved2;
+} DXVA_COPPStatusHDCPKeyData;
+
+
+#define DXVA_COPPQueryStatusFnCode 0x05
+// lpInputData => DXVA_COPPStatusInput*
+// lpOuputData => DXVA_COPPStatusOutput*
+
+
+//
+// Status GUID and enumerations
+//
+DEFINE_GUID(DXVA_COPPQueryConnectorType,
+      0x81d0bfd5,0x6afe,0x48c2,0x99,0xc0,0x95,0xa0,0x8f,0x97,0xc5,0xda);
+
+typedef enum _COPP_ConnectorType {
+    COPP_ConnectorType_Unknown = -1,
+    COPP_ConnectorType_VGA = 0,
+    COPP_ConnectorType_SVideo = 1,
+    COPP_ConnectorType_CompositeVideo = 2,
+    COPP_ConnectorType_ComponentVideo = 3,
+    COPP_ConnectorType_DVI = 4,
+    COPP_ConnectorType_HDMI = 5,
+    COPP_ConnectorType_LVDS = 6,
+    COPP_ConnectorType_TMDS = 7,
+    COPP_ConnectorType_D_JPN = 8,
+    COPP_ConnectorType_Internal = 0x80000000,   // can be combined with the other connector types
+    COPP_ConnectorType_ForceDWORD = 0x7fffffff  /* force 32-bit size enum */
+} COPP_ConnectorType;
+
+DEFINE_GUID(DXVA_COPPQueryProtectionType,
+    0x38f2a801,0x9a6c,0x48bb,0x91,0x07,0xb6,0x69,0x6e,0x6f,0x17,0x97);
+
+DEFINE_GUID(DXVA_COPPQueryLocalProtectionLevel,
+    0xb2075857,0x3eda,0x4d5d,0x88,0xdb,0x74,0x8f,0x8c,0x1a,0x05,0x49);
+
+DEFINE_GUID(DXVA_COPPQueryGlobalProtectionLevel,
+    0x1957210a,0x7766,0x452a,0xb9,0x9a,0xd2,0x7a,0xed,0x54,0xf0,0x3a);
+
+DEFINE_GUID(DXVA_COPPQueryDisplayData,
+    0xd7bf1ba3,0xad13,0x4f8e,0xaf,0x98,0x0d,0xcb,0x3c,0xa2,0x04,0xcc);
+
+DEFINE_GUID(DXVA_COPPQueryHDCPKeyData,
+    0xdb59d74, 0xa992, 0x492e, 0xa0, 0xbd, 0xc2, 0x3f, 0xda, 0x56, 0x4e, 0x0);
+
+DEFINE_GUID(DXVA_COPPQueryBusData,
+    0xc6f4d673, 0x6174, 0x4184, 0x8e, 0x35, 0xf6, 0xdb, 0x52, 0x0, 0xbc, 0xba);
+
+typedef enum _COPP_BusType {
+    COPP_BusType_Unknown    = 0,
+    COPP_BusType_PCI        = 1,
+    COPP_BusType_PCIX       = 2,
+    COPP_BusType_PCIExpress = 3,
+    COPP_BusType_AGP        = 4,
+    COPP_BusType_Integrated = 0x80000000, // can be combined with the other bus types
+    COPP_BusType_ForceDWORD = 0x7fffffff  /* force 32-bit size enum */
+} COPP_BusType;
+
+
+#endif /* __DIRECTX_VA_CERTOUTPUTPROTECT__ */
 
 #ifdef __cplusplus
 }

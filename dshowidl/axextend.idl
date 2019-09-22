@@ -71,6 +71,7 @@ interface IAMClockSlave ;
 interface IEncoderAPI;
 interface IVideoEncoder;
 interface IAMGraphBuilderCallback;
+interface IAMCertifiedOutputProtection;
 
 //==========================================================================
 //==========================================================================
@@ -4118,8 +4119,10 @@ enum _AM_PUSHSOURCE_FLAGS {
                                                         // exposed to the graph
 
     // request flags, set by user via SetPushSourceFlags method
-    AM_PUSHSOURCEREQS_USE_STREAM_CLOCK   = 0x00010000   // source was requested to timestamp
+    AM_PUSHSOURCEREQS_USE_STREAM_CLOCK   = 0x00010000,  // source was requested to timestamp
                                                         // using a clock that isn't the graph clock
+
+    AM_PUSHSOURCEREQS_USE_CLOCK_CHAIN    = 0x00020000,  // source requests reference clock chaining
 };
 
 //
@@ -4694,12 +4697,12 @@ interface IRegisterServiceProvider : IUnknown
 //
 // IAMClockSlave interface
 //
-// When the audio renderer is slaving to a separate graph clock this 
-// interface provides a way for an app to specify how closely in sync 
-// the slaving renderer should try to stay to the graph clock. Note that 
-// using a larger tolerance for a video & audio playback graph will likely 
-// result in looser a/v sync, so it recommended not to change this setting 
-// except under special circumstances. 
+// When the audio renderer is slaving to a separate graph clock this
+// interface provides a way for an app to specify how closely in sync
+// the slaving renderer should try to stay to the graph clock. Note that
+// using a larger tolerance for a video & audio playback graph will likely
+// result in looser a/v sync, so it recommended not to change this setting
+// except under special circumstances.
 //
 //---------------------------------------------------------------------
 
@@ -4718,7 +4721,7 @@ interface IAMClockSlave : IUnknown
     HRESULT SetErrorTolerance (
 	    [in]  DWORD dwTolerance
     );
-    
+
     // get millisecond value currently being used for slaving tolerance
     HRESULT GetErrorTolerance (
 	    [out]  DWORD *pdwTolerance
@@ -4743,7 +4746,7 @@ interface IAMClockSlave : IUnknown
 // The callback occurs with the graph lock held, so do not call into
 // the graph again and do not wait on other threads calling into the
 // graph.
-// 
+//
 //---------------------------------------------------------------------
 
 [
@@ -4756,17 +4759,17 @@ interface IAMGraphBuilderCallback : IUnknown
 {
     // graph builder selected a filter to create and attempt to
     // connect. failure indicates filter should be rejected.
-    HRESULT SelectedFilter( 
-        [in] IMoniker *pMon 
+    HRESULT SelectedFilter(
+        [in] IMoniker *pMon
         );
 
     // app configures filter during this call. failure indicates
     // filter should be rejected.
-    HRESULT CreatedFilter( 
+    HRESULT CreatedFilter(
         [in] IBaseFilter *pFil
         );
 };
-    
+
 cpp_quote("#ifdef __cplusplus")
 cpp_quote("#ifndef _IAMFilterGraphCallback_")
 cpp_quote("#define _IAMFilterGraphCallback_")
@@ -4816,7 +4819,7 @@ interface ICodecAPI : IUnknown
     //
     // IsSupported():
     //
-    // Query whether a given parameter is supported.  
+    // Query whether a given parameter is supported.
     //
     HRESULT
     IsSupported (
@@ -4827,7 +4830,7 @@ interface ICodecAPI : IUnknown
     // IsModifiable
     //
     // Query whether a given parameter can be changed given the codec selection
-    // and other parameter selections.  
+    // and other parameter selections.
     //
     HRESULT
     IsModifiable (
@@ -4860,7 +4863,7 @@ interface ICodecAPI : IUnknown
     //
     // Returns the list of values supported by the given parameter as a
     // COM allocated array.  The total number of values will be placed in
-    // the ValuesCount parameter and the Values array will contain the 
+    // the ValuesCount parameter and the Values array will contain the
     // individual values.  This array must be freed by the caller through
     // CoTaskMemFree().
     //
@@ -4874,7 +4877,7 @@ interface ICodecAPI : IUnknown
     //
     // GetDefaultValue():
     //
-    // Get the default value for a parameter, if one exists.  Otherwise, 
+    // Get the default value for a parameter, if one exists.  Otherwise,
     // an error will be returned.
     //
     HRESULT
@@ -4924,7 +4927,7 @@ interface ICodecAPI : IUnknown
     //          GUID guid;
     //          DWORD dataLength;
     //          DWORD reserved[3];     // pad to 16 byte alignment
-    //          BYTE data[dataLength]; 
+    //          BYTE data[dataLength];
     //      }
     // The guid parameter identifies the event. The data associated with the event follows the
     // structure (represented by the variable length BYTE data[dataLength] array).
@@ -5013,7 +5016,7 @@ interface IGetCapabilitiesKey : IUnknown
 };
 
 // -----------------------------------------------------------------------------------------
-// From this point on, this is retained for backwards compatiblity only 
+// From this point on, this is retained for backwards compatiblity only
 // Do not use this for future encoders
 // -----------------------------------------------------------------------------------------
 [
@@ -5062,14 +5065,14 @@ typedef enum {
 
     //
     // Bit rate used for encoding is variable with the specified bitrate used
-    // as a guaranteed average over a specified window.  The default window 
+    // as a guaranteed average over a specified window.  The default window
     // size is considered to be 5 minutes.
     //
     VariableBitRateAverage,
 
     //
     // Bit rate used for encoding is variable with the specified bitrate used
-    // as a peak rate over a specified window.  The default window size 
+    // as a peak rate over a specified window.  The default window size
     // is considered to be 500ms (classically one GOP).
     //
     VariableBitRatePeak
@@ -5103,3 +5106,64 @@ interface IAMDecoderCaps : IUnknown
 {
         HRESULT GetDecoderCaps([in] DWORD dwCapIndex, [out] DWORD* lpdwCap);
 };
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// IAMCertifiedOutputProtection
+//
+///////////////////////////////////////////////////////////////////////////////
+typedef struct _AMCOPPSignature {
+    BYTE        Signature[256];
+} AMCOPPSignature;
+
+typedef struct _AMCOPPCommand {
+    GUID    macKDI;             //   16 bytes
+    GUID    guidCommandID;      //   16 bytes
+    DWORD   dwSequence;         //    4 bytes
+    DWORD   cbSizeData;         //    4 bytes
+    BYTE    CommandData[4056];  // 4056 bytes (4056+4+4+16+16 = 4096)
+}  AMCOPPCommand, *LPAMCOPPCommand;
+
+typedef struct _AMCOPPStatusInput {
+    GUID    rApp;               //   16 bytes
+    GUID    guidStatusRequestID;//   16 bytes
+    DWORD   dwSequence;         //    4 bytes
+    DWORD   cbSizeData;         //    4 bytes
+    BYTE    StatusData[4056];   // 4056 bytes (4056+4+4+16+16 = 4096)
+} AMCOPPStatusInput, *LPAMCOPPStatusInput;
+
+typedef struct _AMCOPPStatusOutput {
+    GUID    macKDI;             //   16 bytes
+    DWORD   cbSizeData;         //    4 bytes
+    BYTE    COPPStatus[4076];   // 4076 bytes (4076+16+4 = 4096)
+} AMCOPPStatusOutput, *LPAMCOPPStatusOutput;
+
+
+[
+        object,
+        local,
+        uuid(6feded3e-0ff1-4901-a2f1-43f7012c8515),
+        pointer_default(unique)
+]
+interface IAMCertifiedOutputProtection : IUnknown
+{
+    HRESULT KeyExchange (
+        [out]   GUID*  pRandom,             // 128-bit random number generated by Graphics Driver
+        [out]   BYTE** VarLenCertGH,        // Graphics Hardware certificate, memory released by CoTaskMemFree
+        [out]   DWORD* pdwLengthCertGH);    // Length of Graphics Hardware certificate
+
+    HRESULT SessionSequenceStart(
+        [in]    AMCOPPSignature*pSig);      // Concatenation of 128-bit random data security session key,
+                                            // 128-bit random data integrity session key, 32-bit random
+                                            // starting status sequence number and 32-bit random starting
+                                            // command sequence number encrypted with the public key of
+                                            // the graphic hardware. This value is 2048 bits long.
+
+    HRESULT ProtectionCommand(
+        [in]    const AMCOPPCommand* cmd);  // Encrypted command
+
+    HRESULT ProtectionStatus(
+        [in]    const AMCOPPStatusInput* pStatusInput,  // Encrypted Status request
+        [out]   AMCOPPStatusOutput* pStatusOutput);     // Encrypted Status results
+};
+

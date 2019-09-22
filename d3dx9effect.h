@@ -17,15 +17,19 @@
 //----------------------------------------------------------------------------
 // D3DXFX_DONOTSAVESTATE
 //   This flag is used as a parameter to ID3DXEffect::Begin().  When this flag
-//   is specified, device state is not saved and restored in Begin/End.
+//   is specified, device state is not saved or restored in Begin/End.
 // D3DXFX_DONOTSAVESHADERSTATE
 //   This flag is used as a parameter to ID3DXEffect::Begin().  When this flag
-//   is specified, shader device state is not saved and restored in Begin/End.
+//   is specified, shader device state is not saved or restored in Begin/End.
 //   This includes pixel/vertex shaders and shader constants
+// D3DXFX_DONOTSAVESAMPLERSTATE
+//   This flag is used as a parameter to ID3DXEffect::Begin(). When this flag
+//   is specified, sampler device state is not saved or restored in Begin/End.
 //----------------------------------------------------------------------------
 
 #define D3DXFX_DONOTSAVESTATE         (1 << 0)
 #define D3DXFX_DONOTSAVESHADERSTATE   (1 << 1)
+#define D3DXFX_DONOTSAVESAMPLERSTATE  (1 << 2)
 
 
 //----------------------------------------------------------------------------
@@ -103,17 +107,8 @@ typedef struct _D3DXPASS_DESC
     LPCSTR Name;                        // Pass name
     UINT Annotations;                   // Number of annotations
 
-    DWORD VSVersion;                    // Vertex shader version (0 in case of NULL shader)
-    DWORD PSVersion;                    // Pixel shader version (0 in case of NULL shader)
-
-    UINT VSSemanticsUsed;
-    D3DXSEMANTIC VSSemantics[MAXD3DDECLLENGTH];
-
-    UINT PSSemanticsUsed;
-    D3DXSEMANTIC PSSemantics[MAXD3DDECLLENGTH];
-
-    UINT PSSamplersUsed;
-    LPCSTR PSSamplers[16];
+    CONST DWORD *pVertexShaderFunction; // Vertex shader function
+    CONST DWORD *pPixelShaderFunction;  // Pixel shader function
 
 } D3DXPASS_DESC;
 
@@ -138,9 +133,9 @@ typedef struct _D3DXFUNCTION_DESC
 typedef interface ID3DXEffectPool ID3DXEffectPool;
 typedef interface ID3DXEffectPool *LPD3DXEFFECTPOOL;
 
-// {53CA7768-C0D0-4664-8E79-D156E4F5B7E0}
-DEFINE_GUID( IID_ID3DXEffectPool,
-0x53ca7768, 0xc0d0, 0x4664, 0x8e, 0x79, 0xd1, 0x56, 0xe4, 0xf5, 0xb7, 0xe0);
+// {9537AB04-3250-412e-8213-FCD2F8677933}
+DEFINE_GUID(IID_ID3DXEffectPool, 
+0x9537ab04, 0x3250, 0x412e, 0x82, 0x13, 0xfc, 0xd2, 0xf8, 0x67, 0x79, 0x33);
 
 
 #undef INTERFACE
@@ -164,9 +159,9 @@ DECLARE_INTERFACE_(ID3DXEffectPool, IUnknown)
 typedef interface ID3DXBaseEffect ID3DXBaseEffect;
 typedef interface ID3DXBaseEffect *LPD3DXBASEEFFECT;
 
-// {804EF574-CCC1-4bf6-B06A-B1404ABDEADE}
-DEFINE_GUID( IID_ID3DXBaseEffect,
-0x804ef574, 0xccc1, 0x4bf6, 0xb0, 0x6a, 0xb1, 0x40, 0x4a, 0xbd, 0xea, 0xde);
+// {3B7A6FFB-3A69-46d7-BC01-A6B2AD4C2BB0}
+DEFINE_GUID(IID_ID3DXBaseEffect, 
+0x3b7a6ffb, 0x3a69, 0x46d7, 0xbc, 0x1, 0xa6, 0xb2, 0xad, 0x4c, 0x2b, 0xb0);
 
 
 #undef INTERFACE
@@ -195,8 +190,8 @@ DECLARE_INTERFACE_(ID3DXBaseEffect, IUnknown)
     STDMETHOD_(D3DXHANDLE, GetTechniqueByName)(THIS_ LPCSTR pName) PURE;
     STDMETHOD_(D3DXHANDLE, GetPass)(THIS_ D3DXHANDLE hTechnique, UINT Index) PURE;
     STDMETHOD_(D3DXHANDLE, GetPassByName)(THIS_ D3DXHANDLE hTechnique, LPCSTR pName) PURE;
-    STDMETHOD_(D3DXHANDLE, GetFunction)(THIS_ UINT Index);
-    STDMETHOD_(D3DXHANDLE, GetFunctionByName)(THIS_ LPCSTR pName);
+    STDMETHOD_(D3DXHANDLE, GetFunction)(THIS_ UINT Index) PURE;
+    STDMETHOD_(D3DXHANDLE, GetFunctionByName)(THIS_ LPCSTR pName) PURE;
     STDMETHOD_(D3DXHANDLE, GetAnnotation)(THIS_ D3DXHANDLE hObject, UINT Index) PURE;
     STDMETHOD_(D3DXHANDLE, GetAnnotationByName)(THIS_ D3DXHANDLE hObject, LPCSTR pName) PURE;
 
@@ -239,6 +234,65 @@ DECLARE_INTERFACE_(ID3DXBaseEffect, IUnknown)
     STDMETHOD(GetPixelShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DPIXELSHADER9 *ppPShader) PURE;
     STDMETHOD(SetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 pVShader) PURE;
     STDMETHOD(GetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 *ppVShader) PURE;
+
+    //Set Range of an Array to pass to device
+    //Useful for sending only a subrange of an array down to the device
+    STDMETHOD(SetArrayRange)(THIS_ D3DXHANDLE hParameter, UINT uStart, UINT uEnd) PURE; 
+
+};
+
+
+//----------------------------------------------------------------------------
+// ID3DXEffectStateManager:
+// ------------------------
+// This is a user implemented interface that can be used to manage device 
+// state changes made by an Effect.
+//----------------------------------------------------------------------------
+
+typedef interface ID3DXEffectStateManager ID3DXEffectStateManager;
+typedef interface ID3DXEffectStateManager *LPD3DXEFFECTSTATEMANAGER;
+
+// {79AAB587-6DBC-4fa7-82DE-37FA1781C5CE}
+DEFINE_GUID(IID_ID3DXEffectStateManager, 
+0x79aab587, 0x6dbc, 0x4fa7, 0x82, 0xde, 0x37, 0xfa, 0x17, 0x81, 0xc5, 0xce);
+
+#undef INTERFACE
+#define INTERFACE ID3DXEffectStateManager
+
+DECLARE_INTERFACE_(ID3DXEffectStateManager, IUnknown)
+{
+    // The user must correctly implement QueryInterface, AddRef, and Release.
+
+    // IUnknown
+    STDMETHOD(QueryInterface)(THIS_ REFIID iid, LPVOID *ppv) PURE;
+    STDMETHOD_(ULONG, AddRef)(THIS) PURE;
+    STDMETHOD_(ULONG, Release)(THIS) PURE;
+
+    // The following methods are called by the Effect when it wants to make 
+    // the corresponding device call.  Note that:
+    // 1. Users manage the state and are therefore responsible for making the 
+    //    the corresponding device calls themselves inside their callbacks.  
+    // 2. Effects pay attention to the return values of the callbacks, and so 
+    //    users must pay attention to what they return in their callbacks.
+
+    STDMETHOD(SetTransform)(THIS_ D3DTRANSFORMSTATETYPE State, CONST D3DMATRIX *pMatrix) PURE;
+    STDMETHOD(SetMaterial)(THIS_ CONST D3DMATERIAL9 *pMaterial) PURE;
+    STDMETHOD(SetLight)(THIS_ DWORD Index, CONST D3DLIGHT9 *pLight) PURE;
+    STDMETHOD(LightEnable)(THIS_ DWORD Index, BOOL Enable) PURE;
+    STDMETHOD(SetRenderState)(THIS_ D3DRENDERSTATETYPE State, DWORD Value) PURE;
+    STDMETHOD(SetTexture)(THIS_ DWORD Stage, LPDIRECT3DBASETEXTURE9 pTexture) PURE;
+    STDMETHOD(SetTextureStageState)(THIS_ DWORD Stage, D3DTEXTURESTAGESTATETYPE Type, DWORD Value) PURE;
+    STDMETHOD(SetSamplerState)(THIS_ DWORD Sampler, D3DSAMPLERSTATETYPE Type, DWORD Value) PURE;
+    STDMETHOD(SetNPatchMode)(THIS_ FLOAT NumSegments) PURE;
+    STDMETHOD(SetFVF)(THIS_ DWORD FVF) PURE;
+    STDMETHOD(SetVertexShader)(THIS_ LPDIRECT3DVERTEXSHADER9 pShader) PURE;
+    STDMETHOD(SetVertexShaderConstantF)(THIS_ UINT RegisterIndex, CONST FLOAT *pConstantData, UINT RegisterCount) PURE;
+    STDMETHOD(SetVertexShaderConstantI)(THIS_ UINT RegisterIndex, CONST INT *pConstantData, UINT RegisterCount) PURE;
+    STDMETHOD(SetVertexShaderConstantB)(THIS_ UINT RegisterIndex, CONST BOOL *pConstantData, UINT RegisterCount) PURE;
+    STDMETHOD(SetPixelShader)(THIS_ LPDIRECT3DPIXELSHADER9 pShader) PURE;
+    STDMETHOD(SetPixelShaderConstantF)(THIS_ UINT RegisterIndex, CONST FLOAT *pConstantData, UINT RegisterCount) PURE;
+    STDMETHOD(SetPixelShaderConstantI)(THIS_ UINT RegisterIndex, CONST INT *pConstantData, UINT RegisterCount) PURE;
+    STDMETHOD(SetPixelShaderConstantB)(THIS_ UINT RegisterIndex, CONST BOOL *pConstantData, UINT RegisterCount) PURE;
 };
 
 
@@ -249,10 +303,9 @@ DECLARE_INTERFACE_(ID3DXBaseEffect, IUnknown)
 typedef interface ID3DXEffect ID3DXEffect;
 typedef interface ID3DXEffect *LPD3DXEFFECT;
 
-// {B589B04A-293D-4516-AF0B-3D7DBCF5AC54}
-DEFINE_GUID( IID_ID3DXEffect,
-0xb589b04a, 0x293d, 0x4516, 0xaf, 0xb, 0x3d, 0x7d, 0xbc, 0xf5, 0xac, 0x54);
-
+// {0F0DCC9F-6152-4117-A933-FFAC29C43AA4}
+DEFINE_GUID(IID_ID3DXEffect, 
+0xf0dcc9f, 0x6152, 0x4117, 0xa9, 0x33, 0xff, 0xac, 0x29, 0xc4, 0x3a, 0xa4);
 
 #undef INTERFACE
 #define INTERFACE ID3DXEffect
@@ -280,8 +333,8 @@ DECLARE_INTERFACE_(ID3DXEffect, ID3DXBaseEffect)
     STDMETHOD_(D3DXHANDLE, GetTechniqueByName)(THIS_ LPCSTR pName) PURE;
     STDMETHOD_(D3DXHANDLE, GetPass)(THIS_ D3DXHANDLE hTechnique, UINT Index) PURE;
     STDMETHOD_(D3DXHANDLE, GetPassByName)(THIS_ D3DXHANDLE hTechnique, LPCSTR pName) PURE;
-    STDMETHOD_(D3DXHANDLE, GetFunction)(THIS_ UINT Index);
-    STDMETHOD_(D3DXHANDLE, GetFunctionByName)(THIS_ LPCSTR pName);
+    STDMETHOD_(D3DXHANDLE, GetFunction)(THIS_ UINT Index) PURE;
+    STDMETHOD_(D3DXHANDLE, GetFunctionByName)(THIS_ LPCSTR pName) PURE;
     STDMETHOD_(D3DXHANDLE, GetAnnotation)(THIS_ D3DXHANDLE hObject, UINT Index) PURE;
     STDMETHOD_(D3DXHANDLE, GetAnnotationByName)(THIS_ D3DXHANDLE hObject, LPCSTR pName) PURE;
 
@@ -324,8 +377,13 @@ DECLARE_INTERFACE_(ID3DXEffect, ID3DXBaseEffect)
     STDMETHOD(GetPixelShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DPIXELSHADER9 *ppPShader) PURE;
     STDMETHOD(SetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 pVShader) PURE;
     STDMETHOD(GetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 *ppVShader) PURE;
-    // ID3DXBaseEffect
 
+	//Set Range of an Array to pass to device
+	//Usefull for sending only a subrange of an array down to the device
+	STDMETHOD(SetArrayRange)(THIS_ D3DXHANDLE hParameter, UINT uStart, UINT uEnd) PURE; 
+	// ID3DXBaseEffect
+    
+    
     // Pool
     STDMETHOD(GetPool)(THIS_ LPD3DXEFFECTPOOL* ppPool) PURE;
 
@@ -337,14 +395,31 @@ DECLARE_INTERFACE_(ID3DXEffect, ID3DXBaseEffect)
     STDMETHOD_(BOOL, IsParameterUsed)(THIS_ D3DXHANDLE hParameter, D3DXHANDLE hTechnique) PURE;
 
     // Using current technique
+    // Begin           starts active technique
+    // BeginPass       begins a pass
+    // CommitChanges   updates changes to any set calls in the pass. This should be called before
+    //                 any DrawPrimitive call to d3d
+    // EndPass         ends a pass
+    // End             ends active technique
     STDMETHOD(Begin)(THIS_ UINT *pPasses, DWORD Flags) PURE;
-    STDMETHOD(Pass)(THIS_ UINT Pass) PURE;
+    STDMETHOD(BeginPass)(THIS_ UINT Pass) PURE;
+    STDMETHOD(CommitChanges)(THIS) PURE;
+    STDMETHOD(EndPass)(THIS) PURE;
     STDMETHOD(End)(THIS) PURE;
 
     // Managing D3D Device
     STDMETHOD(GetDevice)(THIS_ LPDIRECT3DDEVICE9* ppDevice) PURE;
     STDMETHOD(OnLostDevice)(THIS) PURE;
     STDMETHOD(OnResetDevice)(THIS) PURE;
+
+    // Logging device calls
+    STDMETHOD(SetStateManager)(THIS_ LPD3DXEFFECTSTATEMANAGER pManager) PURE;
+    STDMETHOD(GetStateManager)(THIS_ LPD3DXEFFECTSTATEMANAGER *ppManager) PURE;
+
+    // Parameter blocks
+    STDMETHOD(BeginParameterBlock)(THIS) PURE;
+    STDMETHOD_(D3DXHANDLE, EndParameterBlock)(THIS) PURE;
+    STDMETHOD(ApplyParameterBlock)(THIS_ D3DXHANDLE hParameterBlock) PURE;
 
     // Cloning
     STDMETHOD(CloneEffect)(THIS_ LPDIRECT3DDEVICE9 pDevice, LPD3DXEFFECT* ppEffect) PURE;
@@ -358,9 +433,9 @@ DECLARE_INTERFACE_(ID3DXEffect, ID3DXBaseEffect)
 typedef interface ID3DXEffectCompiler ID3DXEffectCompiler;
 typedef interface ID3DXEffectCompiler *LPD3DXEFFECTCOMPILER;
 
-// {F8EE90D3-FCC6-4f14-8AE8-6374AE968E33}
-DEFINE_GUID( IID_ID3DXEffectCompiler,
-0xf8ee90d3, 0xfcc6, 0x4f14, 0x8a, 0xe8, 0x63, 0x74, 0xae, 0x96, 0x8e, 0x33);
+// {15A709EB-5A8E-40a0-86A9-0C024124339B}
+DEFINE_GUID(IID_ID3DXEffectCompiler, 
+0x15a709eb, 0x5a8e, 0x40a0, 0x86, 0xa9, 0xc, 0x2, 0x41, 0x24, 0x33, 0x9b);
 
 
 #undef INTERFACE
@@ -389,8 +464,8 @@ DECLARE_INTERFACE_(ID3DXEffectCompiler, ID3DXBaseEffect)
     STDMETHOD_(D3DXHANDLE, GetTechniqueByName)(THIS_ LPCSTR pName) PURE;
     STDMETHOD_(D3DXHANDLE, GetPass)(THIS_ D3DXHANDLE hTechnique, UINT Index) PURE;
     STDMETHOD_(D3DXHANDLE, GetPassByName)(THIS_ D3DXHANDLE hTechnique, LPCSTR pName) PURE;
-    STDMETHOD_(D3DXHANDLE, GetFunction)(THIS_ UINT Index);
-    STDMETHOD_(D3DXHANDLE, GetFunctionByName)(THIS_ LPCSTR pName);
+    STDMETHOD_(D3DXHANDLE, GetFunction)(THIS_ UINT Index) PURE;
+    STDMETHOD_(D3DXHANDLE, GetFunctionByName)(THIS_ LPCSTR pName) PURE;
     STDMETHOD_(D3DXHANDLE, GetAnnotation)(THIS_ D3DXHANDLE hObject, UINT Index) PURE;
     STDMETHOD_(D3DXHANDLE, GetAnnotationByName)(THIS_ D3DXHANDLE hObject, LPCSTR pName) PURE;
 
@@ -433,7 +508,11 @@ DECLARE_INTERFACE_(ID3DXEffectCompiler, ID3DXBaseEffect)
     STDMETHOD(GetPixelShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DPIXELSHADER9 *ppPShader) PURE;
     STDMETHOD(SetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 pVShader) PURE;
     STDMETHOD(GetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 *ppVShader) PURE;
-    // ID3DXBaseEffect
+    
+	//Set Range of an Array to pass to device
+	//Usefull for sending only a subrange of an array down to the device
+	STDMETHOD(SetArrayRange)(THIS_ D3DXHANDLE hParameter, UINT uStart, UINT uEnd) PURE; 
+	// ID3DXBaseEffect
 
     // Parameter sharing, specialization, and information
     STDMETHOD(SetLiteral)(THIS_ D3DXHANDLE hParameter, BOOL Literal) PURE;
@@ -677,6 +756,20 @@ HRESULT WINAPI
         DWORD                           Flags,
         LPD3DXEFFECTCOMPILER*           ppCompiler,
         LPD3DXBUFFER*                   ppParseErrors);
+
+//----------------------------------------------------------------------------
+// D3DXDisassembleEffect:
+// -----------------------
+//
+// Parameters:
+//----------------------------------------------------------------------------
+
+HRESULT WINAPI 
+    D3DXDisassembleEffect(
+        LPD3DXEFFECT pEffect, 
+        BOOL EnableColorCode, 
+        LPD3DXBUFFER *ppDisassembly);
+        
 
 
 #ifdef __cplusplus

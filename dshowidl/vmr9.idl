@@ -63,6 +63,7 @@ typedef enum {
     VMR9Sample_Preroll         = 0x00000002,
     VMR9Sample_Discontinuity   = 0x00000004,
     VMR9Sample_TimeValid       = 0x00000008,
+    VMR9Sample_SrcDstRectsValid= 0x00000010
 } VMR9PresentationFlags;
 
 
@@ -351,7 +352,8 @@ interface IVMRWindowlessControl9 : IUnknown
 typedef enum {
     MixerPref9_NoDecimation             = 0x00000001, // No decimation - full size
     MixerPref9_DecimateOutput           = 0x00000002, // decimate output by 2 in x & y
-    MixerPref9_DecimationReserved       = 0x0000000C, // bits reserved for future use.
+    MixerPref9_ARAdjustXorY             = 0x00000004, // adjust the aspect ratio in x or y
+    MixerPref9_NonSquareMixing          = 0x00000008, // assume AP can handle non-square mixing, avoids intermediate scales
     MixerPref9_DecimateMask             = 0x0000000F,
 
     MixerPref9_BiLinearFiltering        = 0x00000010, // use bi-linear filtering
@@ -363,8 +365,22 @@ typedef enum {
     MixerPref9_FilteringMask            = 0x00000FF0, // OR of all above flags
 
     MixerPref9_RenderTargetRGB          = 0x00001000,
-    MixerPref9_RenderTargetReserved     = 0x000FE000, // bits reserved for future use.
+    MixerPref9_RenderTargetYUV          = 0x00002000, // Uses DXVA to perform mixing
+    MixerPref9_RenderTargetReserved     = 0x000FC000, // bits reserved for future use.
     MixerPref9_RenderTargetMask         = 0x000FF000, // OR of all above flags
+
+    //
+    // Dynamic changes that can be performed when the VMR's mixer is
+    // configured to use the YUV Render target (see MixerPref_RenderTargetYUV)
+    // These preferences can be applied while the graph is running and take effect
+    // when the next frame is composed by the mixer.
+    //
+    MixerPref9_DynamicSwitchToBOB       = 0x00100000,
+    MixerPref9_DynamicDecimateBy2       = 0x00200000,
+
+    MixerPref9_DynamicReserved          = 0x00C00000,
+    MixerPref9_DynamicMask              = 0x00F00000
+
 } VMR9MixerPrefs;
 
 

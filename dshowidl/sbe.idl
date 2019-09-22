@@ -21,15 +21,20 @@ import "strmif.idl" ;
 //  ============================================================================
 
 //  interfaces
-interface   IStreamBufferSink ;                     //  get recording objects
+interface   IStreamBufferSink ;                     //  locking & recording
+interface   IStreamBufferSink2 ;                    //  ext locking
+interface   IStreamBufferSink3 ;                    //  specify the minimum
 interface   IStreamBufferSource ;                   //  associates with IStreamBufferSink
 interface   IStreamBufferRecordControl ;            //  recording control
 interface   IStreamBufferRecordingAttribute ;       //  StreamBuffer attribute creation
 interface   IEnumStreamBufferRecordingAttrib ;      //  StreamBuffer attribute enumeration
 interface   IStreamBufferConfigure ;                //  configuration interface
+interface   IStreamBufferConfigure2 ;               //  configuration interface; more
 interface   IStreamBufferMediaSeeking ;             //  IMediaSeeking but with different GUID
+interface   IStreamBufferMediaSeeking2 ;            //  + available filter & frame rate on FF/RW
 interface   IStreamBufferPolicy ;                   //  StreamBuffer policies
 interface   IStreamBufferInitialize ;               //  allows 3rd party app to set HKEY
+interface   IStreamBufferDataCounters ;             //  collect data rate from the pins
 
 [
     object,
@@ -110,9 +115,13 @@ interface IStreamBufferSink : IUnknown
         3.  Existing pins that are, or have ever been, connected can be
             reconnected if the media type is exactly the same as the first
             successful connection;
-        4.  Can be called multiple times safely with NULL parameter, but only
-            once with non-NULL parameter; returns E_UNEXPECTED if called more
-            than once with non-NULL param, or after the hosting filter has run;
+        4.  Can be called multiple times with the same parameter as the initial
+            LockProfile() call was made with i.e. more than once with NULL if
+            initially locked with NULL, or more than once with a string if
+            initially locked with a string; if the profile is already locked,
+            and the parameters are the same, returns S_FALSE, else the call
+            fails (if trying to lock a locked profile with a different
+            parameter)
         5.  Must be called before the filter that implements this interface is
             ever run; when it is run, it locks implicitely and this method has
             no effect if called with NULL parameters, or fails if called with
@@ -191,6 +200,90 @@ interface IStreamBufferSink : IUnknown
     --*/
     HRESULT
     IsProfileLocked (
+        ) ;
+} ;
+
+/*++
+    ============================================================================
+    ============================================================================
+    IStreamBufferSink2 ()
+
+    Stream Source interface;
+    implemented on the StreamBufferSink filter;
+--*/
+[
+    object,
+    uuid(DB94A660-F4FB-4bfa-BCC6-FE159A4EEA93),
+    pointer_default(unique)
+]
+interface IStreamBufferSink2 : IStreamBufferSink
+{
+    /*++
+        ------------------------------------------------------------------------
+        UnlockProfile ()
+
+        1.  Unlocks a profile explicitely.
+        2.  Is a noop if the sink is not locked & returns S_FALSE.
+        3.  Can only be called when the graph & filter are stopped.
+        4.  Since recordings are bound to the "lock session", incomplete
+            recordings i.e. those that have never been started, are
+            invalidated & must be re-created under the next "lock session".
+        5.  Profile still unlocks implicitly when the filter is stopped.
+    --*/
+    HRESULT
+    UnlockProfile (
+        ) ;
+} ;
+
+/*++
+    ============================================================================
+    ============================================================================
+    IStreamBufferSink3 ()
+
+    Stream Source interface;
+    implemented on the StreamBufferSink filter;
+--*/
+[
+    object,
+    uuid(974723f2-887a-4452-9366-2cff3057bc8f),
+    pointer_default(unique)
+]
+interface IStreamBufferSink3 : IStreamBufferSink2
+{
+    /*++
+        -----------------------------------------------------------------------
+        SetAvailableFilter ()
+
+        Bounds the minimum.  This affects readers so they cannot seek past
+          the specified minimum.
+
+        Parameter Detail
+        ----------------
+
+        prtMin
+
+            min time relative to "now"
+
+            cannot be NULL
+
+            [in]: time, specified relative to the last sample written, to set
+            as the minimum time available to readers; valid values are <= 0;
+            use -MAXLONGLONG if all the backing store should be made available.
+
+            [out]: actual min time; if the [in] value further back than what is
+            available, the [out] value will be set to the actual time made
+            available.
+
+        Return Values
+        -------------
+
+            success     S_OK
+
+            failure     error code
+    --*/
+    HRESULT
+    SetAvailableFilter (
+        [in, out]   REFERENCE_TIME *    prtMin
         ) ;
 } ;
 
@@ -703,7 +796,7 @@ interface IStreamBufferRecordingAttribute : IUnknown
         [in]    ULONG                       ulReserved,
         [in]    LPCWSTR                     pszAttributeName,
         [in]    STREAMBUFFER_ATTR_DATATYPE  StreamBufferAttributeType,
-        [in]    BYTE *                      pbAttribute,
+        [in, size_is (cbAttributeLength)]   BYTE *     pbAttribute,
         [in]    WORD                        cbAttributeLength
         ) ;
 
@@ -735,7 +828,7 @@ interface IStreamBufferRecordingAttribute : IUnknown
         [in]        LPCWSTR                         pszAttributeName,
         [in]        ULONG *                         pulReserved,
         [out]       STREAMBUFFER_ATTR_DATATYPE *    pStreamBufferAttributeType,
-        [out]       BYTE *                          pbAttribute,
+        [out, size_is (* pcbLength)]    BYTE *      pbAttribute,
         [in, out]   WORD *                          pcbLength
         ) ;
 
@@ -760,7 +853,7 @@ interface IStreamBufferRecordingAttribute : IUnknown
         [out]       WCHAR *                         pszAttributeName,
         [in, out]   WORD *                          pcchNameLength,         //  includes NULL-terminator; in BYTES
         [out]       STREAMBUFFER_ATTR_DATATYPE *    pStreamBufferAttributeType,
-        [out]       BYTE *                          pbAttribute,
+        [out, size_is (* pcbLength)]    BYTE *      pbAttribute,
         [in, out]   WORD *                          pcbLength
         ) ;
 
@@ -921,6 +1014,86 @@ interface IStreamBufferConfigure : IUnknown
 /*++
     ============================================================================
     ============================================================================
+    IStreamBufferConfigure2
+
+--*/
+[
+    object,
+    uuid(53E037BF-3992-4282-AE34-2487B4DAE06B),
+    pointer_default(unique)
+]
+interface IStreamBufferConfigure2 : IStreamBufferConfigure
+{
+    /*++
+        ------------------------------------------------------------------------
+        SetMultiplexedPacketSize ()
+
+        1.  sets the size of the target multiplexed packet size
+        2.  valid values:
+
+                8192 <= cbBytesPerPacket <= 65535
+
+        This is useful if low-bitrate streams are used, and the time to fill a
+        multiplexed packet is excessive when the default value of 65535 bytes
+        is used.
+    --*/
+    HRESULT
+    SetMultiplexedPacketSize (
+        [in]    DWORD   cbBytesPerPacket
+        ) ;
+
+    /*++
+        ------------------------------------------------------------------------
+        GetMultiplexedPacketSize ()
+
+        1.  gets the size of the target multiplexed packet size
+    --*/
+    HRESULT
+    GetMultiplexedPacketSize (
+        [out]   DWORD * pcbBytesPerPacket
+        ) ;
+
+    /*++
+        ------------------------------------------------------------------------
+        SetFFTransitionRates ()
+
+        1.  sets the fast forward (FF) rates for which the Stream Buffer Engine
+              transitions from FullFrame to KeyFrame to KeyFrame + Seeks.
+        2.  valid values:
+
+                1 < dwMaxFullFrameRate < dwMaxNonSkippingRate
+
+        FF playback transitions from full-frame play, then to all keyframes,
+        then to keyframes + seekaheads.  This method allows the transition
+        rates to be set.  By default they are 4 and 6.  If the rate is in (0,4]
+        all the frames are sent to the codec.  If the rate is in (4,6] just
+        keyframes are sent.  If the rate is > 6, then only keyframes are sent,
+        and a seekahead between keyframes is used that is proportionally
+        aggressive to the specified rate.
+    --*/
+    HRESULT
+    SetFFTransitionRates (
+        [in]    DWORD   dwMaxFullFrameRate,
+        [in]    DWORD   dwMaxNonSkippingRate
+        ) ;
+
+    /*++
+        ------------------------------------------------------------------------
+        GetFFTransitionRates ()
+
+        1.  gets the fast forward (FF) rates for which the Stream Buffer Engine
+              transitions from FullFrame to KeyFrame to KeyFrameWithSeeks.
+    --*/
+    HRESULT
+    GetFFTransitionRates (
+        [out]   DWORD * pdwMaxFullFrameRate,
+        [out]   DWORD * pdwMaxNonSkippingRate
+        ) ;
+} ;
+
+/*++
+    ============================================================================
+    ============================================================================
     IStreamBufferMediaSeeking
 
     Implemented on the StreamBufferSource filter.  Used to seek and set the
@@ -936,6 +1109,107 @@ interface IStreamBufferConfigure : IUnknown
 interface IStreamBufferMediaSeeking : IMediaSeeking
 {
     //  no additional methods have been added
+} ;
+
+/*++
+    ============================================================================
+    ============================================================================
+    IStreamBufferMediaSeeking2
+
+    Implemented on the StreamBufferSource filter.  Used to seek and set the
+    playback rate.
+
+--*/
+
+[
+    object,
+    uuid(3a439ab0-155f-470a-86a6-9ea54afd6eaf),
+    pointer_default(unique)
+]
+interface IStreamBufferMediaSeeking2 : IStreamBufferMediaSeeking
+{
+    /*++
+        -----------------------------------------------------------------------
+        SetRateEx ()
+
+        Allows the application to override SBE's trick mode seekahead
+        computation.
+
+        The specified frame rate will, on average, be correct, but may
+        have some variance if averaged over short periods of time.  This is
+        due to the content's compression schema.
+
+        The frame rate is applied to the video stream, if one exists.  If no
+        video stream exists, the rate call fails.  The framerate parameter
+        (dwFramesPerSec) is ignored when the specified abs(rate) is less than or
+        equal to the maximum non-skipping rate (see IStreamBufferConfigure2::
+        SetFFTransitionRates ()).
+
+        Parameter Detail
+        ----------------
+
+            dRate           rate at which the content is to be played.
+                            valid values are all rates, excluding the following
+                              range: (-0.1, 0.1)
+
+            dwFramesPerSec  frames per second
+                            cannot be 0
+                            SBE does not enforce this parameter with respect to
+                              the screen refresh rate
+                            ignored if the abs(dRate) value is <= max non-
+                              skipping rate (see IStreamBufferConfigure2::
+                              SetFFTransitionRates ()).
+
+        Return Values
+        -------------
+
+            success     S_OK
+
+            failure     error code
+    --*/
+    HRESULT
+    SetRateEx (
+        [in]    double  dRate,
+        [in]    DWORD   dwFramesPerSec
+        ) ;
+} ;
+
+
+/*++
+    ============================================================================
+    ============================================================================
+    IStreamBufferDataCounters
+
+    Implemented on the StreamBufferSource & StreamBufferSink filter pins.  Used
+      to get instantaneous traffic counters for the pin.
+
+--*/
+
+typedef struct {
+    ULONGLONG   cDataBytes ;            //  total sample payload bytes
+    ULONGLONG   cSamplesProcessed ;     //  samples processed
+    ULONGLONG   cDiscontinuities ;      //  number of discontinuities
+    ULONGLONG   cSyncPoints ;           //  number of syncpoints
+    ULONGLONG   cTimestamps ;           //  number of timestamps
+} SBE_PIN_DATA ;
+
+[
+    object,
+    uuid(9D2A2563-31AB-402e-9A6B-ADB903489440),
+    pointer_default(unique)
+]
+interface IStreamBufferDataCounters : IUnknown
+{
+    //  retrieves the instantaneous values in the data structure
+    HRESULT
+    GetData (
+        [out]   SBE_PIN_DATA *  pPinData
+        ) ;
+
+    //  sets all the data structure values to 0
+    HRESULT
+    ResetData (
+        ) ;
 } ;
 
 /*++
@@ -971,4 +1245,104 @@ cpp_quote ("    //      param1 = old_playback_rate * 10000 e.g. 2x is 20000")
 cpp_quote ("    //      param2 = new_playback_rate * 10000")
 cpp_quote ("    STREAMBUFFER_EC_RATE_CHANGED,")
 cpp_quote ("} ;")
+
+/*++
+    ============================================================================
+    ============================================================================
+    trick mode
+
+    We've extended the 1.0 interfaces as follows:
+
+    1. source filter presents timestamps that monotonically increase overtime
+
+    2. flushes should have no effect over queued rate segments
+
+    3. discontinuities have no effect over queued rate segments
+
+    To use the interface, continue to use AM_KSPROPSETID_TSRateChange, but use
+    dwPropId that is higher
+
+--*/
+
+#ifdef USE_AM_PROPERTY_TS_RATE_CHANGE_11
+cpp_quote ("typedef enum {")
+cpp_quote ("    AM_RATE_UseRateVersion = AM_RATE_Step + 1,")
+cpp_quote ("    AM_RATE_QueryFullFrameRate,")
+cpp_quote ("    AM_RATE_QueryLastRateSegPTS")
+cpp_quote ("} AM_PROPERTY_TS_RATE_CHANGE_11 ;")
+
+//  AM_RATE_QueryRate; this is the max full-frame rate; source filter can use
+//    up to this; it can use less
+cpp_quote ("typedef struct {")
+cpp_quote ("    LONG    lMaxForwardFullFrame ;          //  rate * 10000")
+cpp_quote ("    LONG    lMaxReverseFullFrame ;          //  rate * 10000")
+cpp_quote ("} AM_QueryRate ;")
+#endif // USE_AM_PROPERTY_TS_RATE_CHANGE_11
+
+/*
+================================================================================
+AM_RATE_UseRateVersion
+--------------------------------------------------------------------------------
+Specifies the rate change version to be used.
+
+The default behavior should be per 1.0.
+
+Use a WORD value.  The high-order byte specifies the minor version (revision)
+number; the low-order byte specifies the major version number.  On a
+little-endian system (e.g. x86), the WORD value version for the contents of
+this specification is 0x0101.
+
+If the specified rate version is not supported, the call should fail with
+an E_NOINTERFACE error code.
+
+================================================================================
+AM_RATE_QueryFullFrameRate
+--------------------------------------------------------------------------------
+Allows a source filter to query for maximum full-frame rates the timestamp
+scaling filter is capable of.  Maximum full-frame forward and reverse rates
+are queried for.
+
+Use AM_QueryRate structure.  Timestamp scaling filter must set
+lMaxReverseFullFrame struct member to negative rate.
+
+The sourcing filter can still choose to set the full-frame rate to a value
+smaller than the value returned by the timestamp scaling filter.  For example,
+there may be IO issues that prevent a full-frame playback, even if the timestamp
+scaling filter is capable.
+
+Non-full frame playback will consist of groups of continuous samples sent to
+the timestamp scaling filter, separated by discontinuities.  The timestamps for
+each group of samples will jump across the discontinuities, but still increase
+per the RunTimePlus timeline, when compared to RenderTime, once a steady state
+runstate has been achieved.
+
+Note that Rate is used this call, vs. speed.
+
+================================================================================
+AM_RATE_QueryLastRateSegPTS
+--------------------------------------------------------------------------------
+Allows a source filter to query the timestamp scaling filter for the last-set
+rate-segment's effective PTS, regardless of rate-segment position.
+
+Note that Rate is used this call, vs. speed.
+
+================================================================================
+AM_RATE_SimpleRateChange (with 1.1 semantics)
+--------------------------------------------------------------------------------
+If the rate is to be set to the most forward sample, the
+AM_SimpleRateChange.StartTime member is set to value -1 by the sourcing filter.
+This has meaning to the timestamp scaling filter to set the rate to the most
+forward sample, and return that sample's presentation time via the method call's
+[out] parameter.
+
+If the specified rate segment is incompatible, all queued samples with PTS in
+rate-incompatible segment can be discarded.
+
+If the current rate is incompatible i.e. samples are being dropped by the
+timestamp scaling filter and it is not keeping an internal queued, it should
+fail the querying call (AM_SimpleRateChagne.StartTime = -1) with return error
+VFW_E_DVD_WRONG_SPEED.  The sourcing filter will then set a rate with an
+effective PTS.
+
+*/
 

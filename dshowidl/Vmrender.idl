@@ -59,6 +59,7 @@ typedef enum {
     VMRSample_Preroll         = 0x00000002,
     VMRSample_Discontinuity   = 0x00000004,
     VMRSample_TimeValid       = 0x00000008,
+    VMRSample_SrcDstRectsValid= 0x00000010
 } VMRPresentationFlags;
 
 
@@ -354,18 +355,35 @@ interface IVMRWindowlessControl : IUnknown
 typedef enum {
     MixerPref_NoDecimation                 = 0x00000001, // No decimation - full size
     MixerPref_DecimateOutput               = 0x00000002, // decimate output by 2 in x & y
+    MixerPref_ARAdjustXorY          = 0x00000004, // adjust the aspect ratio in x or y
+    MixerPref_DecimationReserved    = 0x00000008, // bits reserved for future use.
     MixerPref_DecimateMask                 = 0x0000000F,
 
     MixerPref_BiLinearFiltering            = 0x00000010, // use bi-linear filtering
     MixerPref_PointFiltering               = 0x00000020, // use point filtering
     MixerPref_FilteringMask                = 0x000000F0, // OR of all above flags
 
-    MixerPref_RenderTargetRGB              = 0x00000100,
-    MixerPref_RenderTargetYUV420           = 0x00000200,
-    MixerPref_RenderTargetYUV422           = 0x00000400,
-    MixerPref_RenderTargetYUV444           = 0x00000800, // AYUV render target.
-    MixerPref_RenderTargetReserved         = 0x0000F000, // 4 bits reserved for future use.
-    MixerPref_RenderTargetMask             = 0x0000FF00, // OR of all above flags
+    MixerPref_RenderTargetRGB       = 0x00000100, // Uses D3D to perform mixing
+    MixerPref_RenderTargetYUV       = 0x00001000, // Uses DXVA to perform mixing
+
+    MixerPref_RenderTargetYUV420    = 0x00000200, // Deprecated render target
+    MixerPref_RenderTargetYUV422    = 0x00000400, // Deprecated render target
+    MixerPref_RenderTargetYUV444    = 0x00000800, // Deprecated render target
+    MixerPref_RenderTargetReserved  = 0x0000E000, // 3 bits reserved for future use.
+    MixerPref_RenderTargetMask      = 0x0000FF00, // OR of all above flags
+
+    //
+    // Dynamic changes that can be performed when the VMR's mixer is
+    // configured to use the YUV Render target (see MixerPref_RenderTargetYUV)
+    // These preferences can be applied while the graph is running and take effect
+    // when the next frame is composed by the mixer.
+    //
+    MixerPref_DynamicSwitchToBOB           = 0x00010000,
+    MixerPref_DynamicDecimateBy2           = 0x00020000,
+
+    MixerPref_DynamicReserved              = 0x000C0000,
+    MixerPref_DynamicMask                  = 0x000F0000
+
 } VMRMixerPrefs;
 
 //

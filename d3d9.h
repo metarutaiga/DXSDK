@@ -24,7 +24,14 @@
  * to be rebuilt. If the version doesn't match, Direct3DCreate9 will fail.
  * (The number itself has no meaning.)*/
 
-#define D3D_SDK_VERSION 31
+#ifdef D3D_DEBUG_INFO
+#define D3D_SDK_VERSION   (32 | 0x80000000)
+#define D3D9b_SDK_VERSION (31 | 0x80000000)
+
+#else
+#define D3D_SDK_VERSION   32
+#define D3D9b_SDK_VERSION 31
+#endif
 
 
 #include <stdlib.h>
@@ -113,6 +120,11 @@ DEFINE_GUID(IID_IDirect3DStateBlock9, 0xb07c4fe5, 0x310d, 0x4ba8, 0xa2, 0x3c, 0x
 /* IID_IDirect3DQuery9 */
 /* {d9771460-a695-4f26-bbd3-27b840b541cc} */
 DEFINE_GUID(IID_IDirect3DQuery9, 0xd9771460, 0xa695, 0x4f26, 0xbb, 0xd3, 0x27, 0xb8, 0x40, 0xb5, 0x41, 0xcc);
+
+
+/* IID_HelperName */
+/* {E4A36723-FDFE-4b22-B146-3C04C07F4CC8} */
+DEFINE_GUID(IID_HelperName, 0xe4a36723, 0xfdfe, 0x4b22, 0xb1, 0x46, 0x3c, 0x4, 0xc0, 0x7f, 0x4c, 0xc8);
 
 
 #endif
@@ -214,10 +226,23 @@ extern "C" {
 
 IDirect3D9 * WINAPI Direct3DCreate9(UINT SDKVersion);
 
+/*
+ * Stubs for graphics profiling.
+ */
+ 
+int WINAPI D3DPERF_BeginEvent( D3DCOLOR col, LPCWSTR wszName );
+int WINAPI D3DPERF_EndEvent( void );
+void WINAPI D3DPERF_SetMarker( D3DCOLOR col, LPCWSTR wszName );
+void WINAPI D3DPERF_SetRegion( D3DCOLOR col, LPCWSTR wszName );
+BOOL WINAPI D3DPERF_QueryRepeatFrame( void );
+
+void WINAPI D3DPERF_SetOptions( DWORD dwOptions );
+DWORD WINAPI D3DPERF_GetStatus( void );
 
 /*
  * Direct3D interfaces
  */
+
 
 
 
@@ -240,7 +265,7 @@ DECLARE_INTERFACE_(IDirect3D9, IUnknown)
     STDMETHOD_(UINT, GetAdapterModeCount)(THIS_ UINT Adapter,D3DFORMAT Format) PURE;
     STDMETHOD(EnumAdapterModes)(THIS_ UINT Adapter,D3DFORMAT Format,UINT Mode,D3DDISPLAYMODE* pMode) PURE;
     STDMETHOD(GetAdapterDisplayMode)(THIS_ UINT Adapter,D3DDISPLAYMODE* pMode) PURE;
-    STDMETHOD(CheckDeviceType)(THIS_ UINT iAdapter,D3DDEVTYPE DevType,D3DFORMAT DisplayFormat,D3DFORMAT BackBufferFormat,BOOL bWindowed) PURE;
+    STDMETHOD(CheckDeviceType)(THIS_ UINT Adapter,D3DDEVTYPE DevType,D3DFORMAT AdapterFormat,D3DFORMAT BackBufferFormat,BOOL bWindowed) PURE;
     STDMETHOD(CheckDeviceFormat)(THIS_ UINT Adapter,D3DDEVTYPE DeviceType,D3DFORMAT AdapterFormat,DWORD Usage,D3DRESOURCETYPE RType,D3DFORMAT CheckFormat) PURE;
     STDMETHOD(CheckDeviceMultiSampleType)(THIS_ UINT Adapter,D3DDEVTYPE DeviceType,D3DFORMAT SurfaceFormat,BOOL Windowed,D3DMULTISAMPLE_TYPE MultiSampleType,DWORD* pQualityLevels) PURE;
     STDMETHOD(CheckDepthStencilMatch)(THIS_ UINT Adapter,D3DDEVTYPE DeviceType,D3DFORMAT AdapterFormat,D3DFORMAT RenderTargetFormat,D3DFORMAT DepthStencilFormat) PURE;
@@ -248,8 +273,12 @@ DECLARE_INTERFACE_(IDirect3D9, IUnknown)
     STDMETHOD(GetDeviceCaps)(THIS_ UINT Adapter,D3DDEVTYPE DeviceType,D3DCAPS9* pCaps) PURE;
     STDMETHOD_(HMONITOR, GetAdapterMonitor)(THIS_ UINT Adapter) PURE;
     STDMETHOD(CreateDevice)(THIS_ UINT Adapter,D3DDEVTYPE DeviceType,HWND hFocusWindow,DWORD BehaviorFlags,D3DPRESENT_PARAMETERS* pPresentationParameters,IDirect3DDevice9** ppReturnedDeviceInterface) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR Version;
+    #endif
 };
-
+    
 typedef struct IDirect3D9 *LPDIRECT3D9, *PDIRECT3D9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -421,9 +450,9 @@ DECLARE_INTERFACE_(IDirect3DDevice9, IUnknown)
     STDMETHOD(SetVertexShaderConstantB)(THIS_ UINT StartRegister,CONST BOOL* pConstantData,UINT  BoolCount) PURE;
     STDMETHOD(GetVertexShaderConstantB)(THIS_ UINT StartRegister,BOOL* pConstantData,UINT BoolCount) PURE;
     STDMETHOD(SetStreamSource)(THIS_ UINT StreamNumber,IDirect3DVertexBuffer9* pStreamData,UINT OffsetInBytes,UINT Stride) PURE;
-    STDMETHOD(GetStreamSource)(THIS_ UINT StreamNumber,IDirect3DVertexBuffer9** ppStreamData,UINT* OffsetInBytes,UINT* pStride) PURE;
-    STDMETHOD(SetStreamSourceFreq)(THIS_ UINT StreamNumber,UINT Divider) PURE;
-    STDMETHOD(GetStreamSourceFreq)(THIS_ UINT StreamNumber,UINT* Divider) PURE;
+    STDMETHOD(GetStreamSource)(THIS_ UINT StreamNumber,IDirect3DVertexBuffer9** ppStreamData,UINT* pOffsetInBytes,UINT* pStride) PURE;
+    STDMETHOD(SetStreamSourceFreq)(THIS_ UINT StreamNumber,UINT Setting) PURE;
+    STDMETHOD(GetStreamSourceFreq)(THIS_ UINT StreamNumber,UINT* pSetting) PURE;
     STDMETHOD(SetIndices)(THIS_ IDirect3DIndexBuffer9* pIndexData) PURE;
     STDMETHOD(GetIndices)(THIS_ IDirect3DIndexBuffer9** ppIndexData) PURE;
     STDMETHOD(CreatePixelShader)(THIS_ CONST DWORD* pFunction,IDirect3DPixelShader9** ppShader) PURE;
@@ -439,8 +468,43 @@ DECLARE_INTERFACE_(IDirect3DDevice9, IUnknown)
     STDMETHOD(DrawTriPatch)(THIS_ UINT Handle,CONST float* pNumSegs,CONST D3DTRIPATCH_INFO* pTriPatchInfo) PURE;
     STDMETHOD(DeletePatch)(THIS_ UINT Handle) PURE;
     STDMETHOD(CreateQuery)(THIS_ D3DQUERYTYPE Type,IDirect3DQuery9** ppQuery) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    D3DDEVICE_CREATION_PARAMETERS CreationParameters;
+    D3DPRESENT_PARAMETERS PresentParameters;
+    D3DDISPLAYMODE DisplayMode;
+    D3DCAPS9 Caps;
+    
+    UINT AvailableTextureMem;
+    UINT SwapChains;
+    UINT Textures;
+    UINT VertexBuffers;
+    UINT IndexBuffers;
+    UINT VertexShaders;
+    UINT PixelShaders;
+    
+    D3DVIEWPORT9 Viewport;
+    D3DMATRIX ProjectionMatrix;
+    D3DMATRIX ViewMatrix;
+    D3DMATRIX WorldMatrix;
+    D3DMATRIX TextureMatrices[8];
+    
+    DWORD FVF;
+    UINT VertexSize;
+    DWORD VertexShaderVersion;
+    DWORD PixelShaderVersion;
+    BOOL SoftwareVertexProcessing;
+    
+    D3DMATERIAL9 Material;
+    D3DLIGHT9 Lights[16];
+    BOOL LightsEnabled[16];
+    
+    D3DGAMMARAMP GammaRamp;
+    RECT ScissorRect;
+    BOOL DialogBoxMode;
+    #endif
 };
-
+    
 typedef struct IDirect3DDevice9 *LPDIRECT3DDEVICE9, *PDIRECT3DDEVICE9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -700,8 +764,12 @@ DECLARE_INTERFACE_(IDirect3DStateBlock9, IUnknown)
     STDMETHOD(GetDevice)(THIS_ IDirect3DDevice9** ppDevice) PURE;
     STDMETHOD(Capture)(THIS) PURE;
     STDMETHOD(Apply)(THIS) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DStateBlock9 *LPDIRECT3DSTATEBLOCK9, *PDIRECT3DSTATEBLOCK9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -719,6 +787,7 @@ typedef struct IDirect3DStateBlock9 *LPDIRECT3DSTATEBLOCK9, *PDIRECT3DSTATEBLOCK
 #define IDirect3DStateBlock9_Capture(p) (p)->Capture()
 #define IDirect3DStateBlock9_Apply(p) (p)->Apply()
 #endif
+
 
 
 
@@ -740,8 +809,14 @@ DECLARE_INTERFACE_(IDirect3DSwapChain9, IUnknown)
     STDMETHOD(GetDisplayMode)(THIS_ D3DDISPLAYMODE* pMode) PURE;
     STDMETHOD(GetDevice)(THIS_ IDirect3DDevice9** ppDevice) PURE;
     STDMETHOD(GetPresentParameters)(THIS_ D3DPRESENT_PARAMETERS* pPresentationParameters) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    D3DPRESENT_PARAMETERS PresentParameters;
+    D3DDISPLAYMODE DisplayMode;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DSwapChain9 *LPDIRECT3DSWAPCHAIN9, *PDIRECT3DSWAPCHAIN9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -790,7 +865,7 @@ DECLARE_INTERFACE_(IDirect3DResource9, IUnknown)
     STDMETHOD_(void, PreLoad)(THIS) PURE;
     STDMETHOD_(D3DRESOURCETYPE, GetType)(THIS) PURE;
 };
-
+    
 typedef struct IDirect3DResource9 *LPDIRECT3DRESOURCE9, *PDIRECT3DRESOURCE9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -821,6 +896,7 @@ typedef struct IDirect3DResource9 *LPDIRECT3DRESOURCE9, *PDIRECT3DRESOURCE9;
 
 
 
+
 #undef INTERFACE
 #define INTERFACE IDirect3DVertexDeclaration9
 
@@ -833,9 +909,13 @@ DECLARE_INTERFACE_(IDirect3DVertexDeclaration9, IUnknown)
 
     /*** IDirect3DVertexDeclaration9 methods ***/
     STDMETHOD(GetDevice)(THIS_ IDirect3DDevice9** ppDevice) PURE;
-    STDMETHOD(GetDeclaration)(THIS_ D3DVERTEXELEMENT9*,UINT* pNumElements) PURE;
+    STDMETHOD(GetDeclaration)(THIS_ D3DVERTEXELEMENT9* pElement,UINT* pNumElements) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DVertexDeclaration9 *LPDIRECT3DVERTEXDECLARATION9, *PDIRECT3DVERTEXDECLARATION9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -854,6 +934,7 @@ typedef struct IDirect3DVertexDeclaration9 *LPDIRECT3DVERTEXDECLARATION9, *PDIRE
 
 
 
+
 #undef INTERFACE
 #define INTERFACE IDirect3DVertexShader9
 
@@ -867,8 +948,13 @@ DECLARE_INTERFACE_(IDirect3DVertexShader9, IUnknown)
     /*** IDirect3DVertexShader9 methods ***/
     STDMETHOD(GetDevice)(THIS_ IDirect3DDevice9** ppDevice) PURE;
     STDMETHOD(GetFunction)(THIS_ void*,UINT* pSizeOfData) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    DWORD Version;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DVertexShader9 *LPDIRECT3DVERTEXSHADER9, *PDIRECT3DVERTEXSHADER9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -887,6 +973,7 @@ typedef struct IDirect3DVertexShader9 *LPDIRECT3DVERTEXSHADER9, *PDIRECT3DVERTEX
 
 
 
+
 #undef INTERFACE
 #define INTERFACE IDirect3DPixelShader9
 
@@ -900,8 +987,13 @@ DECLARE_INTERFACE_(IDirect3DPixelShader9, IUnknown)
     /*** IDirect3DPixelShader9 methods ***/
     STDMETHOD(GetDevice)(THIS_ IDirect3DDevice9** ppDevice) PURE;
     STDMETHOD(GetFunction)(THIS_ void*,UINT* pSizeOfData) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    DWORD Version;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DPixelShader9 *LPDIRECT3DPIXELSHADER9, *PDIRECT3DPIXELSHADER9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -947,7 +1039,7 @@ DECLARE_INTERFACE_(IDirect3DBaseTexture9, IDirect3DResource9)
     STDMETHOD_(D3DTEXTUREFILTERTYPE, GetAutoGenFilterType)(THIS) PURE;
     STDMETHOD_(void, GenerateMipSubLevels)(THIS) PURE;
 };
-
+    
 typedef struct IDirect3DBaseTexture9 *LPDIRECT3DBASETEXTURE9, *PDIRECT3DBASETEXTURE9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -1022,8 +1114,23 @@ DECLARE_INTERFACE_(IDirect3DTexture9, IDirect3DBaseTexture9)
     STDMETHOD(LockRect)(THIS_ UINT Level,D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags) PURE;
     STDMETHOD(UnlockRect)(THIS_ UINT Level) PURE;
     STDMETHOD(AddDirtyRect)(THIS_ CONST RECT* pDirtyRect) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR Name;
+    UINT Width;
+    UINT Height;
+    UINT Levels;
+    DWORD Usage;
+    D3DFORMAT Format;
+    D3DPOOL Pool;
+    DWORD Priority;
+    DWORD LOD;
+    D3DTEXTUREFILTERTYPE FilterType;
+    UINT LockCount;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DTexture9 *LPDIRECT3DTEXTURE9, *PDIRECT3DTEXTURE9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -1108,8 +1215,24 @@ DECLARE_INTERFACE_(IDirect3DVolumeTexture9, IDirect3DBaseTexture9)
     STDMETHOD(LockBox)(THIS_ UINT Level,D3DLOCKED_BOX* pLockedVolume,CONST D3DBOX* pBox,DWORD Flags) PURE;
     STDMETHOD(UnlockBox)(THIS_ UINT Level) PURE;
     STDMETHOD(AddDirtyBox)(THIS_ CONST D3DBOX* pDirtyBox) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR Name;
+    UINT Width;
+    UINT Height;
+    UINT Depth;
+    UINT Levels;
+    DWORD Usage;
+    D3DFORMAT Format;
+    D3DPOOL Pool;
+    DWORD Priority;
+    DWORD LOD;
+    D3DTEXTUREFILTERTYPE FilterType;
+    UINT LockCount;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DVolumeTexture9 *LPDIRECT3DVOLUMETEXTURE9, *PDIRECT3DVOLUMETEXTURE9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -1194,8 +1317,23 @@ DECLARE_INTERFACE_(IDirect3DCubeTexture9, IDirect3DBaseTexture9)
     STDMETHOD(LockRect)(THIS_ D3DCUBEMAP_FACES FaceType,UINT Level,D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags) PURE;
     STDMETHOD(UnlockRect)(THIS_ D3DCUBEMAP_FACES FaceType,UINT Level) PURE;
     STDMETHOD(AddDirtyRect)(THIS_ D3DCUBEMAP_FACES FaceType,CONST RECT* pDirtyRect) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR Name;
+    UINT Width;
+    UINT Height;
+    UINT Levels;
+    DWORD Usage;
+    D3DFORMAT Format;
+    D3DPOOL Pool;
+    DWORD Priority;
+    DWORD LOD;
+    D3DTEXTUREFILTERTYPE FilterType;
+    UINT LockCount;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DCubeTexture9 *LPDIRECT3DCUBETEXTURE9, *PDIRECT3DCUBETEXTURE9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -1271,8 +1409,19 @@ DECLARE_INTERFACE_(IDirect3DVertexBuffer9, IDirect3DResource9)
     STDMETHOD(Lock)(THIS_ UINT OffsetToLock,UINT SizeToLock,void** ppbData,DWORD Flags) PURE;
     STDMETHOD(Unlock)(THIS) PURE;
     STDMETHOD(GetDesc)(THIS_ D3DVERTEXBUFFER_DESC *pDesc) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR Name;
+    UINT Length;
+    DWORD Usage;
+    DWORD FVF;
+    D3DPOOL Pool;
+    DWORD Priority;
+    UINT LockCount;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DVertexBuffer9 *LPDIRECT3DVERTEXBUFFER9, *PDIRECT3DVERTEXBUFFER9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -1332,8 +1481,19 @@ DECLARE_INTERFACE_(IDirect3DIndexBuffer9, IDirect3DResource9)
     STDMETHOD(Lock)(THIS_ UINT OffsetToLock,UINT SizeToLock,void** ppbData,DWORD Flags) PURE;
     STDMETHOD(Unlock)(THIS) PURE;
     STDMETHOD(GetDesc)(THIS_ D3DINDEXBUFFER_DESC *pDesc) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR Name;
+    UINT Length;
+    DWORD Usage;
+    D3DFORMAT Format;
+    D3DPOOL Pool;
+    DWORD Priority;
+    UINT LockCount;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DIndexBuffer9 *LPDIRECT3DINDEXBUFFER9, *PDIRECT3DINDEXBUFFER9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -1396,8 +1556,23 @@ DECLARE_INTERFACE_(IDirect3DSurface9, IDirect3DResource9)
     STDMETHOD(UnlockRect)(THIS) PURE;
     STDMETHOD(GetDC)(THIS_ HDC *phdc) PURE;
     STDMETHOD(ReleaseDC)(THIS_ HDC hdc) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR Name;
+    UINT Width;
+    UINT Height;
+    DWORD Usage;
+    D3DFORMAT Format;
+    D3DPOOL Pool;
+    D3DMULTISAMPLE_TYPE MultiSampleType;
+    DWORD MultiSampleQuality;
+    DWORD Priority;
+    UINT LockCount;
+    UINT DCCount;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DSurface9 *LPDIRECT3DSURFACE9, *PDIRECT3DSURFACE9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -1441,6 +1616,7 @@ typedef struct IDirect3DSurface9 *LPDIRECT3DSURFACE9, *PDIRECT3DSURFACE9;
 
 
 
+
 #undef INTERFACE
 #define INTERFACE IDirect3DVolume9
 
@@ -1460,8 +1636,20 @@ DECLARE_INTERFACE_(IDirect3DVolume9, IUnknown)
     STDMETHOD(GetDesc)(THIS_ D3DVOLUME_DESC *pDesc) PURE;
     STDMETHOD(LockBox)(THIS_ D3DLOCKED_BOX * pLockedVolume,CONST D3DBOX* pBox,DWORD Flags) PURE;
     STDMETHOD(UnlockBox)(THIS) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    LPCWSTR Name;
+    UINT Width;
+    UINT Height;
+    UINT Depth;
+    DWORD Usage;
+    D3DFORMAT Format;
+    D3DPOOL Pool;
+    UINT LockCount;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DVolume9 *LPDIRECT3DVOLUME9, *PDIRECT3DVOLUME9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -1492,6 +1680,7 @@ typedef struct IDirect3DVolume9 *LPDIRECT3DVOLUME9, *PDIRECT3DVOLUME9;
 
 
 
+
 #undef INTERFACE
 #define INTERFACE IDirect3DQuery9
 
@@ -1508,8 +1697,14 @@ DECLARE_INTERFACE_(IDirect3DQuery9, IUnknown)
     STDMETHOD_(DWORD, GetDataSize)(THIS) PURE;
     STDMETHOD(Issue)(THIS_ DWORD dwIssueFlags) PURE;
     STDMETHOD(GetData)(THIS_ void* pData,DWORD dwSize,DWORD dwGetDataFlags) PURE;
+    
+    #ifdef D3D_DEBUG_INFO
+    D3DQUERYTYPE Type;
+    DWORD DataSize;
+    LPCWSTR CreationCallStack;
+    #endif
 };
-
+    
 typedef struct IDirect3DQuery9 *LPDIRECT3DQUERY9, *PDIRECT3DQUERY9;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -1560,11 +1755,19 @@ typedef struct IDirect3DQuery9 *LPDIRECT3DQUERY9, *PDIRECT3DQUERY9;
 
 #define D3DCREATE_DISABLE_DRIVER_MANAGEMENT     0x00000100L
 #define D3DCREATE_ADAPTERGROUP_DEVICE           0x00000200L
+#define D3DCREATE_DISABLE_DRIVER_MANAGEMENT_EX  0x00000400L
+
+// This flag causes the D3D runtime not to alter the focus 
+// window in any way. Use with caution- the burden of supporting
+// focus management events (alt-tab, etc.) falls on the 
+// application, and appropriate responses (switching display
+// mode, etc.) should be coded.
+#define D3DCREATE_NOWINDOWCHANGES				0x00000800L
 
 
 /****************************************************************************
  *
- * Parameter for IDirect3D9::CreateDevice's iAdapter
+ * Parameter for IDirect3D9::CreateDevice's Adapter argument
  *
  ****************************************************************************/
 
@@ -1580,7 +1783,7 @@ typedef struct IDirect3DQuery9 *LPDIRECT3DQUERY9, *PDIRECT3DQUERY9;
 
 /****************************************************************************
  *
- * Maximum number of back-buffers supported in DX8
+ * Maximum number of back-buffers supported in DX9
  *
  ****************************************************************************/
 
