@@ -18,14 +18,14 @@ Abstract:
 #define _XACT_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs (Version 2.5)
+// XACT class and interface IDs (Version 2.6)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         54b68bc7, 3a45, 416b, a8, c9, 19, bf, 19, ec, 1d, f5);
-    DEFINE_CLSID(XACTAuditionEngine, aeaf4809, 6e94, 4663, 8f, f8, 1b, 4c, 7c, 0e, 6d, fd);
-    DEFINE_CLSID(XACTDebugEngine,    290d0a8c, a131, 4cf4, 8b, bd, 37, d0, 2b, 59, cc, 4a);
-    DEFINE_IID(IXACTEngine,          f9df94ad, 6960, 4307, bf, ad, 4e, 97, ac, 18, 94, c6);
+    DEFINE_CLSID(XACTEngine,         3a2495ce, 31d0, 435b, 8c, cf, e9, f0, 84, 3f, d9, 60);
+    DEFINE_CLSID(XACTAuditionEngine, a17e147b, c168, 45d4, 95, f6, b2, 15, 15, ec, 1e, 66);
+    DEFINE_CLSID(XACTDebugEngine,    fe7e064f, f9ea, 49ee, ba, 64, 84, 5e, 42, 35, 59, c5);
+    DEFINE_IID(IXACTEngine,         5a5d41d0, 2161, 4a39, aa, dc, 11, 49, 30, 14, 7e, aa);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
