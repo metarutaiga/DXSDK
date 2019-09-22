@@ -1542,9 +1542,9 @@ DEFINE_GUID(IID_ID3DXPRTBuffer,
 DEFINE_GUID(IID_ID3DXPRTCompBuffer, 
 0xa758d465, 0xfe8d, 0x45ad, 0x9c, 0xf0, 0xd0, 0x1e, 0x56, 0x26, 0x6a, 0x7);
 
-// {06F57E0A-BD95-43f1-A3DA-791CF6CA297B}
+// {838F01EC-9729-4527-AADB-DF70ADE7FEA9}
 DEFINE_GUID(IID_ID3DXTextureGutterHelper, 
-0x6f57e0a, 0xbd95, 0x43f1, 0xa3, 0xda, 0x79, 0x1c, 0xf6, 0xca, 0x29, 0x7b);
+0x838f01ec, 0x9729, 0x4527, 0xaa, 0xdb, 0xdf, 0x70, 0xad, 0xe7, 0xfe, 0xa9);
 
 // {683A4278-CD5F-4d24-90AD-C4E1B6855D53}
 DEFINE_GUID(IID_ID3DXPRTEngine, 
@@ -1721,6 +1721,27 @@ DECLARE_INTERFACE_(ID3DXTextureGutterHelper, IUnknown)
     // Applies gutters to a D3DXPRTBuffer
     // Dimensions must match GutterHelper
     STDMETHOD(ApplyGuttersPRT)(THIS_ LPD3DXPRTBUFFER pBuffer);
+       
+    // Resamples a texture from a mesh onto this gutterhelpers
+    // parameterization.  It is assumed that the UV coordinates
+    // for this gutter helper are in TEXTURE 0 (usage/usage index)
+    // and the texture coordinates should all be within [0,1] for
+    // both sets.
+    //
+    // pTextureIn - texture represented using parameterization in pMeshIn
+    // pMeshIn    - Mesh with texture coordinates that represent pTextureIn
+    //              pTextureOut texture coordinates are assumed to be in
+    //              TEXTURE 0
+    // Usage      - field in DECL for pMeshIn that stores texture coordinates
+    //              for pTextureIn
+    // UsageIndex - which index for Usage above for pTextureIn
+    // pTextureOut- Resampled texture
+    // 
+    // Usage would generally be D3DDECLUSAGE_TEXCOORD  and UsageIndex other than zero
+    STDMETHOD(ResampleTex)(THIS_ LPDIRECT3DTEXTURE9 pTextureIn,
+                                 LPD3DXMESH pMeshIn,
+                                 D3DDECLUSAGE Usage, UINT UsageIndex,
+                                 LPDIRECT3DTEXTURE9 pTextureOut);    
     
     // the routines below provide access to the data structures
     // used by the Apply functions
