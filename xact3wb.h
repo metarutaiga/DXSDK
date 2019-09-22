@@ -2,8 +2,8 @@
  *
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *
- *  File:       xact2wb.h
- *  Content:    XACT 2 wave bank definitions.
+ *  File:       xact3wb.h
+ *  Content:    XACT 3 wave bank definitions.
  *
  ****************************************************************************/
 
@@ -15,8 +15,6 @@
 #else
 #   include <math.h>
 #endif
-
-#include <xact.h>
 
 #pragma warning(push)
 #pragma warning(disable:4201)
@@ -75,6 +73,7 @@ typedef DWORD WAVEBANKOFFSET;
 #define WAVEBANKMINIFORMAT_TAG_PCM      0x0     // PCM data
 #define WAVEBANKMINIFORMAT_TAG_XMA      0x1     // XMA data
 #define WAVEBANKMINIFORMAT_TAG_ADPCM    0x2     // ADPCM data
+#define WAVEBANKMINIFORMAT_TAG_WMA      0x3     // WMA data
 
 #define WAVEBANKMINIFORMAT_BITDEPTH_8   0x0     // 8-bit data (PCM only)
 #define WAVEBANKMINIFORMAT_BITDEPTH_16  0x1     // 16-bit data (PCM only)
@@ -249,6 +248,39 @@ typedef struct WAVEBANKHEADER
 typedef const WAVEBANKHEADER *LPCWAVEBANKHEADER;
 
 //
+// Table for converting WMA Average Bytes per Second values to the WAVEBANKMINIWAVEFORMAT wBlockAlign field
+// NOTE: There can be a max of 8 values in the table.
+//
+
+#define MAX_WMA_AVG_BYTES_PER_SEC_ENTRIES 2
+
+static const DWORD aWMAAvgBytesPerSec[] =
+{
+    12000,
+    24000
+};
+
+
+//
+// Table for converting WMA Block Align values to the WAVEBANKMINIWAVEFORMAT wBlockAlign field
+// NOTE: There can be a max of 32 values in the table.
+//
+
+#define MAX_WMA_BLOCK_ALIGN_ENTRIES 8
+
+static const DWORD aWMABlockAlign[] =
+{
+    929,            // 22050, 1 channel (24000)
+    1487,           // 22050, 2 channel (24000)
+    1280,           // 32000, 1 channel (24000)
+    2230,           // 44100, 1 channel (12000, 24000)
+    8917,           // 44100, 2 channel (24000); 44100, 6 channel (24000)
+    8192,           // 48000, 6 channel (24000); 48000, 2 channel (24000)
+    4459,           // 44100, 2 channel (12000)
+    5945            // 44100, 6 channel (12000)
+};
+
+//
 // Entry compressed data format
 //
 
@@ -259,8 +291,8 @@ typedef union WAVEBANKMINIWAVEFORMAT
         DWORD       wFormatTag      : 2;        // Format tag
         DWORD       nChannels       : 3;        // Channel count (1 - 6)
         DWORD       nSamplesPerSec  : 18;       // Sampling rate
-        DWORD       wBlockAlign     : 8;        // Block alignment
-        DWORD       wBitsPerSample  : 1;        // Bits per sample (8 vs. 16, PCM only)
+        DWORD       wBlockAlign     : 8;        // Block alignment.  For WMA, lower 6 bits block alignment index, upper 2 bits bytes-per-second index.
+        DWORD       wBitsPerSample  : 1;        // Bits per sample (8 vs. 16, PCM only); WMAudio2/WMAudio3 (for WMA)
     };
 
     DWORD           dwValue;
@@ -274,14 +306,69 @@ typedef union WAVEBANKMINIWAVEFORMAT
 
     WORD BitsPerSample() const
     {
-        return wBitsPerSample == WAVEBANKMINIFORMAT_BITDEPTH_16 ? 16 : 8;
+        return wFormatTag == WAVEBANKMINIFORMAT_TAG_WMA ? 16 : (wBitsPerSample == WAVEBANKMINIFORMAT_BITDEPTH_16 ? 16 : 8);
     }
 
     #define ADPCM_MINIWAVEFORMAT_BLOCKALIGN_CONVERSION_OFFSET 22
     DWORD BlockAlign() const
     {
-        return wFormatTag != WAVEBANKMINIFORMAT_TAG_ADPCM ? wBlockAlign :
-               (wBlockAlign + ADPCM_MINIWAVEFORMAT_BLOCKALIGN_CONVERSION_OFFSET) * nChannels;
+        DWORD dwReturn = 0;
+
+        if (wFormatTag == WAVEBANKMINIFORMAT_TAG_WMA)
+        {
+            DWORD dwBlockAlignIndex = wBlockAlign & 0x1F;
+            if (dwBlockAlignIndex < MAX_WMA_BLOCK_ALIGN_ENTRIES)
+            {
+                dwReturn = aWMABlockAlign[dwBlockAlignIndex];
+            }
+        }
+        else if (wFormatTag == WAVEBANKMINIFORMAT_TAG_ADPCM)
+        {
+            dwReturn = (wBlockAlign + ADPCM_MINIWAVEFORMAT_BLOCKALIGN_CONVERSION_OFFSET) * nChannels;
+        }
+        else
+        {
+            dwReturn = wBlockAlign;
+        }
+
+        return dwReturn;
+    }
+
+    DWORD AvgBytesPerSec() const
+    {
+        DWORD dwReturn = 0;
+
+        if (wFormatTag == WAVEBANKMINIFORMAT_TAG_WMA)
+        {
+            DWORD dwBytesPerSecIndex = wBlockAlign >> 5;
+            if (dwBytesPerSecIndex < MAX_WMA_AVG_BYTES_PER_SEC_ENTRIES)
+            {
+                dwReturn = aWMAAvgBytesPerSec[dwBytesPerSecIndex];
+            }
+        }
+
+        return dwReturn;
+    }
+
+    DWORD EncodeWMABlockAlign(DWORD dwBlockAlign, DWORD dwAvgBytesPerSec)
+    {
+        DWORD dwReturn = 0;
+        DWORD dwBlockAlignIndex = 0;
+        DWORD dwBytesPerSecIndex = 0;
+
+        for (; dwBlockAlignIndex < MAX_WMA_BLOCK_ALIGN_ENTRIES && dwBlockAlign != aWMABlockAlign[dwBlockAlignIndex]; dwBlockAlignIndex++);
+
+        if (dwBlockAlignIndex < MAX_WMA_BLOCK_ALIGN_ENTRIES)
+        {
+            for (; dwBytesPerSecIndex < MAX_WMA_AVG_BYTES_PER_SEC_ENTRIES && dwAvgBytesPerSec != aWMAAvgBytesPerSec[dwBytesPerSecIndex]; dwBytesPerSecIndex++);
+
+            if (dwBytesPerSecIndex < MAX_WMA_AVG_BYTES_PER_SEC_ENTRIES)
+            {
+                dwReturn = dwBlockAlignIndex | (dwBytesPerSecIndex << 5);
+            }
+        }
+
+        return dwReturn;
     }
 
 #endif // __cplusplus

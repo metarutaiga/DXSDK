@@ -122,6 +122,14 @@
     #define WAVE_FORMAT_DOLBY_AC3_SPDIF 0x0092 // Dolby Audio Codec 3 over S/PDIF
 #endif
 
+#ifndef WAVE_FORMAT_WMAUDIO2
+    #define WAVE_FORMAT_WMAUDIO2        0x0161 // Windows Media Audio
+#endif
+
+#ifndef WAVE_FORMAT_WMAUDIO3
+    #define WAVE_FORMAT_WMAUDIO3        0x0162 // Windows Media Audio Pro
+#endif
+
 #ifndef WAVE_FORMAT_WMASPDIF
     #define WAVE_FORMAT_WMASPDIF        0x0164 // Windows Media Audio over S/PDIF
 #endif

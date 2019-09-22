@@ -15,8 +15,8 @@
 // Current name of the DLL shipped in the same SDK as this header.
 
 
-#define D3DX10_DLL_W L"d3dx10_36.dll"
-#define D3DX10_DLL_A "d3dx10_36.dll"
+#define D3DX10_DLL_W L"d3dx10_37.dll"
+#define D3DX10_DLL_A "d3dx10_37.dll"
 
 #ifdef UNICODE
     #define D3DX10_DLL D3DX10_DLL_W 
@@ -39,7 +39,7 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////
 
 
-#define D3DX10_SDK_VERSION 36
+#define D3DX10_SDK_VERSION 37
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,6 @@ HRESULT WINAPI D3DX10GetFeatureLevel1(ID3D10Device *pDevice, ID3D10Device1 **ppD
 BOOL WINAPI D3DX10DebugMute(BOOL Mute);  
 #endif
 HRESULT WINAPI D3DX10CheckVersion(UINT D3DSdkVersion, UINT D3DX10SdkVersion);
-UINT WINAPI D3DX10GetDriverLevel(ID3D10Device *pDevice);
 
 #ifdef __cplusplus
 }

@@ -17,7 +17,7 @@
  *
  **************************************************************************/
 
-#include <comdecl.h>        // For DEFINE_CLSID and DEFINE_IID
+#include "comdecl.h"        // For DEFINE_CLSID and DEFINE_IID
 
 DEFINE_CLSID(AudioVolumeMeter, C0C56F46, 29B1, 44E9, 99, 39, A3, 2C, E8, 68, 67, E2);
 DEFINE_CLSID(AudioVolumeMeter_Debug, C0C56F46, 29B1, 44E9, 99, 39, A3, 2C, E8, 68, 67, DB);
@@ -115,9 +115,10 @@ DEFINE_CLSID(AudioReverb_Debug, 6F6EA3A9, 2CF5, 41CF, 91, C1, 21, 70, B1, 54, 00
  **************************************************************************/
 
 
-// XAUDIO2FX_VOLUMEMETER_LEVELS: Receives results from GetMeterLevels().
+// XAUDIO2FX_VOLUMEMETER_LEVELS: Receives results from GetEffectParameters().
 // The user is responsible for allocating pPeakLevels, pRMSLevels, and
 // initializing ChannelCount accordingly.
+// The volume meter does not support SetEffectParameters().
 
 typedef struct XAUDIO2FX_VOLUMEMETER_LEVELS
 {
@@ -134,9 +135,12 @@ typedef struct XAUDIO2FX_VOLUMEMETER_LEVELS
  *
  * Reverb parameters.
  * The reverb currently supports only FLOAT32 mono audio formats.
+ * The framerate must be within [20000, 48000] Hz.
  *
  **************************************************************************/
 
+#define XAUDIO2FX_REVERB_MIN_FRAMERATE 20000
+#define XAUDIO2FX_REVERB_MAX_FRAMERATE 48000
 
 // XAUDIO2FX_REVERB_PARAMETERS: Native parameter set for the reverb effect
 

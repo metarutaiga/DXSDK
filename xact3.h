@@ -39,11 +39,9 @@ Abstract:
     #include <windows.h>
     #include <objbase.h>
     #include <float.h>
-#else
-    #include <xaudio.h>
 #endif
 #include <limits.h>
-#include <xact2wb.h>
+#include <xact3wb.h>
 #include <xaudio2.h>
 
 //------------------------------------------------------------------------------
@@ -155,7 +153,7 @@ static const XACTPITCH              XACTPITCH_MAX                   = 1200;
 static const XACTPITCH              XACTPITCH_MIN_TOTAL             = -2400; // total allowable pitch change, use with IXACTWave.SetPitch()
 static const XACTPITCH              XACTPITCH_MAX_TOTAL             = 2400;
 static const XACTVOLUME             XACTVOLUME_MIN                  = 0.0f;
-static const XACTVOLUME             XACTVOLUME_MAX                  = FLT_MAX;
+static const XACTVOLUME             XACTVOLUME_MAX                  = 16777216.0f;   // Maximum acceptable volume level (2^24) - matches XAudio2 max volume
 static const XACTVARIABLEVALUE      XACTPARAMETERVALUE_MIN          = -FLT_MAX;
 static const XACTVARIABLEVALUE      XACTPARAMETERVALUE_MAX          = FLT_MAX;
 static const XACTLOOPCOUNT          XACTLOOPCOUNT_MIN               = 0x0;
@@ -175,7 +173,7 @@ static const XAUDIOVOICEINDEX       XACTMAXOUTPUTVOICECOUNT         = 3;
 // -----------------------------------------------------------------------------
 // Current Content Tool Version
 // -----------------------------------------------------------------------------
-#define XACT_CONTENT_VERSION        43
+#define XACT_CONTENT_VERSION        44
 
 // -----------------------------------------------------------------------------
 // XACT Stop Flags
