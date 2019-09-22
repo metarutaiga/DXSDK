@@ -1771,6 +1771,43 @@ HRESULT WINAPI
         D3DXVECTOR3 *pMax);
 
 
+///////////////////////////////////////////////////////////////////////////
+// CPU Optimization:
+///////////////////////////////////////////////////////////////////////////
+
+//-------------------------------------------------------------------------
+// D3DX_CPU_OPTIMIZATION flags:
+// ----------------------------
+// D3DX_NOT_OPTIMIZED       Use Intel Pentium optimizations
+// D3DX_3DNOW_OPTIMIZED     Use AMD 3DNow optimizations
+// D3DX_SSE_OPTIMIZED       Use Intel Pentium III SSE optimizations
+// D3DX_SSE2_OPTIMIZED      Use Intel Pentium IV SSE2 optimizations
+//-------------------------------------------------------------------------
+
+
+typedef enum _D3DX_CPU_OPTIMIZATION
+{
+    D3DX_NOT_OPTIMIZED = 0,
+    D3DX_3DNOW_OPTIMIZED,
+    D3DX_SSE2_OPTIMIZED,
+    D3DX_SSE_OPTIMIZED
+} D3DX_CPU_OPTIMIZATION;
+
+
+//-------------------------------------------------------------------------
+// D3DXCpuOptimizations:
+// ---------------------
+// Enables or disables CPU optimizations. Returns the type of CPU, which 
+// was detected, and for which optimizations exist.
+//
+// Parameters:
+//  Enable
+//      TRUE to enable CPU optimizations. FALSE to disable.
+//-------------------------------------------------------------------------
+
+D3DX_CPU_OPTIMIZATION WINAPI 
+    D3DXCpuOptimizations(BOOL Enable);
+
 #ifdef __cplusplus
 }
 #endif

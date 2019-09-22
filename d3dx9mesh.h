@@ -129,6 +129,16 @@ typedef enum _D3DXIMT
     D3DXIMT_WRAP_UV =                   0x03,
 } D3DXIMT;
 
+// These options are only valid for UVAtlasCreate and UVAtlasPartition, we may add more for UVAtlasPack if necessary
+// D3DXUVATLAS_DEFAULT - Meshes with more than 25k faces go through fast, meshes with fewer than 25k faces go through quality
+// D3DXUVATLAS_GEODESIC_FAST - Uses approximations to improve charting speed at the cost of added stretch or more charts.
+// D3DXUVATLAS_GEODESIC_QUALITY - Provides better quality charts, but requires more time and memory than fast.
+typedef enum _D3DXUVATLAS
+{
+    D3DXUVATLAS_DEFAULT               = 0x00,
+    D3DXUVATLAS_GEODESIC_FAST         = 0x01,
+    D3DXUVATLAS_GEODESIC_QUALITY      = 0x02,
+} D3DXUVATLAS;
 
 typedef struct ID3DXBaseMesh *LPD3DXBASEMESH;
 typedef struct ID3DXMesh *LPD3DXMESH;
@@ -1200,6 +1210,7 @@ typedef HRESULT (WINAPI *LPD3DXUVATLASCB)(FLOAT fPercentDone,  LPVOID lpUserCont
 //  fCallbackFrequency - This lets you specify how often the callback will be
 //                       called. A decent default should be 0.0001f.
 //  pUserContext - a void pointer to be passed back to the callback function
+//  dwOptions - A combination of flags in the D3DXUVATLAS enum
 //  ppMeshOut - A pointer to a location to store a pointer for the newly created
 //              mesh.
 //  ppFacePartitioning - A pointer to a location to store a pointer for an array,
@@ -1227,6 +1238,7 @@ HRESULT WINAPI D3DXUVAtlasCreate(LPD3DXMESH pMesh,
                                  LPD3DXUVATLASCB pStatusCallback,
                                  FLOAT fCallbackFrequency,
                                  LPVOID pUserContext,
+                                 DWORD dwOptions,
                                  LPD3DXMESH *ppMeshOut,
                                  LPD3DXBUFFER *ppFacePartitioning,
                                  LPD3DXBUFFER *ppVertexRemapArray,
@@ -1271,6 +1283,7 @@ HRESULT WINAPI D3DXUVAtlasPartition(LPD3DXMESH pMesh,
                                     LPD3DXUVATLASCB pStatusCallback,
                                     FLOAT fCallbackFrequency,
                                     LPVOID pUserContext,
+                                    DWORD dwOptions,
                                     LPD3DXMESH *ppMeshOut,
                                     LPD3DXBUFFER *ppFacePartitioning,
                                     LPD3DXBUFFER *ppVertexRemapArray,
@@ -1283,6 +1296,7 @@ HRESULT WINAPI D3DXUVAtlasPartition(LPD3DXMESH pMesh,
 // the adjacency returned from the partition step. This value cannot be NULL
 // because Pack needs to know where charts were cut in the partition step in
 // order to find the edges of each chart.
+// The options parameter is currently reserved.
 HRESULT WINAPI D3DXUVAtlasPack(ID3DXMesh *pMesh,
                                UINT uWidth,
                                UINT uHeight,
@@ -1292,6 +1306,7 @@ HRESULT WINAPI D3DXUVAtlasPack(ID3DXMesh *pMesh,
                                LPD3DXUVATLASCB pStatusCallback,
                                FLOAT fCallbackFrequency,
                                LPVOID pUserContext,
+                               DWORD dwOptions,
                                LPD3DXBUFFER pFacePartitioning);
 
 

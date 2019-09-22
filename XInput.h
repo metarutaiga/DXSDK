@@ -13,8 +13,8 @@
 
 // Current name of the DLL shipped in the same SDK as this header.
 // The name reflects the current version
-#define XINPUT_DLL_A  "xinput1_2.dll"
-#define XINPUT_DLL_W L"xinput1_2.dll"
+#define XINPUT_DLL_A  "xinput1_3.dll"
+#define XINPUT_DLL_W L"xinput1_3.dll"
 #ifdef UNICODE
     #define XINPUT_DLL XINPUT_DLL_W
 #else
@@ -58,6 +58,7 @@
 #define XINPUT_GAMEPAD_X                0x4000
 #define XINPUT_GAMEPAD_Y                0x8000
 
+
 //
 // Gamepad thresholds
 //
@@ -70,6 +71,80 @@
 //
 #define XINPUT_FLAG_GAMEPAD             0x00000001
 
+//
+// Devices that support batteries
+//
+#define BATTERY_DEVTYPE_GAMEPAD         0x00
+#define BATTERY_DEVTYPE_HEADSET         0x01
+
+//
+// Flags for battery status level
+//
+#define BATTERY_TYPE_DISCONNECTED       0x00    // This device is not connected
+#define BATTERY_TYPE_WIRED              0x01    // Wired device, no battery
+#define BATTERY_TYPE_ALKALINE           0x02    // Alkaline battery source
+#define BATTERY_TYPE_NIMH               0x03    // Nickel Metal Hydride battery source
+#define BATTERY_TYPE_UNKNOWN            0xFF    // Cannot determine the battery type
+
+// These are only valid for wireless, connected devices, with known battery types
+// The amount of use time remaining depends on the type of device.
+#define BATTERY_LEVEL_EMPTY             0x00
+#define BATTERY_LEVEL_LOW               0x01
+#define BATTERY_LEVEL_MEDIUM            0x02
+#define BATTERY_LEVEL_FULL              0x03
+
+// User index definitions
+#define XUSER_MAX_COUNT                 4
+
+#define XUSER_INDEX_ANY                 0x000000FF
+
+
+//
+// Codes returned for the gamepad keystroke
+//
+
+#define VK_PAD_A                        0x5800
+#define VK_PAD_B                        0x5801
+#define VK_PAD_X                        0x5802
+#define VK_PAD_Y                        0x5803
+#define VK_PAD_RSHOULDER                0x5804
+#define VK_PAD_LSHOULDER                0x5805
+#define VK_PAD_LTRIGGER                 0x5806
+#define VK_PAD_RTRIGGER                 0x5807
+
+#define VK_PAD_DPAD_UP                  0x5810
+#define VK_PAD_DPAD_DOWN                0x5811
+#define VK_PAD_DPAD_LEFT                0x5812
+#define VK_PAD_DPAD_RIGHT               0x5813
+#define VK_PAD_START                    0x5814
+#define VK_PAD_BACK                     0x5815
+#define VK_PAD_LTHUMB_PRESS             0x5816
+#define VK_PAD_RTHUMB_PRESS             0x5817
+
+#define VK_PAD_LTHUMB_UP                0x5820
+#define VK_PAD_LTHUMB_DOWN              0x5821
+#define VK_PAD_LTHUMB_RIGHT             0x5822
+#define VK_PAD_LTHUMB_LEFT              0x5823
+#define VK_PAD_LTHUMB_UPLEFT            0x5824
+#define VK_PAD_LTHUMB_UPRIGHT           0x5825
+#define VK_PAD_LTHUMB_DOWNRIGHT         0x5826
+#define VK_PAD_LTHUMB_DOWNLEFT          0x5827
+
+#define VK_PAD_RTHUMB_UP                0x5830
+#define VK_PAD_RTHUMB_DOWN              0x5831
+#define VK_PAD_RTHUMB_RIGHT             0x5832
+#define VK_PAD_RTHUMB_LEFT              0x5833
+#define VK_PAD_RTHUMB_UPLEFT            0x5834
+#define VK_PAD_RTHUMB_UPRIGHT           0x5835
+#define VK_PAD_RTHUMB_DOWNRIGHT         0x5836
+#define VK_PAD_RTHUMB_DOWNLEFT          0x5837
+
+//
+// Flags used in XINPUT_KEYSTROKE
+//
+#define XINPUT_KEYSTROKE_KEYDOWN        0x0001
+#define XINPUT_KEYSTROKE_KEYUP          0x0002
+#define XINPUT_KEYSTROKE_REPEAT         0x0004
 
 //
 // Structures used by XInput APIs
@@ -106,6 +181,20 @@ typedef struct _XINPUT_CAPABILITIES
     XINPUT_VIBRATION                    Vibration;
 } XINPUT_CAPABILITIES, *PXINPUT_CAPABILITIES;
 
+typedef struct _XINPUT_BATTERY_INFORMATION
+{
+    BYTE BatteryType;
+    BYTE BatteryLevel;
+} XINPUT_BATTERY_INFORMATION, *PXINPUT_BATTERY_INFORMATION;
+
+typedef struct _XINPUT_KEYSTROKE
+{
+    WORD    VirtualKey;
+    WCHAR   Unicode;
+    WORD    Flags;
+    BYTE    UserIndex;
+    BYTE    HidCode;
+} XINPUT_KEYSTROKE, *PXINPUT_KEYSTROKE;
 
 //
 // XInput APIs
@@ -143,6 +232,20 @@ DWORD WINAPI XInputGetDSoundAudioDeviceGuids
     DWORD dwUserIndex,          // [in] Index of the gamer associated with the device
     GUID* pDSoundRenderGuid,    // [out] DSound device ID for render
     GUID* pDSoundCaptureGuid    // [out] DSound device ID for capture
+);
+
+DWORD WINAPI XInputGetBatteryInformation
+(
+    DWORD                       dwUserIndex,        // [in]  Index of the gamer associated with the device
+    BYTE                        devType,            // [in]  Which device on this user index
+    XINPUT_BATTERY_INFORMATION* pBatteryInformation // [out] Contains the level and types of batteries
+);
+
+DWORD WINAPI XInputGetKeystroke
+(
+    DWORD dwUserIndex,              // [in]  Index of the gamer associated with the device
+    DWORD dwReserved,               // [in]  Reserved for future use
+    PXINPUT_KEYSTROKE pKeystroke    // [out] Pointer to an XINPUT_KEYSTROKE structure that receives an input event.
 );
 
 #ifdef __cplusplus

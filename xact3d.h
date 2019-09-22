@@ -71,6 +71,14 @@
         BACK_LEFT_AZIMUTH,
         BACK_RIGHT_AZIMUTH
     };
+    static const float a4Point1Layout[] =
+    {
+        FRONT_LEFT_AZIMUTH,
+        FRONT_RIGHT_AZIMUTH,
+        LOW_FREQUENCY_AZIMUTH,
+        BACK_LEFT_AZIMUTH,
+        BACK_RIGHT_AZIMUTH
+    };
     static const float a5Point1Layout[] =
     {
         FRONT_LEFT_AZIMUTH,
@@ -114,10 +122,16 @@
     ////
     EXTERN_C HRESULT inline XACT3DInitialize (UINT32 SpeakerChannelMask, IXACTEngine* pEngine, X3DAUDIO_HANDLE X3DInstance)
     {
-        XACTVARIABLEINDEX xactSpeedOfSoundID = pEngine->GetGlobalVariableIndex("SpeedOfSound");
-        XACTVARIABLEVALUE nSpeedOfSound;
-        HRESULT hr = pEngine->GetGlobalVariable(xactSpeedOfSoundID, &nSpeedOfSound);
+        HRESULT hr = S_OK;
+        if (pEngine == NULL) {
+            hr = E_POINTER;
+        }
 
+        XACTVARIABLEVALUE nSpeedOfSound = 0.0f;
+        if (SUCCEEDED(hr)) {
+            XACTVARIABLEINDEX xactSpeedOfSoundID = pEngine->GetGlobalVariableIndex("SpeedOfSound");
+            hr = pEngine->GetGlobalVariable(xactSpeedOfSoundID, &nSpeedOfSound);
+        }
         if (SUCCEEDED(hr)) {
             X3DAudioInitialize(SpeakerChannelMask, nSpeedOfSound, X3DInstance);
         }
@@ -142,21 +156,27 @@
     EXTERN_C HRESULT inline XACT3DCalculate (X3DAUDIO_HANDLE X3DInstance, const X3DAUDIO_LISTENER* pListener, X3DAUDIO_EMITTER* pEmitter, X3DAUDIO_DSP_SETTINGS* pDSPSettings)
     {
         HRESULT hr = S_OK;
-        if (pEmitter->ChannelCount > 1 && pEmitter->pChannelAzimuths == NULL) {
-            pEmitter->ChannelRadius = 1.0f;
+        if (pListener == NULL || pEmitter == NULL || pDSPSettings == NULL) {
+            hr = E_POINTER;
+        }
 
-            switch (pEmitter->ChannelCount) {
-                case 2: pEmitter->pChannelAzimuths = (float*)&aStereoLayout[0]; break;
-                case 3: pEmitter->pChannelAzimuths = (float*)&a2Point1Layout[0]; break;
-                case 4: pEmitter->pChannelAzimuths = (float*)&aQuadLayout[0]; break;
-                case 6: pEmitter->pChannelAzimuths = (float*)&a5Point1Layout[0]; break;
-                case 8: pEmitter->pChannelAzimuths = (float*)&a7Point1Layout[0]; break;
-                default: hr = E_FAIL; break;
+        if(SUCCEEDED(hr)) {
+            if (pEmitter->ChannelCount > 1 && pEmitter->pChannelAzimuths == NULL) {
+                pEmitter->ChannelRadius = 1.0f;
+
+                switch (pEmitter->ChannelCount) {
+                    case 2: pEmitter->pChannelAzimuths = (float*)&aStereoLayout[0]; break;
+                    case 3: pEmitter->pChannelAzimuths = (float*)&a2Point1Layout[0]; break;
+                    case 4: pEmitter->pChannelAzimuths = (float*)&aQuadLayout[0]; break;
+                    case 5: pEmitter->pChannelAzimuths = (float*)&a4Point1Layout[0]; break;
+                    case 6: pEmitter->pChannelAzimuths = (float*)&a5Point1Layout[0]; break;
+                    case 8: pEmitter->pChannelAzimuths = (float*)&a7Point1Layout[0]; break;
+                    default: hr = E_FAIL; break;
+                }
             }
         }
 
-        if(SUCCEEDED(hr))
-        {
+        if(SUCCEEDED(hr)) {
             static X3DAUDIO_DISTANCE_CURVE_POINT DefaultCurvePoints[2] = { 0.0f, 1.0f, 1.0f, 1.0f };
             static X3DAUDIO_DISTANCE_CURVE       DefaultCurve          = { (X3DAUDIO_DISTANCE_CURVE_POINT*)&DefaultCurvePoints[0], 2 };
             if (pEmitter->pVolumeCurve == NULL) {
@@ -186,8 +206,14 @@
     ////
     EXTERN_C HRESULT inline XACT3DApply (X3DAUDIO_DSP_SETTINGS* pDSPSettings, IXACTCue* pCue)
     {
-        HRESULT hr = pCue->SetMatrixCoefficients(pDSPSettings->SrcChannelCount, pDSPSettings->DstChannelCount, pDSPSettings->pMatrixCoefficients);
+        HRESULT hr = S_OK;
+        if (pDSPSettings == NULL || pCue == NULL) {
+            hr = E_POINTER;
+        }
 
+        if (SUCCEEDED(hr)) {
+            hr = pCue->SetMatrixCoefficients(pDSPSettings->SrcChannelCount, pDSPSettings->DstChannelCount, pDSPSettings->pMatrixCoefficients);
+        }
         if (SUCCEEDED(hr)) {
             XACTVARIABLEINDEX xactDistanceID = pCue->GetVariableIndex("Distance");
             hr = pCue->SetVariable(xactDistanceID, pDSPSettings->EmitterToListenerDistance);

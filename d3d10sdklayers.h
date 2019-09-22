@@ -3,7 +3,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0497 */
+ /* File created by MIDL compiler version 7.00.0498 */
 /* Compiler settings for d3d10sdklayers.idl:
     Oicf, W1, Zp8, env=Win64 (32b run)
     protocol : dce , ms_ext, c_ext, robust

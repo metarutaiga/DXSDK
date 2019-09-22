@@ -18,14 +18,14 @@ Abstract:
 #define _XACT_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs (Version 2.3)
+// XACT class and interface IDs (Version 2.4)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         1138472b, d187, 44e9, 81, f2, ae, 1b, 0e, 77, 85, f1);
-    DEFINE_CLSID(XACTAuditionEngine, 07fb2b69, 0ee4, 4eee, bb, e8, c7, 62, 89, 79, 87, 17);
-    DEFINE_CLSID(XACTDebugEngine,    9ebf716a, 4c83, 4db0, 9a, 5a, c7, 27, de, 92, b2, 73);
-    DEFINE_IID(IXACTEngine,          b28629f1, 0cb0, 47bc, b4, 6a, a2, a1, a7, 29, 6f, 02);
+    DEFINE_CLSID(XACTEngine,         bc3e0fc6, 2e0d, 4c45, bc, 61, d9, c3, 28, 31, 9b, d8);
+    DEFINE_CLSID(XACTAuditionEngine, 30bad9f7, 0018, 49e9, bf, 94, 4a, e8, 9c, c5, 4d, 64);
+    DEFINE_CLSID(XACTDebugEngine,    74ee14d5, ca1d, 44ac, 8b, d3, fa, 94, f7, 34, 6e, 24);
+    DEFINE_IID(IXACTEngine,          43a0d4a8, 9387, 4e06, 94, 33, 65, 41, 8f, e7, 0a, 67);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
@@ -102,7 +102,7 @@ static const XACTVARIABLEVALUE XACTPARAMETERVALUE_MAX = FLT_MAX;
 static const XAUDIOVOICEINDEX XACTMAXOUTPUTVOICECOUNT = 3;
 #endif // _XBOX
 
-#define XACT_CONTENT_VERSION    40
+#define XACT_CONTENT_VERSION    41
 
 //------------------------------------------------------------------------------
 // XACT Parameters
@@ -136,6 +136,8 @@ typedef struct XACT_RENDERER_DETAILS
     BOOL  defaultDevice;                            // Set to TRUE if this device is the primary audio device on the system.
 } XACT_RENDERER_DETAILS, *LPXACT_RENDERER_DETAILS;
 #endif
+
+#define XACT_ENGINE_LOOKAHEAD_DEFAULT   250         // Default look-ahead time of 250ms can be used during XACT engine initialization.
 
 // Runtime (engine) parameters
 typedef struct XACT_RUNTIME_PARAMETERS
@@ -1173,6 +1175,6 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
 #define XACTENGINE_E_AUDITION_INVALIDDSPINDEX       XACTENGINEERROR(0x106)  // Missing a DSP parameter
 #define XACTENGINE_E_AUDITION_MISSINGWAVE           XACTENGINEERROR(0x107)  // Wave does not exist in auditioned wavebank
 #define XACTENGINE_E_AUDITION_CREATEDIRECTORYFAILED XACTENGINEERROR(0x108)  // Failed to create a directory for streaming wavebank data
-
+#define XACTENGINE_E_AUDITION_INVALIDSESSION        XACTENGINEERROR(0x109)  // Invalid audition session
 #endif // #ifndef GUID_DEFS_ONLY
 #endif // #ifndef _XACT_H_

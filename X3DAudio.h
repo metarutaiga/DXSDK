@@ -2,7 +2,7 @@
  |                               - X3DAUDIO -                               |
  |        Copyright (c) Microsoft Corporation.  All rights reserved.        |
  |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
- |VERSION:  0.1                         MODEL:   Unmanaged User-mode        |
+ |VERSION:  1.1                         MODEL:   Unmanaged User-mode        |
  |CONTRACT: N / A                       EXCEPT:  No Exceptions              |
  |PARENT:   N / A                       MINREQ:  Win2000, Xenon             |
  |PROJECT:  X3DAudio                    DIALECT: MS Visual C++ 7.0          |
@@ -71,9 +71,16 @@
     #endif
 
     // standard speaker geometry configurations, used with X3DAudioInitialize
-    #if !defined(SPEAKER_STEREO) && !defined(SPEAKER_5POINT1)
-        #define SPEAKER_STEREO  (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT)
-        #define SPEAKER_5POINT1 (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT)
+    #if !defined(SPEAKER_STEREO)
+        #define SPEAKER_STEREO           (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT)
+        #define SPEAKER_2POINT1          (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_LOW_FREQUENCY)
+        #define SPEAKER_SURROUND         (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_CENTER)
+        #define SPEAKER_QUAD             (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT)
+        #define SPEAKER_4POINT1          (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT)
+        #define SPEAKER_5POINT1          (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT)
+        #define SPEAKER_7POINT1          (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_FRONT_LEFT_OF_CENTER | SPEAKER_FRONT_RIGHT_OF_CENTER)
+        #define SPEAKER_5POINT1_SURROUND (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_SIDE_LEFT  | SPEAKER_SIDE_RIGHT)
+        #define SPEAKER_7POINT1_SURROUND (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT  | SPEAKER_SIDE_RIGHT)
     #endif
 
     // xenon speaker geometry configuration, used with X3DAudioInitialize
@@ -82,7 +89,7 @@
     #endif
 
 
-    #define X3DAUDIO_HANDLE_BYTESIZE 16 // size of instance handle in bytes
+    #define X3DAUDIO_HANDLE_BYTESIZE 20 // size of instance handle in bytes
 
     // float math constants
     #define X3DAUDIO_PI  3.141592654f
@@ -99,6 +106,8 @@
     #define X3DAUDIO_CALCULATE_REVERB        0x00000010 // enable reverb send level calculation
     #define X3DAUDIO_CALCULATE_DOPPLER       0x00000020 // enable doppler shift factor calculation
     #define X3DAUDIO_CALCULATE_EMITTER_ANGLE 0x00000040 // enable emitter-to-listener interior angle calculation
+
+    #define X3DAUDIO_CALCULATE_ZEROCENTER    0x00010000 // do not position to front center speaker, center destination channel will be zero in returned matrix coefficient table, used only for matrix calculations and only for final mix formats that have a front center channel
 
 
 //--------------<M-A-C-R-O-S>-----------------------------------------------//
@@ -152,6 +161,8 @@
         X3DAUDIO_DISTANCE_CURVE_POINT* pPoints;    // distance curve point array, must have at least PointCount elements with no duplicates and be sorted in ascending order with respect to Distance
         UINT32                         PointCount; // number of distance curve points, must be >= 2 as all distance curves must have at least two endpoints, defining DSP settings at 0.0f and 1.0f normalized distance
     } X3DAUDIO_DISTANCE_CURVE, *LPX3DAUDIO_DISTANCE_CURVE;
+    static const X3DAUDIO_DISTANCE_CURVE_POINT X3DAudioDefault_LinearCurvePoints[2] = { 0.0f, 1.0f, 1.0f, 0.0f };
+    static const X3DAUDIO_DISTANCE_CURVE       X3DAudioDefault_LinearCurve          = { (X3DAUDIO_DISTANCE_CURVE_POINT*)&X3DAudioDefault_LinearCurvePoints[0], 2 };
 
     // Cone:
     // Specifies directionality for a single-channel emitter by
@@ -175,6 +186,7 @@
         FLOAT32 InnerReverb; // reverb send level scaler on/within inner cone, used only for reverb calculations, must be within [0.0f, 2.0f] when used
         FLOAT32 OuterReverb; // reverb send level scaler on/beyond outer cone, used only for reverb calculations, must be within [0.0f, 2.0f] when used
     } X3DAUDIO_CONE, *LPX3DAUDIO_CONE;
+    static const X3DAUDIO_CONE X3DAudioDefault_DirectionalCone = { X3DAUDIO_PI/2, X3DAUDIO_PI, 1.0f, 0.708f, 1.0f, 0.75f, 0.708f, 1.0f };
 
 
     // Listener:
@@ -231,10 +243,10 @@
         FLOAT32 ChannelRadius;     // channel radius, used only with multi-channel emitters for matrix calculations, must be >= 0.0f when used
         FLOAT32* pChannelAzimuths; // channel azimuth array, used only with multi-channel emitters for matrix calculations, contains positions of each channel expressed in radians along the channel radius with respect to the front orientation vector in the plane orthogonal to the top orientation vector, or X3DAUDIO_2PI to specify a LFE channel, must have at least ChannelCount elements, all within [0.0f, X3DAUDIO_2PI] when used
 
-        X3DAUDIO_DISTANCE_CURVE* pVolumeCurve;    // volume level distance curve, used only for matrix calculations, NULL specifies the default curve: [0.0f,1.0f], [1.0f,0.0f]
-        X3DAUDIO_DISTANCE_CURVE* pLFECurve;       // LFE level distance curve, used only for matrix calculations, NULL specifies the default curve: [0.0f,1.0f], [1.0f,0.0f]
-        X3DAUDIO_DISTANCE_CURVE* pLPFDirectCurve; // LPF direct-path coefficient distance curve, used only for LPF direct-path calculations, NULL specifies the default curve: [0.0f,0.0f], [1.0f,0.25f]
-        X3DAUDIO_DISTANCE_CURVE* pLPFReverbCurve; // LPF reverb-path coefficient distance curve, used only for LPF reverb-path calculations, NULL specifies the default curve: [0.0f,0.25f], [1.0f,0.25f]
+        X3DAUDIO_DISTANCE_CURVE* pVolumeCurve;    // volume level distance curve, used only for matrix calculations, NULL specifies a default curve that conforms to the inverse square law with distances <= 1.0f clamped to no attenuation, CurveDistanceScaler is ignored when this parameter is NULL
+        X3DAUDIO_DISTANCE_CURVE* pLFECurve;       // LFE level distance curve, used only for matrix calculations, NULL specifies a default curve that conforms to the inverse square law with distances <= 1.0f clamped to no attenuation, CurveDistanceScaler is ignored when this parameters is NULL
+        X3DAUDIO_DISTANCE_CURVE* pLPFDirectCurve; // LPF direct-path coefficient distance curve, used only for LPF direct-path calculations, NULL specifies the default curve: [0.0f,1.0f], [1.0f,0.75f]
+        X3DAUDIO_DISTANCE_CURVE* pLPFReverbCurve; // LPF reverb-path coefficient distance curve, used only for LPF reverb-path calculations, NULL specifies the default curve: [0.0f,0.75f], [1.0f,0.75f]
         X3DAUDIO_DISTANCE_CURVE* pReverbCurve;    // reverb send level distance curve, used only for reverb calculations, NULL specifies the default curve: [0.0f,1.0f], [1.0f,0.0f]
 
         FLOAT32 CurveDistanceScaler; // curve distance scaler, used to scale normalized distance curves to user-defined world units and/or exaggerate their effect, does not affect any other calculations, must be within [FLT_MIN, FLT_MAX] when used
