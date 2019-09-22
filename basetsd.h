@@ -1,6 +1,6 @@
 /*++
 
-Copyright (c) 1997-1999  Microsoft Corporation
+Copyright (c) Microsoft Corporation.  All rights reserved.
 
 Module Name:
 
@@ -11,8 +11,6 @@ Abstract:
     Type definitions for the basic sized types.
 
 Author:
-
-    Jeff Havens (jhavens)   23-Oct-1997
 
 Revision History:
 
@@ -109,15 +107,10 @@ typedef unsigned int DWORD32, *PDWORD32;
 
 #define ADDRESS_TAG_BIT 0x40000000000UI64
 
+typedef __int64 SHANDLE_PTR;
 typedef unsigned __int64 HANDLE_PTR;
 typedef unsigned int UHALF_PTR, *PUHALF_PTR;
 typedef int HALF_PTR, *PHALF_PTR;
-
-#pragma warning(disable:4311)   // type cast truncation
-#if _MSC_VER >= 1200
-#pragma warning(push)
-#endif
-#pragma warning(disable:4305)   // type cast truncation
 
 #if !defined(__midl)
 __inline
@@ -126,7 +119,7 @@ HandleToULong(
     const void *h
     )
 {
-    return((unsigned long) h );
+    return((unsigned long) (ULONG_PTR) h );
 }
 
 __inline
@@ -135,7 +128,7 @@ HandleToLong(
     const void *h
     )
 {
-    return((long) h );
+    return((long) (LONG_PTR) h );
 }
 
 __inline
@@ -164,7 +157,7 @@ PtrToUlong(
     const void  *p
     )
 {
-    return((unsigned long) p );
+    return((unsigned long) (ULONG_PTR) p );
 }
 
 __inline
@@ -173,7 +166,7 @@ PtrToUint(
     const void  *p
     )
 {
-    return((unsigned int) p );
+    return((unsigned int) (UINT_PTR) p );
 }
 
 __inline
@@ -182,7 +175,7 @@ PtrToUshort(
     const void  *p
     )
 {
-    return((unsigned short) p );
+    return((unsigned short) (unsigned long) (ULONG_PTR) p );
 }
 
 __inline
@@ -191,7 +184,7 @@ PtrToLong(
     const void  *p
     )
 {
-    return((long) p );
+    return((long) (LONG_PTR) p );
 }
 
 __inline
@@ -200,7 +193,7 @@ PtrToInt(
     const void  *p
     )
 {
-    return((int) p );
+    return((int) (INT_PTR) p );
 }
 
 __inline
@@ -209,7 +202,7 @@ PtrToShort(
     const void  *p
     )
 {
-    return((short) p );
+    return((short) (long) (LONG_PTR) p );
 }
 
 __inline
@@ -253,10 +246,6 @@ ULongToPtr(
 }
 
 #endif // !_midl
-#if _MSC_VER >= 1200
-#pragma warning(pop)      // restore 4305
-#endif
-#pragma warning(3:4311)   // bump 4311 to a level 3
 
 #else  // !_WIN64
 
@@ -264,6 +253,7 @@ ULongToPtr(
 
 typedef unsigned short UHALF_PTR, *PUHALF_PTR;
 typedef short HALF_PTR, *PHALF_PTR;
+typedef _W64 long SHANDLE_PTR;
 typedef _W64 unsigned long HANDLE_PTR;
 
 #define HandleToULong( h ) ((ULONG)(ULONG_PTR)(h) )
