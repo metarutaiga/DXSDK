@@ -311,11 +311,11 @@ DECLARE_INTERFACE_(ID3DX10Font, IUnknown)
 
 #ifdef __cplusplus
 #ifdef UNICODE
-    STDMETHOD(GetDesc)(THIS_ D3DX10_FONT_DESCW *pDesc) { return GetDescW(pDesc); }
-    STDMETHOD(PreloadText)(THIS_ LPCWSTR pString, INT Count) { return PreloadTextW(pString, Count); }
+    HRESULT WINAPI_INLINE GetDesc(D3DX10_FONT_DESCW *pDesc) { return GetDescW(pDesc); }
+    HRESULT WINAPI_INLINE PreloadText(LPCWSTR pString, INT Count) { return PreloadTextW(pString, Count); }
 #else
-    STDMETHOD(GetDesc)(THIS_ D3DX10_FONT_DESCA *pDesc) { return GetDescA(pDesc); }
-    STDMETHOD(PreloadText)(THIS_ LPCSTR pString, INT Count) { return PreloadTextA(pString, Count); }
+    HRESULT WINAPI_INLINE GetDesc(D3DX10_FONT_DESCA *pDesc) { return GetDescA(pDesc); }
+    HRESULT WINAPI_INLINE PreloadText(LPCSTR pString, INT Count) { return PreloadTextA(pString, Count); }
 #endif
 #endif //__cplusplus
 };

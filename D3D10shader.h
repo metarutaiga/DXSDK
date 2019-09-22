@@ -310,6 +310,224 @@ DECLARE_INTERFACE(ID3D10Include)
 
 
 //----------------------------------------------------------------------------
+// Shader debugging structures
+//----------------------------------------------------------------------------
+
+typedef enum _D3D10_SHADER_DEBUG_REGTYPE
+{
+    D3D10_SHADER_DEBUG_REG_INPUT,
+    D3D10_SHADER_DEBUG_REG_OUTPUT,
+    D3D10_SHADER_DEBUG_REG_CBUFFER,
+    D3D10_SHADER_DEBUG_REG_TBUFFER,
+    D3D10_SHADER_DEBUG_REG_TEMP,
+    D3D10_SHADER_DEBUG_REG_TEMPARRAY,
+    D3D10_SHADER_DEBUG_REG_TEXTURE,
+    D3D10_SHADER_DEBUG_REG_SAMPLER,
+    D3D10_SHADER_DEBUG_REG_IMMEDIATECBUFFER,
+    D3D10_SHADER_DEBUG_REG_LITERAL,
+    D3D10_SHADER_DEBUG_REG_UNUSED,
+    D3D10_SHADER_DEBUG_REG_FORCE_DWORD = 0x7fffffff,
+} D3D10_SHADER_DEBUG_REGTYPE;
+
+typedef enum _D3D10_SHADER_DEBUG_SCOPETYPE
+{
+    D3D10_SHADER_DEBUG_SCOPE_GLOBAL,
+    D3D10_SHADER_DEBUG_SCOPE_BLOCK,
+    D3D10_SHADER_DEBUG_SCOPE_FORLOOP,
+    D3D10_SHADER_DEBUG_SCOPE_STRUCT,
+    D3D10_SHADER_DEBUG_SCOPE_FUNC_PARAMS,
+    D3D10_SHADER_DEBUG_SCOPE_STATEBLOCK,
+    D3D10_SHADER_DEBUG_SCOPE_NAMESPACE,
+    D3D10_SHADER_DEBUG_SCOPE_ANNOTATION,
+    D3D10_SHADER_DEBUG_SCOPE_FORCE_DWORD = 0x7fffffff,
+} D3D10_SHADER_DEBUG_SCOPETYPE;
+
+typedef enum _D3D10_SHADER_DEBUG_VARTYPE
+{
+    D3D10_SHADER_DEBUG_VAR_VARIABLE,
+    D3D10_SHADER_DEBUG_VAR_FUNCTION,
+    D3D10_SHADER_DEBUG_VAR_FORCE_DWORD = 0x7fffffff,
+} D3D10_SHADER_DEBUG_VARTYPE;
+
+/////////////////////////////////////////////////////////////////////
+// These are the serialized structures that get written to the file
+/////////////////////////////////////////////////////////////////////
+
+typedef struct _D3D10_SHADER_DEBUG_TOKEN_INFO
+{
+    UINT File;    // offset into file list
+    UINT Line;    // line #
+    UINT Column;  // column #
+
+    UINT TokenLength;
+    UINT TokenId; // offset to LPCSTR of length TokenLength in string datastore
+} D3D10_SHADER_DEBUG_TOKEN_INFO;
+
+// Variable list
+typedef struct _D3D10_SHADER_DEBUG_VAR_INFO
+{
+    // Index into token list for declaring identifier
+    UINT TokenId;
+    D3D10_SHADER_VARIABLE_TYPE Type;
+    // register and component for this variable, only valid/necessary for arrays
+    UINT Register;
+    UINT Component;
+    // gives the original variable that declared this variable
+    UINT ScopeVar;
+    // this variable's offset in its ScopeVar
+    UINT ScopeVarOffset;
+} D3D10_SHADER_DEBUG_VAR_INFO;
+
+typedef struct _D3D10_SHADER_DEBUG_INPUT_INFO
+{
+    // index into array of variables of variable to initialize
+    UINT Var;
+    // input, cbuffer, tbuffer
+    D3D10_SHADER_DEBUG_REGTYPE InitialRegisterSet;
+    // set to cbuffer or tbuffer slot, geometry shader input primitive #,
+    // identifying register for indexable temp, or -1
+    UINT InitialBank;
+    // -1 if temp, otherwise gives register in register set
+    UINT InitialRegister;
+    // -1 if temp, otherwise gives component
+    UINT InitialComponent;
+    // initial value if literal
+    UINT InitialValue;
+} D3D10_SHADER_DEBUG_INPUT_INFO;
+
+typedef struct _D3D10_SHADER_DEBUG_SCOPEVAR_INFO
+{
+    // Index into variable token
+    UINT TokenId;
+
+    D3D10_SHADER_DEBUG_VARTYPE VarType; // variable or function (different namespaces)
+    D3D10_SHADER_VARIABLE_CLASS Class;
+    UINT Rows;          // number of rows (matrices)
+    UINT Columns;       // number of columns (vectors and matrices)
+
+    // In an array of structures, one struct member scope is provided, and
+    // you'll have to add the array stride times the index to the variable
+    // index you find, then find that variable in this structure's list of
+    // variables.
+
+    // gives a scope to look up struct members. -1 if not a struct
+    UINT StructMemberScope;
+
+    // number of array indices
+    UINT uArrayIndices;    // a[3][2][1] has 3 indices
+    // maximum array index for each index
+    // offset to UINT[uArrayIndices] in UINT datastore
+    UINT ArrayElements; // a[3][2][1] has {3, 2, 1}
+    // how many variables each array index moves
+    // offset to UINT[uArrayIndices] in UINT datastore
+    UINT ArrayStrides;  // a[3][2][1] has {2, 1, 1}
+
+    UINT uVariables;
+    // index of the first variable, later variables are offsets from this one
+    UINT uFirstVariable;
+} D3D10_SHADER_DEBUG_SCOPEVAR_INFO;
+
+// scope data, this maps variable names to debug variables (useful for the watch window)
+typedef struct _D3D10_SHADER_DEBUG_SCOPE_INFO
+{
+    D3D10_SHADER_DEBUG_SCOPETYPE ScopeType;
+    UINT Name;         // offset to name of scope in strings list
+    UINT uNameLen;     // length of name string
+    UINT uVariables;
+    UINT VariableData; // Offset to UINT[uVariables] indexing the Scope Variable list
+} D3D10_SHADER_DEBUG_SCOPE_INFO;
+
+// instruction outputs
+typedef struct _D3D10_SHADER_DEBUG_OUTPUTVAR
+{
+    // index variable being written to, if -1 it's not going to a variable
+    UINT Var;
+    // range data that the compiler expects to be true
+    UINT  uValueMin, uValueMax;
+    INT   iValueMin, iValueMax;
+    FLOAT fValueMin, fValueMax;
+
+    BOOL  bNaNPossible, bInfPossible;
+} D3D10_SHADER_DEBUG_OUTPUTVAR;
+
+typedef struct _D3D10_SHADER_DEBUG_OUTPUTREG_INFO
+{
+    // Only temp, indexable temp, and output are valid here
+    D3D10_SHADER_DEBUG_REGTYPE OutputRegisterSet;
+    // -1 means no output
+    UINT OutputReg;
+    // if a temp array, identifier for which one
+    UINT TempArrayReg;
+    // -1 means masked out
+    UINT OutputComponents[4];
+    D3D10_SHADER_DEBUG_OUTPUTVAR OutputVars[4];
+    // when indexing the output, get the value of this register, then add
+    // that to uOutputReg. If uIndexReg is -1, then there is no index.
+    // find the variable whose register is the sum (by looking in the ScopeVar)
+    // and component matches, then set it. This should only happen for indexable
+    // temps and outputs.
+    UINT IndexReg;
+    UINT IndexComp;
+} D3D10_SHADER_DEBUG_OUTPUTREG_INFO;
+
+// per instruction data
+typedef struct _D3D10_SHADER_DEBUG_INST_INFO
+{
+    UINT Id; // Which instruction this is in the bytecode
+    UINT Opcode; // instruction type
+
+    // 0, 1, or 2
+    UINT uOutputs;
+
+    // up to two outputs per instruction
+    D3D10_SHADER_DEBUG_OUTPUTREG_INFO pOutputs[2];
+    
+    // index into the list of tokens for this instruction's token
+    UINT TokenId;
+
+    // how many function calls deep this instruction is
+    UINT NestingLevel;
+
+    // list of scopes from outer-most to inner-most
+    // Number of scopes
+    UINT Scopes;
+    UINT ScopeInfo; // Offset to UINT[uScopes] specifying indices of the ScopeInfo Array
+} D3D10_SHADER_DEBUG_INST_INFO;
+
+typedef struct _D3D10_SHADER_DEBUG_FILE_INFO
+{
+    UINT FileName;    // Offset to LPCSTR for file name
+    UINT FileNameLen; // Length of file name
+    UINT FileData;    // Offset to LPCSTR of length FileLen
+    UINT FileLen;     // Length of file
+} D3D10_SHADER_DEBUG_FILE_INFO;
+
+typedef struct _D3D10_SHADER_DEBUG_INFO
+{
+    UINT Size;                             // sizeof(D3D10_SHADER_DEBUG_INFO)
+    UINT Creator;                          // Offset to LPCSTR for compiler version
+    UINT EntrypointName;                   // Offset to LPCSTR for Entry point name
+    UINT ShaderTarget;                     // Offset to LPCSTR for shader target
+    UINT CompileFlags;                     // flags used to compile
+    UINT Files;                            // number of included files
+    UINT FileInfo;                         // Offset to D3D10_SHADER_DEBUG_FILE_INFO[Files]
+    UINT Instructions;                     // number of instructions
+    UINT InstructionInfo;                  // Offset to D3D10_SHADER_DEBUG_INST_INFO[Instructions]
+    UINT Variables;                        // number of variables
+    UINT VariableInfo;                     // Offset to D3D10_SHADER_DEBUG_VAR_INFO[Variables]
+    UINT InputVariables;                   // number of variables to initialize before running
+    UINT InputVariableInfo;                // Offset to D3D10_SHADER_DEBUG_INPUT_INFO[InputVariables]
+    UINT Tokens;                           // number of tokens to initialize
+    UINT TokenInfo;                        // Offset to D3D10_SHADER_DEBUG_TOKEN_INFO[Tokens]
+    UINT Scopes;                           // number of scopes
+    UINT ScopeInfo;                        // Offset to D3D10_SHADER_DEBUG_SCOPE_INFO[Scopes]
+    UINT ScopeVariables;                   // number of variables declared
+    UINT ScopeVariableInfo;                // Offset to D3D10_SHADER_DEBUG_SCOPEVAR_INFO[Scopes]
+    UINT UintOffset;                       // Offset to the UINT datastore, all UINT offsets are from this offset
+    UINT StringOffset;                     // Offset to the string datastore, all string offsets are from this offset
+} D3D10_SHADER_DEBUG_INFO;
+
+//----------------------------------------------------------------------------
 // ID3D10ShaderReflection:
 //----------------------------------------------------------------------------
 
@@ -319,14 +537,14 @@ DECLARE_INTERFACE(ID3D10Include)
 
 typedef struct _D3D10_SHADER_DESC
 {
-    UINT                    Version;            // Shader version
-    LPCSTR                  Creator;            // Creator string
-    UINT                    Flags;              // Shader compilation/parse flags
+    UINT                    Version;                     // Shader version
+    LPCSTR                  Creator;                     // Creator string
+    UINT                    Flags;                       // Shader compilation/parse flags
     
-    UINT                    ConstantBuffers;    // Number of constant buffers
-    UINT                    BoundResources;     // Number of bound resources
-    UINT                    InputParameters;    // Number of parameters in the input signature
-    UINT                    OutputParameters;   // Number of parameters in the output signature
+    UINT                    ConstantBuffers;             // Number of constant buffers
+    UINT                    BoundResources;              // Number of bound resources
+    UINT                    InputParameters;             // Number of parameters in the input signature
+    UINT                    OutputParameters;            // Number of parameters in the output signature
 
     UINT                    InstructionCount;            // Number of emitted instructions
     UINT                    TempRegisterCount;           // Number of temporary registers used 
@@ -347,6 +565,12 @@ typedef struct _D3D10_SHADER_DESC
     UINT                    ArrayInstructionCount;       // Number of array instructions used
     UINT                    CutInstructionCount;         // Number of cut instructions used
     UINT                    EmitInstructionCount;        // Number of emit instructions used
+    D3D10_PRIMITIVE_TOPOLOGY GSOutputTopology;           // Geometry shader output topology
+    UINT                    GSMaxOutputVertexCount;      // Geometry shader maximum output vertex count
+    UINT                    MovInstructionCount;         // Number of mov instructions
+    UINT                    MovcInstructionCount;        // Number of movc instructions
+    UINT                    ConversionInstructionCount;  // Number of conversion operations
+    UINT                    BitwiseInstructionCount;     // Number of bitwise operations
 } D3D10_SHADER_DESC;
 
 typedef struct _D3D10_SHADER_BUFFER_DESC
@@ -553,7 +777,7 @@ HRESULT WINAPI D3D10CompileShader(LPCSTR pSrcData, SIZE_T SrcDataLen, LPCSTR pFi
 // Parameters:
 //  pShader
 //      Pointer to the shader byte code.
-//  ShaderSizeInBytes
+//  BytecodeLength
 //      Size of the shader byte code in bytes.
 //  EnableColorCode
 //      Emit HTML tags for color coding the output?
@@ -563,7 +787,7 @@ HRESULT WINAPI D3D10CompileShader(LPCSTR pSrcData, SIZE_T SrcDataLen, LPCSTR pFi
 //      Returns a buffer containing the disassembled shader.
 //----------------------------------------------------------------------------
 
-HRESULT WINAPI D3D10DisassembleShader(CONST UINT *pShader, SIZE_T Size, BOOL EnableColorCode, LPCSTR pComments, ID3D10Blob** ppDisassembly);
+HRESULT WINAPI D3D10DisassembleShader(CONST void *pShader, SIZE_T BytecodeLength, BOOL EnableColorCode, LPCSTR pComments, ID3D10Blob** ppDisassembly);
 
 
 //----------------------------------------------------------------------------
@@ -665,6 +889,24 @@ HRESULT WINAPI D3D10PreprocessShader(LPCSTR pSrcData, SIZE_T SrcDataSize, LPCSTR
 HRESULT WINAPI D3D10GetInputSignatureBlob(CONST void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
 HRESULT WINAPI D3D10GetOutputSignatureBlob(CONST void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
 HRESULT WINAPI D3D10GetInputAndOutputSignatureBlob(CONST void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob **ppSignatureBlob);
+
+//----------------------------------------------------------------------------
+// D3D10GetShaderDebugInfo:
+// -----------------------
+// Gets shader debug info.  Debug info is generated by D3D10CompileShader and is
+// embedded in the body of the shader.
+//
+// Parameters:
+//  pShaderBytecode
+//      Pointer to the function bytecode
+//  BytecodeLength
+//      Length of the shader bytecode buffer
+//  ppDebugInfo
+//      Buffer used to return debug info.  For information about the layout
+//      of this buffer, see definition of D3D10_SHADER_DEBUG_INFO above.
+//----------------------------------------------------------------------------
+
+HRESULT WINAPI D3D10GetShaderDebugInfo(CONST void *pShaderBytecode, SIZE_T BytecodeLength, ID3D10Blob** ppDebugInfo);
 
 #ifdef __cplusplus
 }

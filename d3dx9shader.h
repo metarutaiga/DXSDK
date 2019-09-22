@@ -76,17 +76,28 @@
 //
 //----------------------------------------------------------------------------
 
-#define D3DXSHADER_DEBUG                    (1 << 0)
-#define D3DXSHADER_SKIPVALIDATION           (1 << 1)
-#define D3DXSHADER_SKIPOPTIMIZATION         (1 << 2)
-#define D3DXSHADER_PACKMATRIX_ROWMAJOR      (1 << 3)
-#define D3DXSHADER_PACKMATRIX_COLUMNMAJOR   (1 << 4)
-#define D3DXSHADER_PARTIALPRECISION         (1 << 5)
-#define D3DXSHADER_FORCE_VS_SOFTWARE_NOOPT  (1 << 6)
-#define D3DXSHADER_FORCE_PS_SOFTWARE_NOOPT  (1 << 7)
-#define D3DXSHADER_NO_PRESHADER             (1 << 8)
-#define D3DXSHADER_AVOID_FLOW_CONTROL       (1 << 9)
-#define D3DXSHADER_PREFER_FLOW_CONTROL      (1 << 10)
+#define D3DXSHADER_DEBUG                          (1 << 0)
+#define D3DXSHADER_SKIPVALIDATION                 (1 << 1)
+#define D3DXSHADER_SKIPOPTIMIZATION               (1 << 2)
+#define D3DXSHADER_PACKMATRIX_ROWMAJOR            (1 << 3)
+#define D3DXSHADER_PACKMATRIX_COLUMNMAJOR         (1 << 4)
+#define D3DXSHADER_PARTIALPRECISION               (1 << 5)
+#define D3DXSHADER_FORCE_VS_SOFTWARE_NOOPT        (1 << 6)
+#define D3DXSHADER_FORCE_PS_SOFTWARE_NOOPT        (1 << 7)
+#define D3DXSHADER_NO_PRESHADER                   (1 << 8)
+#define D3DXSHADER_AVOID_FLOW_CONTROL             (1 << 9)
+#define D3DXSHADER_PREFER_FLOW_CONTROL            (1 << 10)
+#define D3DXSHADER_ENABLE_BACKWARDS_COMPATIBILITY (1 << 12)
+#define D3DXSHADER_IEEE_STRICTNESS                (1 << 13)
+#define D3DXSHADER_USE_LEGACY_D3DX9_31_DLL        (1 << 16)
+
+
+// optimization level flags
+#define D3DXSHADER_OPTIMIZATION_LEVEL0            (1 << 14)
+#define D3DXSHADER_OPTIMIZATION_LEVEL1            0
+#define D3DXSHADER_OPTIMIZATION_LEVEL2            ((1 << 14) | (1 << 15))
+#define D3DXSHADER_OPTIMIZATION_LEVEL3            (1 << 15)
+
 
 
 
@@ -203,6 +214,7 @@ typedef enum _D3DXPARAMETER_TYPE
     D3DXPT_VERTEXSHADER,
     D3DXPT_PIXELFRAGMENT,
     D3DXPT_VERTEXFRAGMENT,
+    D3DXPT_UNSUPPORTED,
 
     // force 32-bit size enum
     D3DXPT_FORCE_DWORD = 0x7fffffff

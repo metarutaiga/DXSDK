@@ -53,12 +53,6 @@
 //      D3DX10_FILTER_MIRROR_V
 //  D3DX10_FILTER_DITHER
 //      Dithers the resulting image using a 4x4 order dither pattern.
-//  D3DX10_FILTER_SRGB_IN
-//      Denotes that the input data is in sRGB (gamma 2.2) colorspace.
-//  D3DX10_FILTER_SRGB_OUT
-//      Denotes that the output data is in sRGB (gamma 2.2) colorspace.
-//  D3DX10_FILTER_SRGB
-//      Same as specifying D3DX10_FILTER_SRGB_IN | D3DX10_FILTER_SRGB_OUT
 //
 //----------------------------------------------------------------------------
 
@@ -77,10 +71,6 @@ typedef enum D3DX10_FILTER_FLAG
 
     D3DX10_FILTER_DITHER          =   (1 << 19),
     D3DX10_FILTER_DITHER_DIFFUSION=   (2 << 19),
-
-    D3DX10_FILTER_SRGB_IN         =   (1 << 21),
-    D3DX10_FILTER_SRGB_OUT        =   (2 << 21),
-    D3DX10_FILTER_SRGB            =   (3 << 21),
 } D3DX10_FILTER_FLAG;
 
 //----------------------------------------------------------------------------
@@ -261,7 +251,6 @@ extern "C" {
 //
 //----------------------------------------------------------------------------
 
-#define D3DX10_IMAGE_LOAD_VALID_FLAGS       (0)
 
 typedef struct _D3DX10_IMAGE_LOAD_INFO
 {
@@ -372,10 +361,10 @@ HRESULT WINAPI
         ID3DX10ThreadPump*        pPump,
         D3DX10_IMAGE_INFO*         pSrcInfo);
 
+
 //////////////////////////////////////////////////////////////////////////////
 // Create/Save Texture APIs //////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-
 
 //----------------------------------------------------------------------------
 // D3DX10CreateTextureFromFile/Resource/Memory:
@@ -456,6 +445,7 @@ HRESULT WINAPI
 #define D3DX10CreateTextureFromFile D3DX10CreateTextureFromFileA
 #endif
 
+
 // FromResource (resources in dll/exes)
 
 HRESULT WINAPI
@@ -528,6 +518,90 @@ HRESULT WINAPI
         ID3D10Resource**          ppTexture);
 
 
+//////////////////////////////////////////////////////////////////////////////
+// Misc Texture APIs /////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------
+// D3DX10_TEXTURE_LOAD_INFO:
+// ------------------------
+//
+//----------------------------------------------------------------------------
+
+typedef struct _D3DX10_TEXTURE_LOAD_INFO
+{
+    D3D10_BOX       *pSrcBox;
+    D3D10_BOX       *pDstBox;
+    UINT            SrcFirstMip;
+    UINT            DstFirstMip;
+    UINT            NumMips;
+    UINT            SrcFirstElement;
+    UINT            DstFirstElement;
+    UINT            NumElements;
+    UINT            Filter;
+    UINT            MipFilter;
+    
+#ifdef __cplusplus
+    _D3DX10_TEXTURE_LOAD_INFO()
+    {
+        pSrcBox = NULL;
+        pDstBox = NULL;
+        SrcFirstMip = 0;
+        DstFirstMip = 0;
+        NumMips = D3DX10_DEFAULT;
+        SrcFirstElement = 0;
+        DstFirstElement = 0;
+        NumElements = D3DX10_DEFAULT;
+        Filter = D3DX10_DEFAULT;
+        MipFilter = D3DX10_DEFAULT;
+    }  
+#endif
+
+} D3DX10_TEXTURE_LOAD_INFO;
+
+
+//----------------------------------------------------------------------------
+// D3DX10LoadTextureFromTexture:
+// ----------------------------
+// Load a texture from a texture.
+//
+// Parameters:
+//
+//----------------------------------------------------------------------------
+
+
+HRESULT WINAPI
+    D3DX10LoadTextureFromTexture(
+        ID3D10Resource            *pSrcTexture,
+        D3DX10_TEXTURE_LOAD_INFO  *pLoadInfo,
+        ID3DX10ThreadPump         *pPump,
+        ID3D10Resource            *pDstTexture);
+
+
+//----------------------------------------------------------------------------
+// D3DX10FilterTexture:
+// ------------------
+// Filters mipmaps levels of a texture.
+//
+// Parameters:
+//  pBaseTexture
+//      The texture object to be filtered
+//  SrcLevel
+//      The level whose image is used to generate the subsequent levels. 
+//  MipFilter
+//      D3DX10_FILTER flags controlling how each miplevel is filtered.
+//      Or D3DX10_DEFAULT for D3DX10_FILTER_BOX,
+//
+//----------------------------------------------------------------------------
+
+HRESULT WINAPI
+    D3DX10FilterTexture(
+        ID3D10Resource            *pTexture,
+        UINT                      SrcLevel,
+        UINT                      MipFilter,
+        ID3DX10ThreadPump         *pPump);
+
+
 //----------------------------------------------------------------------------
 // D3DX10SaveTextureToFile:
 // ----------------------
@@ -542,7 +616,6 @@ HRESULT WINAPI
 //      Source texture, containing the image to be saved
 //
 //----------------------------------------------------------------------------
-
 
 HRESULT WINAPI
     D3DX10SaveTextureToFileA(
@@ -561,6 +634,7 @@ HRESULT WINAPI
 #else
 #define D3DX10SaveTextureToFile D3DX10SaveTextureToFileA
 #endif
+
 
 //----------------------------------------------------------------------------
 // D3DX10SaveTextureToMemory:
@@ -610,6 +684,34 @@ HRESULT WINAPI
         UINT                      Channel,
         FLOAT                     Amplitude,
         ID3D10Texture2D		     *pDestTexture);
+
+
+//----------------------------------------------------------------------------
+// D3DX10SHProjectCubeMap:
+// ----------------------
+//  Projects a function represented in a cube map into spherical harmonics.
+//
+//  Parameters:
+//   Order
+//      Order of the SH evaluation, generates Order^2 coefs, degree is Order-1
+//   pCubeMap
+//      CubeMap that is going to be projected into spherical harmonics
+//   pROut
+//      Output SH vector for Red.
+//   pGOut
+//      Output SH vector for Green
+//   pBOut
+//      Output SH vector for Blue        
+//
+//---------------------------------------------------------------------------
+
+HRESULT WINAPI
+    D3DX10SHProjectCubeMap(
+        __in_range(2,6) UINT                                Order,
+        ID3D10Texture2D                                    *pCubeMap,
+        __out_ecount(Order*Order) FLOAT                    *pROut,
+        __out_ecount_opt(Order*Order) FLOAT                *pGOut,
+        __out_ecount_opt(Order*Order) FLOAT                *pBOut);
 
 #ifdef __cplusplus
 }

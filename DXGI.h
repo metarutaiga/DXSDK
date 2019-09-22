@@ -3,7 +3,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0498 */
+ /* File created by MIDL compiler version 7.00.0499 */
 /* Compiler settings for dxgi.idl:
     Oicf, W1, Zp8, env=Win64 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -1423,9 +1423,10 @@ EXTERN_C const IID IID_IDXGISwapChain;
 /* interface __MIDL_itf_dxgi_0000_0007 */
 /* [local] */ 
 
-#define DXGI_MWA_NO_WINDOW_CHANGES    ( 1 << 0 )
-#define DXGI_MWA_NO_ALT_ENTER    ( 1 << 1 )
-#define DXGI_MWA_VALID    ( 0x3 )
+#define DXGI_MWA_NO_WINDOW_CHANGES      ( 1 << 0 )
+#define DXGI_MWA_NO_ALT_ENTER           ( 1 << 1 )
+#define DXGI_MWA_NO_PRINT_SCREEN        ( 1 << 2 )
+#define DXGI_MWA_VALID                  ( 0x7 )
 
 
 extern RPC_IF_HANDLE __MIDL_itf_dxgi_0000_0007_v0_0_c_ifspec;

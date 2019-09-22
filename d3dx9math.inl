@@ -10,6 +10,9 @@
 #ifndef __D3DX9MATH_INL__
 #define __D3DX9MATH_INL__
 
+#ifndef SIZE_MAX
+#define SIZE_MAX ((size_t)-1)
+#endif
 
 //===========================================================================
 //
@@ -986,6 +989,8 @@ _D3DXMATRIXA16::_D3DXMATRIXA16( FLOAT _11, FLOAT _12, FLOAT _13, FLOAT _14,
 D3DXINLINE void* 
 _D3DXMATRIXA16::operator new( size_t s )
 {
+    if (s > (SIZE_MAX-16))
+	return NULL;
     LPBYTE p = ::new BYTE[s + 16];
     if (p)
     {
@@ -999,6 +1004,8 @@ _D3DXMATRIXA16::operator new( size_t s )
 D3DXINLINE void* 
 _D3DXMATRIXA16::operator new[]( size_t s )
 {
+    if (s > (SIZE_MAX-16))
+	return NULL;
     LPBYTE p = ::new BYTE[s + 16];
     if (p)
     {

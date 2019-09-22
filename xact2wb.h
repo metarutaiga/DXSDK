@@ -28,12 +28,11 @@
 #pragma bitfield_order(push, lsb_to_msb)
 #endif
 
-#define WAVEBANK_HEADER_SIGNATURE   'DNBW'
+#define WAVEBANK_HEADER_SIGNATURE               'DNBW'      // WaveBank  RIFF chunk signature
+#define WAVEBANK_HEADER_VERSION                 42          // Current wavebank file version
 
-#define WAVEBANK_HEADER_VERSION     XACT_CONTENT_VERSION          // Current tool version
-
-#define WAVEBANK_BANKNAME_LENGTH    64          // Wave bank friendly name length, in characters
-#define WAVEBANK_ENTRYNAME_LENGTH   64          // Wave bank entry friendly name length, in characters
+#define WAVEBANK_BANKNAME_LENGTH                64          // Wave bank friendly name length, in characters
+#define WAVEBANK_ENTRYNAME_LENGTH               64          // Wave bank entry friendly name length, in characters
 
 #define WAVEBANK_MAX_DATA_SEGMENT_SIZE          0xFFFFFFFF  // Maximum wave bank data segment size, in bytes
 #define WAVEBANK_MAX_COMPACT_DATA_SEGMENT_SIZE  0x001FFFFF  // Maximum compact wave bank data segment size, in bytes
@@ -221,6 +220,7 @@ typedef struct WAVEBANKHEADER
 {
     DWORD           dwSignature;                        // File signature
     DWORD           dwVersion;                          // Version of the tool that created the file
+    DWORD           dwHeaderVersion;                    // Version of the file format
     WAVEBANKREGION  Segments[WAVEBANK_SEGIDX_COUNT];    // Segment lookup table
 
 #ifdef __cplusplus
@@ -229,6 +229,7 @@ typedef struct WAVEBANKHEADER
     {
         XACTWaveBank::SwapBytes(dwSignature);
         XACTWaveBank::SwapBytes(dwVersion);
+        XACTWaveBank::SwapBytes(dwHeaderVersion);
 
         for(int i = 0; i < WAVEBANK_SEGIDX_COUNT; i++)
         {

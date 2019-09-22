@@ -3,13 +3,13 @@
 //
 //  Copyright (c) Microsoft Corporation.  All rights reserved.
 //
-//  File:       D3DX10Effect.h
-//  Content:    D3DX10 Effect / Shader loaders
+//  File:       D3DX10Async.h
+//  Content:    D3DX10 Asynchronous Effect / Shader loaders / compilers
 //
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef __D3DX10EFFECT_H__
-#define __D3DX10EFFECT_H__
+#ifndef __D3DX10ASYNC_H__
+#define __D3DX10ASYNC_H__
 
 #include "d3dx10.h"
 
@@ -298,6 +298,6 @@ HRESULT WINAPI D3DX10CreateAsyncShaderResourceViewProcessor(ID3D10Device *pDevic
 }
 #endif //__cplusplus
 
-#endif //__D3D10EFFECT_H__
+#endif //__D3DX10ASYNC_H__
 
 

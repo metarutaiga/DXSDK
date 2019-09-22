@@ -3,7 +3,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0498 */
+ /* File created by MIDL compiler version 7.00.0499 */
 /* Compiler settings for d3d10.idl:
     Oicf, W1, Zp8, env=Win64 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -589,13 +589,13 @@ extern "C"{
 
 #define	D3D_MINOR_VERSION	( 0 )
 
-#define	D3D_SPEC_DATE_DAY	( 21 )
+#define	D3D_SPEC_DATE_DAY	( 8 )
 
-#define	D3D_SPEC_DATE_MONTH	( 06 )
+#define	D3D_SPEC_DATE_MONTH	( 8 )
 
 #define	D3D_SPEC_DATE_YEAR	( 2006 )
 
-#define D3D_SPEC_VERSION	( 1.050004 )
+#define D3D_SPEC_VERSION	( 1.050005 )
 #endif
 #define	_FACD3D10	( 0x879 )
 
@@ -5430,6 +5430,18 @@ EXTERN_C const IID IID_ID3D10Device;
             /*  */ 
             __out_opt  void **ppResource) = 0;
         
+        virtual void STDMETHODCALLTYPE SetTextFilterSize( 
+            /*  */ 
+            __in  UINT Width,
+            /*  */ 
+            __in  UINT Height) = 0;
+        
+        virtual void STDMETHODCALLTYPE GetTextFilterSize( 
+            /*  */ 
+            __out_opt  UINT *pWidth,
+            /*  */ 
+            __out_opt  UINT *pHeight) = 0;
+        
     };
     
 #else 	/* C style interface */
@@ -6208,6 +6220,20 @@ EXTERN_C const IID IID_ID3D10Device;
             /*  */ 
             __out_opt  void **ppResource);
         
+        void ( STDMETHODCALLTYPE *SetTextFilterSize )( 
+            ID3D10Device * This,
+            /*  */ 
+            __in  UINT Width,
+            /*  */ 
+            __in  UINT Height);
+        
+        void ( STDMETHODCALLTYPE *GetTextFilterSize )( 
+            ID3D10Device * This,
+            /*  */ 
+            __out_opt  UINT *pWidth,
+            /*  */ 
+            __out_opt  UINT *pHeight);
+        
         END_INTERFACE
     } ID3D10DeviceVtbl;
 
@@ -6510,6 +6536,12 @@ EXTERN_C const IID IID_ID3D10Device;
 #define ID3D10Device_OpenSharedResource(This,hResource,ReturnedInterface,ppResource)	\
     ( (This)->lpVtbl -> OpenSharedResource(This,hResource,ReturnedInterface,ppResource) ) 
 
+#define ID3D10Device_SetTextFilterSize(This,Width,Height)	\
+    ( (This)->lpVtbl -> SetTextFilterSize(This,Width,Height) ) 
+
+#define ID3D10Device_GetTextFilterSize(This,pWidth,pHeight)	\
+    ( (This)->lpVtbl -> GetTextFilterSize(This,pWidth,pHeight) ) 
+
 #endif /* COBJMACROS */
 
 
@@ -6633,7 +6665,8 @@ typedef
 enum D3D10_CREATE_DEVICE_FLAG
     {	D3D10_CREATE_DEVICE_SINGLETHREADED	= 0x1,
 	D3D10_CREATE_DEVICE_DEBUG	= 0x2,
-	D3D10_CREATE_DEVICE_SWITCH_TO_REF	= 0x4
+	D3D10_CREATE_DEVICE_SWITCH_TO_REF	= 0x4,
+	D3D10_CREATE_DEVICE_PREVENT_INTERNAL_THREADING_OPTIMIZATIONS	= 0x8
     } 	D3D10_CREATE_DEVICE_FLAG;
 
 
