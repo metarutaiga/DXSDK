@@ -1,21 +1,16 @@
-//------------------------------------------------------------------------------
-// File: Segment.idl
+// Segment.idl : IDL source for devices segments for msvid.dll
 //
-// Desc: IDL source for devices segments for msvid.dll
-//
-// Copyright (c) 1999-2001, Microsoft Corporation.  All rights reserved.
-//------------------------------------------------------------------------------
 
 // This file will be processed by the MIDL tool to
 // produce the type library (msvideo.tlb) and marshalling code.
 
 
-// Copyright (c) Microsoft Corporation 1998-2001
+// Copyright (c) Microsoft Corporation 1998-2000
 //
 cpp_quote("//+-------------------------------------------------------------------------")
 cpp_quote("//")
 cpp_quote("//  Microsoft Windows")
-cpp_quote("//  Copyright (C) Microsoft Corporation, 1999-2001.")
+cpp_quote("//  Copyright (C) Microsoft Corporation, 1999-2000.")
 cpp_quote("//")
 cpp_quote("//--------------------------------------------------------------------------")
 cpp_quote("#pragma once")
@@ -29,221 +24,265 @@ cpp_quote("#include <olectl.h>")
 import "oaidl.idl";
 import "ocidl.idl";
 import "strmif.idl";
-import "mstve.idl";
-import "mstvca.idl";
 import "tuner.idl";
+import "tvratings.idl";
 #endif
 
 typedef enum {
-    dispidName,
-    dispidStatus,
-    dispidDevImageSourceWidth,
-    dispidDevImageSourceHeight,
-    dispidDevCountryCode,
-    dispidDevOverScan,
-    dispidSegment,
-    dispidDevVolume,
-    dispidDevBalance,
-    dispidDevPower,
-    dispidTuneChan,
-    dispidDevVideoSubchannel,
-    dispidDevAudioSubchannel,
-    dispidChannelAvailable,
-    dispidDevVideoFrequency,
-    dispidDevAudioFrequency,
-    dispidCount,
-    dispidDevFileName,
-    dispidVisible,
-    dispidOwner,
-    dispidMessageDrain,
-    //dispidPosition,
-    dispidViewable,
-    dispidDevView,
-    dispidKSCat,
-    dispidCLSID,
-    dispid_KSCat,
-    dispid_CLSID,
-    dispidTune,
-    dispidTS,
-    dispidDevSAP,
-    dispidClip,
-    dispidRequestedClipRect,
-    dispidClippedSourceRect,
-    dispidAvailableSourceRect,
-    dispidMediaPosition,
-    dispidDevRun,
-    dispidDevPause,
-    dispidDevStop,
-    dispidCCEnable,
-    dispidDevStep,
-    dispidDevCanStep,
-    dispidSourceSize,
-    dispid_playtitle,
-    dispid_playchapterintitle,
-    dispid_playchapter,
-    dispid_playchaptersautostop,
-    dispid_playattime,
-    dispid_playattimeintitle,
-    dispid_playperiodintitleautostop,
-    dispid_replaychapter,
-    dispid_playprevchapter,
-    dispid_playnextchapter,
-    dispid_playforwards,
-    dispid_playbackwards,
-    dispid_stilloff,
-    dispid_audiolanguage,
-    dispid_showmenu,
-    dispid_resume,
-    dispid_returnfromsubmenu,
-    dispid_buttonsavailable,
-    dispid_currentbutton,
-    dispid_SelectAndActivateButton,
-    dispid_ActivateButton,
-    dispid_SelectRightButton,
-    dispid_SelectLeftButton,
-    dispid_SelectLowerButton,
-    dispid_SelectUpperButton,
-    dispid_ActivateAtPosition,
-    dispid_SelectAtPosition,
-    dispid_ButtonAtPosition,
-    dispid_NumberOfChapters,
-    dispid_TotalTitleTime,
-    dispid_TitlesAvailable,
-    dispid_VolumesAvailable,
-    dispid_CurrentVolume,
-    dispid_CurrentDiscSide,
-    dispid_CurrentDomain,
-    dispid_CurrentChapter,
-    dispid_CurrentTitle,
-    dispid_CurrentTime,
-    dispid_FramesPerSecond,
-    dispid_DVDTimeCode2bstr,
-    dispid_DVDDirectory,
-    dispid_IsSubpictureStreamEnabled,
-    dispid_IsAudioStreamEnabled,
-    dispid_CurrentSubpictureStream,
-    dispid_SubpictureLanguage,
-    dispid_CurrentAudioStream,
-    dispid_AudioStreamsAvailable,
-    dispid_AnglesAvailable,
-    dispid_CurrentAngle,
-    dispid_CCActive,
-    dispid_CurrentCCService,
-    dispid_SubpictureStreamsAvailable,
-    dispid_SubpictureOn,
-    dispid_DVDUniqueID,
-    dispid_EnableResetOnStop,
-    dispid_AcceptParentalLevelChange,
-    dispid_NotifyParentalLevelChange,
-    dispid_SelectParentalCountry,
-    dispid_SelectParentalLevel,
-    dispid_TitleParentalLevels,
-    dispid_PlayerParentalCountry,
-    dispid_PlayerParentalLevel,
-    dispid_Eject,
-    dispid_UOPValid,
-    dispid_SPRM,
-    dispid_GPRM,
-    dispid_DVDTextStringType,
-    dispid_DVDTextString,
-    dispid_DVDTextNumberOfStrings,
-    dispid_DVDTextNumberOfLanguages,
-    dispid_DVDTextLanguageLCID,
-    dispid_RegionChange,
-    dispid_DVDAdm,
-    dispid_DeleteBookmark,
-    dispid_RestoreBookmark,
-    dispid_SaveBookmark,
-    dispid_SelectDefaultAudioLanguage,
-    dispid_SelectDefaultSubpictureLanguage,
-    dispid_PreferredSubpictureStream,
-    dispid_DefaultMenuLanguage,
-    dispid_DefaultSubpictureLanguage,
-    dispid_DefaultAudioLanguage,
-    dispid_DefaultSubpictureLanguageExt,
-    dispid_DefaultAudioLanguageExt,
-    dispid_LanguageFromLCID,
-    dispid_KaraokeAudioPresentationMode,
-    dispid_KaraokeChannelContent,
-    dispid_KaraokeChannelAssignment,
-    dispid_RestorePreferredSettings,
-    dispid_ButtonRect,
-    dispid_DVDScreenInMouseCoordinates,
-    dispid_CustomCompositorClass,
-    dispidCustomCompositorClass,
-    dispid_CustomCompositor,
-    dispidMixerBitmap,
-    dispid_MixerBitmap,
-    dispidMixerBitmapOpacity,
-    dispidMixerBitmapRect,
-    dispidSetupMixerBitmap,
-    dispidUsingOverlay,
-    dispidDisplayChange,
-    dispidRePaint,
-    dispid_IsEqualDevice,
-    dispidrate,
-    dispidposition,
-    dispidpositionmode,
-    dispidlength,
-    dispidChangePassword,
-    dispidSaveParentalLevel,
-    dispidSaveParentalCountry,
-    dispidConfirmPassword,
-    dispidGetParentalLevel,
-    dispidGetParentalCountry,
-    dispidDefaultAudioLCID,
-    dispidDefaultSubpictureLCID,
-    dispidDefaultMenuLCID,
-    dispidBookmarkOnStop,
-    dispidMaxVidRect,
-    dispidMinVidRect,
-    dispidCapture,
-    dispid_DecimateInput,
-    dispidAlloctor,
-    dispid_Allocator,
-    dispidAllocPresentID,
-    dispidSetAllocator,
-    dispid_SetAllocator,
-    LastReservedDeviceDispid=0x3fff
+dispidName,
+dispidStatus,
+dispidDevImageSourceWidth,
+dispidDevImageSourceHeight,
+dispidDevCountryCode,
+dispidDevOverScan,
+dispidSegment,
+dispidDevVolume,
+dispidDevBalance,
+dispidDevPower,
+dispidTuneChan,
+dispidDevVideoSubchannel,
+dispidDevAudioSubchannel,
+dispidChannelAvailable,
+dispidDevVideoFrequency,
+dispidDevAudioFrequency,
+dispidCount,
+dispidDevFileName,
+dispidVisible,
+dispidOwner,
+dispidMessageDrain,
+//dispidPosition,
+dispidViewable,
+dispidDevView,
+dispidKSCat,
+dispidCLSID,
+dispid_KSCat,
+dispid_CLSID,
+dispidTune,
+dispidTS,
+dispidDevSAP,
+dispidClip,
+dispidRequestedClipRect,
+dispidClippedSourceRect,
+dispidAvailableSourceRect,
+dispidMediaPosition,
+dispidDevRun,
+dispidDevPause,
+dispidDevStop,
+dispidCCEnable,
+dispidDevStep,
+dispidDevCanStep,
+dispidSourceSize,
+dispid_playtitle,
+dispid_playchapterintitle,
+dispid_playchapter,
+dispid_playchaptersautostop,
+dispid_playattime,
+dispid_playattimeintitle,
+dispid_playperiodintitleautostop,
+dispid_replaychapter,
+dispid_playprevchapter,
+dispid_playnextchapter,
+dispid_playforwards,
+dispid_playbackwards,
+dispid_stilloff,
+dispid_audiolanguage,
+dispid_showmenu,
+dispid_resume,
+dispid_returnfromsubmenu,
+dispid_buttonsavailable,
+dispid_currentbutton,
+dispid_SelectAndActivateButton,
+dispid_ActivateButton,
+dispid_SelectRightButton,
+dispid_SelectLeftButton,
+dispid_SelectLowerButton,
+dispid_SelectUpperButton,
+dispid_ActivateAtPosition,
+dispid_SelectAtPosition,
+dispid_ButtonAtPosition,
+dispid_NumberOfChapters,
+dispid_TotalTitleTime,
+dispid_TitlesAvailable,
+dispid_VolumesAvailable,
+dispid_CurrentVolume,
+dispid_CurrentDiscSide,
+dispid_CurrentDomain,
+dispid_CurrentChapter,
+dispid_CurrentTitle,
+dispid_CurrentTime,
+dispid_FramesPerSecond,
+dispid_DVDTimeCode2bstr,
+dispid_DVDDirectory,
+dispid_IsSubpictureStreamEnabled,
+dispid_IsAudioStreamEnabled,
+dispid_CurrentSubpictureStream,
+dispid_SubpictureLanguage,
+dispid_CurrentAudioStream,
+dispid_AudioStreamsAvailable,
+dispid_AnglesAvailable,
+dispid_CurrentAngle,
+dispid_CCActive,
+dispid_CurrentCCService,
+dispid_SubpictureStreamsAvailable,
+dispid_SubpictureOn,
+dispid_DVDUniqueID,
+dispid_EnableResetOnStop,
+dispid_AcceptParentalLevelChange,
+dispid_NotifyParentalLevelChange,
+dispid_SelectParentalCountry,
+dispid_SelectParentalLevel,
+dispid_TitleParentalLevels,
+dispid_PlayerParentalCountry,
+dispid_PlayerParentalLevel,
+dispid_Eject,
+dispid_UOPValid,
+dispid_SPRM,
+dispid_GPRM,
+dispid_DVDTextStringType,
+dispid_DVDTextString,
+dispid_DVDTextNumberOfStrings,
+dispid_DVDTextNumberOfLanguages,
+dispid_DVDTextLanguageLCID,
+dispid_RegionChange,
+dispid_DVDAdm,
+dispid_DeleteBookmark,
+dispid_RestoreBookmark,
+dispid_SaveBookmark,
+dispid_SelectDefaultAudioLanguage,
+dispid_SelectDefaultSubpictureLanguage,
+dispid_PreferredSubpictureStream,
+dispid_DefaultMenuLanguage,
+dispid_DefaultSubpictureLanguage,
+dispid_DefaultAudioLanguage,
+dispid_DefaultSubpictureLanguageExt,
+dispid_DefaultAudioLanguageExt,
+dispid_LanguageFromLCID,
+dispid_KaraokeAudioPresentationMode,
+dispid_KaraokeChannelContent,
+dispid_KaraokeChannelAssignment,
+dispid_RestorePreferredSettings,
+dispid_ButtonRect,
+dispid_DVDScreenInMouseCoordinates,
+dispid_CustomCompositorClass,
+dispidCustomCompositorClass,
+dispid_CustomCompositor,
+dispidMixerBitmap,
+dispid_MixerBitmap,
+dispidMixerBitmapOpacity,
+dispidMixerBitmapRect,
+dispidSetupMixerBitmap,
+dispidUsingOverlay,
+dispidDisplayChange,
+dispidRePaint,
+dispid_IsEqualDevice,
+dispidrate,
+dispidposition,
+dispidpositionmode,
+dispidlength,
+dispidChangePassword,
+dispidSaveParentalLevel,
+dispidSaveParentalCountry,
+dispidConfirmPassword,
+dispidGetParentalLevel,
+dispidGetParentalCountry,
+dispidDefaultAudioLCID,
+dispidDefaultSubpictureLCID,
+dispidDefaultMenuLCID,
+dispidBookmarkOnStop,
+dispidMaxVidRect,
+dispidMinVidRect,
+dispidCapture,
+dispid_DecimateInput,
+dispidAlloctor,
+dispid_Allocator,
+dispidAllocPresentID,
+dispidSetAllocator,
+dispid_SetAllocator,
+dispidStreamBufferSinkName,
+dispidStreamBufferSourceName,
+dispidStreamBufferContentRecording,
+dispidStreamBufferReferenceRecording,
+dispidstarttime,
+dispidstoptime,
+dispidrecordingstopped,
+dispidrecordingstarted,
+dispidNameSetLock,
+dispidrecordingtype,
+dispidstart,
+dispidRecordingAttribute,
+dispid_RecordingAttribute,
+dispidSBEConfigure,
+dispid_CurrentRatings,
+dispid_MaxRatingsLevel,
+dispid_audioencoderint,
+dispid_videoencoderint,
+dispidService,
+dispid_BlockUnrated,
+dispid_UnratedDelay,
+dispid_SuppressEffects,
+dispidsbesource,
+LastReservedDeviceDispid=0x3fff
 } SegDispidList;
-
 typedef enum {
-    eventidStateChange,
-    eventidOnTuneChanged,
-    eventidEndOfMedia,
-    eventidDVDNotify,
-    eventidPlayForwards,
-    eventidPlayBackwards,
-    eventidShowMenu,
-    eventidResume,
-    eventidSelectOrActivateButton,
-    eventidStillOff,
-    eventidPauseOn,
-    eventidChangeCurrentAudioStream,
-    eventidChangeCurrentSubpictureStream,
-    eventidChangeCurrentAngle,
-    eventidPlayAtTimeInTitle,
-    eventidPlayAtTime,
-    eventidPlayChapterInTitle,
-    eventidPlayChapter,
-    eventidReplayChapter,
-    eventidPlayNextChapter,
-    eventidStop,
-    eventidReturnFromSubmenu,
-    eventidPlayTitle,
-    eventidPlayPrevChapter,
-    eventidChangeKaraokePresMode,
-    eventidChangeVideoPresMode,
-    eventidOverlayUnavailable,
-    LastReservedDeviceEvent=0x3fff
+eventidStateChange,
+eventidOnTuneChanged,
+eventidEndOfMedia,
+eventidDVDNotify,
+eventidPlayForwards,
+eventidPlayBackwards,
+eventidShowMenu,
+eventidResume,
+eventidSelectOrActivateButton,
+eventidStillOff,
+eventidPauseOn,
+eventidChangeCurrentAudioStream,
+eventidChangeCurrentSubpictureStream,
+eventidChangeCurrentAngle,
+eventidPlayAtTimeInTitle,
+eventidPlayAtTime,
+eventidPlayChapterInTitle,
+eventidPlayChapter,
+eventidReplayChapter,
+eventidPlayNextChapter,
+eventidStop,
+eventidReturnFromSubmenu,
+eventidPlayTitle,
+eventidPlayPrevChapter,
+eventidChangeKaraokePresMode,
+eventidChangeVideoPresMode,
+eventidOverlayUnavailable,
+eventidSinkCertificateFailure,
+eventidSinkCertificateSuccess,
+eventidSourceCertificateFailure,
+eventidSourceCertificateSuccess,
+eventidRatingsBlocked,
+eventidRatingsUnlocked,
+eventidRatingsChanged,
+eventidWriteFailure,
+eventidTimeHole,
+eventidStaleDataRead,
+eventidContentBecomingStale,
+eventidStaleFileDeleted,
+LastReservedDeviceEvent=0x3fff
 } SegEventidList;
-
 typedef enum {
     FrameMode,
     TenthsSecondsMode
 } PositionModeList;
+typedef enum {
+    CONTENT = 0,
+    REFERENCE
+} RecordingType;       
 
-
+ typedef enum {
+    None,
+    Caption1,
+    Caption2,
+    Text1,
+    Text2,
+    XDS
+} MSVidCCService;
+   
 //*****************************************************************************
 //*****************************************************************************
 ///////////////////////////////////////////////////////////////////////////////
@@ -296,9 +335,9 @@ interface IEnumMSVidGraphSegment;
 ///////////////////////////////////////////////////////////////////////////////
 //*****************************************************************************
         ///////////////////////////////////////////////////////////////////////////////////////
-        // if segments need to change the control state(stop, run, pause, etc) or get any stock
-        // properties that are also made available to clients such as HWND, then they should simply
-        // QI for the main IMSVidCtl interface.  there's no reason to implement this stuff twice.
+		// if segments need to change the control state(stop, run, pause, etc) or get any stock
+		// properties that are also made available to clients such as HWND, then they should simply
+		// QI for the main IMSVidCtl interface.  there's no reason to implement this stuff twice.
         [object,
                 uuid(3DD2903D-E0AA-11d2-B63A-00C04F79498E),
                 helpstring("DShow Graph Segment Container"),
@@ -312,18 +351,19 @@ interface IEnumMSVidGraphSegment;
                 [propget, helpstring("Audio Renderer")] HRESULT AudioRenderer([out] IMSVidGraphSegment **pAR);
                 [propget, helpstring("Features")] HRESULT Features([out] IEnumMSVidGraphSegment **pOutputs);
                 [propget, helpstring("Composites")] HRESULT Composites([out] IEnumMSVidGraphSegment **pComposites);
-                [propget, helpstring("Container")] HRESULT ParentContainer([out] IUnknown **ppContainer);           // this allows the segments to get out and walk the dhtml hierarchy             
+				[propget, helpstring("Container")] HRESULT ParentContainer([out] IUnknown **ppContainer); 			// this allows the segments to get out and walk the dhtml hierarchy				
                 HRESULT Decompose(IMSVidGraphSegment *pSegment);
-                HRESULT IsWindowless(); // the stock hwnd on the main vidctl is only valid if this is set
-                // be very careful using GetFocus(think twice and then don't).  it is recommended that systems follow the model 
-                // laid out by atvef and smil wherein the convergence of UI and video are implemented by providing the user interface 
-                //  as standard html/xml, etc with video incorporated as an element of this standard presentation.   
-                // however, in the special caseof dvd there is a prexisting standard which is conceptually inside out.
-                // that is, the UI is embedded in the video stream rather than the stream being embedded in the UI.
-                // as a consequence, buttons and menus can asynchronously pop up out of the video stream source(dvd navigator) 
-                // and, may require the focus.  this inside out paradigm is the only situation where
-                // getfocus should be used.  otherwise, weird non-standard interactions will result.
-                HRESULT GetFocus();
+				HRESULT IsWindowless(); // the stock hwnd on the main vidctl is only valid if this is set
+				
+				// be very careful using GetFocus(think twice and then don't).  it is recommended that systems follow the model 
+				// laid out by atvef and smil wherein the convergence of UI and video are implemented by providing the user interface 
+				//  as standard html/xml, etc with video incorporated as an element of this standard presentation.   
+				// however, in the special case of dvd there is a prexisting standard which is conceptually inside out.
+				// that is, the UI is embedded in the video stream rather than the stream being embedded in the UI.
+				// as a consequence, buttons and menus can asynchronously pop up out of the video stream source(dvd navigator) 
+				// and, may require the focus.  this inside out paradigm is the only situation where
+				// getfocus should be used.  otherwise, weird non-standard interactions will result.
+				HRESULT GetFocus();
         };
         
 
@@ -361,41 +401,41 @@ interface IEnumMSVidGraphSegment;
                 HRESULT PostRun(); // called after graph is running
                 HRESULT PreStop(); // used to notify segments that the graph about to be stopped
                 HRESULT PostStop();// called after graph is stopped
-                HRESULT OnEventNotify(LONG lEventCode, LONG_PTR lEventParm1, LONG_PTR lEventParm2);  //DShow events
-                HRESULT Decompose();
+				HRESULT OnEventNotify(LONG lEventCode, LONG_PTR lEventParm1, LONG_PTR lEventParm2);  //DShow events
+				HRESULT	Decompose();
         };
 
 
-        enum {
-        // button state 
-         MSVIDCTL_LEFT_BUTTON   =0x0001,
-         MSVIDCTL_RIGHT_BUTTON  =0x0002,
-         MSVIDCTL_MIDDLE_BUTTON =0x0004,
-         MSVIDCTL_X_BUTTON1     =0x0008,
-         MSVIDCTL_X_BUTTON2     =0x0010,
-         // shift state
-         MSVIDCTL_SHIFT =0x0001,
-         MSVIDCTL_CTRL  =0x0002,
-         MSVIDCTL_ALT   =0x0004,
-        };
+		enum {
+		// button state 
+		 MSVIDCTL_LEFT_BUTTON   =0x0001,
+		 MSVIDCTL_RIGHT_BUTTON  =0x0002,
+		 MSVIDCTL_MIDDLE_BUTTON =0x0004,
+		 MSVIDCTL_X_BUTTON1     =0x0008,
+		 MSVIDCTL_X_BUTTON2     =0x0010,
+		 // shift state
+		 MSVIDCTL_SHIFT =0x0001,
+		 MSVIDCTL_CTRL  =0x0002,
+		 MSVIDCTL_ALT   =0x0004,
+		};
 
         [object,
                 uuid(301C060E-20D9-4587-9B03-F82ED9A9943C),
                 helpstring("DShow Graph Segment Input Events"),
                 pointer_default(unique)
         ]
-        // this should only be implemented used by input(source) devices with ui in the video 
-        // stream(specifically dvd).  see discussion of getfocus above
+		// this should only be implemented used by input(source) devices with ui in the video 
+		// stream(specifically dvd).  see discussion of getfocus above
         interface IMSVidGraphSegmentUserInput : IUnknown {
-            HRESULT Click();
-            HRESULT DblClick();
-            HRESULT KeyDown(short* KeyCode, short ShiftState);
-            HRESULT KeyPress(short* KeyAscii);
-            HRESULT KeyUp(short* KeyCode, short ShiftState);
-            HRESULT MouseDown(short ButtonState, short ShiftState, OLE_XPOS_PIXELS x, OLE_YPOS_PIXELS y);
-            HRESULT MouseMove(short ButtonState, short ShiftState, OLE_XPOS_PIXELS x, OLE_YPOS_PIXELS y);
-            HRESULT MouseUp(short ButtonState, short ShiftState, OLE_XPOS_PIXELS x, OLE_YPOS_PIXELS y);
-        }
+			HRESULT Click();
+			HRESULT DblClick();
+			HRESULT KeyDown(short* KeyCode, short ShiftState);
+			HRESULT KeyPress(short* KeyAscii);
+			HRESULT KeyUp(short* KeyCode, short ShiftState);
+			HRESULT MouseDown(short ButtonState, short ShiftState, OLE_XPOS_PIXELS x, OLE_YPOS_PIXELS y);
+			HRESULT MouseMove(short ButtonState, short ShiftState, OLE_XPOS_PIXELS x, OLE_YPOS_PIXELS y);
+			HRESULT MouseUp(short ButtonState, short ShiftState, OLE_XPOS_PIXELS x, OLE_YPOS_PIXELS y);
+		}
 
         ///////////////////////////////////////////////////////////////////////////////////////
         [object,
@@ -430,44 +470,44 @@ interface IEnumMSVidGraphSegment;
                 pointer_default(unique)
         ]
         interface IMSVidVRGraphSegment : IMSVidGraphSegment {
-            // NOTE: because of the way ActiveX controls work there is a tight coupling
-            // between the video control itself and the video renderer device segment
-            // as a consequence there are important interfaces such as positioning that
-            // come through the control via the various ole interfaces which we need to
-            // pass to the video renderer but we don't want script to access directly
-            // there are also stock properties such as refresh and autosize that must also be
-            // implemented directly on the video control and passed through to the video renderer
+			// NOTE: because of the way ActiveX controls work there is a tight coupling
+			// between the video control itself and the video renderer device segment
+			// as a consequence there are important interfaces such as positioning that
+			// come through the control via the various ole interfaces which we need to
+			// pass to the video renderer but we don't want script to access directly
+			// there are also stock properties such as refresh and autosize that must also be
+			// implemented directly on the video control and passed through to the video renderer
 
-            // from ole interfaces
+			// from ole interfaces
             [hidden, restricted, propput] HRESULT _VMRendererMode([in] LONG dwMode);
             [hidden, restricted, propput] HRESULT Owner([in] HWND Window);
             [hidden, restricted, propget] HRESULT Owner([out, retval] HWND* Window);
-            // from ole interfaces
+			// from ole interfaces
             [hidden, restricted, propget] HRESULT UseOverlay([out, retval] VARIANT_BOOL *UseOverlayVal);
             [hidden, restricted, propput] HRESULT UseOverlay([in] VARIANT_BOOL UseOverlayVal);
-            // from top-level control visibility state
+			// from top-level control visibility state
             [hidden, restricted, propget] HRESULT Visible([out, retval] VARIANT_BOOL* Visible);
             [hidden, restricted, propput] HRESULT Visible([in] VARIANT_BOOL Visible);
 
-        // clients must go through top-level vidctl interfaces to access this.  since vidctl's ondraw
-        // actually paints this, it needs to know about it.
+	    // clients must go through top-level vidctl interfaces to access this.  since vidctl's ondraw
+	    // actually paints this, it needs to know about it.
             [propget, hidden, restricted] HRESULT ColorKey([out, retval] OLE_COLOR* ColorKey);
             [propput, hidden, restricted] HRESULT ColorKey([in] OLE_COLOR ColorKey);
-            // from ole interfaces and window msgs
+			// from ole interfaces and window msgs
             [propget, hidden, restricted] HRESULT Source([out, retval] LPRECT r);
             [propput, hidden, restricted] HRESULT Source([in] RECT r);
-            // from ole interfaces and window msgs
+			// from ole interfaces and window msgs
             [propget, hidden, restricted] HRESULT Destination([out, retval] LPRECT r);
             [propput, hidden, restricted] HRESULT Destination([in] RECT r);
             [propget, hidden, restricted] HRESULT NativeSize([out] LPSIZE sizeval, [out] LPSIZE aspectratio);
-            // letterboxing color if we're using 
+			// letterboxing color if we're using 
             [propget, hidden, restricted] HRESULT BorderColor([out, retval] OLE_COLOR* color);
             [propput, hidden, restricted] HRESULT BorderColor([in] OLE_COLOR color);
-            // letterbox or stretch
+			// letterbox or stretch
             [propget, hidden, restricted] HRESULT MaintainAspectRatio([out, retval] VARIANT_BOOL *fMaintain);
             [propput, hidden, restricted] HRESULT MaintainAspectRatio([in] VARIANT_BOOL fMaintain);
 
-            // from top-level control refresh method
+			// from top-level control refresh method
             [hidden, restricted] HRESULT Refresh();
             [hidden, restricted] HRESULT DisplayChange();
             [hidden, restricted] HRESULT RePaint([in] HDC hdc);
@@ -566,8 +606,8 @@ interface IEnumMSVidGraphSegment;
                 [id(dispidDevRun)] HRESULT Run();
                 [id(dispidDevPause)] HRESULT Pause();
                 [id(dispidDevStop)] HRESULT Stop();
-                [propget, id(dispidDevCanStep)] HRESULT CanStep([in] VARIANT_BOOL fBackwards, [out,retval] VARIANT_BOOL *pfCan);
-                [id(dispidDevStep)] HRESULT Step([in] long lStep);
+				[propget, id(dispidDevCanStep)] HRESULT CanStep([in] VARIANT_BOOL fBackwards, [out,retval] VARIANT_BOOL *pfCan);
+				[id(dispidDevStep)] HRESULT Step([in] long lStep);
                 [propput, id(dispidrate), helpstring("Rate")] HRESULT Rate([in] double plRate);
                 [propget, id(dispidrate), helpstring("Rate")] HRESULT Rate([out,retval]double *plRate);
                 [propput, id(dispidposition), helpstring("Position")] HRESULT CurrentPosition([in] long lPosition);
@@ -626,11 +666,11 @@ interface IEnumMSVidGraphSegment;
                 // international dialing code value
                 [propget, id(dispidDevCountryCode)] HRESULT CountryCode([retval, out] long *lcc);
                 [propput, id(dispidDevCountryCode)] HRESULT CountryCode([in] long lcc);
-                // analog specific shortcut to enabling a different audio component
+				// analog specific shortcut to enabling a different audio component
                 [propget, id(dispidDevSAP)] HRESULT SAP([out, retval] VARIANT_BOOL *pfSapOn);
                 [propput, id(dispidDevSAP)] HRESULT SAP([in] VARIANT_BOOL fSapOn);
                 // methods
-                [id(dispidChannelAvailable)] HRESULT ChannelAvailable([in] long nChannel, [in, out] long *SignalStrength, [retval, out] VARIANT_BOOL *fSignalPresent);
+                [id(dispidChannelAvailable)] HRESULT ChannelAvailable([in] long nChannel, [out] long *SignalStrength, [retval, out] VARIANT_BOOL *fSignalPresent);
         };
 
         ///////////////////////////////////////////////////////////////////////////////////////
@@ -667,73 +707,73 @@ interface IEnumMSVidGraphSegment;
         ///////////////////////////////////////////////////////////////////////////////////////
         typedef enum
         {
-            dvdMenu_Title   = 2,
-            dvdMenu_Root    = dvdMenu_Title + 1,
-            dvdMenu_Subpicture  = dvdMenu_Root + 1,
-            dvdMenu_Audio   = dvdMenu_Subpicture + 1,
-            dvdMenu_Angle   = dvdMenu_Audio + 1,
-            dvdMenu_Chapter = dvdMenu_Angle + 1
-        }   DVDMenuIDConstants;
+            dvdMenu_Title	= 2,
+            dvdMenu_Root	= dvdMenu_Title + 1,
+            dvdMenu_Subpicture	= dvdMenu_Root + 1,
+            dvdMenu_Audio	= dvdMenu_Subpicture + 1,
+            dvdMenu_Angle	= dvdMenu_Audio + 1,
+            dvdMenu_Chapter	= dvdMenu_Angle + 1
+        }	DVDMenuIDConstants;
 
-        typedef enum 
+    	typedef enum 
         {  
-           dvdState_Undefined   = -2, 
-           dvdState_Unitialized = dvdState_Undefined + 1,
-           dvdState_Stopped   = dvdState_Unitialized + 1,
-           dvdState_Paused    = dvdState_Stopped + 1,
-           dvdState_Running   = dvdState_Paused + 1
-        }  DVDFilterState;
+    	   dvdState_Undefined   = -2, 
+    	   dvdState_Unitialized = dvdState_Undefined + 1,
+    	   dvdState_Stopped   = dvdState_Unitialized + 1,
+    	   dvdState_Paused    = dvdState_Stopped + 1,
+    	   dvdState_Running   = dvdState_Paused + 1
+    	}  DVDFilterState;
 
-        typedef enum 
-        {   
-            dvdStruct_Volume    = 0x1,
-            dvdStruct_Title = 0x2,
-            dvdStruct_ParentalID    = 0x3,
-            dvdStruct_PartOfTitle   = 0x4,
-            dvdStruct_Cell  = 0x5,
-            dvdStream_Audio = 0x10,
-            dvdStream_Subpicture    = 0x11,
-            dvdStream_Angle = 0x12,
-            dvdChannel_Audio    = 0x20,
-            dvdGeneral_Name = 0x30,
-            dvdGeneral_Comments = 0x31,
-            dvdTitle_Series = 0x38,
-            dvdTitle_Movie  = 0x39,
-            dvdTitle_Video  = 0x3a,
-            dvdTitle_Album  = 0x3b,
-            dvdTitle_Song   = 0x3c,
-            dvdTitle_Other  = 0x3f,
-            dvdTitle_Sub_Series = 0x40,
-            dvdTitle_Sub_Movie  = 0x41,
-            dvdTitle_Sub_Video  = 0x42,
-            dvdTitle_Sub_Album  = 0x43,
-            dvdTitle_Sub_Song   = 0x44,
-            dvdTitle_Sub_Other  = 0x47,
-            dvdTitle_Orig_Series    = 0x48,
-            dvdTitle_Orig_Movie = 0x49,
-            dvdTitle_Orig_Video = 0x4a,
-            dvdTitle_Orig_Album = 0x4b,
-            dvdTitle_Orig_Song  = 0x4c,
-            dvdTitle_Orig_Other = 0x4f,
-            dvdOther_Scene  = 0x50,
-            dvdOther_Cut    = 0x51,
-            dvdOther_Take   = 0x52
-        } DVDTextStringType;
+    	typedef enum 
+    	{	
+    		dvdStruct_Volume	= 0x1,
+    		dvdStruct_Title	= 0x2,
+    		dvdStruct_ParentalID	= 0x3,
+    		dvdStruct_PartOfTitle	= 0x4,
+    		dvdStruct_Cell	= 0x5,
+    		dvdStream_Audio	= 0x10,
+    		dvdStream_Subpicture	= 0x11,
+    		dvdStream_Angle	= 0x12,
+    		dvdChannel_Audio	= 0x20,
+    		dvdGeneral_Name	= 0x30,
+    		dvdGeneral_Comments	= 0x31,
+    		dvdTitle_Series	= 0x38,
+    		dvdTitle_Movie	= 0x39,
+    		dvdTitle_Video	= 0x3a,
+    		dvdTitle_Album	= 0x3b,
+    		dvdTitle_Song	= 0x3c,
+    		dvdTitle_Other	= 0x3f,
+    		dvdTitle_Sub_Series	= 0x40,
+    		dvdTitle_Sub_Movie	= 0x41,
+    		dvdTitle_Sub_Video	= 0x42,
+    		dvdTitle_Sub_Album	= 0x43,
+    		dvdTitle_Sub_Song	= 0x44,
+    		dvdTitle_Sub_Other	= 0x47,
+    		dvdTitle_Orig_Series	= 0x48,
+    		dvdTitle_Orig_Movie	= 0x49,
+    		dvdTitle_Orig_Video	= 0x4a,
+    		dvdTitle_Orig_Album	= 0x4b,
+    		dvdTitle_Orig_Song	= 0x4c,
+    		dvdTitle_Orig_Other	= 0x4f,
+    		dvdOther_Scene	= 0x50,
+    		dvdOther_Cut	= 0x51,
+    		dvdOther_Take	= 0x52
+    	} DVDTextStringType;
 
-        typedef enum 
-        {   
-            dvdSPExt_NotSpecified   = 0,
-            dvdSPExt_Caption_Normal = 1,
-            dvdSPExt_Caption_Big    = 2,
-            dvdSPExt_Caption_Children   = 3,
-            dvdSPExt_CC_Normal  = 5,
-            dvdSPExt_CC_Big = 6,
-            dvdSPExt_CC_Children    = 7,
-            dvdSPExt_Forced = 9,
-            dvdSPExt_DirectorComments_Normal    = 13,
-            dvdSPExt_DirectorComments_Big   = 14,
-            dvdSPExt_DirectorComments_Children  = 15
-        }   DVDSPExt;
+    	typedef enum 
+    	{	
+    		dvdSPExt_NotSpecified	= 0,
+    		dvdSPExt_Caption_Normal	= 1,
+    		dvdSPExt_Caption_Big	= 2,
+    		dvdSPExt_Caption_Children	= 3,
+    		dvdSPExt_CC_Normal	= 5,
+    		dvdSPExt_CC_Big	= 6,
+    		dvdSPExt_CC_Children	= 7,
+    		dvdSPExt_Forced	= 9,
+    		dvdSPExt_DirectorComments_Normal	= 13,
+    		dvdSPExt_DirectorComments_Big	= 14,
+    		dvdSPExt_DirectorComments_Children	= 15
+    	}	DVDSPExt;
 
         [object, dual, oleautomation, hidden,
             uuid(CF45F88B-AC56-4EE2-A73A-ED04E2885D3C),
@@ -797,7 +837,7 @@ interface IEnumMSVidGraphSegment;
             [propget, id(dispid_SubpictureOn), helpstring("SubpictureOn")] HRESULT SubpictureOn([out, retval] VARIANT_BOOL *pVal);
             [propput, id(dispid_SubpictureOn), helpstring("SubpictureOn")] HRESULT SubpictureOn([in] VARIANT_BOOL newVal);
             [propget, id(dispid_DVDUniqueID), helpstring("DVDUniqueID")] HRESULT DVDUniqueID([out, retval] BSTR *pVal);
-            [id(dispid_AcceptParentalLevelChange), helpstring("method AcceptParentalLevelChange")] HRESULT AcceptParentalLevelChange([in] VARIANT_BOOL fAccept, [in] BSTR strUserName, [in] BSTR strPassword); 
+            [id(dispid_AcceptParentalLevelChange), helpstring("method AcceptParentalLevelChange")] HRESULT AcceptParentalLevelChange([in] VARIANT_BOOL fAccept, [in] BSTR strUserName, [in] BSTR strPassword);	
             [id(dispid_NotifyParentalLevelChange), helpstring("method NotifyParentalLevelChange")] HRESULT NotifyParentalLevelChange([in] VARIANT_BOOL newVal);
             [id(dispid_SelectParentalCountry), helpstring("method SelectParentalCountry")] HRESULT SelectParentalCountry([in] long lCountry, [in] BSTR strUserName, [in] BSTR strPassword);
             [id(dispid_SelectParentalLevel), helpstring("method SelectParentalLevel")] HRESULT SelectParentalLevel([in] long lParentalLevel, [in] BSTR strUserName, [in] BSTR strPassword);
@@ -835,7 +875,7 @@ interface IEnumMSVidGraphSegment;
             [propget, id(dispid_KaraokeChannelAssignment), helpstring("KaraokeChannelAssignment")] HRESULT KaraokeChannelAssignment([in] long lStream, [out, retval] long *lChannelAssignment);
             [id(dispid_RestorePreferredSettings), helpstring("method RestorePreferredSettings")] HRESULT RestorePreferredSettings();
             [propget, id(dispid_ButtonRect), helpstring("ButtonRect")] HRESULT ButtonRect([in] long lButton, [out, retval] IMSVidRect** pRect);
-            [propget, id(dispid_DVDScreenInMouseCoordinates), helpstring("DVDScreenInMouseCoordinates")] HRESULT DVDScreenInMouseCoordinates([out, retval] IMSVidRect** ppRect);    
+            [propget, id(dispid_DVDScreenInMouseCoordinates), helpstring("DVDScreenInMouseCoordinates")] HRESULT DVDScreenInMouseCoordinates([out, retval] IMSVidRect** ppRect);	
             [propput, id(dispid_DVDScreenInMouseCoordinates), helpstring("DVDScreenInMouseCoordinates")] HRESULT DVDScreenInMouseCoordinates([in] IMSVidRect* pRect);
 
         };
@@ -866,10 +906,10 @@ interface IEnumMSVidGraphSegment;
                 [id(eventidPlayNextChapter), helpstring("Notifies the client")] HRESULT PlayNextChapter([in] VARIANT_BOOL bEnabled);
                 [id(eventidStop), helpstring("Notifies the client")] HRESULT Stop([in] VARIANT_BOOL bEnabled);
                 [id(eventidReturnFromSubmenu), helpstring("Notifies the client")] HRESULT ReturnFromSubmenu([in] VARIANT_BOOL bEnabled);
-                [id(eventidPlayTitle), helpstring("Notifies the client")] HRESULT PlayTitle([in] VARIANT_BOOL bEnabled);        
-                [id(eventidPlayPrevChapter), helpstring("Notifies the client")] HRESULT PlayPrevChapter([in] VARIANT_BOOL bEnabled);                
-                [id(eventidChangeKaraokePresMode), helpstring("Notifies the client")] HRESULT ChangeKaraokePresMode([in] VARIANT_BOOL bEnabled);                
-                [id(eventidChangeVideoPresMode), helpstring("Notifies the client")] HRESULT ChangeVideoPresMode([in] VARIANT_BOOL bEnabled);                
+                [id(eventidPlayTitle), helpstring("Notifies the client")] HRESULT PlayTitle([in] VARIANT_BOOL bEnabled);		
+                [id(eventidPlayPrevChapter), helpstring("Notifies the client")] HRESULT PlayPrevChapter([in] VARIANT_BOOL bEnabled);				
+                [id(eventidChangeKaraokePresMode), helpstring("Notifies the client")] HRESULT ChangeKaraokePresMode([in] VARIANT_BOOL bEnabled);				
+                [id(eventidChangeVideoPresMode), helpstring("Notifies the client")] HRESULT ChangeVideoPresMode([in] VARIANT_BOOL bEnabled);				
         };
 
         [object, dual, oleautomation, hidden,
@@ -882,7 +922,7 @@ interface IEnumMSVidGraphSegment;
             [id(dispidChangePassword), helpstring("method ChangePassword")] HRESULT ChangePassword([in]BSTR strUserName, [in]BSTR strOld, [in]BSTR strNew);
             [id(dispidSaveParentalLevel), helpstring("method SaveParentalLevel")] HRESULT SaveParentalLevel([in]long level,[in]BSTR strUserName, [in]BSTR strPassword);
             [id(dispidSaveParentalCountry), helpstring("method SaveParentalCountry")] HRESULT SaveParentalCountry([in]long country,[in]BSTR strUserName, [in]BSTR strPassword);
-            [id(dispidConfirmPassword), helpstring("method ConfirmPassword")] HRESULT ConfirmPassword([in]BSTR strUserName, [in]BSTR strPassword, [out, retval] VARIANT_BOOL *pVal);
+            [id(dispidConfirmPassword), hidden, restricted, helpstring("method ConfirmPassword")] HRESULT ConfirmPassword([in]BSTR strUserName, [in]BSTR strPassword, [out, retval] VARIANT_BOOL *pVal);
             [id(dispidGetParentalLevel), helpstring("method GetParentalLevel")] HRESULT GetParentalLevel([out, retval] long *lLevel);
             [id(dispidGetParentalCountry), helpstring("method GetParentalCountry")] HRESULT GetParentalCountry([out, retval] long *lCountry);
             [propget, id(dispidDefaultAudioLCID), helpstring("property DefaultAudioLCID")] HRESULT DefaultAudioLCID([out, retval] long *pVal);
@@ -894,7 +934,7 @@ interface IEnumMSVidGraphSegment;
             [propget, id(dispidBookmarkOnStop), helpstring("property BookmarkOnStop")] HRESULT BookmarkOnStop([out, retval] VARIANT_BOOL *pVal);
             [propput, id(dispidBookmarkOnStop), helpstring("property BookmarkOnStop")] HRESULT BookmarkOnStop([in] VARIANT_BOOL newVal);
         };
-    
+	
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -920,6 +960,7 @@ interface IEnumMSVidGraphSegment;
         interface IMSVidOutputDeviceEvent : IMSVidDeviceEvent {
         };
 
+		
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  features
@@ -945,7 +986,26 @@ interface IEnumMSVidGraphSegment;
         };
 
 
+
         ///////////////////////////////////////////////////////////////////////////////////////
+        [object, dual, oleautomation,
+                uuid(C0020FD4-BEE7-43d9-A495-9F213117103D),
+                helpstring("MS Video Control Encoder Feature Interface"),
+                pointer_default(unique)
+        ]
+        interface IMSVidEncoder : IMSVidFeature {
+			[propget, id(dispid_videoencoderint)] HRESULT VideoEncoderInterface([out, retval] IUnknown **ppEncInt);
+			[propget, id(dispid_audioencoderint)] HRESULT AudioEncoderInterface([out, retval] IUnknown **ppEncInt);        
+		};
+        ///////////////////////////////////////////////////////////////////////////////////////
+        [object, dual, oleautomation,
+                uuid(11EBC158-E712-4d1f-8BB3-01ED5274C4CE),
+                helpstring("MS Video Control XDS Feature Interface"),
+                pointer_default(unique)
+        ]
+        interface IMSVidXDS : IMSVidFeature {
+        };
+		///////////////////////////////////////////////////////////////////////////////////////
         [object, dual, oleautomation, hidden,
                 uuid(334125C1-77E5-11d3-B653-00C04F79498E),
                 helpstring("MS Video Control Data Services Feature Interface"),
@@ -973,40 +1033,20 @@ interface IEnumMSVidGraphSegment;
         ]
         interface IMSVidClosedCaptioning : IMSVidFeature {
                 [propget, id(dispidCCEnable)] HRESULT Enable([out, retval] VARIANT_BOOL *On);
-                [propput, id(dispidCCEnable)] HRESULT Enable([in] VARIANT_BOOL On);         
-        };
-
-
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        [
-            object, dual, oleautomation, hidden,
-            uuid(1600D001-6666-4f66-B1E2-BF3C9FBB9BA6),
-            helpstring("Microsoft TVE Video Control Feature - (Aggregates ITVEFeature)"),
-            pointer_default(unique)
-        ]                                   // IMSVidFeature derivatives dispID's must start at 0x4000 or above
-        interface IMSVidTVEGSeg : IMSVidFeature 
-        {
-            [propget, id(4000),  helpstring("property TVEFilter")]          HRESULT TVEFilter([out, retval] ITVEFilter* *ppFilter); 
-            [propget, id(4001),  helpstring("property TVESupervisor")]      HRESULT TVESupervisor([out, retval] ITVESupervisor* *ppSuper);
+                [propput, id(dispidCCEnable)] HRESULT Enable([in] VARIANT_BOOL On);			
         };
 
         ///////////////////////////////////////////////////////////////////////////////////////
-        [
-            object, dual, oleautomation,
-            uuid(1600D101-6666-4f66-B1E2-BF3C9FBB9BA6),
-            helpstring("Microsoft CA Video Control Feature (Aggregates ICAManager)"),
-            pointer_default(unique)
-        ]                                   // IMSVidFeature derivatives dispID's must start at 0x4000 or above
-        interface IMSVidCAGSeg : IMSVidFeature 
-        {
-                            // call when graph changes in way that may change policies (add,delete)
-                [         id(5000), helpstring("method MarkDirty")]         HRESULT MarkDirty();
-
-                            // call when get a new tune request (listen for CAManager to see if it gets denied). Put NULL when closing down
-                [propput, id(5001), helpstring("property TuneRequest")]     HRESULT TuneRequest([in] ITuneRequest *ptunereq);
-
+        [object, dual, oleautomation, hidden,
+                uuid(E00CB864-A029-4310-9987-A873F5887D97),
+                helpstring("MS Video Control Closed Captioning Feature Interface 2"),
+                pointer_default(unique)
+        ]
+        interface IMSVidClosedCaptioning2 : IMSVidClosedCaptioning{
+                [propget, id(dispidService)] HRESULT Service([out, retval] MSVidCCService *On);
+                [propput, id(dispidService)] HRESULT Service([in] MSVidCCService On);			
         };
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -1014,11 +1054,11 @@ interface IEnumMSVidGraphSegment;
 //
 ///////////////////////////////////////////////////////////////////////////////
 // need to add msvidvidoerenderer2 that has allocator prestenter stuff...
-    typedef enum {
-        sslFullSize,
-        sslClipByOverScan,
-        sslClipByClipRect,
-    } SourceSizeList;   
+	typedef enum {
+		sslFullSize,
+		sslClipByOverScan,
+		sslClipByClipRect,
+	} SourceSizeList;	
 
         ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -1028,14 +1068,13 @@ interface IEnumMSVidGraphSegment;
                 pointer_default(unique)
         ]
         interface IMSVidVideoRenderer : IMSVidOutputDevice {
-            // Properties
+			// Properties
             [propget, id(dispidCustomCompositorClass)] HRESULT CustomCompositorClass([out, retval] BSTR *CompositorCLSID);
             [propput, id(dispidCustomCompositorClass)] HRESULT CustomCompositorClass([in] BSTR CompositorCLSID);
             [propget, hidden, restricted, id(dispid_CustomCompositorClass)] HRESULT _CustomCompositorClass([out, retval] GUID* CompositorCLSID);
             [propput, hidden, restricted, id(dispid_CustomCompositorClass)] HRESULT _CustomCompositorClass([in] REFCLSID CompositorCLSID);
             [propget, hidden, restricted, id(dispid_CustomCompositor)] HRESULT _CustomCompositor([out, retval] IVMRImageCompositor** Compositor);
             [propput, hidden, restricted, id(dispid_CustomCompositor)] HRESULT _CustomCompositor([in] IVMRImageCompositor* Compositor);
-
             //
             [propget, id(dispidMixerBitmap)] HRESULT MixerBitmap([out,retval] IPictureDisp** MixerPictureDisp);          
             [propget, hidden, restricted, id(dispid_MixerBitmap)] HRESULT _MixerBitmap([out, retval] IVMRMixerBitmap ** MixerPicture);
@@ -1048,8 +1087,8 @@ interface IEnumMSVidGraphSegment;
             [id(dispidSetupMixerBitmap)] HRESULT SetupMixerBitmap([in] IPictureDisp * MixerPictureDisp, [in] long Opacity, [in] IMSVidRect *rDest);
 
             // display surface control
-            [propget, id(dispidSourceSize)] HRESULT SourceSize([retval, out] SourceSizeList *CurrentSize);
-            [propput, id(dispidSourceSize)] HRESULT SourceSize([in] SourceSizeList NewSize);
+			[propget, id(dispidSourceSize)] HRESULT SourceSize([retval, out] SourceSizeList *CurrentSize);
+			[propput, id(dispidSourceSize)] HRESULT SourceSize([in] SourceSizeList NewSize);
 
             [propget, id(dispidDevOverScan), helpstring("trim each source edge by this amount(in hundredths of percent, e.g. 1.75% == 175)")] HRESULT OverScan([retval, out] long *plPercent);
             [propput, id(dispidDevOverScan), helpstring("trim each source edge by this amount(in hundredths of percent, e.g. 1.75% == 175)")] HRESULT OverScan([in] long lPercent);
@@ -1063,7 +1102,7 @@ interface IEnumMSVidGraphSegment;
             [propput, id(dispidUsingOverlay)] HRESULT UsingOverlay([in] VARIANT_BOOL UseOverlayVal);
             [id(dispidCapture)] HRESULT Capture([out, retval] IPictureDisp **currentImage);
             [propget, id(dispid_FramesPerSecond), helpstring("FramesPerSecond")] HRESULT FramesPerSecond([out, retval] long *pVal);
-            [propget, id(dispid_DecimateInput), helpstring("DecimateInput")] HRESULT DecimateInput([out,retval] VARIANT_BOOL *pDeci);
+			[propget, id(dispid_DecimateInput), helpstring("DecimateInput")] HRESULT DecimateInput([out,retval] VARIANT_BOOL *pDeci);
             [propput, id(dispid_DecimateInput), helpstring("DecimateInput")] HRESULT DecimateInput([in] VARIANT_BOOL pDeci);
 
             // Methods
@@ -1080,7 +1119,95 @@ interface IEnumMSVidGraphSegment;
                 [id(eventidOverlayUnavailable), helpstring("HW Overlay surface in use or not present")] HRESULT OverlayUnavailable();
         };
 
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Stream Buffer 
+//		Sink and Source
+//
+///////////////////////////////////////////////////////////////////////////////
+////    
+// Stream Buffer Recording Control Object
+        //////////////////////////////////////////////////////////////////////////////////////
+	[
+        object,
+        dual,
+        oleautomation,
+        hidden,
+        nonextensible,
+        pointer_default(unique),		
+		uuid(160621AA-BBBC-4326-A824-C395AEBC6E74),
+        helpstring("IMSVidStreamBufferRecordingControl Interface"),
+    ]
+    interface IMSVidStreamBufferRecordingControl : IDispatch {
+        [propget, id(dispidstarttime), helpstring("method StartTime, values in milliseconds")]HRESULT StartTime ([out, retval] long *rtStart) ;
+        [propput, id(dispidstarttime), helpstring("method StartTime, values in milliseconds")]HRESULT StartTime ([in] long rtStart) ;
+        [propget, id(dispidstoptime), helpstring("method StopTime, values in milliseconds")]HRESULT StopTime ([out, retval] long *rtStop) ;
+        [propput, id(dispidstoptime), helpstring("method StopTime, values in milliseconds")]HRESULT StopTime ([in] long  rtStop) ;
+        [propget, id(dispidrecordingstopped), helpstring("method RecordingStopped")]HRESULT RecordingStopped ([out, retval] VARIANT_BOOL* phResult) ;
+        [propget, id(dispidrecordingstarted), helpstring("method RecordingStarted")]HRESULT RecordingStarted ([out, retval] VARIANT_BOOL* phResult);
+        [propget, id(dispidrecordingtype), helpstring("property returns type of recording object")] HRESULT RecordingType ([out, retval] RecordingType *dwType);
+        [propget, id(dispidRecordingAttribute), helpstring("get Recording Attribute interface")] HRESULT RecordingAttribute ([out, retval] IUnknown **pRecordingAttribute);
+    };
+        // Sink        
+		[object, dual, oleautomation, hidden,
+                uuid(159DBB45-CD1B-4dab-83EA-5CB1F4F21D07),
+                helpstring("MS Video Control Stream Buffer Sink Output Device Interface"),
+                pointer_default(unique)
+        ]
+        interface IMSVidStreamBufferSink : IMSVidOutputDevice {
+            [propget, id(dispidStreamBufferContentRecording), helpstring("New Recording Object")] HRESULT ContentRecorder([in]BSTR pszFilename, [retval, out] IMSVidStreamBufferRecordingControl ** pRecordingIUnknown ) ;
+            [propget, id(dispidStreamBufferReferenceRecording), helpstring("New Recording Object")] HRESULT ReferenceRecorder([in]BSTR pszFilename, [retval, out] IMSVidStreamBufferRecordingControl ** pRecordingIUnknown ) ;
+            [propget, id(dispidStreamBufferSinkName), helpstring("Sink Name")] HRESULT SinkName([retval, out] BSTR* pName);
+            [propput, id(dispidStreamBufferSinkName), helpstring("Sink Name")] HRESULT SinkName([in] BSTR Name);
+            [id(dispidNameSetLock), helpstring("Name Set Lock")] HRESULT NameSetLock();
+			[propget, id(dispidSBEConfigure), helpstring("SBE Sink Interface")] HRESULT SBESink([retval, out] IUnknown** sbeConfig);
 
+		};
+		///////////////////////////////////////////////////////////////////////////////		
+		[object, oleautomation, hidden,
+                uuid(F798A36B-B05B-4bbe-9703-EAEA7D61CD51),
+                helpstring("MS Video Control Stream Buffer Sink Output Device Event Interface"),
+                pointer_default(unique)
+        ]
+        interface IMSVidStreamBufferSinkEvent : IMSVidOutputDeviceEvent {
+			[id(eventidSinkCertificateFailure), helpstring("Sink Certificate Failure")] HRESULT CertificateFailure();
+			[id(eventidSinkCertificateSuccess), helpstring("Sink Certificate Success")] HRESULT CertificateSuccess();
+            [id(eventidWriteFailure), helpstring("Sink Write Failure")] HRESULT WriteFailure();
+		};
+///////////////////////////////////////////////////////////////////////////////////////
+// SBE Source Playback
+        [object, dual, oleautomation, hidden,
+                uuid(EB0C8CF9-6950-4772-87B1-47D11CF3A02F),
+                helpstring("MS Video Control Stream Buffer Source Device Interface"),
+                pointer_default(unique)
+        ]
+        interface IMSVidStreamBufferSource : IMSVidFilePlayback {
+                [propget, id(dispidstart), helpstring("Start")] HRESULT Start([out, retval] long *lStart);
+                [propget, id(dispid_RecordingAttribute), helpstring("get Recording Attribute interface")] HRESULT RecordingAttribute ([out, retval] IUnknown **pRecordingAttribute);
+                [id(dispid_CurrentRatings), helpstring("Current Ratings for SBE playback")] HRESULT CurrentRatings([out] EnTvRat_System *pEnSystem, [out] EnTvRat_GenericLevel *pEnRating, [out] LONG *pBfEnAttr);		// attrs are bitfields of BfEnTvRat_GenericAttributes   
+                [id(dispid_MaxRatingsLevel), helpstring("Maximum Ratings Level for SBE playback")] HRESULT MaxRatingsLevel([in] EnTvRat_System enSystem, [in] EnTvRat_GenericLevel enRating, [in] LONG lbfEnAttr);
+                [propput, id(dispid_BlockUnrated), helpstring("Block unrated content")] HRESULT BlockUnrated([in] VARIANT_BOOL bBlock);
+                [propput, id(dispid_UnratedDelay), helpstring("Maximum Ratings Level for SBE playback")] HRESULT UnratedDelay([in] long dwDelay);
+	[propget, id(dispidsbesource), helpstring("Stream Buffer Source Interface")] HRESULT SBESource([out, retval] IUnknown **sbeFilter);	
+        };
+
+        ///////////////////////////////////////////////////////////////////////////////////////
+        [object, oleautomation, hidden,
+                uuid(50CE8A7D-9C28-4DA8-9042-CDFA7116F979),
+                helpstring("MS Video Control Stream Buffer Source Device Event Interface"),
+                pointer_default(unique)
+        ]
+        interface IMSVidStreamBufferSourceEvent : IMSVidFilePlaybackEvent {
+			[id(eventidSourceCertificateFailure), helpstring("Source Certificate Failure")] HRESULT CertificateFailure();
+			[id(eventidSourceCertificateSuccess), helpstring("Source Certificate Success")] HRESULT CertificateSuccess();
+			[id(eventidRatingsBlocked), helpstring("Ratings Blocked")] HRESULT RatingsBlocked();
+			[id(eventidRatingsUnlocked), helpstring("Ratings Unblocked")] HRESULT RatingsUnblocked();
+			[id(eventidRatingsChanged), helpstring("Ratings Changed")] HRESULT RatingsChanged();
+            [id(eventidTimeHole), helpstring("Source Time Hole")] HRESULT TimeHole([in] long StreamOffsetMS, [in] long SizeMS);
+            [id(eventidStaleDataRead), helpstring("Source Stale Data Read")] HRESULT StaleDataRead();
+            [id(eventidContentBecomingStale), helpstring("Source Content Becoming Stale")] HRESULT ContentBecomingStale();
+            [id(eventidStaleFileDeleted), helpstring("Source Stale File Deleted")] HRESULT StaleFileDeleted();
+        };
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -1094,7 +1221,7 @@ interface IEnumMSVidGraphSegment;
                 pointer_default(unique)
         ]
         interface IMSVidVideoRenderer2 : IMSVidVideoRenderer  {
-            // Properties
+			// Properties
             [propget, id(dispidAlloctor)] HRESULT Allocator([out, retval] IUnknown ** AllocPresent);
             [propget, id(dispid_Allocator), hidden, restricted] HRESULT _Allocator([out, retval] IVMRSurfaceAllocator ** AllocPresent);
             // Quick Notes on ID's
@@ -1103,6 +1230,8 @@ interface IEnumMSVidGraphSegment;
             [propget, id(dispidAllocPresentID)] HRESULT Allocator_ID([out, retval] long *ID);
             [id(dispidSetAllocator)] HRESULT SetAllocator([in] IUnknown* AllocPresent, [in, defaultvalue(-1)] long ID);
             [id(dispid_SetAllocator), hidden, restricted] HRESULT _SetAllocator([in] IVMRSurfaceAllocator* AllocPresent, [in, defaultvalue(-1)] long ID);
+            [propput, id(dispid_SuppressEffects)] HRESULT SuppressEffects( [in] VARIANT_BOOL bSuppress);
+            [propget, id(dispid_SuppressEffects)] HRESULT SuppressEffects( [out, retval] VARIANT_BOOL *bSuppress);
             // display surface control
             // Methods
 

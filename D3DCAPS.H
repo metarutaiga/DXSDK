@@ -19,7 +19,9 @@
 #define DIRECT3D_VERSION         0x0700
 #endif
 
+#if defined(_X86_) || defined(_IA64_)
 #pragma pack(4)
+#endif
 
 /* Description of capabilities of transform */
 

@@ -1,6 +1,6 @@
 /*==========================================================================;
  *
- *  Copyright (C) 1995-2001 Microsoft Corporation.  All Rights Reserved.
+ *  Copyright (c) Microsoft Corporation.  All rights reserved.
  *
  *  File:       dsound.h
  *  Content:    DirectSound include file
@@ -12,7 +12,7 @@
 #include <float.h>
 
 #ifndef DIRECTSOUND_VERSION
-#define DIRECTSOUND_VERSION 0x0800  /* Version 8.0 */
+#define DIRECTSOUND_VERSION 0x0900  /* Version 9.0 */
 #endif
 
 #ifdef __cplusplus
@@ -150,7 +150,6 @@ struct IDirectSoundFullDuplex;
 
 #endif // DIRECTSOUND_VERSION >= 0x0800
 
-
 typedef struct IDirectSound                 *LPDIRECTSOUND;
 typedef struct IDirectSoundBuffer           *LPDIRECTSOUNDBUFFER;
 typedef struct IDirectSound3DListener       *LPDIRECTSOUND3DLISTENER;
@@ -161,6 +160,7 @@ typedef struct IDirectSoundNotify           *LPDIRECTSOUNDNOTIFY;
 
 
 #if DIRECTSOUND_VERSION >= 0x0800
+
 typedef struct IDirectSoundFXGargle         *LPDIRECTSOUNDFXGARGLE;
 typedef struct IDirectSoundFXChorus         *LPDIRECTSOUNDFXCHORUS;
 typedef struct IDirectSoundFXFlanger        *LPDIRECTSOUNDFXFLANGER;
@@ -201,6 +201,7 @@ typedef struct IDirectSoundFullDuplex8      *LPDIRECTSOUNDFULLDUPLEX8;
 //
 
 #if DIRECTSOUND_VERSION >= 0x0800
+
 #define IID_IDirectSoundCapture8            IID_IDirectSoundCapture
 #define IID_IDirectSound3DListener8         IID_IDirectSound3DListener
 #define IID_IDirectSound3DBuffer8           IID_IDirectSound3DBuffer
@@ -217,6 +218,7 @@ typedef struct IDirectSoundFullDuplex8      *LPDIRECTSOUNDFULLDUPLEX8;
 #define IID_IDirectSoundCaptureFXAec8       IID_IDirectSoundCaptureFXAec
 #define IID_IDirectSoundCaptureFXNoiseSuppress8 IID_IDirectSoundCaptureFXNoiseSuppress
 #define IID_IDirectSoundFullDuplex8         IID_IDirectSoundFullDuplex
+
 #endif // DIRECTSOUND_VERSION >= 0x0800
 
 //
@@ -1617,7 +1619,6 @@ DECLARE_INTERFACE_(IDirectSoundFXParamEq, IUnknown)
 #define IDirectSoundFXParamEq_GetAllParameters(p,a)      (p)->GetAllParameters(a)
 #endif // !defined(__cplusplus) || defined(CINTERFACE)
 
-
 //
 // IDirectSoundFXI3DL2Reverb
 //
@@ -1645,11 +1646,11 @@ typedef const DSFXI3DL2Reverb *LPCDSFXI3DL2Reverb;
 #define DSFX_I3DL2REVERB_ROOM_MIN                   (-10000)
 #define DSFX_I3DL2REVERB_ROOM_MAX                   0
 #define DSFX_I3DL2REVERB_ROOM_DEFAULT               (-1000)
-                                                    
+
 #define DSFX_I3DL2REVERB_ROOMHF_MIN                 (-10000)
 #define DSFX_I3DL2REVERB_ROOMHF_MAX                 0
 #define DSFX_I3DL2REVERB_ROOMHF_DEFAULT             (-100)
-                                                    
+
 #define DSFX_I3DL2REVERB_ROOMROLLOFFFACTOR_MIN      0.0f
 #define DSFX_I3DL2REVERB_ROOMROLLOFFFACTOR_MAX      10.0f
 #define DSFX_I3DL2REVERB_ROOMROLLOFFFACTOR_DEFAULT  0.0f
@@ -1657,15 +1658,15 @@ typedef const DSFXI3DL2Reverb *LPCDSFXI3DL2Reverb;
 #define DSFX_I3DL2REVERB_DECAYTIME_MIN              0.1f
 #define DSFX_I3DL2REVERB_DECAYTIME_MAX              20.0f
 #define DSFX_I3DL2REVERB_DECAYTIME_DEFAULT          1.49f
-                                                    
+
 #define DSFX_I3DL2REVERB_DECAYHFRATIO_MIN           0.1f
 #define DSFX_I3DL2REVERB_DECAYHFRATIO_MAX           2.0f
 #define DSFX_I3DL2REVERB_DECAYHFRATIO_DEFAULT       0.83f
-                                                    
+
 #define DSFX_I3DL2REVERB_REFLECTIONS_MIN            (-10000)
 #define DSFX_I3DL2REVERB_REFLECTIONS_MAX            1000
 #define DSFX_I3DL2REVERB_REFLECTIONS_DEFAULT        (-2602)
-                                                    
+
 #define DSFX_I3DL2REVERB_REFLECTIONSDELAY_MIN       0.0f
 #define DSFX_I3DL2REVERB_REFLECTIONSDELAY_MAX       0.3f
 #define DSFX_I3DL2REVERB_REFLECTIONSDELAY_DEFAULT   0.007f
@@ -1673,23 +1674,23 @@ typedef const DSFXI3DL2Reverb *LPCDSFXI3DL2Reverb;
 #define DSFX_I3DL2REVERB_REVERB_MIN                 (-10000)
 #define DSFX_I3DL2REVERB_REVERB_MAX                 2000
 #define DSFX_I3DL2REVERB_REVERB_DEFAULT             (200)
-                                                    
+
 #define DSFX_I3DL2REVERB_REVERBDELAY_MIN            0.0f
 #define DSFX_I3DL2REVERB_REVERBDELAY_MAX            0.1f
 #define DSFX_I3DL2REVERB_REVERBDELAY_DEFAULT        0.011f
-                                                    
+
 #define DSFX_I3DL2REVERB_DIFFUSION_MIN              0.0f
 #define DSFX_I3DL2REVERB_DIFFUSION_MAX              100.0f
 #define DSFX_I3DL2REVERB_DIFFUSION_DEFAULT          100.0f
-                                                    
+
 #define DSFX_I3DL2REVERB_DENSITY_MIN                0.0f
 #define DSFX_I3DL2REVERB_DENSITY_MAX                100.0f
 #define DSFX_I3DL2REVERB_DENSITY_DEFAULT            100.0f
-                                                    
+
 #define DSFX_I3DL2REVERB_HFREFERENCE_MIN            20.0f
 #define DSFX_I3DL2REVERB_HFREFERENCE_MAX            20000.0f
 #define DSFX_I3DL2REVERB_HFREFERENCE_DEFAULT        5000.0f
-                                                    
+
 #define DSFX_I3DL2REVERB_QUALITY_MIN                0
 #define DSFX_I3DL2REVERB_QUALITY_MAX                3
 #define DSFX_I3DL2REVERB_QUALITY_DEFAULT            2
@@ -1728,7 +1729,6 @@ DECLARE_INTERFACE_(IDirectSoundFXI3DL2Reverb, IUnknown)
 #define IDirectSoundFXI3DL2Reverb_SetPreset(p,a)            (p)->SetPreset(a)
 #define IDirectSoundFXI3DL2Reverb_GetPreset(p,a)            (p)->GetPreset(a)
 #endif // !defined(__cplusplus) || defined(CINTERFACE)
-
 
 //
 // IDirectSoundFXWavesReverb
@@ -1910,7 +1910,7 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
     STDMETHOD_(ULONG,AddRef)    (THIS) PURE;
     STDMETHOD_(ULONG,Release)   (THIS) PURE;
 
-    // IDirectSoundFullDuplex methods 
+    // IDirectSoundFullDuplex methods
     STDMETHOD(Initialize)     (THIS_ LPCGUID pCaptureGuid, LPCGUID pRenderGuid, LPCDSCBUFFERDESC lpDscBufferDesc, LPCDSBUFFERDESC lpDsBufferDesc, HWND hWnd, DWORD dwLevel, LPLPDIRECTSOUNDCAPTUREBUFFER8 lplpDirectSoundCaptureBuffer8, LPLPDIRECTSOUNDBUFFER8 lplpDirectSoundBuffer8) PURE;
 };
 
@@ -1937,9 +1937,6 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 
 // The call succeeded, but we had to substitute the 3D algorithm
 #define DS_NO_VIRTUALIZATION            MAKE_HRESULT(0, _FACDS, 10)
-
-// The call succeeded, but not all of the optional effects were obtained.
-#define DS_INCOMPLETE                   MAKE_HRESULT(0, _FACDS, 20)
 
 // The call failed because resources (such as a priority level)
 // were already being used by another caller
@@ -2086,9 +2083,13 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 #define DSBLOCK_FROMWRITECURSOR     0x00000001
 #define DSBLOCK_ENTIREBUFFER        0x00000002
 
-#define DSBFREQUENCY_MIN            100
-#define DSBFREQUENCY_MAX            100000
 #define DSBFREQUENCY_ORIGINAL       0
+#define DSBFREQUENCY_MIN            100
+#if DIRECTSOUND_VERSION >= 0x0900
+#define DSBFREQUENCY_MAX            200000
+#else
+#define DSBFREQUENCY_MAX            100000
+#endif
 
 #define DSBPAN_LEFT                 -10000
 #define DSBPAN_CENTER               0
@@ -2133,6 +2134,7 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 
 #define DSCCAPS_EMULDRIVER          DSCAPS_EMULDRIVER
 #define DSCCAPS_CERTIFIED           DSCAPS_CERTIFIED
+#define DSCCAPS_MULTIPLECAPTURE     0x00000001
 
 // IDirectSoundCaptureBuffer attributes
 
@@ -2155,6 +2157,10 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 #define DS_CERTIFIED                0x00000000
 #define DS_UNCERTIFIED              0x00000001
 
+
+//
+// Flags for the I3DL2 effects
+//
 
 //
 // I3DL2 Material Presets
@@ -2180,7 +2186,6 @@ enum
 #define I3DL2_MATERIAL_PRESET_BRICKWALL       -5000,0.60f
 #define I3DL2_MATERIAL_PRESET_STONEWALL       -6000,0.68f
 #define I3DL2_MATERIAL_PRESET_CURTAIN         -1200,0.15f
-
 
 enum
 {
@@ -2308,7 +2313,6 @@ DEFINE_GUID(GUID_DSFX_STANDARD_COMPRESSOR, 0xef011f79, 0x4000, 0x406d, 0x87, 0xa
 
 // Parametric Equalization {120CED89-3BF4-4173-A132-3CB406CF3231}
 DEFINE_GUID(GUID_DSFX_STANDARD_PARAMEQ, 0x120ced89, 0x3bf4, 0x4173, 0xa1, 0x32, 0x3c, 0xb4, 0x06, 0xcf, 0x32, 0x31);
-
 
 // I3DL2 Environmental Reverberation: Reverb (Listener) Effect {EF985E71-D5C7-42D4-BA4D-2D073E2E96F4}
 DEFINE_GUID(GUID_DSFX_STANDARD_I3DL2REVERB, 0xef985e71, 0xd5c7, 0x42d4, 0xba, 0x4d, 0x2d, 0x07, 0x3e, 0x2e, 0x96, 0xf4);

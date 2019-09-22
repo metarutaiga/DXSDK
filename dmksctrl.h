@@ -2,8 +2,7 @@
 *                                                                       *
 *   dmksctrl.h -- Definition of IKsControl                              *
 *                                                                       *
-*   Copyright (c) 1998-1999 Microsoft Corporation
-*                                                                       *
+*   Copyright (c) Microsoft Corporation.  All rights reserved.          *
 *                                                                       *
 *   This header file contains the definition of IKsControl, which       *
 *   duplicates definitions from ks.h and ksproxy.h. Your code should    *

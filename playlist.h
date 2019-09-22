@@ -4,7 +4,9 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 5.03.0286 */
+ /* File created by MIDL compiler version 5.03.0279 */
+/* at Sat Jul 31 00:39:47 1999
+ */
 /* Compiler settings for playlist.idl:
     Oicf (OptLev=i2), W1, Zp8, env=Win32 (32b run), ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 

@@ -24,7 +24,9 @@
 #include "ddraw.h"
 
 #pragma warning(disable:4201) // anonymous unions warning
+#if defined(_X86_) || defined(_IA64_)
 #pragma pack(4)
+#endif
 
 
 /* D3DVALUE is the fundamental Direct3D fractional data type */

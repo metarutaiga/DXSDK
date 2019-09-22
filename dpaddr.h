@@ -1,6 +1,6 @@
 /*==========================================================================;
  *
- *  Copyright (C) 2000 Microsoft Corporation.  All Rights Reserved.
+ *  Copyright (C) 2000-2002 Microsoft Corporation.  All Rights Reserved.
  *
  *  File:       dpaddr.h
  *  Content:   DirectPlayAddress include file
@@ -9,13 +9,15 @@
 #ifndef __DIRECTPLAYADDRESS__
 #define __DIRECTPLAYADDRESS__
 
-#include <ole2.h>			// for DECLARE_INTERFACE and HRESULT
+#include <ole2.h>	   // for DECLARE_INTERFACE_ and HRESULT
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "dplay8.h"
+
+
 
 /****************************************************************************
  *
@@ -27,12 +29,15 @@ extern "C" {
 DEFINE_GUID(CLSID_DirectPlay8Address,
 0x934a9523, 0xa3ca, 0x4bc5, 0xad, 0xa0, 0xd6, 0xd9, 0x5d, 0x97, 0x94, 0x21);
 
+
 /****************************************************************************
  *
  * DirectPlay8Address Interface IIDs
  *
  ****************************************************************************/
 
+
+typedef REFIID	DPNAREFIID;
 
 // {83783300-4063-4c8a-9DB3-82830A7FEB31}
 DEFINE_GUID(IID_IDirectPlay8Address,
@@ -43,15 +48,16 @@ DEFINE_GUID(IID_IDirectPlay8AddressIP,
 0xe5a0e990, 0x2bad, 0x430b, 0x87, 0xda, 0xa1, 0x42, 0xcf, 0x75, 0xde, 0x58);
 
 
+
 /****************************************************************************
  *
  * DirectPlay8Address Interface Pointer definitions
  *
  ****************************************************************************/
 
-
 typedef struct IDirectPlay8Address			*PDIRECTPLAY8ADDRESS, *LPDIRECTPLAY8ADDRESS;
 typedef struct IDirectPlay8AddressIP		*PDIRECTPLAY8ADDRESSIP, *LPDIRECTPLAY8ADDRESSIP;
+
 
 /****************************************************************************
  *
@@ -94,16 +100,22 @@ typedef struct sockaddr SOCKADDR;
 #define DPNA_HEADER		                    L"x-directplay:/"
 
 // key names for address components
+#define DPNA_KEY_NAT_RESOLVER					L"natresolver"
+#define DPNA_KEY_NAT_RESOLVER_USER_STRING	L"natresolveruserstring"
 #define DPNA_KEY_APPLICATION_INSTANCE		L"applicationinstance"
-#define DPNA_KEY_BAUD						L"baud"
 #define DPNA_KEY_DEVICE						L"device"
-#define DPNA_KEY_FLOWCONTROL				L"flowcontrol"
 #define DPNA_KEY_HOSTNAME					L"hostname"
-#define DPNA_KEY_PARITY						L"parity"
-#define DPNA_KEY_PHONENUMBER				L"phonenumber"
 #define DPNA_KEY_PORT						L"port"
+#define DPNA_KEY_NAMEINFO					L"nameinfo"
+#define DPNA_KEY_PROCESSOR					L"processor"
 #define DPNA_KEY_PROGRAM					L"program"
 #define DPNA_KEY_PROVIDER					L"provider"
+#define DPNA_KEY_SCOPE						L"scope"
+#define DPNA_KEY_TRAVERSALMODE				L"traversalmode"
+#define DPNA_KEY_BAUD						L"baud"
+#define DPNA_KEY_FLOWCONTROL				L"flowcontrol"
+#define DPNA_KEY_PARITY						L"parity"
+#define DPNA_KEY_PHONENUMBER				L"phonenumber"
 #define DPNA_KEY_STOPBITS					L"stopbits"
 
 // values for baud rate
@@ -133,7 +145,10 @@ typedef struct sockaddr SOCKADDR;
 #define DPNA_FLOW_CONTROL_RTS				L"RTS"
 #define DPNA_FLOW_CONTROL_DTR				L"DTR"
 #define DPNA_FLOW_CONTROL_RTSDTR			L"RTSDTR"
-
+// values for traversal mode
+#define DPNA_TRAVERSALMODE_NONE					0
+#define DPNA_TRAVERSALMODE_PORTREQUIRED			1
+#define DPNA_TRAVERSALMODE_PORTRECOMMENDED	2
 // Shortcut values
 //
 // These can be used instead of the corresponding CLSID_DP8SP_XXXX guids
@@ -142,7 +157,6 @@ typedef struct sockaddr SOCKADDR;
 #define DPNA_VALUE_IPXPROVIDER              L"IPX"
 #define DPNA_VALUE_MODEMPROVIDER            L"MODEM"
 #define DPNA_VALUE_SERIALPROVIDER           L"SERIAL"
-
 
 //// ANSI DEFINITIONS
 
@@ -154,16 +168,22 @@ typedef struct sockaddr SOCKADDR;
 #define DPNA_ESCAPECHAR_A					'%'
 
 // key names for address components
+#define DPNA_KEY_NAT_RESOLVER_A					"natresolver"
+#define DPNA_KEY_NAT_RESOLVER_USER_STRING_A		"natresolveruserstring"
 #define DPNA_KEY_APPLICATION_INSTANCE_A		"applicationinstance"
-#define DPNA_KEY_BAUD_A						"baud"
 #define DPNA_KEY_DEVICE_A					"device"
-#define DPNA_KEY_FLOWCONTROL_A				"flowcontrol"
 #define DPNA_KEY_HOSTNAME_A					"hostname"
-#define DPNA_KEY_PARITY_A					"parity"
-#define DPNA_KEY_PHONENUMBER_A				"phonenumber"
 #define DPNA_KEY_PORT_A						"port"
+#define DPNA_KEY_NAMEINFO_A					"nameinfo"
+#define DPNA_KEY_PROCESSOR_A				"processor"
 #define DPNA_KEY_PROGRAM_A					"program"
 #define DPNA_KEY_PROVIDER_A					"provider"
+#define DPNA_KEY_SCOPE_A					"scope"
+#define DPNA_KEY_TRAVERSALMODE_A			"traversalmode"
+#define DPNA_KEY_BAUD_A						"baud"
+#define DPNA_KEY_FLOWCONTROL_A				"flowcontrol"
+#define DPNA_KEY_PARITY_A					"parity"
+#define DPNA_KEY_PHONENUMBER_A				"phonenumber"
 #define DPNA_KEY_STOPBITS_A					"stopbits"
 
 // values for stop bits
@@ -184,7 +204,6 @@ typedef struct sockaddr SOCKADDR;
 #define DPNA_FLOW_CONTROL_RTS_A				"RTS"
 #define DPNA_FLOW_CONTROL_DTR_A				"DTR"
 #define DPNA_FLOW_CONTROL_RTSDTR_A			"RTSDTR"
-
 // Shortcut values
 //
 // These can be used instead of the corresponding CLSID_DP8SP_XXXX guids
@@ -200,6 +219,7 @@ typedef struct sockaddr SOCKADDR;
  *
  ****************************************************************************/
 
+
 /*
  * 
  * This function is no longer supported.  It is recommended that CoCreateInstance be used to create 
@@ -208,6 +228,7 @@ typedef struct sockaddr SOCKADDR;
  * HRESULT WINAPI DirectPlay8AddressCreate( const GUID * pcIID, void **ppvInterface, IUnknown *pUnknown);
  *
  */
+
 
 /****************************************************************************
  *
@@ -222,31 +243,31 @@ typedef struct sockaddr SOCKADDR;
 #define INTERFACE IDirectPlay8Address
 DECLARE_INTERFACE_(IDirectPlay8Address,IUnknown)
 {
-    /*** IUnknown methods ***/
-	STDMETHOD(QueryInterface)			(THIS_ REFIID, LPVOID *) PURE;
+	/*** IUnknown methods ***/
+	STDMETHOD(QueryInterface)			(THIS_ DPNAREFIID, LPVOID *) PURE;
 	STDMETHOD_(ULONG,AddRef)			(THIS) PURE;
 	STDMETHOD_(ULONG,Release)			(THIS) PURE;
-    /*** IDirectPlay8Address methods ***/
 
-    STDMETHOD(BuildFromURLW)(THIS_ WCHAR *pwszSourceURL ) PURE;
-    STDMETHOD(BuildFromURLA)(THIS_ CHAR *pszSourceURL ) PURE;
-    STDMETHOD(Duplicate)(THIS_ PDIRECTPLAY8ADDRESS *ppdpaNewAddress ) PURE;
-    STDMETHOD(SetEqual)(THIS_ PDIRECTPLAY8ADDRESS pdpaAddress ) PURE;
+	/*** IDirectPlay8Address methods ***/
+	STDMETHOD(BuildFromURLW)(THIS_ WCHAR *pwszSourceURL ) PURE;
+	STDMETHOD(BuildFromURLA)(THIS_ CHAR *pszSourceURL ) PURE;
+	STDMETHOD(Duplicate)(THIS_ PDIRECTPLAY8ADDRESS *ppdpaNewAddress ) PURE;
+	STDMETHOD(SetEqual)(THIS_ PDIRECTPLAY8ADDRESS pdpaAddress ) PURE;
 	STDMETHOD(IsEqual)(THIS_ PDIRECTPLAY8ADDRESS pdpaAddress ) PURE;
-    STDMETHOD(Clear)(THIS ) PURE;
-    STDMETHOD(GetURLW)(THIS_ WCHAR *pwszURL, PDWORD pdwNumChars ) PURE;
-    STDMETHOD(GetURLA)(THIS_ CHAR *pszURL, PDWORD pdwNumChars) PURE;
-    STDMETHOD(GetSP)(THIS_ GUID *pguidSP ) PURE;
-    STDMETHOD(GetUserData)(THIS_ void *pvUserData, PDWORD pdwBufferSize) PURE;
-    STDMETHOD(SetSP)(THIS_ const GUID * const pguidSP ) PURE;
-    STDMETHOD(SetUserData)(THIS_ const void * const pvUserData, const DWORD dwDataSize) PURE;
-    STDMETHOD(GetNumComponents)(THIS_ PDWORD pdwNumComponents ) PURE;
-    STDMETHOD(GetComponentByName)(THIS_ const WCHAR * const pwszName, void *pvBuffer, PDWORD pdwBufferSize, PDWORD pdwDataType ) PURE;
-    STDMETHOD(GetComponentByIndex)(THIS_ const DWORD dwComponentID, WCHAR * pwszName, PDWORD pdwNameLen, void *pvBuffer, PDWORD pdwBufferSize, PDWORD pdwDataType ) PURE;
-    STDMETHOD(AddComponent)(THIS_ const WCHAR * const pwszName, const void * const lpvData, const DWORD dwDataSize, const DWORD dwDataType ) PURE;	
-    STDMETHOD(GetDevice)(THIS_  GUID * ) PURE;
-    STDMETHOD(SetDevice)(THIS_  const GUID * const) PURE;
-    STDMETHOD(BuildFromDPADDRESS)( THIS_ LPVOID pvAddress, DWORD dwDataSize ) PURE;
+	STDMETHOD(Clear)(THIS ) PURE;
+	STDMETHOD(GetURLW)(THIS_ WCHAR *pwszURL, PDWORD pdwNumChars ) PURE;
+	STDMETHOD(GetURLA)(THIS_ CHAR *pszURL, PDWORD pdwNumChars) PURE;
+	STDMETHOD(GetSP)(THIS_ GUID *pguidSP ) PURE;
+	STDMETHOD(GetUserData)(THIS_ void *pvUserData, PDWORD pdwBufferSize) PURE;
+	STDMETHOD(SetSP)(THIS_ const GUID * const pguidSP ) PURE;
+	STDMETHOD(SetUserData)(THIS_ const void * const pvUserData, const DWORD dwDataSize) PURE;
+	STDMETHOD(GetNumComponents)(THIS_ PDWORD pdwNumComponents ) PURE;
+	STDMETHOD(GetComponentByName)(THIS_ const WCHAR * const pwszName, void *pvBuffer, PDWORD pdwBufferSize, PDWORD pdwDataType ) PURE;
+	STDMETHOD(GetComponentByIndex)(THIS_ const DWORD dwComponentID, WCHAR * pwszName, PDWORD pdwNameLen, void *pvBuffer, PDWORD pdwBufferSize, PDWORD pdwDataType ) PURE;
+	STDMETHOD(AddComponent)(THIS_ const WCHAR * const pwszName, const void * const lpvData, const DWORD dwDataSize, const DWORD dwDataType ) PURE;	
+	STDMETHOD(GetDevice)(THIS_  GUID * ) PURE;
+	STDMETHOD(SetDevice)(THIS_  const GUID * const) PURE;
+	STDMETHOD(BuildFromDPADDRESS)( THIS_ LPVOID pvAddress, DWORD dwDataSize ) PURE;
 };
 
 //
@@ -257,7 +278,7 @@ DECLARE_INTERFACE_(IDirectPlay8Address,IUnknown)
 DECLARE_INTERFACE_(IDirectPlay8AddressIP,IUnknown)
 {
     /*** IUnknown methods ***/
-	STDMETHOD(QueryInterface)			(THIS_ REFIID, PVOID *) PURE;
+	STDMETHOD(QueryInterface)			(THIS_ DPNAREFIID, PVOID *) PURE;
 	STDMETHOD_(ULONG,AddRef)			(THIS) PURE;
 	STDMETHOD_(ULONG,Release)			(THIS) PURE;
 
@@ -280,9 +301,7 @@ DECLARE_INTERFACE_(IDirectPlay8AddressIP,IUnknown)
 
 	// Gets the remote address
 	STDMETHOD(GetAddress)(THIS_ WCHAR *wszAddress, PDWORD pdwAddressLength, USHORT *psPort ) PURE;
-
 };
-
 
 
 /****************************************************************************
@@ -293,75 +312,73 @@ DECLARE_INTERFACE_(IDirectPlay8AddressIP,IUnknown)
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 
-#define IDirectPlay8Address_QueryInterface(p,a,b)		    (p)->lpVtbl->QueryInterface(p,a,b)
-#define IDirectPlay8Address_AddRef(p)          			    (p)->lpVtbl->AddRef(p)
-#define IDirectPlay8Address_Release(p)         			    (p)->lpVtbl->Release(p)
-#define IDirectPlay8Address_BuildFromURLW(p,a)			    (p)->lpVtbl->BuildFromURLW(p,a)
-#define IDirectPlay8Address_BuildFromURLA(p,a)			    (p)->lpVtbl->BuildFromURLA(p,a)
-#define IDirectPlay8Address_Duplicate(p,a)				    (p)->lpVtbl->Duplicate(p,a)
-#define IDirectPlay8Address_SetEqual(p,a)                   (p)->lpVtbl->SetEqual(p,a)
-#define IDirectPlay8Address_IsEqual(p,a)			        (p)->lpVtbl->IsEqual(p,a)
-#define IDirectPlay8Address_Clear(p)					    (p)->lpVtbl->Clear(p)
-#define IDirectPlay8Address_GetURLW(p,a,b)				    (p)->lpVtbl->GetURLW(p,a,b)
-#define IDirectPlay8Address_GetURLA(p,a,b)				    (p)->lpVtbl->GetURLA(p,a,b)
-#define IDirectPlay8Address_GetSP(p,a)					    (p)->lpVtbl->GetSP(p,a)
-#define IDirectPlay8Address_GetUserData(p,a,b)			    (p)->lpVtbl->GetUserData(p,a,b)
-#define IDirectPlay8Address_SetSP(p,a)					    (p)->lpVtbl->SetSP(p,a)
-#define IDirectPlay8Address_SetUserData(p,a,b)			    (p)->lpVtbl->SetUserData(p,a,b)
-#define IDirectPlay8Address_GetNumComponents(p,a)		    (p)->lpVtbl->GetNumComponents(p,a)
-#define IDirectPlay8Address_GetComponentByName(p,a,b,c,d)	(p)->lpVtbl->GetComponentByName(p,a,b,c,d)
+#define IDirectPlay8Address_QueryInterface(p,a,b)				(p)->lpVtbl->QueryInterface(p,a,b)
+#define IDirectPlay8Address_AddRef(p)							(p)->lpVtbl->AddRef(p)
+#define IDirectPlay8Address_Release(p)							(p)->lpVtbl->Release(p)
+#define IDirectPlay8Address_BuildFromURLW(p,a)					(p)->lpVtbl->BuildFromURLW(p,a)
+#define IDirectPlay8Address_BuildFromURLA(p,a)					(p)->lpVtbl->BuildFromURLA(p,a)
+#define IDirectPlay8Address_Duplicate(p,a)						(p)->lpVtbl->Duplicate(p,a)
+#define IDirectPlay8Address_SetEqual(p,a)						(p)->lpVtbl->SetEqual(p,a)
+#define IDirectPlay8Address_IsEqual(p,a)						(p)->lpVtbl->IsEqual(p,a)
+#define IDirectPlay8Address_Clear(p)							(p)->lpVtbl->Clear(p)
+#define IDirectPlay8Address_GetURLW(p,a,b)						(p)->lpVtbl->GetURLW(p,a,b)
+#define IDirectPlay8Address_GetURLA(p,a,b)						(p)->lpVtbl->GetURLA(p,a,b)
+#define IDirectPlay8Address_GetSP(p,a)							(p)->lpVtbl->GetSP(p,a)
+#define IDirectPlay8Address_GetUserData(p,a,b)					(p)->lpVtbl->GetUserData(p,a,b)
+#define IDirectPlay8Address_SetSP(p,a)							(p)->lpVtbl->SetSP(p,a)
+#define IDirectPlay8Address_SetUserData(p,a,b)					(p)->lpVtbl->SetUserData(p,a,b)
+#define IDirectPlay8Address_GetNumComponents(p,a)				(p)->lpVtbl->GetNumComponents(p,a)
+#define IDirectPlay8Address_GetComponentByName(p,a,b,c,d)		(p)->lpVtbl->GetComponentByName(p,a,b,c,d)
 #define IDirectPlay8Address_GetComponentByIndex(p,a,b,c,d,e,f)	(p)->lpVtbl->GetComponentByIndex(p,a,b,c,d,e,f)
-#define IDirectPlay8Address_AddComponent(p,a,b,c,d)		    (p)->lpVtbl->AddComponent(p,a,b,c,d)
-#define IDirectPlay8Address_SetDevice(p,a)				    (p)->lpVtbl->SetDevice(p,a)
-#define IDirectPlay8Address_GetDevice(p,a)				    (p)->lpVtbl->GetDevice(p,a)
-#define IDirectPlay8Address_BuildFromDirectPlay4Address(p,a,b)  (p)->lpVtbl->BuildFromDirectPlay4Address(p,a,b)
+#define IDirectPlay8Address_AddComponent(p,a,b,c,d)				(p)->lpVtbl->AddComponent(p,a,b,c,d)
+#define IDirectPlay8Address_SetDevice(p,a)						(p)->lpVtbl->SetDevice(p,a)
+#define IDirectPlay8Address_GetDevice(p,a)						(p)->lpVtbl->GetDevice(p,a)
+#define IDirectPlay8Address_BuildFromDirectPlay4Address(p,a,b)	(p)->lpVtbl->BuildFromDirectPlay4Address(p,a,b)
 
-#define IDirectPlay8AddressIP_QueryInterface(p,a,b)		    (p)->lpVtbl->QueryInterface(p,a,b)
-#define IDirectPlay8AddressIP_AddRef(p)          		    (p)->lpVtbl->AddRef(p)
-#define IDirectPlay8AddressIP_Release(p)         		    (p)->lpVtbl->Release(p)
-#define IDirectPlay8AddressIP_BuildFromSockAddr(p,a)	    (p)->lpVtbl->BuildFromSockAddr(p,a)
-#define IDirectPlay8AddressIP_BuildAddress(p,a,b)		    (p)->lpVtbl->BuildAddress(p,a,b)
-#define IDirectPlay8AddressIP_BuildLocalAddress(p,a,b)	    (p)->lpVtbl->BuildLocalAddress(p,a,b)
-#define IDirectPlay8AddressIP_GetSockAddress(p,a,b)		    (p)->lpVtbl->GetSockAddress(p,a,b)
-#define IDirectPlay8AddressIP_GetLocalAddress(p,a,b)	    (p)->lpVtbl->GetLocalAddress(p,a,b)
-#define IDirectPlay8AddressIP_GetAddress(p,a,b,c)		    (p)->lpVtbl->GetAddress(p,a,b,c)
-
+#define IDirectPlay8AddressIP_QueryInterface(p,a,b)				(p)->lpVtbl->QueryInterface(p,a,b)
+#define IDirectPlay8AddressIP_AddRef(p)							(p)->lpVtbl->AddRef(p)
+#define IDirectPlay8AddressIP_Release(p)						(p)->lpVtbl->Release(p)
+#define IDirectPlay8AddressIP_BuildFromSockAddr(p,a)			(p)->lpVtbl->BuildFromSockAddr(p,a)
+#define IDirectPlay8AddressIP_BuildAddress(p,a,b)				(p)->lpVtbl->BuildAddress(p,a,b)
+#define IDirectPlay8AddressIP_BuildLocalAddress(p,a,b)			(p)->lpVtbl->BuildLocalAddress(p,a,b)
+#define IDirectPlay8AddressIP_GetSockAddress(p,a,b)				(p)->lpVtbl->GetSockAddress(p,a,b)
+#define IDirectPlay8AddressIP_GetLocalAddress(p,a,b)			(p)->lpVtbl->GetLocalAddress(p,a,b)
+#define IDirectPlay8AddressIP_GetAddress(p,a,b,c)				(p)->lpVtbl->GetAddress(p,a,b,c)
 
 #else /* C++ */
 
-#define IDirectPlay8Address_QueryInterface(p,a,b)		    (p)->QueryInterface(a,b)
-#define IDirectPlay8Address_AddRef(p)          			    (p)->AddRef()
-#define IDirectPlay8Address_Release(p)         			    (p)->Release()
-#define IDirectPlay8Address_BuildFromURLW(p,a)			    (p)->BuildFromURLW(a)
-#define IDirectPlay8Address_BuildFromURLA(p,a)			    (p)->BuildFromURLA(a)
-#define IDirectPlay8Address_Duplicate(p,a)				    (p)->Duplicate(a)
-#define IDirectPlay8Address_SetEqual(p,a)                   (p)->SetEqual(a)
-#define IDirectPlay8Address_IsEqual(p,a)			        (p)->IsEqual(a)
-#define IDirectPlay8Address_Clear(p)					    (p)->Clear()
-#define IDirectPlay8Address_GetURLW(p,a,b)				    (p)->GetURLW(a,b)
-#define IDirectPlay8Address_GetURLA(p,a,b)				    (p)->GetURLA(a,b)
-#define IDirectPlay8Address_GetSP(p,a)					    (p)->GetSP(a)
-#define IDirectPlay8Address_GetUserData(p,a,b)			    (p)->GetUserData(a,b)
-#define IDirectPlay8Address_SetSP(p,a)					    (p)->SetSP(a)
-#define IDirectPlay8Address_SetUserData(p,a,b)			    (p)->SetUserData(a,b)
-#define IDirectPlay8Address_GetNumComponents(p,a)		    (p)->GetNumComponents(a)
-#define IDirectPlay8Address_GetComponentByName(p,a,b,c,d)	(p)->GetComponentByName(a,b,c,d)
+#define IDirectPlay8Address_QueryInterface(p,a,b)				(p)->QueryInterface(a,b)
+#define IDirectPlay8Address_AddRef(p)							(p)->AddRef()
+#define IDirectPlay8Address_Release(p)							(p)->Release()
+#define IDirectPlay8Address_BuildFromURLW(p,a)					(p)->BuildFromURLW(a)
+#define IDirectPlay8Address_BuildFromURLA(p,a)					(p)->BuildFromURLA(a)
+#define IDirectPlay8Address_Duplicate(p,a)						(p)->Duplicate(a)
+#define IDirectPlay8Address_SetEqual(p,a)						(p)->SetEqual(a)
+#define IDirectPlay8Address_IsEqual(p,a)						(p)->IsEqual(a)
+#define IDirectPlay8Address_Clear(p)							(p)->Clear()
+#define IDirectPlay8Address_GetURLW(p,a,b)						(p)->GetURLW(a,b)
+#define IDirectPlay8Address_GetURLA(p,a,b)						(p)->GetURLA(a,b)
+#define IDirectPlay8Address_GetSP(p,a)							(p)->GetSP(a)
+#define IDirectPlay8Address_GetUserData(p,a,b)					(p)->GetUserData(a,b)
+#define IDirectPlay8Address_SetSP(p,a)							(p)->SetSP(a)
+#define IDirectPlay8Address_SetUserData(p,a,b)					(p)->SetUserData(a,b)
+#define IDirectPlay8Address_GetNumComponents(p,a)				(p)->GetNumComponents(a)
+#define IDirectPlay8Address_GetComponentByName(p,a,b,c,d)		(p)->GetComponentByName(a,b,c,d)
 #define IDirectPlay8Address_GetComponentByIndex(p,a,b,c,d,e,f)	(p)->GetComponentByIndex(a,b,c,d,e,f)
-#define IDirectPlay8Address_AddComponent(p,a,b,c,d)		    (p)->AddComponent(a,b,c,d)
-#define IDirectPlay8Address_SetDevice(p,a)				    (p)->SetDevice(a)
-#define IDirectPlay8Address_GetDevice(p,a)				    (p)->GetDevice(a)
-#define IDirectPlay8Address_BuildFromDirectPlay4Address(p,a,b)  (p)->BuildFromDirectPlay4Address(a,b)
+#define IDirectPlay8Address_AddComponent(p,a,b,c,d)				(p)->AddComponent(a,b,c,d)
+#define IDirectPlay8Address_SetDevice(p,a)						(p)->SetDevice(a)
+#define IDirectPlay8Address_GetDevice(p,a)						(p)->GetDevice(a)
+#define IDirectPlay8Address_BuildFromDirectPlay4Address(p,a,b)	(p)->BuildFromDirectPlay4Address(a,b)
 
-#define IDirectPlay8AddressIP_QueryInterface(p,a,b)		    (p)->QueryInterface(a,b)
-#define IDirectPlay8AddressIP_AddRef(p)          		    (p)->AddRef()
-#define IDirectPlay8AddressIP_Release(p)         		    (p)->Release()
-#define IDirectPlay8AddressIP_BuildFromSockAddr(p,a)	    (p)->BuildFromSockAddr(a)
-#define IDirectPlay8AddressIP_BuildAddress(p,a,b)		    (p)->BuildAddress(a,b)
-#define IDirectPlay8AddressIP_BuildLocalAddress(p,a,b)	    (p)->BuildLocalAddress(a,b)
-#define IDirectPlay8AddressIP_GetSockAddress(p,a,b)		    (p)->GetSockAddress(a,b)
-#define IDirectPlay8AddressIP_GetLocalAddress(p,a,b)	    (p)->GetLocalAddress(a,b)
-#define IDirectPlay8AddressIP_GetAddress(p,a,b,c)		    (p)->GetAddress(a,b,c)
-
+#define IDirectPlay8AddressIP_QueryInterface(p,a,b)				(p)->QueryInterface(a,b)
+#define IDirectPlay8AddressIP_AddRef(p)							(p)->AddRef()
+#define IDirectPlay8AddressIP_Release(p)						(p)->Release()
+#define IDirectPlay8AddressIP_BuildFromSockAddr(p,a)			(p)->BuildFromSockAddr(a)
+#define IDirectPlay8AddressIP_BuildAddress(p,a,b)				(p)->BuildAddress(a,b)
+#define IDirectPlay8AddressIP_BuildLocalAddress(p,a,b)			(p)->BuildLocalAddress(a,b)
+#define IDirectPlay8AddressIP_GetSockAddress(p,a,b)				(p)->GetSockAddress(a,b)
+#define IDirectPlay8AddressIP_GetLocalAddress(p,a,b)			(p)->GetLocalAddress(a,b)
+#define IDirectPlay8AddressIP_GetAddress(p,a,b,c)				(p)->GetAddress(a,b,c)
 
 #endif
 

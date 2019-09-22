@@ -4,7 +4,7 @@
 // Desc: Contains the GUIDs for the MediaType type, subtype fields and format
 //       types for DVD/MPEG2 media types.
 //
-// Copyright (c) 1992 - 2001, Microsoft Corporation.  All rights reserved.
+// Copyright (c) 1992 - 2002, Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
 
@@ -25,6 +25,22 @@ OUR_GUID_ENTRY(MEDIATYPE_MPEG2_PES,
 DEFINE_GUID(MEDIATYPE_CONTROL,
 0xe06d8021, 0xdb46, 0x11cf, 0xb4, 0xd1, 0x00, 0x80, 0x05f, 0x6c, 0xbb, 0xea);
 #endif // #if 0
+
+
+OUR_GUID_ENTRY( MEDIATYPE_MPEG2_SECTIONS,
+    0x455f176c, 0x4b06, 0x47ce, 0x9a, 0xef, 0x8c, 0xae, 0xf7, 0x3d, 0xf7, 0xb5)
+
+OUR_GUID_ENTRY(MEDIASUBTYPE_ATSC_SI,
+0xb3c7397c, 0xd303, 0x414d, 0xb3, 0x3c, 0x4e, 0xd2, 0xc9, 0xd2, 0x97, 0x33)
+
+OUR_GUID_ENTRY(MEDIASUBTYPE_DVB_SI,
+0xe9dd31a3, 0x221d, 0x4adb, 0x85, 0x32, 0x9a, 0xf3, 0x9, 0xc1, 0xa4, 0x8)
+
+
+// {C892E55B-252D-42b5-A316-D997E7A5D995}
+OUR_GUID_ENTRY(MEDIASUBTYPE_MPEG2DATA, 
+0xc892e55b, 0x252d, 0x42b5, 0xa3, 0x16, 0xd9, 0x97, 0xe7, 0xa5, 0xd9, 0x95)
+
 
 
 // e06d8026-db46-11cf-b4d1-00805f6cbbea
@@ -200,7 +216,7 @@ OUR_GUID_ENTRY(AM_KSCATEGORY_SPLITTER,
 
 
 //
-// guids needed to support IKsPin interface
+// GUIDs needed to support IKsPin interface
 //
 
 // d3abc7e0l-9a61-11d0-a40d00a0c9223196

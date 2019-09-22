@@ -4,7 +4,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0347 */
+ /* File created by MIDL compiler version 6.00.0357 */
 /* Compiler settings for dxtrans.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext
@@ -499,7 +499,7 @@ void __RPC_STUB IDXBaseObject_GetObjectSize_Stub(
 #endif 	/* __IDXBaseObject_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0259 */
+/* interface __MIDL_itf_dxtrans_0260 */
 /* [local] */ 
 
 typedef 
@@ -553,7 +553,7 @@ typedef DXCBND64 DXCBNDS64[ 4 ];
 typedef struct DXBNDS
     {
     DXBNDTYPE eType;
-    /* [switch_is] */ /* [switch_type] */ union __MIDL___MIDL_itf_dxtrans_0259_0001
+    /* [switch_is] */ /* [switch_type] */ union __MIDL___MIDL_itf_dxtrans_0260_0001
         {
         /* [case()] */ DXDBND D[ 4 ];
         /* [case()] */ DXDBND64 LD[ 4 ];
@@ -573,7 +573,7 @@ typedef double DXCVEC64[ 4 ];
 typedef struct DXVEC
     {
     DXBNDTYPE eType;
-    /* [switch_is] */ /* [switch_type] */ union __MIDL___MIDL_itf_dxtrans_0259_0002
+    /* [switch_is] */ /* [switch_type] */ union __MIDL___MIDL_itf_dxtrans_0260_0002
         {
         /* [case()] */ long D[ 4 ];
         /* [case()] */ LONGLONG LD[ 4 ];
@@ -584,8 +584,8 @@ typedef struct DXVEC
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0259_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0259_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0260_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0260_v0_0_s_ifspec;
 
 #ifndef __IDXTransformFactory_INTERFACE_DEFINED__
 #define __IDXTransformFactory_INTERFACE_DEFINED__
@@ -779,7 +779,7 @@ void __RPC_STUB IDXTransformFactory_InitializeTransform_Stub(
 #endif 	/* __IDXTransformFactory_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0260 */
+/* interface __MIDL_itf_dxtrans_0261 */
 /* [local] */ 
 
 typedef 
@@ -804,8 +804,8 @@ enum DXINOUTINFOFLAGS
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0260_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0260_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0261_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0261_v0_0_s_ifspec;
 
 #ifndef __IDXTransform_INTERFACE_DEFINED__
 #define __IDXTransform_INTERFACE_DEFINED__
@@ -1332,7 +1332,7 @@ void __RPC_STUB IDXTBindHost_SetBindHost_Stub(
 #endif 	/* __IDXTBindHost_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0263 */
+/* interface __MIDL_itf_dxtrans_0264 */
 /* [local] */ 
 
 typedef void __stdcall __stdcall DXTASKPROC( 
@@ -1368,8 +1368,8 @@ typedef struct DXTMTASKINFO
 #endif
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0263_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0263_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0264_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0264_v0_0_s_ifspec;
 
 #ifndef __IDXTaskManager_INTERFACE_DEFINED__
 #define __IDXTaskManager_INTERFACE_DEFINED__
@@ -1636,7 +1636,7 @@ void __RPC_STUB IDXTaskManager_TerminateRequest_Stub(
 #endif 	/* __IDXTaskManager_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0264 */
+/* interface __MIDL_itf_dxtrans_0265 */
 /* [local] */ 
 
 #ifdef __cplusplus
@@ -1762,8 +1762,8 @@ enum DXBLTOPTIONS
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0264_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0264_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0265_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0265_v0_0_s_ifspec;
 
 #ifndef __IDXSurfaceFactory_INTERFACE_DEFINED__
 #define __IDXSurfaceFactory_INTERFACE_DEFINED__
@@ -2089,7 +2089,7 @@ void __RPC_STUB IDXSurfaceFactory_BitBlt_Stub(
 #endif 	/* __IDXSurfaceFactory_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0265 */
+/* interface __MIDL_itf_dxtrans_0266 */
 /* [local] */ 
 
 typedef 
@@ -2101,8 +2101,8 @@ enum DXSURFMODCOMPOP
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0265_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0265_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0266_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0266_v0_0_s_ifspec;
 
 #ifndef __IDXSurfaceModifier_INTERFACE_DEFINED__
 #define __IDXSurfaceModifier_INTERFACE_DEFINED__
@@ -2470,7 +2470,7 @@ void __RPC_STUB IDXSurfaceModifier_GetLookup_Stub(
 #endif 	/* __IDXSurfaceModifier_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0266 */
+/* interface __MIDL_itf_dxtrans_0267 */
 /* [local] */ 
 
 typedef 
@@ -2521,8 +2521,8 @@ enum DXSURFSTATUS
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0266_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0266_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0267_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0267_v0_0_s_ifspec;
 
 #ifndef __IDXSurface_INTERFACE_DEFINED__
 #define __IDXSurface_INTERFACE_DEFINED__
@@ -3118,7 +3118,7 @@ void __RPC_STUB IDXARGBSurfaceInit_InitFromRawSurface_Stub(
 #endif 	/* __IDXARGBSurfaceInit_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0269 */
+/* interface __MIDL_itf_dxtrans_0270 */
 /* [local] */ 
 
 typedef struct tagDXNATIVETYPEINFO
@@ -3145,8 +3145,8 @@ typedef struct tagDXOVERSAMPLEDESC
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0269_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0269_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0270_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0270_v0_0_s_ifspec;
 
 #ifndef __IDXARGBReadPtr_INTERFACE_DEFINED__
 #define __IDXARGBReadPtr_INTERFACE_DEFINED__
@@ -4267,7 +4267,7 @@ void __RPC_STUB IDXTScale_ScaleFitToSize_Stub(
 #endif 	/* __IDXTScale_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0275 */
+/* interface __MIDL_itf_dxtrans_0276 */
 /* [local] */ 
 
 typedef 
@@ -4287,8 +4287,8 @@ enum DXEFFECTTYPE
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0275_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0275_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0276_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0276_v0_0_s_ifspec;
 
 #ifndef __IDXEffect_INTERFACE_DEFINED__
 #define __IDXEffect_INTERFACE_DEFINED__
@@ -4725,7 +4725,7 @@ void __RPC_STUB IDXLookupTable_ApplyTables_Stub(
 #endif 	/* __IDXLookupTable_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0277 */
+/* interface __MIDL_itf_dxtrans_0278 */
 /* [local] */ 
 
 typedef struct DXRAWSURFACEINFO
@@ -4742,8 +4742,8 @@ typedef struct DXRAWSURFACEINFO
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0277_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0277_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0278_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0278_v0_0_s_ifspec;
 
 #ifndef __IDXRawSurface_INTERFACE_DEFINED__
 #define __IDXRawSurface_INTERFACE_DEFINED__
@@ -4925,7 +4925,7 @@ void __RPC_STUB IHTMLDXTransform_SetHostUrl_Stub(
 #endif 	/* __IHTMLDXTransform_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_dxtrans_0279 */
+/* interface __MIDL_itf_dxtrans_0280 */
 /* [local] */ 
 
 typedef 
@@ -4950,8 +4950,8 @@ enum DXTFILTER_DISPID
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0279_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0279_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0280_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_dxtrans_0280_v0_0_s_ifspec;
 
 #ifndef __ICSSFilterDispatch_INTERFACE_DEFINED__
 #define __ICSSFilterDispatch_INTERFACE_DEFINED__

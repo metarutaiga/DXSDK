@@ -3,7 +3,7 @@
 //
 // Desc: DirectX Video Acceleration header file.
 //
-// Copyright (c) 1999-2001, Microsoft Corporation.  All rights reserved.
+// Copyright (c) 1999 - 2002, Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
 
@@ -17,34 +17,58 @@ extern "C" {
 DEFINE_GUID(DXVA_ModeNone,    0x1b81be00, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeH261_A,  0x1b81be01, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeH261_B,  0x1b81be02, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+
 DEFINE_GUID(DXVA_ModeH263_A,  0x1b81be03, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeH263_B,  0x1b81be04, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeH263_C,  0x1b81be05, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeH263_D,  0x1b81be06, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeH263_E,  0x1b81be07, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeH263_F,  0x1b81be08, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+
 DEFINE_GUID(DXVA_ModeMPEG1_A, 0x1b81be09, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+
 DEFINE_GUID(DXVA_ModeMPEG2_A, 0x1b81be0A, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeMPEG2_B, 0x1b81be0B, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeMPEG2_C, 0x1b81be0C, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 DEFINE_GUID(DXVA_ModeMPEG2_D, 0x1b81be0D, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+
+DEFINE_GUID(DXVA_ModeWMV8_A,  0x1b81be80, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+DEFINE_GUID(DXVA_ModeWMV8_B,  0x1b81be81, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+
+DEFINE_GUID(DXVA_ModeWMV9_A,  0x1b81be90, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+DEFINE_GUID(DXVA_ModeWMV9_B,  0x1b81be91, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+DEFINE_GUID(DXVA_ModeWMV9_Ai, 0x1b81be92, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+DEFINE_GUID(DXVA_ModeWMV9_Bi, 0x1b81be93, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+
 
 DEFINE_GUID(DXVA_NoEncrypt,   0x1b81beD0, 0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
 
 #define DXVA_RESTRICTED_MODE_UNRESTRICTED        0xFFFF
 #define DXVA_RESTRICTED_MODE_H261_A              1
 #define DXVA_RESTRICTED_MODE_H261_B              2
+
 #define DXVA_RESTRICTED_MODE_H263_A              3
 #define DXVA_RESTRICTED_MODE_H263_B              4
 #define DXVA_RESTRICTED_MODE_H263_C              5
 #define DXVA_RESTRICTED_MODE_H263_D              6
 #define DXVA_RESTRICTED_MODE_H263_E              7
 #define DXVA_RESTRICTED_MODE_H263_F              8
+
 #define DXVA_RESTRICTED_MODE_MPEG1_A             9
+
 #define DXVA_RESTRICTED_MODE_MPEG2_A             0xA
 #define DXVA_RESTRICTED_MODE_MPEG2_B             0xB
 #define DXVA_RESTRICTED_MODE_MPEG2_C             0xC
 #define DXVA_RESTRICTED_MODE_MPEG2_D             0xD
+
+#define DXVA_RESTRICTED_MODE_WMV8_A              0x80
+#define DXVA_RESTRICTED_MODE_WMV8_B              0x81
+
+#define DXVA_RESTRICTED_MODE_WMV9_A              0x90
+#define DXVA_RESTRICTED_MODE_WMV9_B              0x91
+#define DXVA_RESTRICTED_MODE_WMV9_Ai             0x92
+#define DXVA_RESTRICTED_MODE_WMV9_Bi             0x93
+
 
 #define DXVA_COMPBUFFER_TYPE_THAT_IS_NOT_USED    0
 #define DXVA_PICTURE_DECODE_BUFFER               1
@@ -222,6 +246,7 @@ typedef struct _DXVA_PictureParameters {
   BYTE bBitstreamConcealmentMethod;
 
 } DXVA_PictureParameters, *LPDXVA_PictureParameters;
+
 
 
 /* Picture Resampling */
@@ -620,6 +645,274 @@ typedef DXVA_MBctrl_P_OffHostIDCT_1 *
 #define readDXVA_Cr_11oflow(ptr)        (((ptr)->wPC_Overflow & 0x0001))
 
 #pragma pack(pop, BeforeDXVApacking)
+
+
+
+// -------------------------------------------------------------------------
+//
+// The definitions that follow describe the video de-interlace interface
+// between the VMR and the graphics device driver.  This interface is not
+// accessable via the IAMVideoAccelerator interface.
+//
+// -------------------------------------------------------------------------
+//
+#ifndef __DIRECTX_VA_DEINTERLACE__
+#define __DIRECTX_VA_DEINTERLACE__
+
+typedef LONGLONG REFERENCE_TIME;
+
+DEFINE_GUID(DXVA_DeinterlaceBobDevice,
+    0x335aa36e,0x7884,0x43a4,0x9c,0x91,0x7f,0x87,0xfa,0xf3,0xe3,0x7e);
+
+DEFINE_GUID(DXVA_DeinterlaceContainerDevice,
+    0x0e85cb93,0x3046,0x4ff0,0xae,0xcc,0xd5,0x8c,0xb5,0xf0,0x35,0xfd);
+
+
+#if(DIRECT3D_VERSION < 0x0800)
+typedef DWORD D3DFORMAT;
+enum {
+    D3DPOOL_DEFAULT                 = 0,
+    D3DPOOL_MANAGED                 = 1,
+    D3DPOOL_SYSTEMMEM               = 2,
+    D3DPOOL_SCRATCH                 = 3,
+    D3DPOOL_LOCALVIDMEM             = 4,
+    D3DPOOL_NONLOCALVIDMEM          = 5,
+    D3DPOOL_FORCE_DWORD             = 0x7fffffff
+};
+#endif
+
+
+// -------------------------------------------------------------------------
+// data structures shared by User mode and Kernel mode.
+// -------------------------------------------------------------------------
+//
+
+typedef enum _DXVA_SampleFormat {
+    DXVA_SamplePreviousFrame = 1,
+    DXVA_SampleProgressiveFrame = 2,
+    DXVA_SampleFieldInterleavedEvenFirst = 3,
+    DXVA_SampleFieldInterleavedOddFirst = 4,
+    DXVA_SampleFieldSingleEven = 5,
+    DXVA_SampleFieldSingleOdd = 6,
+} DXVA_SampleFormat;
+
+typedef struct _DXVA_Frequency {
+    DWORD Numerator;
+    DWORD Denominator;
+} DXVA_Frequency;
+
+typedef struct _DXVA_VideoDesc {
+    DWORD               Size;
+    DWORD               SampleWidth;
+    DWORD               SampleHeight;
+    DXVA_SampleFormat   SampleFormat;
+    D3DFORMAT           d3dFormat;
+    DXVA_Frequency      InputSampleFreq;
+    DXVA_Frequency      OutputFrameFreq;
+} DXVA_VideoDesc, *LPDXVA_VideoDesc;
+
+typedef enum _DXVA_VideoProcessCaps {
+    DXVA_VideoProcess_None       = 0x0000,
+    DXVA_VideoProcess_YUV2RGB    = 0x0001,
+    DXVA_VideoProcess_StretchX   = 0x0002,
+    DXVA_VideoProcess_StretchY   = 0x0004,
+    DXVA_VideoProcess_AlphaBlend = 0x0008,
+    DXVA_VideoProcess_SubRects   = 0x0010
+} DXVA_VideoProcessCaps;
+
+typedef enum _DXVA_DeinterlaceTech {
+
+    // the algorithm is unknown or proprietary
+    DXVA_DeinterlaceTech_Unknown                = 0x0000,
+
+    // the algorithm creates the missing lines by repeating
+    // the line either above or below it - this method will look very jaggy and
+    // isn't recommended
+    DXVA_DeinterlaceTech_BOBLineReplicate       = 0x0001,
+
+
+    // the algorithm creates the missing lines by vertically stretching each
+    // video field by a factor of two.  Slight vertical adjustments are made to
+    // ensure that the resulting image does not "bob" up and down.
+    // The algorithm creates the missing lines by vertically stretching each
+    // video field by a factor of two, for example by averaging two lines or
+    // using a [-1, 9, 9, -1]/16 filter across four lines.
+    // Slight vertical adjustments are made to ensure that the resulting image
+    // does not "bob" up and down.
+    DXVA_DeinterlaceTech_BOBVerticalStretch     = 0x0002,
+
+    // the pixels in the missing line are recreated by a median filtering operation
+    DXVA_DeinterlaceTech_MedianFiltering        = 0x0004,
+
+    // the pixels in the missing line are recreated by an edge filter.
+    // In this process, spatial directional filters are applied to determine
+    // the orientation of edges in the picture content, and missing
+    // pixels are created by filtering along (rather than across) the
+    // detected edges.
+    DXVA_DeinterlaceTech_EdgeFiltering          = 0x0010,
+
+    // the pixels in the missing line are recreated by switching on a field by
+    // field basis between using either spatial or temporal interpolation
+    // depending on the amount of motion.
+    DXVA_DeinterlaceTech_FieldAdaptive          = 0x0020,
+
+    // the pixels in the missing line are recreated by switching on a pixel by pixel
+    // basis between using either spatial or temporal interpolation depending on
+    // the amount of motion..
+    DXVA_DeinterlaceTech_PixelAdaptive          = 0x0040,
+
+    // Motion Vector Steering  identifies objects within a sequence of video
+    // fields.  The missing pixels are recreated after first aligning the
+    // movement axes of the individual objects in the scene to make them
+    // parallel with the time axis.
+    DXVA_DeinterlaceTech_MotionVectorSteered      = 0x0080
+
+} DXVA_DeinterlaceTech;
+
+typedef struct _DXVA_VideoSample {
+    REFERENCE_TIME      rtStart;
+    REFERENCE_TIME      rtEnd;
+    DXVA_SampleFormat   SampleFormat;
+    VOID*               lpDDSSrcSurface;
+} DXVA_VideoSample, *LPDXVA_VideoSample;
+
+typedef struct _DXVA_DeinterlaceCaps {
+    DWORD                   Size;
+    DWORD                   NumPreviousOutputFrames;
+    DWORD                   InputPool;
+    DWORD                   NumForwardRefSamples;
+    DWORD                   NumBackwardRefSamples;
+    D3DFORMAT               d3dOutputFormat;
+    DXVA_VideoProcessCaps   VideoProcessingCaps;
+    DXVA_DeinterlaceTech    DeinterlaceTechnology;
+} DXVA_DeinterlaceCaps, *LPDXVA_DeinterlaceCaps;
+
+
+
+
+// -------------------------------------------------------------------------
+// Data types used with RenderMoComp in kernel mode
+// -------------------------------------------------------------------------
+//
+
+// Function codes for RenderMoComp
+
+#define MAX_DEINTERLACE_SURFACES                        32
+
+typedef struct _DXVA_DeinterlaceBlt {
+    DWORD               Size;
+    DWORD               Reserved;
+    REFERENCE_TIME      rtTarget;
+    RECT                DstRect;
+    RECT                SrcRect;
+    DWORD               NumSourceSurfaces;
+    FLOAT               Alpha;
+    DXVA_VideoSample    Source[MAX_DEINTERLACE_SURFACES];
+} DXVA_DeinterlaceBlt;
+
+#define DXVA_DeinterlaceBltFnCode                     0x01
+// lpInput => DXVA_DeinterlaceBlt*
+// lpOuput => NULL /* not currently used */
+
+
+#define MAX_DEINTERLACE_DEVICE_GUIDS                    32
+typedef struct _DXVA_DeinterlaceQueryAvailableModes {
+    DWORD               Size;
+    DWORD               NumGuids;
+    GUID                Guids[MAX_DEINTERLACE_DEVICE_GUIDS];
+} DXVA_DeinterlaceQueryAvailableModes;
+
+#define DXVA_DeinterlaceQueryAvailableModesFnCode     0x01
+// lpInput => DXVA_VideoDesc*
+// lpOuput => DXVA_DeinterlaceQueryAvailableModes*
+
+
+typedef struct _DXVA_DeinterlaceQueryModeCaps {
+    DWORD               Size;
+    GUID                Guid;
+    DXVA_VideoDesc      VideoDesc;
+} DXVA_DeinterlaceQueryModeCaps;
+
+#define DXVA_DeinterlaceQueryModeCapsFnCode           0x02
+// lpInput => DXVA_DeinterlaceQueryModeCaps*
+// lpOuput => DXVA_DeinterlaceCaps*
+
+#endif /*  __DIRECTX_VA_DEINTERLACE__ */
+
+
+// -------------------------------------------------------------------------
+//
+// The definitions that follow describe the video ProcAmp interface
+// between the VMR and the graphics device driver.  This interface is not
+// accessable via the IAMVideoAccelerator interface.
+//
+// -------------------------------------------------------------------------
+//
+#ifndef __DIRECTX_VA_PROCAMPCONTROL__
+#define __DIRECTX_VA_PROCAMPCONTROL__
+
+DEFINE_GUID(DXVA_ProcAmpControlDevice,
+    0x9f200913,0x2ffd,0x4056,0x9f,0x1e,0xe1,0xb5,0x08,0xf2,0x2d,0xcf);
+
+typedef enum _DXVA_ProcAmpControlProp {
+    DXVA_ProcAmp_None       = 0x0000,
+    DXVA_ProcAmp_Brightness = 0x0001,
+    DXVA_ProcAmp_Contrast   = 0x0002,
+    DXVA_ProcAmp_Hue        = 0x0004,
+    DXVA_ProcAmp_Saturation = 0x0008
+} DXVA_ProcAmpControlProp;
+
+
+typedef struct _DXVA_ProcAmpControlCaps {
+    DWORD                   Size;
+    DWORD                   InputPool;
+    D3DFORMAT               d3dOutputFormat;
+    DWORD                   ProcAmpControlProps;// see DXVA_ProcAmpControlProp
+    DWORD                   VideoProcessingCaps;// see DXVA_VideoProcessCaps
+} DXVA_ProcAmpControlCaps, *LPDXVA_ProcAmpControlCaps;
+
+#define DXVA_ProcAmpControlQueryCapsFnCode             0x03
+// lpInput => DXVA_VideoDesc*
+// lpOuput => DXVA_ProcAmpControlCaps*
+
+
+typedef struct _DXVA_ProcAmpControlQueryRange {
+    DWORD                   Size;
+    DXVA_ProcAmpControlProp ProcAmpControlProp;
+    DXVA_VideoDesc          VideoDesc;
+} DXVA_ProcAmpControlQueryRange, *LPDXVA_ProcAmpControlQueryRange;
+
+typedef struct _DXVA_VideoPropertyRange {
+    FLOAT   MinValue;
+    FLOAT   MaxValue;
+    FLOAT   DefaultValue;
+    FLOAT   StepSize;
+} DXVA_VideoPropertyRange, *LPDXVA_VideoPropertyRange;
+
+#define DXVA_ProcAmpControlQueryRangeFnCode            0x04
+// lpInput => DXVA_ProcAmpControlQueryRange*
+// lpOuput => DXVA_VideoPropertyRange*
+
+
+typedef struct _DXVA_ProcAmpControlBlt {
+    DWORD               Size;
+    RECT                DstRect;
+    RECT                SrcRect;
+    FLOAT               Alpha;
+    FLOAT               Brightness;
+    FLOAT               Contrast;
+    FLOAT               Hue;
+    FLOAT               Saturation;
+} DXVA_ProcAmpControlBlt;
+
+#define DXVA_ProcAmpControlBltFnCode                   0x01
+// lpInput => DXVA_ProcAmpControlBlt*
+// lpOuput => NULL /* not currently used */
+
+
+
+#endif /*  __DIRECTX_VA_PROCAMPCONTROL__ */
+
 
 #ifdef __cplusplus
 }

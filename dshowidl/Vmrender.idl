@@ -1,21 +1,19 @@
-//------------------------------------------------------------------------------
-// File: Vmrender.idl
+///////////////////////////////////////////////////////////////////////////////
 //
-// Desc: Public Interfaces for the Video Mixing Renderer DShow filter
+// Public Interfaces for the Video Mixing Renderer DShow filter
 //
-// Copyright (c) 1992-2001, Microsoft Corporation.  All rights reserved.
-//------------------------------------------------------------------------------
+// Copyright (c) 1999 - 2002, Microsoft Corporation.  All rights reserved.
+///////////////////////////////////////////////////////////////////////////////
 
 cpp_quote("#if 0")
-// This is a temporary workaround to persuade MIDL to allow
-// forward declarations
+// This is temporary work around to persuade
+// MIDL to allow forward declarations.
 typedef DWORD*    LPDIRECTDRAW7;
 typedef DWORD*    LPDIRECTDRAWSURFACE7;
 typedef DWORD*    LPDDPIXELFORMAT;
 typedef DWORD*    LPBITMAPINFOHEADER;
 typedef struct {DWORD dw1; DWORD dw2;} DDCOLORKEY;
 typedef DDCOLORKEY*    LPDDCOLORKEY;
-
 cpp_quote ("#endif")
 cpp_quote("#include <ddraw.h>")
 
@@ -32,6 +30,8 @@ interface IVMRWindowlessControl;
 interface IVMRMixerControl;
 interface IVMRMixerBitmap;
 interface IVMRFilterConfig;
+interface IVMRAspectRatioControl;
+interface IVMRDeinterlaceControl;
 interface IVMRMonitorConfig;
 
 interface IVMRImageCompositor;
@@ -376,10 +376,10 @@ typedef enum {
 //
 typedef struct _NORMALIZEDRECT
 {
-    float left;
-    float top;
-    float right;
-    float bottom;
+	float left;
+	float top;
+	float right;
+	float bottom;
 } NORMALIZEDRECT, *PNORMALIZEDRECT;
 
 [
@@ -535,12 +535,13 @@ interface IVMRMonitorConfig : IUnknown
 
 
 typedef enum {
+    RenderPrefs_RestrictToInitialMonitor     = 0x00000000, // not implemented do not use
     RenderPrefs_ForceOffscreen               = 0x00000001,
     RenderPrefs_ForceOverlays                = 0x00000002, // fail if no overlays
     RenderPrefs_AllowOverlays                = 0x00000000, // overlay used by default
     RenderPrefs_AllowOffscreen               = 0x00000000, // offscreen used if no overlay
     RenderPrefs_DoNotRenderColorKeyAndBorder = 0x00000008, // app paints color keys
-    RenderPrefs_RestrictToInitialMonitor     = 0x00000010, // output only to initial monitor
+    RenderPrefs_Reserved                     = 0x00000010, // note: used to be RestrictToInitialMonitor
     RenderPrefs_PreferAGPMemWhenMixing       = 0x00000020, // try agp mem when allocating textures
 
     RenderPrefs_Mask                         = 0x0000003f, // OR of all above flags
@@ -598,6 +599,204 @@ interface IVMRFilterConfig : IUnknown
 }
 
 
+//=====================================================================
+//
+// IVMRAspectRatioControl
+//
+//=====================================================================
+[
+    object,
+    local,
+    uuid(ede80b5c-bad6-4623-b537-65586c9f8dfd),
+    helpstring("IVMRAspectRatioControl Interface"),
+    pointer_default(unique)
+]
+interface IVMRAspectRatioControl : IUnknown
+{
+    HRESULT GetAspectRatioMode(
+        [out] LPDWORD lpdwARMode
+            );
+
+    HRESULT SetAspectRatioMode(
+        [in] DWORD dwARMode
+            );
+}
+
+
+//=====================================================================
+//
+// IVMRDeinterlaceControl
+//
+// New interfaced introduced into the WindowsXP SP1 release of the VMR.
+// This interface allows applications to control the DX-VA deinterlacing
+// support provided by the VMR.
+//
+// The VMR needs to be set into "mixing" mode for this interface to work.
+//
+// SetDeinterlaceMode is only effective for new connections made to the
+// VMR.  It should be noted that the graphics device driver may refuse
+// to use the specified deinterlace mode, in which case 3 fallback
+// policies are offered by the VMR, these being:
+//
+//      1. Fallback to the next best mode offered by the driver.
+//      2. Fallback to the BOB deinterlace mode.
+//      3. Fallback to the WEAVE deinterlace mode (ie. turn deinterlacing off).
+//
+//=====================================================================
+
+typedef enum {
+    DeinterlacePref_NextBest = 0x01,
+    DeinterlacePref_BOB = 0x02,
+    DeinterlacePref_Weave = 0x04,
+    DeinterlacePref_Mask = 0x07
+} VMRDeinterlacePrefs;
+
+typedef enum {
+
+    // the algorithm is unknown or proprietary
+    DeinterlaceTech_Unknown                = 0x0000,
+
+    // the algorithm creates the missing lines by repeating
+    // the line either above or below it - this method will look very jaggy and
+    // isn't recommended
+    DeinterlaceTech_BOBLineReplicate       = 0x0001,
+
+
+    // the algorithm creates the missing lines by vertically stretching each
+    // video field by a factor of two, for example by averaging two lines or
+    // using a [-1, 9, 9, -1]/16 filter across four lines.
+    // Slight vertical adjustments are made to ensure that the resulting image
+    // does not "bob" up and down.
+    DeinterlaceTech_BOBVerticalStretch     = 0x0002,
+
+    // the pixels in the missing line are recreated by a median filtering operation
+    DeinterlaceTech_MedianFiltering        = 0x0004,
+
+    // the pixels in the missing line are recreated by an edge filter.
+    // In this process, spatial directional filters are applied to determine
+    // the orientation of edges in the picture content, and missing
+    // pixels are created by filtering along (rather than across) the
+    // detected edges.
+    DeinterlaceTech_EdgeFiltering          = 0x0010,
+
+    // the pixels in the missing line are recreated by switching on a field by
+    // field basis between using either spatial or temporal interpolation
+    // depending on the amount of motion.
+    DeinterlaceTech_FieldAdaptive          = 0x0020,
+
+    // the pixels in the missing line are recreated by switching on a pixel by pixel
+    // basis between using either spatial or temporal interpolation depending on
+    // the amount of motion..
+    DeinterlaceTech_PixelAdaptive          = 0x0040,
+
+    // Motion Vector Steering  identifies objects within a sequence of video
+    // fields.  The missing pixels are recreated after first aligning the
+    // movement axes of the individual objects in the scene to make them
+    // parallel with the time axis.
+    DeinterlaceTech_MotionVectorSteered      = 0x0080
+
+} VMRDeinterlaceTech;
+
+typedef struct _VMRFrequency {
+    DWORD dwNumerator;
+    DWORD dwDenominator;
+} VMRFrequency;
+
+typedef struct _VMRVideoDesc {
+    DWORD               dwSize;
+    DWORD               dwSampleWidth;
+    DWORD               dwSampleHeight;
+    BOOL                SingleFieldPerSample;
+    DWORD               dwFourCC;
+    VMRFrequency        InputSampleFreq;
+    VMRFrequency        OutputFrameFreq;
+} VMRVideoDesc;
+
+typedef struct _VMRDeinterlaceCaps {
+    DWORD               dwSize;
+    DWORD               dwNumPreviousOutputFrames;
+    DWORD               dwNumForwardRefSamples;
+    DWORD               dwNumBackwardRefSamples;
+    VMRDeinterlaceTech  DeinterlaceTechnology;
+} VMRDeinterlaceCaps;
+
+[
+    object,
+    local,
+    uuid(bb057577-0db8-4e6a-87a7-1a8c9a505a0f),
+    helpstring("IVMRDeinterlaceControl Interface"),
+    pointer_default(unique)
+]
+interface IVMRDeinterlaceControl : IUnknown
+{
+    //
+    // For the specified video description returns the
+    // number of deinterlacing modes available to the VMR.
+    // The deinterlacing modes are returned in descending
+    // quality order ie. the best quality mode is at
+    // lpdwNumDeinterlaceModes[0], the next best at
+    // lpdwNumDeinterlaceModes[1] and so on.
+    //
+    // To determine how big an array of guids to pass to the
+    // GetNumberOfDeinterlaceModes method call
+    // GetNumberOfDeinterlaceModes(lpVideoDescription, &dwNumModes, NULL);
+    //
+    HRESULT GetNumberOfDeinterlaceModes(
+        [in] VMRVideoDesc* lpVideoDescription,
+        [in] [out] LPDWORD lpdwNumDeinterlaceModes,
+        [out] LPGUID lpDeinterlaceModes
+        );
+
+    //
+    // For the given video description get the capabilities of the
+    // specified de-interlace mode.
+    //
+    HRESULT GetDeinterlaceModeCaps(
+        [in] LPGUID lpDeinterlaceMode,
+        [in] VMRVideoDesc* lpVideoDescription,
+        [in] [out] VMRDeinterlaceCaps* lpDeinterlaceCaps
+        );
+
+    //
+    // Get/Set the deinterlace mode that you would like the
+    // VMR to use when de-interlacing the specified stream.
+    // It should be noted that the VMR may not actually be able
+    // to use the requested deinterlace mode, in which case the
+    // the VMR will fall back to other de-interlace modes as specified
+    // by the de-interlace preferences (see SetDeinterlacePrefs below).
+    //
+    HRESULT GetDeinterlaceMode(
+        [in] DWORD dwStreamID,
+        [out] LPGUID lpDeinterlaceMode  // returns GUID_NULL if SetDeinterlaceMode
+        );                              // has not been called yet.
+
+    HRESULT SetDeinterlaceMode(
+        [in] DWORD dwStreamID,          // use 0xFFFFFFFF to set mode for all streams
+        [in] LPGUID lpDeinterlaceMode   // GUID_NULL == turn deinterlacing off
+        );
+
+
+    HRESULT GetDeinterlacePrefs(
+        [out] LPDWORD lpdwDeinterlacePrefs
+        );
+
+    HRESULT SetDeinterlacePrefs(
+        [in] DWORD dwDeinterlacePrefs
+        );
+
+    //
+    // Get the DeinterlaceMode currently in use for the specified
+    // video stream (ie. pin).  The returned GUID will be NULL if
+    // the de-interlacing h/w has not been created by the VMR at the
+    // time the function is called, or if the VMR determines that
+    // this stream should not or can be de-interlaced.
+    //
+    HRESULT GetActualDeinterlaceMode(
+        [in] DWORD dwStreamID,
+        [out] LPGUID lpDeinterlaceMode
+        );
+}
+
 
 //=====================================================================
 //
@@ -611,7 +810,7 @@ typedef struct _VMRALPHABITMAP
     LPDIRECTDRAWSURFACE7    pDDS;       // DirectDraw surface to copy
     RECT                    rSrc;       // rectangle to copy from the DC/DDS
     NORMALIZEDRECT          rDest;      // output rectangle in composition space
-    FLOAT                   fAlpha;     // opacity of the bitmap
+    FLOAT	            fAlpha;     // opacity of the bitmap
     COLORREF                clrSrcKey;  // src color key
 } VMRALPHABITMAP, *PVMRALPHABITMAP;
 
@@ -863,7 +1062,7 @@ interface IVPManager : IUnknown
     // to an upstream decoder filter.
     //
     HRESULT SetVideoPortIndex(
-        [in] DWORD dwVideoPortIndex    // the video port number that this is connected to
+        [in] DWORD dwVideoPortIndex // the video port number that this is connected to
         );
 
     // This method returns the current video port index being used by the VPM.

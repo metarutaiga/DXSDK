@@ -1,6 +1,6 @@
 /*++
 
-Copyright (C) Microsoft Corporation, 1996 - 2001
+Copyright (c) Microsoft Corporation. All rights reserved.
 
 Module Name:
 
@@ -606,6 +606,19 @@ DECLARE_INTERFACE_(IKsQualityForwarder, IKsObject)
     STDMETHOD_(VOID, KsFlushClient)(
         THIS_
         IKsPin* Pin
+    ) PURE;
+};
+
+interface DECLSPEC_UUID("412bd695-f84b-46c1-ac73-54196dbc8fa7") IKsNotifyEvent;
+#undef INTERFACE
+#define INTERFACE IKsNotifyEvent
+DECLARE_INTERFACE_(IKsNotifyEvent, IUnknown)
+{
+    STDMETHOD(KsNotifyEvent)(
+        THIS_
+        ULONG Event,
+        ULONG_PTR lParam1,
+        ULONG_PTR lParam2
     ) PURE;
 };
 

@@ -2,7 +2,7 @@
 *                                                                       *
 *   dmusicc.h -- This module defines the DirectMusic core API's         *
 *                                                                       *
-*   Copyright (c) 1998-1999 Microsoft Corporation
+*   Copyright (c) Microsoft Corporation.  All rights reserved.          *
 *                                                                       *
 ************************************************************************/
 

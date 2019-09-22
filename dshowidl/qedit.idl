@@ -1,9 +1,7 @@
 //------------------------------------------------------------------------------
 // File: QEdit.idl
 //
-// Desc: 
-//
-// Copyright (c) 1992-2001, Microsoft Corporation.  All rights reserved.
+// Copyright (c) 1992 - 2002, Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
 
@@ -59,9 +57,9 @@ enum
 // used to set volumes on the mixer and mixer pins
 typedef struct
 {
-    REFERENCE_TIME      rtEnd;        //end Time
-    double              dLevel;       //end Volume Level
-    BOOL                bMethod;      //jump or interpolate
+    REFERENCE_TIME        rtEnd;        //end Time
+    double                dLevel;    //end Volume Level
+    BOOL                bMethod;    //jump or interpolate
 } DEXTER_AUDIO_VOLUMEENVELOPE ;
 
 // used in IAMTimeline::Get(Set)InsertMode
@@ -87,8 +85,7 @@ typedef enum
 
 // used in various IAMTimelineXXX "search" functions. Look in this
 // file for "SearchDirection" to see where it's used. I didn't want
-// to use an enum as an interface param type, so I used a long. Probably
-// silly of me.
+// to use an enum as an interface param type, so I used a long. 
 typedef enum
 {
     DEXTERF_BOUNDING = -1,        // finds any source whose start <= Time and stop > Time
@@ -209,6 +206,8 @@ interface IPropertySetter : IUnknown // IPersist?
     HRESULT SetProps([in] IUnknown *pTarget,
             [in] REFERENCE_TIME rtNow);
 
+    // unicode version
+    HRESULT PrintXMLW([out] WCHAR *pszXML, [in] int cchXML, [out] int *pcchPrinted,[in] int indent);
 };
 
 // supported by our DxtCompositor class, this allows us to draw whatever comes in
@@ -494,6 +493,18 @@ interface IRenderEngine : IUnknown
     HRESULT Decommit( );
     HRESULT GetCaps( long Index, long * pReturn );
 };
+
+[
+    object,
+    uuid(6BEE3A82-66C9-11d2-918F-00C0DF10D434),
+    odl,
+    helpstring("IRenderEngine2 Interface"),
+    pointer_default(unique)
+]
+interface IRenderEngine2 : IUnknown
+{
+    HRESULT SetResizerGUID( GUID ResizerGuid );
+}
 
 // used for the smart render engine when it needs to find a compressor
 [
@@ -912,14 +923,12 @@ interface IAMTimelineSrc : IUnknown
     // GetNextSrc - pass a time in at which you wish to find a source
     //      and it will return the first source which occurs after the 
     //      given time.
-    // MoveAllSources - bump a bunch of sources a certain direction
+    // MoveEverythingBy - bump a bunch of objects a certain direction
     //      on the track by a given time.
     // GetSourcesCount - how many sources are on this track?
     // AreYouBlank - do you contain anything at all?
     // GetSrcAtTime - find a source at a given time. SearchDirection
     //      is which way to search. -1 = backwards, 1 = forwards
-    // MakeSpace - !!! what does this do, anyhow?
-    // RemoveSlice - !!! what does this do, anyhow?
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 [
@@ -1362,8 +1371,30 @@ interface ISampleGrabber: IUnknown
 ]
 library DexterLib
 {
-    importlib("stdole32.tlb");
     importlib("stdole2.tlb");
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // resize the input video to an output size, for uniformity within DES. 
+    // DES will set the output media type and probably also put_Size. By setting
+    // the output media type, DES is stating the resizer must produce only that
+    // media type on the output pin, unless it is succeeded by a put_Size call.
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    [
+        object,
+        uuid(4ada63a0-72d5-11d2-952a-0060081840bc),
+        odl,
+        helpstring("IResize Interface"),
+        pointer_default(unique)
+    ]
+    interface IResize : IUnknown
+    {
+        HRESULT get_Size([out] int *piHeight, [out] int *piWidth, [out] long *pFlag);
+        HRESULT get_InputSize([out] int *piHeight, [out] int *piWidth);
+        HRESULT put_Size([in] int Height, [in] int Width, [in] long Flag);
+        HRESULT get_MediaType([out] AM_MEDIA_TYPE *pmt);
+        HRESULT put_MediaType([in] const AM_MEDIA_TYPE *pmt);
+    };
 
     [
         uuid(78530B75-61F9-11D2-8CAD-00A024580902),
@@ -1459,6 +1490,7 @@ library DexterLib
     coclass RenderEngine
     {
         [default] interface IRenderEngine;
+        interface IRenderEngine2;
         interface IAMSetErrorLog;
     };
 
@@ -1596,40 +1628,40 @@ enum
 
 // Filename doesn't exist, or DShow doesn't recognize the filetype
 // EXTRA - filename
-cpp_quote("#define DEX_IDS_BAD_SOURCE_NAME     1400")
+cpp_quote("#define DEX_IDS_BAD_SOURCE_NAME    1400")
 
 // Filename doesn't exist or contains unknown data
 // EXTRA - filename (maybe no codec?)
 cpp_quote("#define DEX_IDS_BAD_SOURCE_NAME2    1401")
 
 // filename was required, but wasn't given
-cpp_quote("#define DEX_IDS_MISSING_SOURCE_NAME 1402")
+cpp_quote("#define DEX_IDS_MISSING_SOURCE_NAME    1402")
 
 // cannot parse data provided by this source
 // !!! what source?
-cpp_quote("#define DEX_IDS_UNKNOWN_SOURCE      1403")
+cpp_quote("#define DEX_IDS_UNKNOWN_SOURCE    1403")
 
 // unexpected error - some DShow component not installed correctly
-cpp_quote("#define DEX_IDS_INSTALL_PROBLEM     1404")
+cpp_quote("#define DEX_IDS_INSTALL_PROBLEM    1404")
 
 // Source filter does not accept filenames
 // !!! What source?
-cpp_quote("#define DEX_IDS_NO_SOURCE_NAMES     1405")
+cpp_quote("#define DEX_IDS_NO_SOURCE_NAMES    1405")
 
 // The group's mediatype is not supported
 // EXTRA - gives you an integer group number
-cpp_quote("#define DEX_IDS_BAD_MEDIATYPE       1406")
+cpp_quote("#define DEX_IDS_BAD_MEDIATYPE    1406")
 
 // Invalid stream number for a source
 // EXTRA - gives the stream number !!! should identify which source!
-cpp_quote("#define DEX_IDS_STREAM_NUMBER       1407")
+cpp_quote("#define DEX_IDS_STREAM_NUMBER    1407")
 
 // You ran out of memory
-cpp_quote("#define DEX_IDS_OUTOFMEMORY         1408")
+cpp_quote("#define DEX_IDS_OUTOFMEMORY        1408")
 
 // One bitmap in a sequence was not the same type as the others
 // EXTRA - gives the bitmap name
-cpp_quote("#define DEX_IDS_DIBSEQ_NOTALLSAME   1409")
+cpp_quote("#define DEX_IDS_DIBSEQ_NOTALLSAME    1409")
 
 // Clip's mediatimes are invalid, or DibSeq too short, or a previous error caused this
 // !!! Needs to give the clip name
@@ -1637,19 +1669,19 @@ cpp_quote("#define DEX_IDS_CLIPTOOSHORT        1410")
 
 // Clsid of FX/Transition is not a DirectX Transform
 // EXTRA - gives the CLSID
-cpp_quote("#define DEX_IDS_INVALID_DXT         1411")
+cpp_quote("#define DEX_IDS_INVALID_DXT        1411")
 
 // Default FX/Transition Clsid is not a DirectX Transform"
 // EXTRA - gives the CLSID
-cpp_quote("#define DEX_IDS_INVALID_DEFAULT_DXT 1412")
+cpp_quote("#define DEX_IDS_INVALID_DEFAULT_DXT    1412")
 
 // Your version of DX doesn't support 3D transforms"
 // EXTRA - gives the CLSID of the 3D transform you tried to use
-cpp_quote("#define DEX_IDS_NO_3D               1413")
+cpp_quote("#define DEX_IDS_NO_3D        1413")
 
 // This DirectX Transform is not the right kind, or is broken
 // EXTRA - gives the CLSID of the broken transform
-cpp_quote("#define DEX_IDS_BROKEN_DXT          1414")
+cpp_quote("#define DEX_IDS_BROKEN_DXT        1414")
 
 // No such property exists on an object
 // EXTRA - gives the name of the property (if given as a string)
@@ -1657,11 +1689,11 @@ cpp_quote("#define DEX_IDS_NO_SUCH_PROPERTY    1415")
 
 // Illegal value for a property
 // EXTRA - gives the VARIANT value that was illegal
-cpp_quote("#define DEX_IDS_ILLEGAL_PROPERTY_VAL  1416")
+cpp_quote("#define DEX_IDS_ILLEGAL_PROPERTY_VAL    1416")
 
 // Syntax error in XML file at line:
 // EXTRA - gives I4 line number, if available
-cpp_quote("#define DEX_IDS_INVALID_XML         1417")
+cpp_quote("#define DEX_IDS_INVALID_XML        1417")
 
 // Can't find filter specified in XML by Category and Instance
 // EXTRA - gives friendly name (instance)
@@ -1682,14 +1714,14 @@ cpp_quote("#define DEX_IDS_CANT_FIND_COMPRESSOR 1421")
 // !!! Here go problems hooking up sources or finding codecs
 
 
-// THE FOLLOWING SHOULD NEVER HAPPEN - please email directx@microsoft.com if they do
+// THE FOLLOWING SHOULD NEVER HAPPEN - please call me if they do
 
 // Unexpected error in parsing the timeline
-cpp_quote("#define DEX_IDS_TIMELINE_PARSE     1426")
+cpp_quote("#define DEX_IDS_TIMELINE_PARSE    1426")
 // Unexpected error building the filtergraph
 cpp_quote("#define DEX_IDS_GRAPH_ERROR        1427")
 // Unexpected error with the internal grid
-cpp_quote("#define DEX_IDS_GRID_ERROR         1428")
+cpp_quote("#define DEX_IDS_GRID_ERROR        1428")
 // Unexpected error getting an interface
 cpp_quote("#define DEX_IDS_INTERFACE_ERROR    1429")
 

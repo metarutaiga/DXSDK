@@ -3,7 +3,7 @@
 *   dmplugin.h -- This module contains the API for plugins for the      *
 *                 DirectMusic performance layer                         *
 *                                                                       *
-*   Copyright (c) 1998-1999 Microsoft Corporation                       *
+*   Copyright (c) Microsoft Corporation.  All rights reserved.          *
 *                                                                       *
 ************************************************************************/
 
@@ -230,12 +230,12 @@ DECLARE_INTERFACE_(IDirectMusicTrack8, IDirectMusicTrack)
                                              void* pParam,              /* Pointer to the parameter data. */
                                              void * pStateData,         /* State data for track instance. */
                                              DWORD dwFlags) PURE;       /* Control flags. */
-    STDMETHOD(Compose)                (THIS_ IUnknown* pContext,        /* Context for composition (song or segment) */
+    STDMETHOD(Compose)                (THIS_ IUnknown* pContext,        /* Context for composition */
                                              DWORD dwTrackGroup,
                                              IDirectMusicTrack** ppResultTrack) PURE;
     STDMETHOD(Join)                   (THIS_ IDirectMusicTrack* pNewTrack,
                                              MUSIC_TIME mtJoin,
-                                             IUnknown* pContext,        /* Context for joining (song or segment) */
+                                             IUnknown* pContext,        /* Context for joining */
                                              DWORD dwTrackGroup,
                                              IDirectMusicTrack** ppResultTrack) PURE;
 };
@@ -260,7 +260,6 @@ DEFINE_GUID(CLSID_DirectMusicMarkerTrack,0x55a8fd00, 0x4288, 0x11d3, 0x9b, 0xd1,
 DEFINE_GUID(CLSID_DirectMusicSegmentTriggerTrack, 0xbae4d665, 0x4ea1, 0x11d3, 0x8b, 0xda, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xb6); /* {BAE4D665-4EA1-11d3-8BDA-00600893B1B6} */
 DEFINE_GUID(CLSID_DirectMusicLyricsTrack, 0x995c1cf5, 0x54ff, 0x11d3, 0x8b, 0xda, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xb6); /* {995C1CF5-54FF-11d3-8BDA-00600893B1B6} */
 DEFINE_GUID(CLSID_DirectMusicParamControlTrack, 0x4be0537b, 0x5c19, 0x11d3, 0x8b, 0xdc, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xb6); /* {4BE0537B-5C19-11d3-8BDC-00600893B1B6} */
-DEFINE_GUID(CLSID_DirectMusicMelodyFormulationTrack, 0xb0684266, 0xb57f, 0x11d2, 0x97, 0xf9, 0x0, 0xc0, 0x4f, 0xa3, 0x6e, 0x58);
 DEFINE_GUID(CLSID_DirectMusicWaveTrack,0xeed36461, 0x9ea5, 0x11d3, 0x9b, 0xd1, 0x0, 0x80, 0xc7, 0x15, 0xa, 0x74);
 
 /* IID's */

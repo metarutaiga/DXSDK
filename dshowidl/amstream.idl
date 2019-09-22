@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 // File: AMStream.idl
 //
-// Desc: 
+// Desc:
 //
-// Copyright (c) 1998-2001, Microsoft Corporation.  All rights reserved.
+// Copyright (c) 1998 - 2002, Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
 
@@ -299,9 +299,7 @@ interface IAMMediaTypeSample : IStreamSample
 
 library DirectShowStreamLib
 {
-    importlib("stdole32.tlb");
-    importlib("stdole2.tlb");
-
+	importlib("stdole2.tlb");
     [
         uuid(49c47ce5-9ba4-11d0-8212-00c04fc32c45),
         helpstring("DirectShow Multi Media Stream")

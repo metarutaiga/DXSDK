@@ -4,7 +4,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0347 */
+ /* File created by MIDL compiler version 6.00.0357 */
 /* Compiler settings for segment.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -204,6 +204,18 @@ typedef interface IMSVidFeatureEvent IMSVidFeatureEvent;
 #endif 	/* __IMSVidFeatureEvent_FWD_DEFINED__ */
 
 
+#ifndef __IMSVidEncoder_FWD_DEFINED__
+#define __IMSVidEncoder_FWD_DEFINED__
+typedef interface IMSVidEncoder IMSVidEncoder;
+#endif 	/* __IMSVidEncoder_FWD_DEFINED__ */
+
+
+#ifndef __IMSVidXDS_FWD_DEFINED__
+#define __IMSVidXDS_FWD_DEFINED__
+typedef interface IMSVidXDS IMSVidXDS;
+#endif 	/* __IMSVidXDS_FWD_DEFINED__ */
+
+
 #ifndef __IMSVidDataServices_FWD_DEFINED__
 #define __IMSVidDataServices_FWD_DEFINED__
 typedef interface IMSVidDataServices IMSVidDataServices;
@@ -222,16 +234,10 @@ typedef interface IMSVidClosedCaptioning IMSVidClosedCaptioning;
 #endif 	/* __IMSVidClosedCaptioning_FWD_DEFINED__ */
 
 
-#ifndef __IMSVidTVEGSeg_FWD_DEFINED__
-#define __IMSVidTVEGSeg_FWD_DEFINED__
-typedef interface IMSVidTVEGSeg IMSVidTVEGSeg;
-#endif 	/* __IMSVidTVEGSeg_FWD_DEFINED__ */
-
-
-#ifndef __IMSVidCAGSeg_FWD_DEFINED__
-#define __IMSVidCAGSeg_FWD_DEFINED__
-typedef interface IMSVidCAGSeg IMSVidCAGSeg;
-#endif 	/* __IMSVidCAGSeg_FWD_DEFINED__ */
+#ifndef __IMSVidClosedCaptioning2_FWD_DEFINED__
+#define __IMSVidClosedCaptioning2_FWD_DEFINED__
+typedef interface IMSVidClosedCaptioning2 IMSVidClosedCaptioning2;
+#endif 	/* __IMSVidClosedCaptioning2_FWD_DEFINED__ */
 
 
 #ifndef __IMSVidVideoRenderer_FWD_DEFINED__
@@ -244,6 +250,36 @@ typedef interface IMSVidVideoRenderer IMSVidVideoRenderer;
 #define __IMSVidVideoRendererEvent_FWD_DEFINED__
 typedef interface IMSVidVideoRendererEvent IMSVidVideoRendererEvent;
 #endif 	/* __IMSVidVideoRendererEvent_FWD_DEFINED__ */
+
+
+#ifndef __IMSVidStreamBufferRecordingControl_FWD_DEFINED__
+#define __IMSVidStreamBufferRecordingControl_FWD_DEFINED__
+typedef interface IMSVidStreamBufferRecordingControl IMSVidStreamBufferRecordingControl;
+#endif 	/* __IMSVidStreamBufferRecordingControl_FWD_DEFINED__ */
+
+
+#ifndef __IMSVidStreamBufferSink_FWD_DEFINED__
+#define __IMSVidStreamBufferSink_FWD_DEFINED__
+typedef interface IMSVidStreamBufferSink IMSVidStreamBufferSink;
+#endif 	/* __IMSVidStreamBufferSink_FWD_DEFINED__ */
+
+
+#ifndef __IMSVidStreamBufferSinkEvent_FWD_DEFINED__
+#define __IMSVidStreamBufferSinkEvent_FWD_DEFINED__
+typedef interface IMSVidStreamBufferSinkEvent IMSVidStreamBufferSinkEvent;
+#endif 	/* __IMSVidStreamBufferSinkEvent_FWD_DEFINED__ */
+
+
+#ifndef __IMSVidStreamBufferSource_FWD_DEFINED__
+#define __IMSVidStreamBufferSource_FWD_DEFINED__
+typedef interface IMSVidStreamBufferSource IMSVidStreamBufferSource;
+#endif 	/* __IMSVidStreamBufferSource_FWD_DEFINED__ */
+
+
+#ifndef __IMSVidStreamBufferSourceEvent_FWD_DEFINED__
+#define __IMSVidStreamBufferSourceEvent_FWD_DEFINED__
+typedef interface IMSVidStreamBufferSourceEvent IMSVidStreamBufferSourceEvent;
+#endif 	/* __IMSVidStreamBufferSourceEvent_FWD_DEFINED__ */
 
 
 #ifndef __IMSVidVideoRenderer2_FWD_DEFINED__
@@ -304,8 +340,8 @@ typedef interface IMSVidFeatures IMSVidFeatures;
 #include "oaidl.h"
 #include "ocidl.h"
 #include "strmif.h"
-#include "mstve.h"
-#include "mstvca.h"
+#include "tuner.h"
+#include "tvratings.h"
 
 #ifdef __cplusplus
 extern "C"{
@@ -320,7 +356,7 @@ void __RPC_USER MIDL_user_free( void * );
 //+-------------------------------------------------------------------------
 //
 //  Microsoft Windows
-//  Copyright (C) Microsoft Corporation, 1999-2001.
+//  Copyright (C) Microsoft Corporation, 1999-2000.
 //
 //--------------------------------------------------------------------------
 #pragma once
@@ -495,6 +531,29 @@ enum __MIDL___MIDL_itf_segment_0000_0001
 	dispidAllocPresentID	= dispid_Allocator + 1,
 	dispidSetAllocator	= dispidAllocPresentID + 1,
 	dispid_SetAllocator	= dispidSetAllocator + 1,
+	dispidStreamBufferSinkName	= dispid_SetAllocator + 1,
+	dispidStreamBufferSourceName	= dispidStreamBufferSinkName + 1,
+	dispidStreamBufferContentRecording	= dispidStreamBufferSourceName + 1,
+	dispidStreamBufferReferenceRecording	= dispidStreamBufferContentRecording + 1,
+	dispidstarttime	= dispidStreamBufferReferenceRecording + 1,
+	dispidstoptime	= dispidstarttime + 1,
+	dispidrecordingstopped	= dispidstoptime + 1,
+	dispidrecordingstarted	= dispidrecordingstopped + 1,
+	dispidNameSetLock	= dispidrecordingstarted + 1,
+	dispidrecordingtype	= dispidNameSetLock + 1,
+	dispidstart	= dispidrecordingtype + 1,
+	dispidRecordingAttribute	= dispidstart + 1,
+	dispid_RecordingAttribute	= dispidRecordingAttribute + 1,
+	dispidSBEConfigure	= dispid_RecordingAttribute + 1,
+	dispid_CurrentRatings	= dispidSBEConfigure + 1,
+	dispid_MaxRatingsLevel	= dispid_CurrentRatings + 1,
+	dispid_audioencoderint	= dispid_MaxRatingsLevel + 1,
+	dispid_videoencoderint	= dispid_audioencoderint + 1,
+	dispidService	= dispid_videoencoderint + 1,
+	dispid_BlockUnrated	= dispidService + 1,
+	dispid_UnratedDelay	= dispid_BlockUnrated + 1,
+	dispid_SuppressEffects	= dispid_UnratedDelay + 1,
+	dispidsbesource	= dispid_SuppressEffects + 1,
 	LastReservedDeviceDispid	= 0x3fff
     } 	SegDispidList;
 
@@ -527,6 +586,18 @@ enum __MIDL___MIDL_itf_segment_0000_0002
 	eventidChangeKaraokePresMode	= eventidPlayPrevChapter + 1,
 	eventidChangeVideoPresMode	= eventidChangeKaraokePresMode + 1,
 	eventidOverlayUnavailable	= eventidChangeVideoPresMode + 1,
+	eventidSinkCertificateFailure	= eventidOverlayUnavailable + 1,
+	eventidSinkCertificateSuccess	= eventidSinkCertificateFailure + 1,
+	eventidSourceCertificateFailure	= eventidSinkCertificateSuccess + 1,
+	eventidSourceCertificateSuccess	= eventidSourceCertificateFailure + 1,
+	eventidRatingsBlocked	= eventidSourceCertificateSuccess + 1,
+	eventidRatingsUnlocked	= eventidRatingsBlocked + 1,
+	eventidRatingsChanged	= eventidRatingsUnlocked + 1,
+	eventidWriteFailure	= eventidRatingsChanged + 1,
+	eventidTimeHole	= eventidWriteFailure + 1,
+	eventidStaleDataRead	= eventidTimeHole + 1,
+	eventidContentBecomingStale	= eventidStaleDataRead + 1,
+	eventidStaleFileDeleted	= eventidContentBecomingStale + 1,
 	LastReservedDeviceEvent	= 0x3fff
     } 	SegEventidList;
 
@@ -535,6 +606,22 @@ enum __MIDL___MIDL_itf_segment_0000_0003
     {	FrameMode	= 0,
 	TenthsSecondsMode	= FrameMode + 1
     } 	PositionModeList;
+
+typedef /* [public][public] */ 
+enum __MIDL___MIDL_itf_segment_0000_0004
+    {	CONTENT	= 0,
+	REFERENCE	= CONTENT + 1
+    } 	RecordingType;
+
+typedef /* [public][public][public] */ 
+enum __MIDL___MIDL_itf_segment_0000_0005
+    {	None	= 0,
+	Caption1	= None + 1,
+	Caption2	= Caption1 + 1,
+	Text1	= Caption2 + 1,
+	Text2	= Text1 + 1,
+	XDS	= Text2 + 1
+    } 	MSVidCCService;
 
 
 
@@ -894,7 +981,7 @@ void __RPC_STUB IMSVidRect_put_Rect_Stub(
 #endif 	/* __IMSVidRect_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_segment_0524 */
+/* interface __MIDL_itf_segment_0463 */
 /* [local] */ 
 
 
@@ -902,8 +989,8 @@ void __RPC_STUB IMSVidRect_put_Rect_Stub(
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_segment_0524_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_segment_0524_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0463_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0463_v0_0_s_ifspec;
 
 #ifndef __IMSVidGraphSegmentContainer_INTERFACE_DEFINED__
 #define __IMSVidGraphSegmentContainer_INTERFACE_DEFINED__
@@ -1209,7 +1296,7 @@ void __RPC_STUB IMSVidGraphSegmentContainer_GetFocus_Stub(
 #endif 	/* __IMSVidGraphSegmentContainer_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_segment_0525 */
+/* interface __MIDL_itf_segment_0464 */
 /* [local] */ 
 
 typedef 
@@ -1221,8 +1308,8 @@ enum MSVidSegmentType
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_segment_0525_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_segment_0525_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0464_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0464_v0_0_s_ifspec;
 
 #ifndef __IMSVidGraphSegment_INTERFACE_DEFINED__
 #define __IMSVidGraphSegment_INTERFACE_DEFINED__
@@ -1596,11 +1683,11 @@ void __RPC_STUB IMSVidGraphSegment_Decompose_Stub(
 #endif 	/* __IMSVidGraphSegment_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_segment_0526 */
+/* interface __MIDL_itf_segment_0465 */
 /* [local] */ 
 
 
-enum __MIDL___MIDL_itf_segment_0526_0001
+enum __MIDL___MIDL_itf_segment_0465_0001
     {	MSVIDCTL_LEFT_BUTTON	= 0x1,
 	MSVIDCTL_RIGHT_BUTTON	= 0x2,
 	MSVIDCTL_MIDDLE_BUTTON	= 0x4,
@@ -1612,8 +1699,8 @@ enum __MIDL___MIDL_itf_segment_0526_0001
     } ;
 
 
-extern RPC_IF_HANDLE __MIDL_itf_segment_0526_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_segment_0526_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0465_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0465_v0_0_s_ifspec;
 
 #ifndef __IMSVidGraphSegmentUserInput_INTERFACE_DEFINED__
 #define __IMSVidGraphSegmentUserInput_INTERFACE_DEFINED__
@@ -4967,7 +5054,7 @@ EXTERN_C const IID IID_IMSVidAnalogTuner;
         
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE ChannelAvailable( 
             /* [in] */ long nChannel,
-            /* [out][in] */ long *SignalStrength,
+            /* [out] */ long *SignalStrength,
             /* [out][retval] */ VARIANT_BOOL *fSignalPresent) = 0;
         
     };
@@ -5115,7 +5202,7 @@ EXTERN_C const IID IID_IMSVidAnalogTuner;
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *ChannelAvailable )( 
             IMSVidAnalogTuner * This,
             /* [in] */ long nChannel,
-            /* [out][in] */ long *SignalStrength,
+            /* [out] */ long *SignalStrength,
             /* [out][retval] */ VARIANT_BOOL *fSignalPresent);
         
         END_INTERFACE
@@ -5336,7 +5423,7 @@ void __RPC_STUB IMSVidAnalogTuner_put_SAP_Stub(
 /* [id] */ HRESULT STDMETHODCALLTYPE IMSVidAnalogTuner_ChannelAvailable_Proxy( 
     IMSVidAnalogTuner * This,
     /* [in] */ long nChannel,
-    /* [out][in] */ long *SignalStrength,
+    /* [out] */ long *SignalStrength,
     /* [out][retval] */ VARIANT_BOOL *fSignalPresent);
 
 
@@ -5921,11 +6008,11 @@ EXTERN_C const IID IID_IMSVidFilePlaybackEvent;
 #endif 	/* __IMSVidFilePlaybackEvent_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_segment_0543 */
+/* interface __MIDL_itf_segment_0482 */
 /* [local] */ 
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_segment_0543_0001
+enum __MIDL___MIDL_itf_segment_0482_0001
     {	dvdMenu_Title	= 2,
 	dvdMenu_Root	= dvdMenu_Title + 1,
 	dvdMenu_Subpicture	= dvdMenu_Root + 1,
@@ -5935,7 +6022,7 @@ enum __MIDL___MIDL_itf_segment_0543_0001
     } 	DVDMenuIDConstants;
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_segment_0543_0002
+enum __MIDL___MIDL_itf_segment_0482_0002
     {	dvdState_Undefined	= -2,
 	dvdState_Unitialized	= dvdState_Undefined + 1,
 	dvdState_Stopped	= dvdState_Unitialized + 1,
@@ -5944,7 +6031,7 @@ enum __MIDL___MIDL_itf_segment_0543_0002
     } 	DVDFilterState;
 
 typedef /* [public][public] */ 
-enum __MIDL___MIDL_itf_segment_0543_0003
+enum __MIDL___MIDL_itf_segment_0482_0003
     {	dvdStruct_Volume	= 0x1,
 	dvdStruct_Title	= 0x2,
 	dvdStruct_ParentalID	= 0x3,
@@ -5980,7 +6067,7 @@ enum __MIDL___MIDL_itf_segment_0543_0003
     } 	DVDTextStringType;
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_segment_0543_0004
+enum __MIDL___MIDL_itf_segment_0482_0004
     {	dvdSPExt_NotSpecified	= 0,
 	dvdSPExt_Caption_Normal	= 1,
 	dvdSPExt_Caption_Big	= 2,
@@ -5996,8 +6083,8 @@ enum __MIDL___MIDL_itf_segment_0543_0004
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_segment_0543_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_segment_0543_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0482_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0482_v0_0_s_ifspec;
 
 #ifndef __IMSVidWebDVD_INTERFACE_DEFINED__
 #define __IMSVidWebDVD_INTERFACE_DEFINED__
@@ -8482,7 +8569,7 @@ EXTERN_C const IID IID_IMSVidWebDVDEvent;
             /* [in] */ VARIANT_BOOL bEnabled) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ShowMenu( 
-            /* [in] */ DVDMenuIDConstants __MIDL_0016,
+            /* [in] */ DVDMenuIDConstants __MIDL_0019,
             /* [in] */ VARIANT_BOOL bEnabled) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE Resume( 
@@ -8610,7 +8697,7 @@ EXTERN_C const IID IID_IMSVidWebDVDEvent;
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *ShowMenu )( 
             IMSVidWebDVDEvent * This,
-            /* [in] */ DVDMenuIDConstants __MIDL_0016,
+            /* [in] */ DVDMenuIDConstants __MIDL_0019,
             /* [in] */ VARIANT_BOOL bEnabled);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *Resume )( 
@@ -8739,8 +8826,8 @@ EXTERN_C const IID IID_IMSVidWebDVDEvent;
 #define IMSVidWebDVDEvent_PlayBackwards(This,bEnabled)	\
     (This)->lpVtbl -> PlayBackwards(This,bEnabled)
 
-#define IMSVidWebDVDEvent_ShowMenu(This,__MIDL_0016,bEnabled)	\
-    (This)->lpVtbl -> ShowMenu(This,__MIDL_0016,bEnabled)
+#define IMSVidWebDVDEvent_ShowMenu(This,__MIDL_0019,bEnabled)	\
+    (This)->lpVtbl -> ShowMenu(This,__MIDL_0019,bEnabled)
 
 #define IMSVidWebDVDEvent_Resume(This,bEnabled)	\
     (This)->lpVtbl -> Resume(This,bEnabled)
@@ -8846,7 +8933,7 @@ void __RPC_STUB IMSVidWebDVDEvent_PlayBackwards_Stub(
 
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidWebDVDEvent_ShowMenu_Proxy( 
     IMSVidWebDVDEvent * This,
-    /* [in] */ DVDMenuIDConstants __MIDL_0016,
+    /* [in] */ DVDMenuIDConstants __MIDL_0019,
     /* [in] */ VARIANT_BOOL bEnabled);
 
 
@@ -9119,7 +9206,7 @@ EXTERN_C const IID IID_IMSVidWebDVDAdm;
             /* [in] */ BSTR strUserName,
             /* [in] */ BSTR strPassword) = 0;
         
-        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ConfirmPassword( 
+        virtual /* [helpstring][restricted][hidden][id] */ HRESULT STDMETHODCALLTYPE ConfirmPassword( 
             /* [in] */ BSTR strUserName,
             /* [in] */ BSTR strPassword,
             /* [retval][out] */ VARIANT_BOOL *pVal) = 0;
@@ -9220,7 +9307,7 @@ EXTERN_C const IID IID_IMSVidWebDVDAdm;
             /* [in] */ BSTR strUserName,
             /* [in] */ BSTR strPassword);
         
-        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *ConfirmPassword )( 
+        /* [helpstring][restricted][hidden][id] */ HRESULT ( STDMETHODCALLTYPE *ConfirmPassword )( 
             IMSVidWebDVDAdm * This,
             /* [in] */ BSTR strUserName,
             /* [in] */ BSTR strPassword,
@@ -9393,7 +9480,7 @@ void __RPC_STUB IMSVidWebDVDAdm_SaveParentalCountry_Stub(
     DWORD *_pdwStubPhase);
 
 
-/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidWebDVDAdm_ConfirmPassword_Proxy( 
+/* [helpstring][restricted][hidden][id] */ HRESULT STDMETHODCALLTYPE IMSVidWebDVDAdm_ConfirmPassword_Proxy( 
     IMSVidWebDVDAdm * This,
     /* [in] */ BSTR strUserName,
     /* [in] */ BSTR strPassword,
@@ -10121,6 +10208,402 @@ EXTERN_C const IID IID_IMSVidFeatureEvent;
 #endif 	/* __IMSVidFeatureEvent_INTERFACE_DEFINED__ */
 
 
+#ifndef __IMSVidEncoder_INTERFACE_DEFINED__
+#define __IMSVidEncoder_INTERFACE_DEFINED__
+
+/* interface IMSVidEncoder */
+/* [unique][helpstring][uuid][oleautomation][dual][object] */ 
+
+
+EXTERN_C const IID IID_IMSVidEncoder;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("C0020FD4-BEE7-43d9-A495-9F213117103D")
+    IMSVidEncoder : public IMSVidFeature
+    {
+    public:
+        virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_VideoEncoderInterface( 
+            /* [retval][out] */ IUnknown **ppEncInt) = 0;
+        
+        virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_AudioEncoderInterface( 
+            /* [retval][out] */ IUnknown **ppEncInt) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IMSVidEncoderVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMSVidEncoder * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMSVidEncoder * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMSVidEncoder * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+            IMSVidEncoder * This,
+            /* [out] */ UINT *pctinfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+            IMSVidEncoder * This,
+            /* [in] */ UINT iTInfo,
+            /* [in] */ LCID lcid,
+            /* [out] */ ITypeInfo **ppTInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+            IMSVidEncoder * This,
+            /* [in] */ REFIID riid,
+            /* [size_is][in] */ LPOLESTR *rgszNames,
+            /* [in] */ UINT cNames,
+            /* [in] */ LCID lcid,
+            /* [size_is][out] */ DISPID *rgDispId);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            IMSVidEncoder * This,
+            /* [in] */ DISPID dispIdMember,
+            /* [in] */ REFIID riid,
+            /* [in] */ LCID lcid,
+            /* [in] */ WORD wFlags,
+            /* [out][in] */ DISPPARAMS *pDispParams,
+            /* [out] */ VARIANT *pVarResult,
+            /* [out] */ EXCEPINFO *pExcepInfo,
+            /* [out] */ UINT *puArgErr);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Name )( 
+            IMSVidEncoder * This,
+            /* [retval][out] */ BSTR *Name);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Status )( 
+            IMSVidEncoder * This,
+            /* [retval][out] */ long *Status);
+        
+        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Power )( 
+            IMSVidEncoder * This,
+            /* [in] */ VARIANT_BOOL Power);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Power )( 
+            IMSVidEncoder * This,
+            /* [out][retval] */ VARIANT_BOOL *Power);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Category )( 
+            IMSVidEncoder * This,
+            /* [retval][out] */ BSTR *Guid);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ClassID )( 
+            IMSVidEncoder * This,
+            /* [retval][out] */ BSTR *Clsid);
+        
+        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__Category )( 
+            IMSVidEncoder * This,
+            /* [retval][out] */ GUID *Guid);
+        
+        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__ClassID )( 
+            IMSVidEncoder * This,
+            /* [retval][out] */ GUID *Clsid);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *IsEqualDevice )( 
+            IMSVidEncoder * This,
+            /* [in] */ IMSVidDevice *Device,
+            /* [retval][out] */ VARIANT_BOOL *IsEqual);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_VideoEncoderInterface )( 
+            IMSVidEncoder * This,
+            /* [retval][out] */ IUnknown **ppEncInt);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_AudioEncoderInterface )( 
+            IMSVidEncoder * This,
+            /* [retval][out] */ IUnknown **ppEncInt);
+        
+        END_INTERFACE
+    } IMSVidEncoderVtbl;
+
+    interface IMSVidEncoder
+    {
+        CONST_VTBL struct IMSVidEncoderVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMSVidEncoder_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IMSVidEncoder_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IMSVidEncoder_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IMSVidEncoder_GetTypeInfoCount(This,pctinfo)	\
+    (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
+
+#define IMSVidEncoder_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+    (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
+
+#define IMSVidEncoder_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+    (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
+
+#define IMSVidEncoder_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+    (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
+
+
+#define IMSVidEncoder_get_Name(This,Name)	\
+    (This)->lpVtbl -> get_Name(This,Name)
+
+#define IMSVidEncoder_get_Status(This,Status)	\
+    (This)->lpVtbl -> get_Status(This,Status)
+
+#define IMSVidEncoder_put_Power(This,Power)	\
+    (This)->lpVtbl -> put_Power(This,Power)
+
+#define IMSVidEncoder_get_Power(This,Power)	\
+    (This)->lpVtbl -> get_Power(This,Power)
+
+#define IMSVidEncoder_get_Category(This,Guid)	\
+    (This)->lpVtbl -> get_Category(This,Guid)
+
+#define IMSVidEncoder_get_ClassID(This,Clsid)	\
+    (This)->lpVtbl -> get_ClassID(This,Clsid)
+
+#define IMSVidEncoder_get__Category(This,Guid)	\
+    (This)->lpVtbl -> get__Category(This,Guid)
+
+#define IMSVidEncoder_get__ClassID(This,Clsid)	\
+    (This)->lpVtbl -> get__ClassID(This,Clsid)
+
+#define IMSVidEncoder_IsEqualDevice(This,Device,IsEqual)	\
+    (This)->lpVtbl -> IsEqualDevice(This,Device,IsEqual)
+
+
+
+#define IMSVidEncoder_get_VideoEncoderInterface(This,ppEncInt)	\
+    (This)->lpVtbl -> get_VideoEncoderInterface(This,ppEncInt)
+
+#define IMSVidEncoder_get_AudioEncoderInterface(This,ppEncInt)	\
+    (This)->lpVtbl -> get_AudioEncoderInterface(This,ppEncInt)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidEncoder_get_VideoEncoderInterface_Proxy( 
+    IMSVidEncoder * This,
+    /* [retval][out] */ IUnknown **ppEncInt);
+
+
+void __RPC_STUB IMSVidEncoder_get_VideoEncoderInterface_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidEncoder_get_AudioEncoderInterface_Proxy( 
+    IMSVidEncoder * This,
+    /* [retval][out] */ IUnknown **ppEncInt);
+
+
+void __RPC_STUB IMSVidEncoder_get_AudioEncoderInterface_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IMSVidEncoder_INTERFACE_DEFINED__ */
+
+
+#ifndef __IMSVidXDS_INTERFACE_DEFINED__
+#define __IMSVidXDS_INTERFACE_DEFINED__
+
+/* interface IMSVidXDS */
+/* [unique][helpstring][uuid][oleautomation][dual][object] */ 
+
+
+EXTERN_C const IID IID_IMSVidXDS;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("11EBC158-E712-4d1f-8BB3-01ED5274C4CE")
+    IMSVidXDS : public IMSVidFeature
+    {
+    public:
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IMSVidXDSVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMSVidXDS * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMSVidXDS * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMSVidXDS * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+            IMSVidXDS * This,
+            /* [out] */ UINT *pctinfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+            IMSVidXDS * This,
+            /* [in] */ UINT iTInfo,
+            /* [in] */ LCID lcid,
+            /* [out] */ ITypeInfo **ppTInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+            IMSVidXDS * This,
+            /* [in] */ REFIID riid,
+            /* [size_is][in] */ LPOLESTR *rgszNames,
+            /* [in] */ UINT cNames,
+            /* [in] */ LCID lcid,
+            /* [size_is][out] */ DISPID *rgDispId);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            IMSVidXDS * This,
+            /* [in] */ DISPID dispIdMember,
+            /* [in] */ REFIID riid,
+            /* [in] */ LCID lcid,
+            /* [in] */ WORD wFlags,
+            /* [out][in] */ DISPPARAMS *pDispParams,
+            /* [out] */ VARIANT *pVarResult,
+            /* [out] */ EXCEPINFO *pExcepInfo,
+            /* [out] */ UINT *puArgErr);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Name )( 
+            IMSVidXDS * This,
+            /* [retval][out] */ BSTR *Name);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Status )( 
+            IMSVidXDS * This,
+            /* [retval][out] */ long *Status);
+        
+        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Power )( 
+            IMSVidXDS * This,
+            /* [in] */ VARIANT_BOOL Power);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Power )( 
+            IMSVidXDS * This,
+            /* [out][retval] */ VARIANT_BOOL *Power);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Category )( 
+            IMSVidXDS * This,
+            /* [retval][out] */ BSTR *Guid);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ClassID )( 
+            IMSVidXDS * This,
+            /* [retval][out] */ BSTR *Clsid);
+        
+        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__Category )( 
+            IMSVidXDS * This,
+            /* [retval][out] */ GUID *Guid);
+        
+        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__ClassID )( 
+            IMSVidXDS * This,
+            /* [retval][out] */ GUID *Clsid);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *IsEqualDevice )( 
+            IMSVidXDS * This,
+            /* [in] */ IMSVidDevice *Device,
+            /* [retval][out] */ VARIANT_BOOL *IsEqual);
+        
+        END_INTERFACE
+    } IMSVidXDSVtbl;
+
+    interface IMSVidXDS
+    {
+        CONST_VTBL struct IMSVidXDSVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMSVidXDS_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IMSVidXDS_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IMSVidXDS_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IMSVidXDS_GetTypeInfoCount(This,pctinfo)	\
+    (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
+
+#define IMSVidXDS_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+    (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
+
+#define IMSVidXDS_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+    (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
+
+#define IMSVidXDS_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+    (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
+
+
+#define IMSVidXDS_get_Name(This,Name)	\
+    (This)->lpVtbl -> get_Name(This,Name)
+
+#define IMSVidXDS_get_Status(This,Status)	\
+    (This)->lpVtbl -> get_Status(This,Status)
+
+#define IMSVidXDS_put_Power(This,Power)	\
+    (This)->lpVtbl -> put_Power(This,Power)
+
+#define IMSVidXDS_get_Power(This,Power)	\
+    (This)->lpVtbl -> get_Power(This,Power)
+
+#define IMSVidXDS_get_Category(This,Guid)	\
+    (This)->lpVtbl -> get_Category(This,Guid)
+
+#define IMSVidXDS_get_ClassID(This,Clsid)	\
+    (This)->lpVtbl -> get_ClassID(This,Clsid)
+
+#define IMSVidXDS_get__Category(This,Guid)	\
+    (This)->lpVtbl -> get__Category(This,Guid)
+
+#define IMSVidXDS_get__ClassID(This,Clsid)	\
+    (This)->lpVtbl -> get__ClassID(This,Clsid)
+
+#define IMSVidXDS_IsEqualDevice(This,Device,IsEqual)	\
+    (This)->lpVtbl -> IsEqualDevice(This,Device,IsEqual)
+
+
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IMSVidXDS_INTERFACE_DEFINED__ */
+
+
 #ifndef __IMSVidDataServices_INTERFACE_DEFINED__
 #define __IMSVidDataServices_INTERFACE_DEFINED__
 
@@ -10637,58 +11120,58 @@ void __RPC_STUB IMSVidClosedCaptioning_put_Enable_Stub(
 #endif 	/* __IMSVidClosedCaptioning_INTERFACE_DEFINED__ */
 
 
-#ifndef __IMSVidTVEGSeg_INTERFACE_DEFINED__
-#define __IMSVidTVEGSeg_INTERFACE_DEFINED__
+#ifndef __IMSVidClosedCaptioning2_INTERFACE_DEFINED__
+#define __IMSVidClosedCaptioning2_INTERFACE_DEFINED__
 
-/* interface IMSVidTVEGSeg */
+/* interface IMSVidClosedCaptioning2 */
 /* [unique][helpstring][uuid][hidden][oleautomation][dual][object] */ 
 
 
-EXTERN_C const IID IID_IMSVidTVEGSeg;
+EXTERN_C const IID IID_IMSVidClosedCaptioning2;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
     
-    MIDL_INTERFACE("1600D001-6666-4f66-B1E2-BF3C9FBB9BA6")
-    IMSVidTVEGSeg : public IMSVidFeature
+    MIDL_INTERFACE("E00CB864-A029-4310-9987-A873F5887D97")
+    IMSVidClosedCaptioning2 : public IMSVidClosedCaptioning
     {
     public:
-        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_TVEFilter( 
-            /* [retval][out] */ ITVEFilter **ppFilter) = 0;
+        virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_Service( 
+            /* [retval][out] */ MSVidCCService *On) = 0;
         
-        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_TVESupervisor( 
-            /* [retval][out] */ ITVESupervisor **ppSuper) = 0;
+        virtual /* [id][propput] */ HRESULT STDMETHODCALLTYPE put_Service( 
+            /* [in] */ MSVidCCService On) = 0;
         
     };
     
 #else 	/* C style interface */
 
-    typedef struct IMSVidTVEGSegVtbl
+    typedef struct IMSVidClosedCaptioning2Vtbl
     {
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [in] */ REFIID riid,
             /* [iid_is][out] */ void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            IMSVidTVEGSeg * This);
+            IMSVidClosedCaptioning2 * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            IMSVidTVEGSeg * This);
+            IMSVidClosedCaptioning2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [out] */ UINT *pctinfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [in] */ REFIID riid,
             /* [size_is][in] */ LPOLESTR *rgszNames,
             /* [in] */ UINT cNames,
@@ -10696,7 +11179,7 @@ EXTERN_C const IID IID_IMSVidTVEGSeg;
             /* [size_is][out] */ DISPID *rgDispId);
         
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [in] */ DISPID dispIdMember,
             /* [in] */ REFIID riid,
             /* [in] */ LCID lcid,
@@ -10707,56 +11190,64 @@ EXTERN_C const IID IID_IMSVidTVEGSeg;
             /* [out] */ UINT *puArgErr);
         
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Name )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [retval][out] */ BSTR *Name);
         
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Status )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [retval][out] */ long *Status);
         
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Power )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [in] */ VARIANT_BOOL Power);
         
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Power )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [out][retval] */ VARIANT_BOOL *Power);
         
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Category )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [retval][out] */ BSTR *Guid);
         
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ClassID )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [retval][out] */ BSTR *Clsid);
         
         /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__Category )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [retval][out] */ GUID *Guid);
         
         /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__ClassID )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [retval][out] */ GUID *Clsid);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *IsEqualDevice )( 
-            IMSVidTVEGSeg * This,
+            IMSVidClosedCaptioning2 * This,
             /* [in] */ IMSVidDevice *Device,
             /* [retval][out] */ VARIANT_BOOL *IsEqual);
         
-        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_TVEFilter )( 
-            IMSVidTVEGSeg * This,
-            /* [retval][out] */ ITVEFilter **ppFilter);
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Enable )( 
+            IMSVidClosedCaptioning2 * This,
+            /* [retval][out] */ VARIANT_BOOL *On);
         
-        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_TVESupervisor )( 
-            IMSVidTVEGSeg * This,
-            /* [retval][out] */ ITVESupervisor **ppSuper);
+        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Enable )( 
+            IMSVidClosedCaptioning2 * This,
+            /* [in] */ VARIANT_BOOL On);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Service )( 
+            IMSVidClosedCaptioning2 * This,
+            /* [retval][out] */ MSVidCCService *On);
+        
+        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Service )( 
+            IMSVidClosedCaptioning2 * This,
+            /* [in] */ MSVidCCService On);
         
         END_INTERFACE
-    } IMSVidTVEGSegVtbl;
+    } IMSVidClosedCaptioning2Vtbl;
 
-    interface IMSVidTVEGSeg
+    interface IMSVidClosedCaptioning2
     {
-        CONST_VTBL struct IMSVidTVEGSegVtbl *lpVtbl;
+        CONST_VTBL struct IMSVidClosedCaptioning2Vtbl *lpVtbl;
     };
 
     
@@ -10764,63 +11255,70 @@ EXTERN_C const IID IID_IMSVidTVEGSeg;
 #ifdef COBJMACROS
 
 
-#define IMSVidTVEGSeg_QueryInterface(This,riid,ppvObject)	\
+#define IMSVidClosedCaptioning2_QueryInterface(This,riid,ppvObject)	\
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IMSVidTVEGSeg_AddRef(This)	\
+#define IMSVidClosedCaptioning2_AddRef(This)	\
     (This)->lpVtbl -> AddRef(This)
 
-#define IMSVidTVEGSeg_Release(This)	\
+#define IMSVidClosedCaptioning2_Release(This)	\
     (This)->lpVtbl -> Release(This)
 
 
-#define IMSVidTVEGSeg_GetTypeInfoCount(This,pctinfo)	\
+#define IMSVidClosedCaptioning2_GetTypeInfoCount(This,pctinfo)	\
     (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
 
-#define IMSVidTVEGSeg_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+#define IMSVidClosedCaptioning2_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
     (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
 
-#define IMSVidTVEGSeg_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+#define IMSVidClosedCaptioning2_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
     (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
 
-#define IMSVidTVEGSeg_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+#define IMSVidClosedCaptioning2_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
     (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
 
 
-#define IMSVidTVEGSeg_get_Name(This,Name)	\
+#define IMSVidClosedCaptioning2_get_Name(This,Name)	\
     (This)->lpVtbl -> get_Name(This,Name)
 
-#define IMSVidTVEGSeg_get_Status(This,Status)	\
+#define IMSVidClosedCaptioning2_get_Status(This,Status)	\
     (This)->lpVtbl -> get_Status(This,Status)
 
-#define IMSVidTVEGSeg_put_Power(This,Power)	\
+#define IMSVidClosedCaptioning2_put_Power(This,Power)	\
     (This)->lpVtbl -> put_Power(This,Power)
 
-#define IMSVidTVEGSeg_get_Power(This,Power)	\
+#define IMSVidClosedCaptioning2_get_Power(This,Power)	\
     (This)->lpVtbl -> get_Power(This,Power)
 
-#define IMSVidTVEGSeg_get_Category(This,Guid)	\
+#define IMSVidClosedCaptioning2_get_Category(This,Guid)	\
     (This)->lpVtbl -> get_Category(This,Guid)
 
-#define IMSVidTVEGSeg_get_ClassID(This,Clsid)	\
+#define IMSVidClosedCaptioning2_get_ClassID(This,Clsid)	\
     (This)->lpVtbl -> get_ClassID(This,Clsid)
 
-#define IMSVidTVEGSeg_get__Category(This,Guid)	\
+#define IMSVidClosedCaptioning2_get__Category(This,Guid)	\
     (This)->lpVtbl -> get__Category(This,Guid)
 
-#define IMSVidTVEGSeg_get__ClassID(This,Clsid)	\
+#define IMSVidClosedCaptioning2_get__ClassID(This,Clsid)	\
     (This)->lpVtbl -> get__ClassID(This,Clsid)
 
-#define IMSVidTVEGSeg_IsEqualDevice(This,Device,IsEqual)	\
+#define IMSVidClosedCaptioning2_IsEqualDevice(This,Device,IsEqual)	\
     (This)->lpVtbl -> IsEqualDevice(This,Device,IsEqual)
 
 
 
-#define IMSVidTVEGSeg_get_TVEFilter(This,ppFilter)	\
-    (This)->lpVtbl -> get_TVEFilter(This,ppFilter)
+#define IMSVidClosedCaptioning2_get_Enable(This,On)	\
+    (This)->lpVtbl -> get_Enable(This,On)
 
-#define IMSVidTVEGSeg_get_TVESupervisor(This,ppSuper)	\
-    (This)->lpVtbl -> get_TVESupervisor(This,ppSuper)
+#define IMSVidClosedCaptioning2_put_Enable(This,On)	\
+    (This)->lpVtbl -> put_Enable(This,On)
+
+
+#define IMSVidClosedCaptioning2_get_Service(This,On)	\
+    (This)->lpVtbl -> get_Service(This,On)
+
+#define IMSVidClosedCaptioning2_put_Service(This,On)	\
+    (This)->lpVtbl -> put_Service(This,On)
 
 #endif /* COBJMACROS */
 
@@ -10829,241 +11327,24 @@ EXTERN_C const IID IID_IMSVidTVEGSeg;
 
 
 
-/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidTVEGSeg_get_TVEFilter_Proxy( 
-    IMSVidTVEGSeg * This,
-    /* [retval][out] */ ITVEFilter **ppFilter);
+/* [id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidClosedCaptioning2_get_Service_Proxy( 
+    IMSVidClosedCaptioning2 * This,
+    /* [retval][out] */ MSVidCCService *On);
 
 
-void __RPC_STUB IMSVidTVEGSeg_get_TVEFilter_Stub(
+void __RPC_STUB IMSVidClosedCaptioning2_get_Service_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
     DWORD *_pdwStubPhase);
 
 
-/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidTVEGSeg_get_TVESupervisor_Proxy( 
-    IMSVidTVEGSeg * This,
-    /* [retval][out] */ ITVESupervisor **ppSuper);
+/* [id][propput] */ HRESULT STDMETHODCALLTYPE IMSVidClosedCaptioning2_put_Service_Proxy( 
+    IMSVidClosedCaptioning2 * This,
+    /* [in] */ MSVidCCService On);
 
 
-void __RPC_STUB IMSVidTVEGSeg_get_TVESupervisor_Stub(
-    IRpcStubBuffer *This,
-    IRpcChannelBuffer *_pRpcChannelBuffer,
-    PRPC_MESSAGE _pRpcMessage,
-    DWORD *_pdwStubPhase);
-
-
-
-#endif 	/* __IMSVidTVEGSeg_INTERFACE_DEFINED__ */
-
-
-#ifndef __IMSVidCAGSeg_INTERFACE_DEFINED__
-#define __IMSVidCAGSeg_INTERFACE_DEFINED__
-
-/* interface IMSVidCAGSeg */
-/* [unique][helpstring][uuid][oleautomation][dual][object] */ 
-
-
-EXTERN_C const IID IID_IMSVidCAGSeg;
-
-#if defined(__cplusplus) && !defined(CINTERFACE)
-    
-    MIDL_INTERFACE("1600D101-6666-4f66-B1E2-BF3C9FBB9BA6")
-    IMSVidCAGSeg : public IMSVidFeature
-    {
-    public:
-        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE MarkDirty( void) = 0;
-        
-        virtual /* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE put_TuneRequest( 
-            /* [in] */ ITuneRequest *ptunereq) = 0;
-        
-    };
-    
-#else 	/* C style interface */
-
-    typedef struct IMSVidCAGSegVtbl
-    {
-        BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            IMSVidCAGSeg * This,
-            /* [in] */ REFIID riid,
-            /* [iid_is][out] */ void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            IMSVidCAGSeg * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
-            IMSVidCAGSeg * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
-            IMSVidCAGSeg * This,
-            /* [out] */ UINT *pctinfo);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
-            IMSVidCAGSeg * This,
-            /* [in] */ UINT iTInfo,
-            /* [in] */ LCID lcid,
-            /* [out] */ ITypeInfo **ppTInfo);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
-            IMSVidCAGSeg * This,
-            /* [in] */ REFIID riid,
-            /* [size_is][in] */ LPOLESTR *rgszNames,
-            /* [in] */ UINT cNames,
-            /* [in] */ LCID lcid,
-            /* [size_is][out] */ DISPID *rgDispId);
-        
-        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
-            IMSVidCAGSeg * This,
-            /* [in] */ DISPID dispIdMember,
-            /* [in] */ REFIID riid,
-            /* [in] */ LCID lcid,
-            /* [in] */ WORD wFlags,
-            /* [out][in] */ DISPPARAMS *pDispParams,
-            /* [out] */ VARIANT *pVarResult,
-            /* [out] */ EXCEPINFO *pExcepInfo,
-            /* [out] */ UINT *puArgErr);
-        
-        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Name )( 
-            IMSVidCAGSeg * This,
-            /* [retval][out] */ BSTR *Name);
-        
-        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Status )( 
-            IMSVidCAGSeg * This,
-            /* [retval][out] */ long *Status);
-        
-        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Power )( 
-            IMSVidCAGSeg * This,
-            /* [in] */ VARIANT_BOOL Power);
-        
-        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Power )( 
-            IMSVidCAGSeg * This,
-            /* [out][retval] */ VARIANT_BOOL *Power);
-        
-        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Category )( 
-            IMSVidCAGSeg * This,
-            /* [retval][out] */ BSTR *Guid);
-        
-        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ClassID )( 
-            IMSVidCAGSeg * This,
-            /* [retval][out] */ BSTR *Clsid);
-        
-        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__Category )( 
-            IMSVidCAGSeg * This,
-            /* [retval][out] */ GUID *Guid);
-        
-        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__ClassID )( 
-            IMSVidCAGSeg * This,
-            /* [retval][out] */ GUID *Clsid);
-        
-        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *IsEqualDevice )( 
-            IMSVidCAGSeg * This,
-            /* [in] */ IMSVidDevice *Device,
-            /* [retval][out] */ VARIANT_BOOL *IsEqual);
-        
-        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *MarkDirty )( 
-            IMSVidCAGSeg * This);
-        
-        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_TuneRequest )( 
-            IMSVidCAGSeg * This,
-            /* [in] */ ITuneRequest *ptunereq);
-        
-        END_INTERFACE
-    } IMSVidCAGSegVtbl;
-
-    interface IMSVidCAGSeg
-    {
-        CONST_VTBL struct IMSVidCAGSegVtbl *lpVtbl;
-    };
-
-    
-
-#ifdef COBJMACROS
-
-
-#define IMSVidCAGSeg_QueryInterface(This,riid,ppvObject)	\
-    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
-
-#define IMSVidCAGSeg_AddRef(This)	\
-    (This)->lpVtbl -> AddRef(This)
-
-#define IMSVidCAGSeg_Release(This)	\
-    (This)->lpVtbl -> Release(This)
-
-
-#define IMSVidCAGSeg_GetTypeInfoCount(This,pctinfo)	\
-    (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
-
-#define IMSVidCAGSeg_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
-    (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
-
-#define IMSVidCAGSeg_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
-    (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
-
-#define IMSVidCAGSeg_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
-    (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
-
-
-#define IMSVidCAGSeg_get_Name(This,Name)	\
-    (This)->lpVtbl -> get_Name(This,Name)
-
-#define IMSVidCAGSeg_get_Status(This,Status)	\
-    (This)->lpVtbl -> get_Status(This,Status)
-
-#define IMSVidCAGSeg_put_Power(This,Power)	\
-    (This)->lpVtbl -> put_Power(This,Power)
-
-#define IMSVidCAGSeg_get_Power(This,Power)	\
-    (This)->lpVtbl -> get_Power(This,Power)
-
-#define IMSVidCAGSeg_get_Category(This,Guid)	\
-    (This)->lpVtbl -> get_Category(This,Guid)
-
-#define IMSVidCAGSeg_get_ClassID(This,Clsid)	\
-    (This)->lpVtbl -> get_ClassID(This,Clsid)
-
-#define IMSVidCAGSeg_get__Category(This,Guid)	\
-    (This)->lpVtbl -> get__Category(This,Guid)
-
-#define IMSVidCAGSeg_get__ClassID(This,Clsid)	\
-    (This)->lpVtbl -> get__ClassID(This,Clsid)
-
-#define IMSVidCAGSeg_IsEqualDevice(This,Device,IsEqual)	\
-    (This)->lpVtbl -> IsEqualDevice(This,Device,IsEqual)
-
-
-
-#define IMSVidCAGSeg_MarkDirty(This)	\
-    (This)->lpVtbl -> MarkDirty(This)
-
-#define IMSVidCAGSeg_put_TuneRequest(This,ptunereq)	\
-    (This)->lpVtbl -> put_TuneRequest(This,ptunereq)
-
-#endif /* COBJMACROS */
-
-
-#endif 	/* C style interface */
-
-
-
-/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidCAGSeg_MarkDirty_Proxy( 
-    IMSVidCAGSeg * This);
-
-
-void __RPC_STUB IMSVidCAGSeg_MarkDirty_Stub(
-    IRpcStubBuffer *This,
-    IRpcChannelBuffer *_pRpcChannelBuffer,
-    PRPC_MESSAGE _pRpcMessage,
-    DWORD *_pdwStubPhase);
-
-
-/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IMSVidCAGSeg_put_TuneRequest_Proxy( 
-    IMSVidCAGSeg * This,
-    /* [in] */ ITuneRequest *ptunereq);
-
-
-void __RPC_STUB IMSVidCAGSeg_put_TuneRequest_Stub(
+void __RPC_STUB IMSVidClosedCaptioning2_put_Service_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -11071,14 +11352,14 @@ void __RPC_STUB IMSVidCAGSeg_put_TuneRequest_Stub(
 
 
 
-#endif 	/* __IMSVidCAGSeg_INTERFACE_DEFINED__ */
+#endif 	/* __IMSVidClosedCaptioning2_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_segment_0555 */
+/* interface __MIDL_itf_segment_0495 */
 /* [local] */ 
 
 typedef /* [public][public][public] */ 
-enum __MIDL___MIDL_itf_segment_0555_0001
+enum __MIDL___MIDL_itf_segment_0495_0001
     {	sslFullSize	= 0,
 	sslClipByOverScan	= sslFullSize + 1,
 	sslClipByClipRect	= sslClipByOverScan + 1
@@ -11086,8 +11367,8 @@ enum __MIDL___MIDL_itf_segment_0555_0001
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_segment_0555_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_segment_0555_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0495_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_segment_0495_v0_0_s_ifspec;
 
 #ifndef __IMSVidVideoRenderer_INTERFACE_DEFINED__
 #define __IMSVidVideoRenderer_INTERFACE_DEFINED__
@@ -12071,6 +12352,1547 @@ void __RPC_STUB IMSVidVideoRendererEvent_OverlayUnavailable_Stub(
 #endif 	/* __IMSVidVideoRendererEvent_INTERFACE_DEFINED__ */
 
 
+#ifndef __IMSVidStreamBufferRecordingControl_INTERFACE_DEFINED__
+#define __IMSVidStreamBufferRecordingControl_INTERFACE_DEFINED__
+
+/* interface IMSVidStreamBufferRecordingControl */
+/* [helpstring][uuid][unique][nonextensible][hidden][oleautomation][dual][object] */ 
+
+
+EXTERN_C const IID IID_IMSVidStreamBufferRecordingControl;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("160621AA-BBBC-4326-A824-C395AEBC6E74")
+    IMSVidStreamBufferRecordingControl : public IDispatch
+    {
+    public:
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_StartTime( 
+            /* [retval][out] */ long *rtStart) = 0;
+        
+        virtual /* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE put_StartTime( 
+            /* [in] */ long rtStart) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_StopTime( 
+            /* [retval][out] */ long *rtStop) = 0;
+        
+        virtual /* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE put_StopTime( 
+            /* [in] */ long rtStop) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_RecordingStopped( 
+            /* [retval][out] */ VARIANT_BOOL *phResult) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_RecordingStarted( 
+            /* [retval][out] */ VARIANT_BOOL *phResult) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_RecordingType( 
+            /* [retval][out] */ RecordingType *dwType) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_RecordingAttribute( 
+            /* [retval][out] */ IUnknown **pRecordingAttribute) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IMSVidStreamBufferRecordingControlVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMSVidStreamBufferRecordingControl * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMSVidStreamBufferRecordingControl * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [out] */ UINT *pctinfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [in] */ UINT iTInfo,
+            /* [in] */ LCID lcid,
+            /* [out] */ ITypeInfo **ppTInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [in] */ REFIID riid,
+            /* [size_is][in] */ LPOLESTR *rgszNames,
+            /* [in] */ UINT cNames,
+            /* [in] */ LCID lcid,
+            /* [size_is][out] */ DISPID *rgDispId);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [in] */ DISPID dispIdMember,
+            /* [in] */ REFIID riid,
+            /* [in] */ LCID lcid,
+            /* [in] */ WORD wFlags,
+            /* [out][in] */ DISPPARAMS *pDispParams,
+            /* [out] */ VARIANT *pVarResult,
+            /* [out] */ EXCEPINFO *pExcepInfo,
+            /* [out] */ UINT *puArgErr);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_StartTime )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [retval][out] */ long *rtStart);
+        
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_StartTime )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [in] */ long rtStart);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_StopTime )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [retval][out] */ long *rtStop);
+        
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_StopTime )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [in] */ long rtStop);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RecordingStopped )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [retval][out] */ VARIANT_BOOL *phResult);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RecordingStarted )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [retval][out] */ VARIANT_BOOL *phResult);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RecordingType )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [retval][out] */ RecordingType *dwType);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RecordingAttribute )( 
+            IMSVidStreamBufferRecordingControl * This,
+            /* [retval][out] */ IUnknown **pRecordingAttribute);
+        
+        END_INTERFACE
+    } IMSVidStreamBufferRecordingControlVtbl;
+
+    interface IMSVidStreamBufferRecordingControl
+    {
+        CONST_VTBL struct IMSVidStreamBufferRecordingControlVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMSVidStreamBufferRecordingControl_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IMSVidStreamBufferRecordingControl_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IMSVidStreamBufferRecordingControl_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IMSVidStreamBufferRecordingControl_GetTypeInfoCount(This,pctinfo)	\
+    (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
+
+#define IMSVidStreamBufferRecordingControl_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+    (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
+
+#define IMSVidStreamBufferRecordingControl_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+    (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
+
+#define IMSVidStreamBufferRecordingControl_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+    (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
+
+
+#define IMSVidStreamBufferRecordingControl_get_StartTime(This,rtStart)	\
+    (This)->lpVtbl -> get_StartTime(This,rtStart)
+
+#define IMSVidStreamBufferRecordingControl_put_StartTime(This,rtStart)	\
+    (This)->lpVtbl -> put_StartTime(This,rtStart)
+
+#define IMSVidStreamBufferRecordingControl_get_StopTime(This,rtStop)	\
+    (This)->lpVtbl -> get_StopTime(This,rtStop)
+
+#define IMSVidStreamBufferRecordingControl_put_StopTime(This,rtStop)	\
+    (This)->lpVtbl -> put_StopTime(This,rtStop)
+
+#define IMSVidStreamBufferRecordingControl_get_RecordingStopped(This,phResult)	\
+    (This)->lpVtbl -> get_RecordingStopped(This,phResult)
+
+#define IMSVidStreamBufferRecordingControl_get_RecordingStarted(This,phResult)	\
+    (This)->lpVtbl -> get_RecordingStarted(This,phResult)
+
+#define IMSVidStreamBufferRecordingControl_get_RecordingType(This,dwType)	\
+    (This)->lpVtbl -> get_RecordingType(This,dwType)
+
+#define IMSVidStreamBufferRecordingControl_get_RecordingAttribute(This,pRecordingAttribute)	\
+    (This)->lpVtbl -> get_RecordingAttribute(This,pRecordingAttribute)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferRecordingControl_get_StartTime_Proxy( 
+    IMSVidStreamBufferRecordingControl * This,
+    /* [retval][out] */ long *rtStart);
+
+
+void __RPC_STUB IMSVidStreamBufferRecordingControl_get_StartTime_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferRecordingControl_put_StartTime_Proxy( 
+    IMSVidStreamBufferRecordingControl * This,
+    /* [in] */ long rtStart);
+
+
+void __RPC_STUB IMSVidStreamBufferRecordingControl_put_StartTime_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferRecordingControl_get_StopTime_Proxy( 
+    IMSVidStreamBufferRecordingControl * This,
+    /* [retval][out] */ long *rtStop);
+
+
+void __RPC_STUB IMSVidStreamBufferRecordingControl_get_StopTime_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferRecordingControl_put_StopTime_Proxy( 
+    IMSVidStreamBufferRecordingControl * This,
+    /* [in] */ long rtStop);
+
+
+void __RPC_STUB IMSVidStreamBufferRecordingControl_put_StopTime_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferRecordingControl_get_RecordingStopped_Proxy( 
+    IMSVidStreamBufferRecordingControl * This,
+    /* [retval][out] */ VARIANT_BOOL *phResult);
+
+
+void __RPC_STUB IMSVidStreamBufferRecordingControl_get_RecordingStopped_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferRecordingControl_get_RecordingStarted_Proxy( 
+    IMSVidStreamBufferRecordingControl * This,
+    /* [retval][out] */ VARIANT_BOOL *phResult);
+
+
+void __RPC_STUB IMSVidStreamBufferRecordingControl_get_RecordingStarted_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferRecordingControl_get_RecordingType_Proxy( 
+    IMSVidStreamBufferRecordingControl * This,
+    /* [retval][out] */ RecordingType *dwType);
+
+
+void __RPC_STUB IMSVidStreamBufferRecordingControl_get_RecordingType_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferRecordingControl_get_RecordingAttribute_Proxy( 
+    IMSVidStreamBufferRecordingControl * This,
+    /* [retval][out] */ IUnknown **pRecordingAttribute);
+
+
+void __RPC_STUB IMSVidStreamBufferRecordingControl_get_RecordingAttribute_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IMSVidStreamBufferRecordingControl_INTERFACE_DEFINED__ */
+
+
+#ifndef __IMSVidStreamBufferSink_INTERFACE_DEFINED__
+#define __IMSVidStreamBufferSink_INTERFACE_DEFINED__
+
+/* interface IMSVidStreamBufferSink */
+/* [unique][helpstring][uuid][hidden][oleautomation][dual][object] */ 
+
+
+EXTERN_C const IID IID_IMSVidStreamBufferSink;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("159DBB45-CD1B-4dab-83EA-5CB1F4F21D07")
+    IMSVidStreamBufferSink : public IMSVidOutputDevice
+    {
+    public:
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_ContentRecorder( 
+            /* [in] */ BSTR pszFilename,
+            /* [out][retval] */ IMSVidStreamBufferRecordingControl **pRecordingIUnknown) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_ReferenceRecorder( 
+            /* [in] */ BSTR pszFilename,
+            /* [out][retval] */ IMSVidStreamBufferRecordingControl **pRecordingIUnknown) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_SinkName( 
+            /* [out][retval] */ BSTR *pName) = 0;
+        
+        virtual /* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE put_SinkName( 
+            /* [in] */ BSTR Name) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE NameSetLock( void) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_SBESink( 
+            /* [out][retval] */ IUnknown **sbeConfig) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IMSVidStreamBufferSinkVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMSVidStreamBufferSink * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMSVidStreamBufferSink * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMSVidStreamBufferSink * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+            IMSVidStreamBufferSink * This,
+            /* [out] */ UINT *pctinfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+            IMSVidStreamBufferSink * This,
+            /* [in] */ UINT iTInfo,
+            /* [in] */ LCID lcid,
+            /* [out] */ ITypeInfo **ppTInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+            IMSVidStreamBufferSink * This,
+            /* [in] */ REFIID riid,
+            /* [size_is][in] */ LPOLESTR *rgszNames,
+            /* [in] */ UINT cNames,
+            /* [in] */ LCID lcid,
+            /* [size_is][out] */ DISPID *rgDispId);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            IMSVidStreamBufferSink * This,
+            /* [in] */ DISPID dispIdMember,
+            /* [in] */ REFIID riid,
+            /* [in] */ LCID lcid,
+            /* [in] */ WORD wFlags,
+            /* [out][in] */ DISPPARAMS *pDispParams,
+            /* [out] */ VARIANT *pVarResult,
+            /* [out] */ EXCEPINFO *pExcepInfo,
+            /* [out] */ UINT *puArgErr);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Name )( 
+            IMSVidStreamBufferSink * This,
+            /* [retval][out] */ BSTR *Name);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Status )( 
+            IMSVidStreamBufferSink * This,
+            /* [retval][out] */ long *Status);
+        
+        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Power )( 
+            IMSVidStreamBufferSink * This,
+            /* [in] */ VARIANT_BOOL Power);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Power )( 
+            IMSVidStreamBufferSink * This,
+            /* [out][retval] */ VARIANT_BOOL *Power);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Category )( 
+            IMSVidStreamBufferSink * This,
+            /* [retval][out] */ BSTR *Guid);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ClassID )( 
+            IMSVidStreamBufferSink * This,
+            /* [retval][out] */ BSTR *Clsid);
+        
+        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__Category )( 
+            IMSVidStreamBufferSink * This,
+            /* [retval][out] */ GUID *Guid);
+        
+        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__ClassID )( 
+            IMSVidStreamBufferSink * This,
+            /* [retval][out] */ GUID *Clsid);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *IsEqualDevice )( 
+            IMSVidStreamBufferSink * This,
+            /* [in] */ IMSVidDevice *Device,
+            /* [retval][out] */ VARIANT_BOOL *IsEqual);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ContentRecorder )( 
+            IMSVidStreamBufferSink * This,
+            /* [in] */ BSTR pszFilename,
+            /* [out][retval] */ IMSVidStreamBufferRecordingControl **pRecordingIUnknown);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ReferenceRecorder )( 
+            IMSVidStreamBufferSink * This,
+            /* [in] */ BSTR pszFilename,
+            /* [out][retval] */ IMSVidStreamBufferRecordingControl **pRecordingIUnknown);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_SinkName )( 
+            IMSVidStreamBufferSink * This,
+            /* [out][retval] */ BSTR *pName);
+        
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_SinkName )( 
+            IMSVidStreamBufferSink * This,
+            /* [in] */ BSTR Name);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *NameSetLock )( 
+            IMSVidStreamBufferSink * This);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_SBESink )( 
+            IMSVidStreamBufferSink * This,
+            /* [out][retval] */ IUnknown **sbeConfig);
+        
+        END_INTERFACE
+    } IMSVidStreamBufferSinkVtbl;
+
+    interface IMSVidStreamBufferSink
+    {
+        CONST_VTBL struct IMSVidStreamBufferSinkVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMSVidStreamBufferSink_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IMSVidStreamBufferSink_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IMSVidStreamBufferSink_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IMSVidStreamBufferSink_GetTypeInfoCount(This,pctinfo)	\
+    (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
+
+#define IMSVidStreamBufferSink_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+    (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
+
+#define IMSVidStreamBufferSink_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+    (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
+
+#define IMSVidStreamBufferSink_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+    (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
+
+
+#define IMSVidStreamBufferSink_get_Name(This,Name)	\
+    (This)->lpVtbl -> get_Name(This,Name)
+
+#define IMSVidStreamBufferSink_get_Status(This,Status)	\
+    (This)->lpVtbl -> get_Status(This,Status)
+
+#define IMSVidStreamBufferSink_put_Power(This,Power)	\
+    (This)->lpVtbl -> put_Power(This,Power)
+
+#define IMSVidStreamBufferSink_get_Power(This,Power)	\
+    (This)->lpVtbl -> get_Power(This,Power)
+
+#define IMSVidStreamBufferSink_get_Category(This,Guid)	\
+    (This)->lpVtbl -> get_Category(This,Guid)
+
+#define IMSVidStreamBufferSink_get_ClassID(This,Clsid)	\
+    (This)->lpVtbl -> get_ClassID(This,Clsid)
+
+#define IMSVidStreamBufferSink_get__Category(This,Guid)	\
+    (This)->lpVtbl -> get__Category(This,Guid)
+
+#define IMSVidStreamBufferSink_get__ClassID(This,Clsid)	\
+    (This)->lpVtbl -> get__ClassID(This,Clsid)
+
+#define IMSVidStreamBufferSink_IsEqualDevice(This,Device,IsEqual)	\
+    (This)->lpVtbl -> IsEqualDevice(This,Device,IsEqual)
+
+
+
+#define IMSVidStreamBufferSink_get_ContentRecorder(This,pszFilename,pRecordingIUnknown)	\
+    (This)->lpVtbl -> get_ContentRecorder(This,pszFilename,pRecordingIUnknown)
+
+#define IMSVidStreamBufferSink_get_ReferenceRecorder(This,pszFilename,pRecordingIUnknown)	\
+    (This)->lpVtbl -> get_ReferenceRecorder(This,pszFilename,pRecordingIUnknown)
+
+#define IMSVidStreamBufferSink_get_SinkName(This,pName)	\
+    (This)->lpVtbl -> get_SinkName(This,pName)
+
+#define IMSVidStreamBufferSink_put_SinkName(This,Name)	\
+    (This)->lpVtbl -> put_SinkName(This,Name)
+
+#define IMSVidStreamBufferSink_NameSetLock(This)	\
+    (This)->lpVtbl -> NameSetLock(This)
+
+#define IMSVidStreamBufferSink_get_SBESink(This,sbeConfig)	\
+    (This)->lpVtbl -> get_SBESink(This,sbeConfig)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSink_get_ContentRecorder_Proxy( 
+    IMSVidStreamBufferSink * This,
+    /* [in] */ BSTR pszFilename,
+    /* [out][retval] */ IMSVidStreamBufferRecordingControl **pRecordingIUnknown);
+
+
+void __RPC_STUB IMSVidStreamBufferSink_get_ContentRecorder_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSink_get_ReferenceRecorder_Proxy( 
+    IMSVidStreamBufferSink * This,
+    /* [in] */ BSTR pszFilename,
+    /* [out][retval] */ IMSVidStreamBufferRecordingControl **pRecordingIUnknown);
+
+
+void __RPC_STUB IMSVidStreamBufferSink_get_ReferenceRecorder_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSink_get_SinkName_Proxy( 
+    IMSVidStreamBufferSink * This,
+    /* [out][retval] */ BSTR *pName);
+
+
+void __RPC_STUB IMSVidStreamBufferSink_get_SinkName_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSink_put_SinkName_Proxy( 
+    IMSVidStreamBufferSink * This,
+    /* [in] */ BSTR Name);
+
+
+void __RPC_STUB IMSVidStreamBufferSink_put_SinkName_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSink_NameSetLock_Proxy( 
+    IMSVidStreamBufferSink * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSink_NameSetLock_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSink_get_SBESink_Proxy( 
+    IMSVidStreamBufferSink * This,
+    /* [out][retval] */ IUnknown **sbeConfig);
+
+
+void __RPC_STUB IMSVidStreamBufferSink_get_SBESink_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IMSVidStreamBufferSink_INTERFACE_DEFINED__ */
+
+
+#ifndef __IMSVidStreamBufferSinkEvent_INTERFACE_DEFINED__
+#define __IMSVidStreamBufferSinkEvent_INTERFACE_DEFINED__
+
+/* interface IMSVidStreamBufferSinkEvent */
+/* [unique][helpstring][uuid][hidden][oleautomation][object] */ 
+
+
+EXTERN_C const IID IID_IMSVidStreamBufferSinkEvent;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("F798A36B-B05B-4bbe-9703-EAEA7D61CD51")
+    IMSVidStreamBufferSinkEvent : public IMSVidOutputDeviceEvent
+    {
+    public:
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CertificateFailure( void) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CertificateSuccess( void) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE WriteFailure( void) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IMSVidStreamBufferSinkEventVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMSVidStreamBufferSinkEvent * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMSVidStreamBufferSinkEvent * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMSVidStreamBufferSinkEvent * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+            IMSVidStreamBufferSinkEvent * This,
+            /* [out] */ UINT *pctinfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+            IMSVidStreamBufferSinkEvent * This,
+            /* [in] */ UINT iTInfo,
+            /* [in] */ LCID lcid,
+            /* [out] */ ITypeInfo **ppTInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+            IMSVidStreamBufferSinkEvent * This,
+            /* [in] */ REFIID riid,
+            /* [size_is][in] */ LPOLESTR *rgszNames,
+            /* [in] */ UINT cNames,
+            /* [in] */ LCID lcid,
+            /* [size_is][out] */ DISPID *rgDispId);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            IMSVidStreamBufferSinkEvent * This,
+            /* [in] */ DISPID dispIdMember,
+            /* [in] */ REFIID riid,
+            /* [in] */ LCID lcid,
+            /* [in] */ WORD wFlags,
+            /* [out][in] */ DISPPARAMS *pDispParams,
+            /* [out] */ VARIANT *pVarResult,
+            /* [out] */ EXCEPINFO *pExcepInfo,
+            /* [out] */ UINT *puArgErr);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *StateChange )( 
+            IMSVidStreamBufferSinkEvent * This,
+            /* [in] */ IMSVidDevice *lpd,
+            /* [in] */ long oldState,
+            /* [in] */ long newState);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CertificateFailure )( 
+            IMSVidStreamBufferSinkEvent * This);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CertificateSuccess )( 
+            IMSVidStreamBufferSinkEvent * This);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *WriteFailure )( 
+            IMSVidStreamBufferSinkEvent * This);
+        
+        END_INTERFACE
+    } IMSVidStreamBufferSinkEventVtbl;
+
+    interface IMSVidStreamBufferSinkEvent
+    {
+        CONST_VTBL struct IMSVidStreamBufferSinkEventVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMSVidStreamBufferSinkEvent_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IMSVidStreamBufferSinkEvent_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IMSVidStreamBufferSinkEvent_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IMSVidStreamBufferSinkEvent_GetTypeInfoCount(This,pctinfo)	\
+    (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
+
+#define IMSVidStreamBufferSinkEvent_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+    (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
+
+#define IMSVidStreamBufferSinkEvent_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+    (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
+
+#define IMSVidStreamBufferSinkEvent_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+    (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
+
+
+#define IMSVidStreamBufferSinkEvent_StateChange(This,lpd,oldState,newState)	\
+    (This)->lpVtbl -> StateChange(This,lpd,oldState,newState)
+
+
+
+#define IMSVidStreamBufferSinkEvent_CertificateFailure(This)	\
+    (This)->lpVtbl -> CertificateFailure(This)
+
+#define IMSVidStreamBufferSinkEvent_CertificateSuccess(This)	\
+    (This)->lpVtbl -> CertificateSuccess(This)
+
+#define IMSVidStreamBufferSinkEvent_WriteFailure(This)	\
+    (This)->lpVtbl -> WriteFailure(This)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSinkEvent_CertificateFailure_Proxy( 
+    IMSVidStreamBufferSinkEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSinkEvent_CertificateFailure_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSinkEvent_CertificateSuccess_Proxy( 
+    IMSVidStreamBufferSinkEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSinkEvent_CertificateSuccess_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSinkEvent_WriteFailure_Proxy( 
+    IMSVidStreamBufferSinkEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSinkEvent_WriteFailure_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IMSVidStreamBufferSinkEvent_INTERFACE_DEFINED__ */
+
+
+#ifndef __IMSVidStreamBufferSource_INTERFACE_DEFINED__
+#define __IMSVidStreamBufferSource_INTERFACE_DEFINED__
+
+/* interface IMSVidStreamBufferSource */
+/* [unique][helpstring][uuid][hidden][oleautomation][dual][object] */ 
+
+
+EXTERN_C const IID IID_IMSVidStreamBufferSource;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("EB0C8CF9-6950-4772-87B1-47D11CF3A02F")
+    IMSVidStreamBufferSource : public IMSVidFilePlayback
+    {
+    public:
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_Start( 
+            /* [retval][out] */ long *lStart) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_RecordingAttribute( 
+            /* [retval][out] */ IUnknown **pRecordingAttribute) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CurrentRatings( 
+            /* [out] */ EnTvRat_System *pEnSystem,
+            /* [out] */ EnTvRat_GenericLevel *pEnRating,
+            /* [out] */ LONG *pBfEnAttr) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE MaxRatingsLevel( 
+            /* [in] */ EnTvRat_System enSystem,
+            /* [in] */ EnTvRat_GenericLevel enRating,
+            /* [in] */ LONG lbfEnAttr) = 0;
+        
+        virtual /* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE put_BlockUnrated( 
+            /* [in] */ VARIANT_BOOL bBlock) = 0;
+        
+        virtual /* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE put_UnratedDelay( 
+            /* [in] */ long dwDelay) = 0;
+        
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_SBESource( 
+            /* [retval][out] */ IUnknown **sbeFilter) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IMSVidStreamBufferSourceVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMSVidStreamBufferSource * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMSVidStreamBufferSource * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+            IMSVidStreamBufferSource * This,
+            /* [out] */ UINT *pctinfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ UINT iTInfo,
+            /* [in] */ LCID lcid,
+            /* [out] */ ITypeInfo **ppTInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ REFIID riid,
+            /* [size_is][in] */ LPOLESTR *rgszNames,
+            /* [in] */ UINT cNames,
+            /* [in] */ LCID lcid,
+            /* [size_is][out] */ DISPID *rgDispId);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ DISPID dispIdMember,
+            /* [in] */ REFIID riid,
+            /* [in] */ LCID lcid,
+            /* [in] */ WORD wFlags,
+            /* [out][in] */ DISPPARAMS *pDispParams,
+            /* [out] */ VARIANT *pVarResult,
+            /* [out] */ EXCEPINFO *pExcepInfo,
+            /* [out] */ UINT *puArgErr);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Name )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ BSTR *Name);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Status )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ long *Status);
+        
+        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Power )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ VARIANT_BOOL Power);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Power )( 
+            IMSVidStreamBufferSource * This,
+            /* [out][retval] */ VARIANT_BOOL *Power);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Category )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ BSTR *Guid);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ClassID )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ BSTR *Clsid);
+        
+        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__Category )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ GUID *Guid);
+        
+        /* [restricted][hidden][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__ClassID )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ GUID *Clsid);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *IsEqualDevice )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ IMSVidDevice *Device,
+            /* [retval][out] */ VARIANT_BOOL *IsEqual);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *IsViewable )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ VARIANT *v,
+            /* [retval][out] */ VARIANT_BOOL *pfViewable);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *View )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ VARIANT *v);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_EnableResetOnStop )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ VARIANT_BOOL *pVal);
+        
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_EnableResetOnStop )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ VARIANT_BOOL newVal);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *Run )( 
+            IMSVidStreamBufferSource * This);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *Pause )( 
+            IMSVidStreamBufferSource * This);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *Stop )( 
+            IMSVidStreamBufferSource * This);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_CanStep )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ VARIANT_BOOL fBackwards,
+            /* [retval][out] */ VARIANT_BOOL *pfCan);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *Step )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ long lStep);
+        
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Rate )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ double plRate);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Rate )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ double *plRate);
+        
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_CurrentPosition )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ long lPosition);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_CurrentPosition )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ long *lPosition);
+        
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_PositionMode )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ PositionModeList lPositionMode);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_PositionMode )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ PositionModeList *lPositionMode);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Length )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ long *lLength);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_FileName )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ BSTR *FileName);
+        
+        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_FileName )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ BSTR FileName);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Start )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ long *lStart);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RecordingAttribute )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ IUnknown **pRecordingAttribute);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CurrentRatings )( 
+            IMSVidStreamBufferSource * This,
+            /* [out] */ EnTvRat_System *pEnSystem,
+            /* [out] */ EnTvRat_GenericLevel *pEnRating,
+            /* [out] */ LONG *pBfEnAttr);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *MaxRatingsLevel )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ EnTvRat_System enSystem,
+            /* [in] */ EnTvRat_GenericLevel enRating,
+            /* [in] */ LONG lbfEnAttr);
+        
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_BlockUnrated )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ VARIANT_BOOL bBlock);
+        
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_UnratedDelay )( 
+            IMSVidStreamBufferSource * This,
+            /* [in] */ long dwDelay);
+        
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_SBESource )( 
+            IMSVidStreamBufferSource * This,
+            /* [retval][out] */ IUnknown **sbeFilter);
+        
+        END_INTERFACE
+    } IMSVidStreamBufferSourceVtbl;
+
+    interface IMSVidStreamBufferSource
+    {
+        CONST_VTBL struct IMSVidStreamBufferSourceVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMSVidStreamBufferSource_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IMSVidStreamBufferSource_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IMSVidStreamBufferSource_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IMSVidStreamBufferSource_GetTypeInfoCount(This,pctinfo)	\
+    (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
+
+#define IMSVidStreamBufferSource_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+    (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
+
+#define IMSVidStreamBufferSource_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+    (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
+
+#define IMSVidStreamBufferSource_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+    (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
+
+
+#define IMSVidStreamBufferSource_get_Name(This,Name)	\
+    (This)->lpVtbl -> get_Name(This,Name)
+
+#define IMSVidStreamBufferSource_get_Status(This,Status)	\
+    (This)->lpVtbl -> get_Status(This,Status)
+
+#define IMSVidStreamBufferSource_put_Power(This,Power)	\
+    (This)->lpVtbl -> put_Power(This,Power)
+
+#define IMSVidStreamBufferSource_get_Power(This,Power)	\
+    (This)->lpVtbl -> get_Power(This,Power)
+
+#define IMSVidStreamBufferSource_get_Category(This,Guid)	\
+    (This)->lpVtbl -> get_Category(This,Guid)
+
+#define IMSVidStreamBufferSource_get_ClassID(This,Clsid)	\
+    (This)->lpVtbl -> get_ClassID(This,Clsid)
+
+#define IMSVidStreamBufferSource_get__Category(This,Guid)	\
+    (This)->lpVtbl -> get__Category(This,Guid)
+
+#define IMSVidStreamBufferSource_get__ClassID(This,Clsid)	\
+    (This)->lpVtbl -> get__ClassID(This,Clsid)
+
+#define IMSVidStreamBufferSource_IsEqualDevice(This,Device,IsEqual)	\
+    (This)->lpVtbl -> IsEqualDevice(This,Device,IsEqual)
+
+
+#define IMSVidStreamBufferSource_IsViewable(This,v,pfViewable)	\
+    (This)->lpVtbl -> IsViewable(This,v,pfViewable)
+
+#define IMSVidStreamBufferSource_View(This,v)	\
+    (This)->lpVtbl -> View(This,v)
+
+
+#define IMSVidStreamBufferSource_get_EnableResetOnStop(This,pVal)	\
+    (This)->lpVtbl -> get_EnableResetOnStop(This,pVal)
+
+#define IMSVidStreamBufferSource_put_EnableResetOnStop(This,newVal)	\
+    (This)->lpVtbl -> put_EnableResetOnStop(This,newVal)
+
+#define IMSVidStreamBufferSource_Run(This)	\
+    (This)->lpVtbl -> Run(This)
+
+#define IMSVidStreamBufferSource_Pause(This)	\
+    (This)->lpVtbl -> Pause(This)
+
+#define IMSVidStreamBufferSource_Stop(This)	\
+    (This)->lpVtbl -> Stop(This)
+
+#define IMSVidStreamBufferSource_get_CanStep(This,fBackwards,pfCan)	\
+    (This)->lpVtbl -> get_CanStep(This,fBackwards,pfCan)
+
+#define IMSVidStreamBufferSource_Step(This,lStep)	\
+    (This)->lpVtbl -> Step(This,lStep)
+
+#define IMSVidStreamBufferSource_put_Rate(This,plRate)	\
+    (This)->lpVtbl -> put_Rate(This,plRate)
+
+#define IMSVidStreamBufferSource_get_Rate(This,plRate)	\
+    (This)->lpVtbl -> get_Rate(This,plRate)
+
+#define IMSVidStreamBufferSource_put_CurrentPosition(This,lPosition)	\
+    (This)->lpVtbl -> put_CurrentPosition(This,lPosition)
+
+#define IMSVidStreamBufferSource_get_CurrentPosition(This,lPosition)	\
+    (This)->lpVtbl -> get_CurrentPosition(This,lPosition)
+
+#define IMSVidStreamBufferSource_put_PositionMode(This,lPositionMode)	\
+    (This)->lpVtbl -> put_PositionMode(This,lPositionMode)
+
+#define IMSVidStreamBufferSource_get_PositionMode(This,lPositionMode)	\
+    (This)->lpVtbl -> get_PositionMode(This,lPositionMode)
+
+#define IMSVidStreamBufferSource_get_Length(This,lLength)	\
+    (This)->lpVtbl -> get_Length(This,lLength)
+
+
+#define IMSVidStreamBufferSource_get_FileName(This,FileName)	\
+    (This)->lpVtbl -> get_FileName(This,FileName)
+
+#define IMSVidStreamBufferSource_put_FileName(This,FileName)	\
+    (This)->lpVtbl -> put_FileName(This,FileName)
+
+
+#define IMSVidStreamBufferSource_get_Start(This,lStart)	\
+    (This)->lpVtbl -> get_Start(This,lStart)
+
+#define IMSVidStreamBufferSource_get_RecordingAttribute(This,pRecordingAttribute)	\
+    (This)->lpVtbl -> get_RecordingAttribute(This,pRecordingAttribute)
+
+#define IMSVidStreamBufferSource_CurrentRatings(This,pEnSystem,pEnRating,pBfEnAttr)	\
+    (This)->lpVtbl -> CurrentRatings(This,pEnSystem,pEnRating,pBfEnAttr)
+
+#define IMSVidStreamBufferSource_MaxRatingsLevel(This,enSystem,enRating,lbfEnAttr)	\
+    (This)->lpVtbl -> MaxRatingsLevel(This,enSystem,enRating,lbfEnAttr)
+
+#define IMSVidStreamBufferSource_put_BlockUnrated(This,bBlock)	\
+    (This)->lpVtbl -> put_BlockUnrated(This,bBlock)
+
+#define IMSVidStreamBufferSource_put_UnratedDelay(This,dwDelay)	\
+    (This)->lpVtbl -> put_UnratedDelay(This,dwDelay)
+
+#define IMSVidStreamBufferSource_get_SBESource(This,sbeFilter)	\
+    (This)->lpVtbl -> get_SBESource(This,sbeFilter)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSource_get_Start_Proxy( 
+    IMSVidStreamBufferSource * This,
+    /* [retval][out] */ long *lStart);
+
+
+void __RPC_STUB IMSVidStreamBufferSource_get_Start_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSource_get_RecordingAttribute_Proxy( 
+    IMSVidStreamBufferSource * This,
+    /* [retval][out] */ IUnknown **pRecordingAttribute);
+
+
+void __RPC_STUB IMSVidStreamBufferSource_get_RecordingAttribute_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSource_CurrentRatings_Proxy( 
+    IMSVidStreamBufferSource * This,
+    /* [out] */ EnTvRat_System *pEnSystem,
+    /* [out] */ EnTvRat_GenericLevel *pEnRating,
+    /* [out] */ LONG *pBfEnAttr);
+
+
+void __RPC_STUB IMSVidStreamBufferSource_CurrentRatings_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSource_MaxRatingsLevel_Proxy( 
+    IMSVidStreamBufferSource * This,
+    /* [in] */ EnTvRat_System enSystem,
+    /* [in] */ EnTvRat_GenericLevel enRating,
+    /* [in] */ LONG lbfEnAttr);
+
+
+void __RPC_STUB IMSVidStreamBufferSource_MaxRatingsLevel_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSource_put_BlockUnrated_Proxy( 
+    IMSVidStreamBufferSource * This,
+    /* [in] */ VARIANT_BOOL bBlock);
+
+
+void __RPC_STUB IMSVidStreamBufferSource_put_BlockUnrated_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSource_put_UnratedDelay_Proxy( 
+    IMSVidStreamBufferSource * This,
+    /* [in] */ long dwDelay);
+
+
+void __RPC_STUB IMSVidStreamBufferSource_put_UnratedDelay_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSource_get_SBESource_Proxy( 
+    IMSVidStreamBufferSource * This,
+    /* [retval][out] */ IUnknown **sbeFilter);
+
+
+void __RPC_STUB IMSVidStreamBufferSource_get_SBESource_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IMSVidStreamBufferSource_INTERFACE_DEFINED__ */
+
+
+#ifndef __IMSVidStreamBufferSourceEvent_INTERFACE_DEFINED__
+#define __IMSVidStreamBufferSourceEvent_INTERFACE_DEFINED__
+
+/* interface IMSVidStreamBufferSourceEvent */
+/* [unique][helpstring][uuid][hidden][oleautomation][object] */ 
+
+
+EXTERN_C const IID IID_IMSVidStreamBufferSourceEvent;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("50CE8A7D-9C28-4DA8-9042-CDFA7116F979")
+    IMSVidStreamBufferSourceEvent : public IMSVidFilePlaybackEvent
+    {
+    public:
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CertificateFailure( void) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CertificateSuccess( void) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE RatingsBlocked( void) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE RatingsUnblocked( void) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE RatingsChanged( void) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE TimeHole( 
+            /* [in] */ long StreamOffsetMS,
+            /* [in] */ long SizeMS) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE StaleDataRead( void) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ContentBecomingStale( void) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE StaleFileDeleted( void) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IMSVidStreamBufferSourceEventVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IMSVidStreamBufferSourceEvent * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+            IMSVidStreamBufferSourceEvent * This,
+            /* [out] */ UINT *pctinfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+            IMSVidStreamBufferSourceEvent * This,
+            /* [in] */ UINT iTInfo,
+            /* [in] */ LCID lcid,
+            /* [out] */ ITypeInfo **ppTInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+            IMSVidStreamBufferSourceEvent * This,
+            /* [in] */ REFIID riid,
+            /* [size_is][in] */ LPOLESTR *rgszNames,
+            /* [in] */ UINT cNames,
+            /* [in] */ LCID lcid,
+            /* [size_is][out] */ DISPID *rgDispId);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            IMSVidStreamBufferSourceEvent * This,
+            /* [in] */ DISPID dispIdMember,
+            /* [in] */ REFIID riid,
+            /* [in] */ LCID lcid,
+            /* [in] */ WORD wFlags,
+            /* [out][in] */ DISPPARAMS *pDispParams,
+            /* [out] */ VARIANT *pVarResult,
+            /* [out] */ EXCEPINFO *pExcepInfo,
+            /* [out] */ UINT *puArgErr);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *EndOfMedia )( 
+            IMSVidStreamBufferSourceEvent * This,
+            /* [in] */ IMSVidPlayback *lpd);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CertificateFailure )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CertificateSuccess )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *RatingsBlocked )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *RatingsUnblocked )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *RatingsChanged )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *TimeHole )( 
+            IMSVidStreamBufferSourceEvent * This,
+            /* [in] */ long StreamOffsetMS,
+            /* [in] */ long SizeMS);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *StaleDataRead )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *ContentBecomingStale )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *StaleFileDeleted )( 
+            IMSVidStreamBufferSourceEvent * This);
+        
+        END_INTERFACE
+    } IMSVidStreamBufferSourceEventVtbl;
+
+    interface IMSVidStreamBufferSourceEvent
+    {
+        CONST_VTBL struct IMSVidStreamBufferSourceEventVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IMSVidStreamBufferSourceEvent_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IMSVidStreamBufferSourceEvent_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IMSVidStreamBufferSourceEvent_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IMSVidStreamBufferSourceEvent_GetTypeInfoCount(This,pctinfo)	\
+    (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
+
+#define IMSVidStreamBufferSourceEvent_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+    (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
+
+#define IMSVidStreamBufferSourceEvent_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+    (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
+
+#define IMSVidStreamBufferSourceEvent_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+    (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
+
+
+
+#define IMSVidStreamBufferSourceEvent_EndOfMedia(This,lpd)	\
+    (This)->lpVtbl -> EndOfMedia(This,lpd)
+
+
+
+#define IMSVidStreamBufferSourceEvent_CertificateFailure(This)	\
+    (This)->lpVtbl -> CertificateFailure(This)
+
+#define IMSVidStreamBufferSourceEvent_CertificateSuccess(This)	\
+    (This)->lpVtbl -> CertificateSuccess(This)
+
+#define IMSVidStreamBufferSourceEvent_RatingsBlocked(This)	\
+    (This)->lpVtbl -> RatingsBlocked(This)
+
+#define IMSVidStreamBufferSourceEvent_RatingsUnblocked(This)	\
+    (This)->lpVtbl -> RatingsUnblocked(This)
+
+#define IMSVidStreamBufferSourceEvent_RatingsChanged(This)	\
+    (This)->lpVtbl -> RatingsChanged(This)
+
+#define IMSVidStreamBufferSourceEvent_TimeHole(This,StreamOffsetMS,SizeMS)	\
+    (This)->lpVtbl -> TimeHole(This,StreamOffsetMS,SizeMS)
+
+#define IMSVidStreamBufferSourceEvent_StaleDataRead(This)	\
+    (This)->lpVtbl -> StaleDataRead(This)
+
+#define IMSVidStreamBufferSourceEvent_ContentBecomingStale(This)	\
+    (This)->lpVtbl -> ContentBecomingStale(This)
+
+#define IMSVidStreamBufferSourceEvent_StaleFileDeleted(This)	\
+    (This)->lpVtbl -> StaleFileDeleted(This)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSourceEvent_CertificateFailure_Proxy( 
+    IMSVidStreamBufferSourceEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSourceEvent_CertificateFailure_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSourceEvent_CertificateSuccess_Proxy( 
+    IMSVidStreamBufferSourceEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSourceEvent_CertificateSuccess_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSourceEvent_RatingsBlocked_Proxy( 
+    IMSVidStreamBufferSourceEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSourceEvent_RatingsBlocked_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSourceEvent_RatingsUnblocked_Proxy( 
+    IMSVidStreamBufferSourceEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSourceEvent_RatingsUnblocked_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSourceEvent_RatingsChanged_Proxy( 
+    IMSVidStreamBufferSourceEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSourceEvent_RatingsChanged_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSourceEvent_TimeHole_Proxy( 
+    IMSVidStreamBufferSourceEvent * This,
+    /* [in] */ long StreamOffsetMS,
+    /* [in] */ long SizeMS);
+
+
+void __RPC_STUB IMSVidStreamBufferSourceEvent_TimeHole_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSourceEvent_StaleDataRead_Proxy( 
+    IMSVidStreamBufferSourceEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSourceEvent_StaleDataRead_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSourceEvent_ContentBecomingStale_Proxy( 
+    IMSVidStreamBufferSourceEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSourceEvent_ContentBecomingStale_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IMSVidStreamBufferSourceEvent_StaleFileDeleted_Proxy( 
+    IMSVidStreamBufferSourceEvent * This);
+
+
+void __RPC_STUB IMSVidStreamBufferSourceEvent_StaleFileDeleted_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IMSVidStreamBufferSourceEvent_INTERFACE_DEFINED__ */
+
+
 #ifndef __IMSVidVideoRenderer2_INTERFACE_DEFINED__
 #define __IMSVidVideoRenderer2_INTERFACE_DEFINED__
 
@@ -12102,6 +13924,12 @@ EXTERN_C const IID IID_IMSVidVideoRenderer2;
         virtual /* [restricted][hidden][id] */ HRESULT STDMETHODCALLTYPE _SetAllocator( 
             /* [in] */ IVMRSurfaceAllocator *AllocPresent,
             /* [defaultvalue][in] */ long ID = -1) = 0;
+        
+        virtual /* [id][propput] */ HRESULT STDMETHODCALLTYPE put_SuppressEffects( 
+            /* [in] */ VARIANT_BOOL bSuppress) = 0;
+        
+        virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_SuppressEffects( 
+            /* [retval][out] */ VARIANT_BOOL *bSuppress) = 0;
         
     };
     
@@ -12332,6 +14160,14 @@ EXTERN_C const IID IID_IMSVidVideoRenderer2;
             /* [in] */ IVMRSurfaceAllocator *AllocPresent,
             /* [defaultvalue][in] */ long ID);
         
+        /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_SuppressEffects )( 
+            IMSVidVideoRenderer2 * This,
+            /* [in] */ VARIANT_BOOL bSuppress);
+        
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_SuppressEffects )( 
+            IMSVidVideoRenderer2 * This,
+            /* [retval][out] */ VARIANT_BOOL *bSuppress);
+        
         END_INTERFACE
     } IMSVidVideoRenderer2Vtbl;
 
@@ -12503,6 +14339,12 @@ EXTERN_C const IID IID_IMSVidVideoRenderer2;
 #define IMSVidVideoRenderer2__SetAllocator(This,AllocPresent,ID)	\
     (This)->lpVtbl -> _SetAllocator(This,AllocPresent,ID)
 
+#define IMSVidVideoRenderer2_put_SuppressEffects(This,bSuppress)	\
+    (This)->lpVtbl -> put_SuppressEffects(This,bSuppress)
+
+#define IMSVidVideoRenderer2_get_SuppressEffects(This,bSuppress)	\
+    (This)->lpVtbl -> get_SuppressEffects(This,bSuppress)
+
 #endif /* COBJMACROS */
 
 
@@ -12566,6 +14408,30 @@ void __RPC_STUB IMSVidVideoRenderer2_SetAllocator_Stub(
 
 
 void __RPC_STUB IMSVidVideoRenderer2__SetAllocator_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [id][propput] */ HRESULT STDMETHODCALLTYPE IMSVidVideoRenderer2_put_SuppressEffects_Proxy( 
+    IMSVidVideoRenderer2 * This,
+    /* [in] */ VARIANT_BOOL bSuppress);
+
+
+void __RPC_STUB IMSVidVideoRenderer2_put_SuppressEffects_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [id][propget] */ HRESULT STDMETHODCALLTYPE IMSVidVideoRenderer2_get_SuppressEffects_Proxy( 
+    IMSVidVideoRenderer2 * This,
+    /* [retval][out] */ VARIANT_BOOL *bSuppress);
+
+
+void __RPC_STUB IMSVidVideoRenderer2_get_SuppressEffects_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,

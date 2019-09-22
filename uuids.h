@@ -2,21 +2,20 @@
 // File: uuids.h
 //
 // Desc: Contains the GUIDs for the MediaType type, subtype fields and format
-//       types for standard media types, and also class IDs for well-known
+//       types for standard media types, and also class ids for well-known
 //       components.
 //
-// Copyright (c) 1992 - 2001, Microsoft Corporation.  All rights reserved.
+// Copyright (c) 1992 - 2002, Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
 
 //
-//  We want to use this list for generating strings for debugging too,
-//  so we redefine OUR_GUID_ENTRY depending on what we want to do.
+//  We want to use this list for generating strings for debugging too
+//  so we redefine OUR_GUID_ENTRY depending on what we want to do
 //
 //  It is imperative that all entries in this file are declared using
-//  OUR_GUID_ENTRY, as that macro might have been defined in advance of
-//  including this file.  See wxdebug.cpp in the
-//  samples\multimedia\directshow\baseclasses directory.
+//  OUR_GUID_ENTRY as that macro might have been defined in advance of
+//  including this file.  See wxdebug.cpp in sdk\classes\base.
 //
 
 #ifndef OUR_GUID_ENTRY
@@ -133,10 +132,6 @@ OUR_GUID_ENTRY(MEDIASUBTYPE_UYVY,
 OUR_GUID_ENTRY(MEDIASUBTYPE_Y211,
 0x31313259, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
 
-// 31313259-0000-0010-8000-00AA00389B71  'YV12' ==  MEDIASUBTYPE_YV12
-OUR_GUID_ENTRY(MEDIASUBTYPE_YV12,
-0x32315659, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
-
 // 524a4c43-0000-0010-8000-00AA00389B71  'CLJR' ==  MEDIASUBTYPE_CLJR
 OUR_GUID_ENTRY(MEDIASUBTYPE_CLJR,
 0x524a4c43, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
@@ -234,6 +229,16 @@ OUR_GUID_ENTRY(MEDIASUBTYPE_ARGB4444,
 OUR_GUID_ENTRY(MEDIASUBTYPE_ARGB32,
 0x773c9ac0, 0x3274, 0x11d0, 0xb7, 0x24, 0x0, 0xaa, 0x0, 0x6c, 0x1a, 0x1 )
 
+
+// 2f8bb76d-b644-4550-acf3-d30caa65d5c5            MEDIASUBTYPE_A2R10G10B10
+OUR_GUID_ENTRY(MEDIASUBTYPE_A2R10G10B10,
+0x2f8bb76d, 0xb644, 0x4550, 0xac, 0xf3, 0xd3, 0x0c, 0xaa, 0x65, 0xd5, 0xc5)
+
+// 576f7893-bdf6-48c4-875f-ae7b81834567            MEDIASUBTYPE_A2B10G10R10
+OUR_GUID_ENTRY(MEDIASUBTYPE_A2B10G10R10,
+0x576f7893, 0xbdf6, 0x48c4, 0x87, 0x5f, 0xae, 0x7b, 0x81, 0x83, 0x45, 0x67)
+
+
 // 56555941-0000-0010-8000-00AA00389B71  'AYUV' == MEDIASUBTYPE_AYUV
 //
 // See the DX-VA header and documentation for a description of this format.
@@ -281,6 +286,31 @@ OUR_GUID_ENTRY(MEDIASUBTYPE_ARGB1555_D3D_DX7_RT,
 0x35314137, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
 
 
+//
+// DirectX9 D3D Render Target media subtypes.
+//
+
+// 32335239-0000-0010-8000-00AA00389B71  '9R32' == MEDIASUBTYPE_RGB32_D3D_DX9_RT
+OUR_GUID_ENTRY(MEDIASUBTYPE_RGB32_D3D_DX9_RT,
+0x32335239, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 36315239-0000-0010-8000-00AA00389B71  '9R16' == MEDIASUBTYPE_RGB16_D3D_DX9_RT
+OUR_GUID_ENTRY(MEDIASUBTYPE_RGB16_D3D_DX9_RT,
+0x36315239, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 38384139-0000-0010-8000-00AA00389B71  '9A88' == MEDIASUBTYPE_ARGB32_D3D_DX9_RT
+OUR_GUID_ENTRY(MEDIASUBTYPE_ARGB32_D3D_DX9_RT,
+0x38384139, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 34344139-0000-0010-8000-00AA00389B71  '9A44' == MEDIASUBTYPE_ARGB4444_D3D_DX9_RT
+OUR_GUID_ENTRY(MEDIASUBTYPE_ARGB4444_D3D_DX9_RT,
+0x34344139, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 35314139-0000-0010-8000-00AA00389B71  '9A15' == MEDIASUBTYPE_ARGB1555_D3D_DX9_RT
+OUR_GUID_ENTRY(MEDIASUBTYPE_ARGB1555_D3D_DX9_RT,
+0x35314139, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+
 #define MEDIASUBTYPE_HASALPHA(mt) ( ((mt).subtype == MEDIASUBTYPE_ARGB4444)            || \
                                     ((mt).subtype == MEDIASUBTYPE_ARGB32)              || \
                                     ((mt).subtype == MEDIASUBTYPE_AYUV)                || \
@@ -289,6 +319,13 @@ OUR_GUID_ENTRY(MEDIASUBTYPE_ARGB1555_D3D_DX7_RT,
                                     ((mt).subtype == MEDIASUBTYPE_ARGB1555)            || \
                                     ((mt).subtype == MEDIASUBTYPE_ARGB32_D3D_DX7_RT)   || \
                                     ((mt).subtype == MEDIASUBTYPE_ARGB4444_D3D_DX7_RT) || \
+                                    ((mt).subtype == MEDIASUBTYPE_ARGB1555_D3D_DX7_RT) || \
+                                    ((mt).subtype == MEDIASUBTYPE_ARGB32_D3D_DX9_RT)   || \
+                                    ((mt).subtype == MEDIASUBTYPE_ARGB4444_D3D_DX9_RT) || \
+                                    ((mt).subtype == MEDIASUBTYPE_ARGB1555_D3D_DX9_RT) )
+
+#define MEDIASUBTYPE_HASALPHA7(mt) (((mt).subtype == MEDIASUBTYPE_ARGB32_D3D_DX7_RT)   || \
+                                    ((mt).subtype == MEDIASUBTYPE_ARGB4444_D3D_DX7_RT) || \
                                     ((mt).subtype == MEDIASUBTYPE_ARGB1555_D3D_DX7_RT) )
 
 #define MEDIASUBTYPE_D3D_DX7_RT(mt) (((mt).subtype == MEDIASUBTYPE_ARGB32_D3D_DX7_RT)   || \
@@ -296,6 +333,54 @@ OUR_GUID_ENTRY(MEDIASUBTYPE_ARGB1555_D3D_DX7_RT,
                                      ((mt).subtype == MEDIASUBTYPE_ARGB1555_D3D_DX7_RT) || \
                                      ((mt).subtype == MEDIASUBTYPE_RGB32_D3D_DX7_RT)    || \
                                      ((mt).subtype == MEDIASUBTYPE_RGB16_D3D_DX7_RT))
+
+#define MEDIASUBTYPE_HASALPHA9(mt) (((mt).subtype == MEDIASUBTYPE_ARGB32_D3D_DX9_RT)   || \
+                                    ((mt).subtype == MEDIASUBTYPE_ARGB4444_D3D_DX9_RT) || \
+                                    ((mt).subtype == MEDIASUBTYPE_ARGB1555_D3D_DX9_RT) )
+
+
+#define MEDIASUBTYPE_D3D_DX9_RT(mt) (((mt).subtype == MEDIASUBTYPE_ARGB32_D3D_DX9_RT)   || \
+                                     ((mt).subtype == MEDIASUBTYPE_ARGB4444_D3D_DX9_RT) || \
+                                     ((mt).subtype == MEDIASUBTYPE_ARGB1555_D3D_DX9_RT) || \
+                                     ((mt).subtype == MEDIASUBTYPE_RGB32_D3D_DX9_RT)    || \
+                                     ((mt).subtype == MEDIASUBTYPE_RGB16_D3D_DX9_RT))
+
+
+//
+// DX-VA uncompressed surface formats
+//
+
+// 32315659-0000-0010-8000-00AA00389B71  'YV12' ==  MEDIASUBTYPE_YV12
+OUR_GUID_ENTRY(MEDIASUBTYPE_YV12,
+0x32315659, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 3231564E-0000-0010-8000-00AA00389B71  'NV12' ==  MEDIASUBTYPE_NV12
+OUR_GUID_ENTRY(MEDIASUBTYPE_NV12,
+0x3231564E, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 31434D49-0000-0010-8000-00AA00389B71  'IMC1' ==  MEDIASUBTYPE_IMC1
+OUR_GUID_ENTRY(MEDIASUBTYPE_IMC1,
+0x31434D49, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 32434d49-0000-0010-8000-00AA00389B71  'IMC2' ==  MEDIASUBTYPE_IMC2
+OUR_GUID_ENTRY(MEDIASUBTYPE_IMC2,
+0x32434D49, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 33434d49-0000-0010-8000-00AA00389B71  'IMC3' ==  MEDIASUBTYPE_IMC3
+OUR_GUID_ENTRY(MEDIASUBTYPE_IMC3,
+0x33434D49, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 34434d49-0000-0010-8000-00AA00389B71  'IMC4' ==  MEDIASUBTYPE_IMC4
+OUR_GUID_ENTRY(MEDIASUBTYPE_IMC4,
+0x34434D49, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 30343353-0000-0010-8000-00AA00389B71  'S340' ==  MEDIASUBTYPE_S340
+OUR_GUID_ENTRY(MEDIASUBTYPE_S340,
+0x30343353, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 32343353-0000-0010-8000-00AA00389B71  'S342' ==  MEDIASUBTYPE_S342
+OUR_GUID_ENTRY(MEDIASUBTYPE_S342,
+0x32343353, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
 
 
 // e436eb7f-524f-11ce-9f53-0020af0ba770            MEDIASUBTYPE_Overlay
@@ -394,6 +479,18 @@ OUR_GUID_ENTRY(MEDIASUBTYPE_dvhd,
 // 6c(l)73(s)76(v)64(d)-0000-0010-8000-00AA00389B71  'dvsl' == MEDIASUBTYPE_dvsl
 OUR_GUID_ENTRY(MEDIASUBTYPE_dvsl,
 0x6c737664, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 35(5)32(2)76(v)64(d)-0000-0010-8000-00AA00389B71  'dv25' ==  MEDIASUBTYPE_dv25
+OUR_GUID_ENTRY(MEDIASUBTYPE_dv25,
+0x35327664, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 30(0)35(5)76(v)64(d)-0000-0010-8000-00AA00389B71  'dv50' ==  MEDIASUBTYPE_dv50
+OUR_GUID_ENTRY(MEDIASUBTYPE_dv50,
+0x30357664, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
+
+// 31(1)68(h)76(v)64(d)-0000-0010-8000-00AA00389B71  'dvh1' ==  MEDIASUBTYPE_dvh1
+OUR_GUID_ENTRY(MEDIASUBTYPE_dvh1,
+0x31687664, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71)
 
 // 6E8D4A22-310C-11d0-B79A-00AA003767A7         MEDIASUBTYPE_Line21_BytePair
 OUR_GUID_ENTRY(MEDIASUBTYPE_Line21_BytePair,
@@ -613,10 +710,6 @@ OUR_GUID_ENTRY(CLSID_URLReader,
 OUR_GUID_ENTRY(CLSID_PersistMonikerPID,
 0xe436ebb7, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7, 0x70)
 
-// {5f2759c0-7685-11cf-8b23-00805f6cef60}    IAMovie plug-in distributor
-OUR_GUID_ENTRY(CLSID_AMovie,
-0x5f2759c0, 0x7685, 0x11cf, 0x8b, 0x23, 0x00, 0x80, 0x5f, 0x6c, 0xef, 0x60)
-
 // {D76E2820-1563-11cf-AC98-00AA004C0FA9}
 OUR_GUID_ENTRY(CLSID_AVICo,
 0xd76e2820, 0x1563, 0x11cf, 0xac, 0x98, 0x0, 0xaa, 0x0, 0x4c, 0xf, 0xa9)
@@ -657,6 +750,29 @@ OUR_GUID_ENTRY(CLSID_MPEG2Demultiplexer,
 OUR_GUID_ENTRY(CLSID_MMSPLITTER,
 0x3ae86b20, 0x7be8, 0x11d1, 0xab, 0xe6, 0x00, 0xa0, 0xc9, 0x05, 0xf3, 0x75)
 
+// {2DB47AE5-CF39-43c2-B4D6-0CD8D90946F4}
+OUR_GUID_ENTRY(CLSID_StreamBufferSink,
+0x2db47ae5, 0xcf39, 0x43c2, 0xb4, 0xd6, 0xc, 0xd8, 0xd9, 0x9, 0x46, 0xf4)
+
+// {C9F5FE02-F851-4eb5-99EE-AD602AF1E619}
+OUR_GUID_ENTRY(CLSID_StreamBufferSource,
+0xc9f5fe02, 0xf851, 0x4eb5, 0x99, 0xee, 0xad, 0x60, 0x2a, 0xf1, 0xe6, 0x19)
+
+// {FA8A68B2-C864-4ba2-AD53-D3876A87494B}
+OUR_GUID_ENTRY(CLSID_StreamBufferConfig,
+0xfa8a68b2, 0xc864, 0x4ba2, 0xad, 0x53, 0xd3, 0x87, 0x6a, 0x87, 0x49, 0x4b)
+
+// {6CFAD761-735D-4aa5-8AFC-AF91A7D61EBA}
+OUR_GUID_ENTRY(CLSID_Mpeg2VideoStreamAnalyzer,
+0x6cfad761, 0x735d, 0x4aa5, 0x8a, 0xfc, 0xaf, 0x91, 0xa7, 0xd6, 0x1e, 0xba)
+
+// {CCAA63AC-1057-4778-AE92-1206AB9ACEE6}
+OUR_GUID_ENTRY(CLSID_StreamBufferRecordingAttributes,
+0xccaa63ac, 0x1057, 0x4778, 0xae, 0x92, 0x12, 0x6, 0xab, 0x9a, 0xce, 0xe6)
+
+// {D682C4BA-A90A-42fe-B9E1-03109849C423}
+OUR_GUID_ENTRY(CLSID_StreamBufferComposeRecording,
+0xd682c4ba, 0xa90a, 0x42fe, 0xb9, 0xe1, 0x3, 0x10, 0x98, 0x49, 0xc4, 0x23)
 
 // {B1B77C00-C3E4-11cf-AF79-00AA00B67A42}               DV video decoder
 OUR_GUID_ENTRY(CLSID_DVVideoCodec,
@@ -774,6 +890,14 @@ OUR_GUID_ENTRY(CLSID_ActiveMovieCategories,
 // 2721AE20-7E70-11D0-A5D6-28DB04C10000
 OUR_GUID_ENTRY(CLSID_DVDHWDecodersCategory,
 0x2721AE20, 0x7E70, 0x11D0, 0xA5, 0xD6, 0x28, 0xDB, 0x04, 0xC1, 0x00, 0x00)
+
+// 7D22E920-5CA9-4787-8C2B-A6779BD11781     Encoder API encoder category
+OUR_GUID_ENTRY(CLSID_MediaEncoderCategory,
+0x7D22E920, 0x5CA9, 0x4787, 0x8C, 0x2B, 0xA6, 0x77, 0x9B, 0xD1, 0x17, 0x81)
+
+// 236C9559-ADCE-4736-BF72-BAB34E392196     Encoder API multiplexer category
+OUR_GUID_ENTRY(CLSID_MediaMultiplexerCategory,
+0x236C9559, 0xADCE, 0x4736, 0xBF, 0x72, 0xBA, 0xB3, 0x4E, 0x39, 0x21, 0x96)
 
 // CDA42200-BD88-11d0-BD4E-00A0C911CE86
 OUR_GUID_ENTRY(CLSID_FilterMapper2,
@@ -912,27 +1036,22 @@ OUR_GUID_ENTRY(IID_IMixerPinConfig2,
 0xebf47182, 0x8764, 0x11d1, 0x9e, 0x69, 0x0, 0xc0, 0x4f, 0xd7, 0xc1, 0x5b)
 
 
-// {FA2AA8F4-8B62-11D0-A520-000000000000)
-OUR_GUID_ENTRY(IID_IAMMediaContent,
-0xFA2AA8F4, 0x8B62, 0x11D0, 0xA5, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-
-
-// This is a bit awkward. The OLE GUIDs are separated out into a different
-// file from the main header files. The header files can then be included
-// multiple times and are protected with the following statements,
+// This is a real pain in the neck. The OLE GUIDs are separated out into a
+// different file from the main header files. The header files can then be
+// included multiple times and are protected with the following statements,
 //
 //      #ifndef __SOMETHING_DEFINED__
 //      #define __SOMETHING_DEFINED__
 //          all the header contents
 //      #endif // __SOMETHING_DEFINED__
 //
-// When the actual GUIDs are to be defined (using initguid), the GUID header
-// file can then be included to really define them just once. Unfortunately,
+// When the actual GUIDs are to be defined (using initguid) the GUID header
+// file can then be included to really define them just once. Unfortunately
 // DirectDraw has the GUIDs defined in the main header file. So if the base
-// classes bring in ddraw.h to get at the DirectDraw structures and so on,
+// classes bring in ddraw.h to get at the DirectDraw structures and so on
 // nobody would then be able to really include ddraw.h to allocate the GUID
-// memory structures because of the aforementioned header file protection.
-// Therefore, the DirectDraw GUIDs are defined and really allocated here.
+// memory structures because of the aforementioned header file protection
+// Therefore the DirectDraw GUIDs are defined and allocated for real here
 
 #ifndef __DDRAW_INCLUDED__
 OUR_GUID_ENTRY(CLSID_DirectDraw,            0xD7B70EE0,0x4340,0x11CF,0xB0,0x63,0x00,0x20,0xAF,0xC2,0xCD,0x35)
@@ -1115,7 +1234,7 @@ OUR_GUID_ENTRY(MEDIATYPE_AnalogAudio,
 #include "ksuuids.h"
 
 
-// -- Well-known time format GUIDs ---
+// -- Well known time format GUIDs ---
 
 
 // 00000000-0000-0000-0000-000000000000
@@ -1199,7 +1318,7 @@ OUR_GUID_ENTRY(PIN_CATEGORY_VIDEOPORT_VBI,
 0xfb6c428c, 0x0353, 0x11d1, 0x90, 0x5f, 0x00, 0x00, 0xc0, 0xcc, 0x16, 0xba)
 
 
-// The following special GUIDS are used by ICaptureGraphBuilder::FindInterface
+// the following special GUIDS are used by ICaptureGraphBuilder::FindInterface
 
 // {AC798BE0-98E3-11d1-B3F1-00AA003761C5}
 OUR_GUID_ENTRY(LOOK_UPSTREAM_ONLY,
@@ -1270,6 +1389,18 @@ OUR_GUID_ENTRY(CLSID_AllocPresenterDDXclMode,
 OUR_GUID_ENTRY(CLSID_VideoPortManager,
 0x6f26a6cd, 0x967b, 0x47fd, 0x87, 0x4a, 0x7a, 0xed, 0x2c, 0x9d, 0x25, 0xa2)
 
+
+// -------------------------------------------------------------------------
+// VMR GUIDS for DX9
+// -------------------------------------------------------------------------
+
+// {51b4abf3-748f-4e3b-a276-c828330e926a}
+OUR_GUID_ENTRY(CLSID_VideoMixingRenderer9,
+0x51b4abf3, 0x748f, 0x4e3b, 0xa2, 0x76, 0xc8, 0x28, 0x33, 0x0e, 0x92, 0x6a)
+
+
+
+
 // -------------------------------------------------------------------------
 // BDA Network Provider GUIDS
 // -------------------------------------------------------------------------
@@ -1285,6 +1416,16 @@ OUR_GUID_ENTRY(CLSID_ATSCNetworkPropertyPage,
 // {FA4B375A-45B4-4d45-8440-263957B11623}
 OUR_GUID_ENTRY(CLSID_DVBSNetworkProvider,
 0xfa4b375a, 0x45b4, 0x4d45, 0x84, 0x40, 0x26, 0x39, 0x57, 0xb1, 0x16, 0x23)
+
+// {216C62DF-6D7F-4e9a-8571-05F14EDB766A}
+OUR_GUID_ENTRY(CLSID_DVBTNetworkProvider,
+0x216c62df, 0x6d7f, 0x4e9a, 0x85, 0x71, 0x5, 0xf1, 0x4e, 0xdb, 0x76, 0x6a)
+
+// {DC0C0FE7-0485-4266-B93F-68FBF80ED834}
+OUR_GUID_ENTRY(CLSID_DVBCNetworkProvider,
+0xdc0c0fe7, 0x485, 0x4266, 0xb9, 0x3f, 0x68, 0xfb, 0xf8, 0xe, 0xd8, 0x34)
+
+
 
 
 // -------------------------------------------------------------------------
@@ -1308,5 +1449,71 @@ OUR_GUID_ENTRY(CLSID_TVEFilterCCProperties,
 // {05500283-FAA5-4DF9-8246-BFC23AC5CEA8}
 OUR_GUID_ENTRY(CLSID_TVEFilterStatsProperties,
 0x05500283, 0xFAA5, 0x4DF9, 0x82, 0x46, 0xBF, 0xC2, 0x3A, 0xC5, 0xCE, 0xA8)
+
+// -------------------------------------------------------------------------
+// Defined ENCAPI parameter GUIDs
+// -------------------------------------------------------------------------
+
+// The CLSID for the original IVideoEncoder proxy plug-in
+// {B43C4EEC-8C32-4791-9102-508ADA5EE8E7}
+OUR_GUID_ENTRY(CLSID_IVideoEncoderProxy,
+0xb43c4eec, 0x8c32, 0x4791, 0x91, 0x2, 0x50, 0x8a, 0xda, 0x5e, 0xe8, 0xe7)
+
+// The CLSID for the ICodecAPI proxy plug-in
+// {7ff0997a-1999-4286-a73c-622b8814e7eb}
+OUR_GUID_ENTRY(CLSID_ICodecAPIProxy,
+0x7ff0997a, 0x1999, 0x4286, 0xa7, 0x3c, 0x62, 0x2b, 0x88, 0x14, 0xe7, 0xeb )
+
+// The CLSID for the combination ICodecAPI/IVideoEncoder proxy plug-in
+// {b05dabd9-56e5-4fdc-afa4-8a47e91f1c9c}
+OUR_GUID_ENTRY(CLSID_IVideoEncoderCodecAPIProxy,
+0xb05dabd9, 0x56e5, 0x4fdc, 0xaf, 0xa4, 0x8a, 0x47, 0xe9, 0x1f, 0x1c, 0x9c )
+
+#ifndef __ENCODER_API_GUIDS__
+#define __ENCODER_API_GUIDS__
+
+// {49CC4C43-CA83-4ad4-A9AF-F3696AF666DF}
+OUR_GUID_ENTRY(ENCAPIPARAM_BITRATE,
+0x49cc4c43, 0xca83, 0x4ad4, 0xa9, 0xaf, 0xf3, 0x69, 0x6a, 0xf6, 0x66, 0xdf)
+
+// {703F16A9-3D48-44a1-B077-018DFF915D19}
+OUR_GUID_ENTRY(ENCAPIPARAM_PEAK_BITRATE,
+0x703f16a9, 0x3d48, 0x44a1, 0xb0, 0x77, 0x1, 0x8d, 0xff, 0x91, 0x5d, 0x19)
+
+// {EE5FB25C-C713-40d1-9D58-C0D7241E250F}
+OUR_GUID_ENTRY(ENCAPIPARAM_BITRATE_MODE,
+0xee5fb25c, 0xc713, 0x40d1, 0x9d, 0x58, 0xc0, 0xd7, 0x24, 0x1e, 0x25, 0xf)
+
+// for kernel control
+
+// {62b12acf-f6b0-47d9-9456-96f22c4e0b9d}
+OUR_GUID_ENTRY(CODECAPI_CHANGELISTS,
+0x62b12acf, 0xf6b0, 0x47d9, 0x94, 0x56, 0x96, 0xf2, 0x2c, 0x4e, 0x0b, 0x9d)
+
+// {7112e8e1-3d03-47ef-8e60-03f1cf537301 }
+OUR_GUID_ENTRY(CODECAPI_VIDEO_ENCODER,
+0x7112e8e1, 0x3d03, 0x47ef, 0x8e, 0x60, 0x03, 0xf1, 0xcf, 0x53, 0x73, 0x01)
+
+// {b9d19a3e-f897-429c-bc46-8138b7272b2d }
+OUR_GUID_ENTRY(CODECAPI_AUDIO_ENCODER,
+0xb9d19a3e, 0xf897, 0x429c, 0xbc, 0x46, 0x81, 0x38, 0xb7, 0x27, 0x2b, 0x2d)
+
+// {6c5e6a7c-acf8-4f55-a999-1a628109051b }
+OUR_GUID_ENTRY(CODECAPI_SETALLDEFAULTS,
+0x6c5e6a7c, 0xacf8, 0x4f55, 0xa9, 0x99, 0x1a, 0x62, 0x81, 0x09, 0x05, 0x1b)
+
+// {6a577e92-83e1-4113-adc2-4fcec32f83a1 }
+OUR_GUID_ENTRY(CODECAPI_ALLSETTINGS,
+0x6a577e92, 0x83e1, 0x4113, 0xad, 0xc2, 0x4f, 0xce, 0xc3, 0x2f, 0x83, 0xa1)
+
+// {0581af97-7693-4dbd-9dca-3f9ebd6585a1 }
+OUR_GUID_ENTRY(CODECAPI_SUPPORTSEVENTS,
+0x0581af97, 0x7693, 0x4dbd, 0x9d, 0xca, 0x3f, 0x9e, 0xbd, 0x65, 0x85, 0xa1 )
+
+// {1cb14e83-7d72-4657-83fd-47a2c5b9d13d }
+OUR_GUID_ENTRY(CODECAPI_CURRENTCHANGELIST,
+0x1cb14e83, 0x7d72, 0x4657, 0x83, 0xfd, 0x47, 0xa2, 0xc5, 0xb9, 0xd1, 0x3d )
+
+#endif // __ENCODER_API_GUIDS__
 
 #undef OUR_GUID_ENTRY

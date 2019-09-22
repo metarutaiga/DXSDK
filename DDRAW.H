@@ -2907,6 +2907,21 @@ typedef struct _DDCOLORCONTROL
  */
 #define DDSCAPS2_ENABLEALPHACHANNEL             0x20000000L
 
+/*
+ * Indicates that all surfaces in this creation chain is extended primary surface format.
+ * This flag will be set on extended primary surface chains that always have explicit pixel
+ * format and the pixel format is typically GDI (Graphics Device Interface) couldn't handle,
+ * thus only used with fullscreen application. (e.g. D3DFMT_A2R10G10B10 format)
+ */
+#define DDSCAPS2_EXTENDEDFORMATPRIMARY          0x40000000L
+
+/*
+ * Indicates that all surfaces in this creation chain is additional primary surface.
+ * This flag will be set on primary surface chains which must present on the adapter
+ * id provided on dwCaps4. Typically this will be used to create secondary primary surface
+ * on DualView display adapter.
+ */
+#define DDSCAPS2_ADDITIONALPRIMARY              0x80000000L
 
 /*
  * This is a mask that indicates the set of bits that may be set
@@ -2914,6 +2929,39 @@ typedef struct _DDCOLORCONTROL
  * when multisampling
  */
 #define DDSCAPS3_MULTISAMPLE_MASK               0x0000001FL
+
+/*
+ * This is a mask that indicates the set of bits that may be set
+ * at createsurface time to indicate the quality level of rendering
+ * for the current number of samples per pixel
+ */
+#define DDSCAPS3_MULTISAMPLE_QUALITY_MASK       0x000000E0L
+#define DDSCAPS3_MULTISAMPLE_QUALITY_SHIFT      5
+
+/*
+ * This bit is reserved for internal use 
+ */
+#define DDSCAPS3_RESERVED1                      0x00000100L
+
+/*
+ * This bit is reserved for internal use 
+ */
+#define DDSCAPS3_RESERVED2                      0x00000200L
+
+/*
+ * This indicates whether this surface has light-weight miplevels
+ */
+#define DDSCAPS3_LIGHTWEIGHTMIPMAP              0x00000400L
+
+/*
+ * This indicates that the mipsublevels for this surface are auto-generated
+ */
+#define DDSCAPS3_AUTOGENMIPMAP                  0x00000800L
+
+/*
+ * This indicates that the mipsublevels for this surface are auto-generated
+ */
+#define DDSCAPS3_DMAP                           0x00001000L
 
 
  /****************************************************************************
@@ -3278,6 +3326,11 @@ typedef struct _DDCOLORCONTROL
  * quickly handed out to the application).
  */
 #define DDCAPS2_DYNAMICTEXTURES               0x20000000L
+
+/*
+ * Driver supports auto-generation of mipmaps.
+ */
+#define DDCAPS2_CANAUTOGENMIPMAP              0x40000000L
 
 
 /****************************************************************************
@@ -4345,8 +4398,8 @@ typedef struct _DDCOLORCONTROL
 
 
 /*
- * wait until the device is ready to handle the blt
- * this will cause blt to not return DDERR_WASSTILLDRAWING
+ * Return immediately (with DDERR_WASSTILLDRAWING) if the device is not
+ * ready to schedule the blt at the time Blt() is called.
  */
 #define DDBLT_DONOTWAIT                         0x08000000l
 
@@ -4387,6 +4440,42 @@ typedef struct _DDCOLORCONTROL
 #define DDBLT_PRESENTATION                      0x10000000l
 #define DDBLT_LAST_PRESENTATION                 0x20000000l
 
+/*
+ * If DDBLT_EXTENDED_FLAGS is set, then the driver should re-interpret
+ * other flags according to the definitions that follow.
+ * For example, bit 0 (0x00000001L) means DDBLT_ALPHADEST, unless
+ * DDBLT_EXTENDED_FLAGS is also set, in which case bit 0 means
+ * DDBLT_EXTENDED_LINEAR_CONTENT.
+ * Only DirectX9 and higher drivers will be given extended blt flags.
+ * Only flags explicitly mentioned here should be re-interpreted.
+ * All other flags retain their original meanings.
+ *
+ * List of re-interpreted flags:
+ *
+ * Bit Hex value   New meaning                                  old meaning
+ * ---------------------------------------------------------------
+ *  2  0x00000004  DDBLT_EXTENDED_LINEAR_CONTENT                DDBLT_ALPHADESTNEG
+ *  4  0x00000010  DDBLT_EXTENDED_PRESENTATION_STRETCHFACTOR    DDBLT_ALPHAEDGEBLEND
+ *
+ *
+ * NOTE: APPLICATIONS SHOULD NOT SET THIS FLAG. THIS FLAG IS INTENDED
+ * FOR USE BY THE DIRECT3D RUNTIME.
+ */
+#define DDBLT_EXTENDED_FLAGS                    0x40000000l
+
+/*
+ * EXTENDED FLAG. SEE DEFINITION OF DDBLT_EXTENDED_FLAGS.
+ * This flag indidcates that the source surface contains content in a
+ * linear color space. The driver may perform gamma correction to the
+ * desktop color space (i.e. sRGB, gamma 2.2) as part of this blt.
+ * If the device can perform such a conversion as part of the copy,
+ * the driver should also set D3DCAPS3_LINEAR_TO_SRGB_PRESENTATION
+ *
+ * NOTE: APPLICATIONS SHOULD NOT SET THIS FLAG. THIS FLAG IS INTENDED
+ * FOR USE BY THE DIRECT3D RUNTIME. Use IDirect3DSwapChain9::Present
+ * and specify D3DPRESENT_LINEAR_CONTENT in order to use this functionality.
+ */ 
+#define DDBLT_EXTENDED_LINEAR_CONTENT           0x00000004l
 
 
 /****************************************************************************

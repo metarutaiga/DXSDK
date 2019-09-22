@@ -4,7 +4,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0347 */
+ /* File created by MIDL compiler version 6.00.0357 */
 /* Compiler settings for amstream.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -1799,7 +1799,7 @@ EXTERN_C const IID IID_IAMMediaTypeSample;
         virtual long STDMETHODCALLTYPE GetActualDataLength( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetActualDataLength( 
-            long __MIDL_0017) = 0;
+            long __MIDL_0020) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMediaType( 
             AM_MEDIA_TYPE **ppMediaType) = 0;
@@ -1907,7 +1907,7 @@ EXTERN_C const IID IID_IAMMediaTypeSample;
         
         HRESULT ( STDMETHODCALLTYPE *SetActualDataLength )( 
             IAMMediaTypeSample * This,
-            long __MIDL_0017);
+            long __MIDL_0020);
         
         HRESULT ( STDMETHODCALLTYPE *GetMediaType )( 
             IAMMediaTypeSample * This,
@@ -2003,8 +2003,8 @@ EXTERN_C const IID IID_IAMMediaTypeSample;
 #define IAMMediaTypeSample_GetActualDataLength(This)	\
     (This)->lpVtbl -> GetActualDataLength(This)
 
-#define IAMMediaTypeSample_SetActualDataLength(This,__MIDL_0017)	\
-    (This)->lpVtbl -> SetActualDataLength(This,__MIDL_0017)
+#define IAMMediaTypeSample_SetActualDataLength(This,__MIDL_0020)	\
+    (This)->lpVtbl -> SetActualDataLength(This,__MIDL_0020)
 
 #define IAMMediaTypeSample_GetMediaType(This,ppMediaType)	\
     (This)->lpVtbl -> GetMediaType(This,ppMediaType)
@@ -2152,7 +2152,7 @@ void __RPC_STUB IAMMediaTypeSample_GetActualDataLength_Stub(
 
 HRESULT STDMETHODCALLTYPE IAMMediaTypeSample_SetActualDataLength_Proxy( 
     IAMMediaTypeSample * This,
-    long __MIDL_0017);
+    long __MIDL_0020);
 
 
 void __RPC_STUB IAMMediaTypeSample_SetActualDataLength_Stub(
@@ -2258,7 +2258,7 @@ AMMultiMediaStream;
 #endif
 #endif /* __DirectShowStreamLib_LIBRARY_DEFINED__ */
 
-/* interface __MIDL_itf_amstream_0410 */
+/* interface __MIDL_itf_amstream_0418 */
 /* [local] */ 
 
 #ifndef __cplusplus
@@ -2274,8 +2274,8 @@ DEFINE_GUID(CLSID_AMMediaTypeStream, /* CF0F2F7C-F7BF-11d0-900D-00C04FD9189D */
 0xcf0f2f7c, 0xf7bf, 0x11d0, 0x90, 0xd, 0x0, 0xc0, 0x4f, 0xd9, 0x18, 0x9d);
 
 
-extern RPC_IF_HANDLE __MIDL_itf_amstream_0410_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_amstream_0410_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_amstream_0418_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_amstream_0418_v0_0_s_ifspec;
 
 /* Additional Prototypes for ALL interfaces */
 

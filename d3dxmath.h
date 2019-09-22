@@ -23,6 +23,9 @@
 #endif
 #endif
 
+#if _MSC_VER >= 1200
+#pragma warning(push)
+#endif
 #pragma warning(disable:4201) // anonymous unions warning
 
 
@@ -1080,6 +1083,10 @@ HRESULT WINAPI D3DXCreateMatrixStack( DWORD flags, LPD3DXMATRIXSTACK *ppStack );
 
 #include "d3dxmath.inl"
 
+#if _MSC_VER >= 1200
+#pragma warning(pop)
+#else
 #pragma warning(default:4201)
+#endif
 
 #endif // __D3DXMATH_H__

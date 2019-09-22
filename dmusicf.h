@@ -2,7 +2,7 @@
 *                                                                       *
 *   dmusicf.h -- This module defines the DirectMusic file formats       *
 *                                                                       *
-*   Copyright (c) 1998-1999 Microsoft Corporation
+*   Copyright (c) Microsoft Corporation.  All rights reserved.          *
 *                                                                       *
 ************************************************************************/
 
@@ -193,6 +193,18 @@ typedef enum enumDMUS_VARIATIONT_TYPES
     DMUS_VARIATIONT_NO_REPEAT        = 3, /* Play randomly, but don't play the same variation twice. */
     DMUS_VARIATIONT_RANDOM_ROW       = 4  /* Play randomly as a row: don't repeat any variation until all have played. */
 } DMUS_VARIATIONT_TYPES;
+
+/* These specify possible values for DMUS_IO_PATTERN.wEmbellishment (dx8) */
+typedef enum enumDMUS_EMBELLISHT_TYPES
+{
+    DMUS_EMBELLISHT_NORMAL          = 0,
+    DMUS_EMBELLISHT_FILL            = 1,
+    DMUS_EMBELLISHT_BREAK           = 2,
+    DMUS_EMBELLISHT_INTRO           = 4,
+    DMUS_EMBELLISHT_END             = 8,
+    DMUS_EMBELLISHT_MOTIF           = 16,
+    DMUS_EMBELLISHT_ALL             = 0xFFFF
+} DMUS_EMBELLISHT_TYPES;
 
 #pragma pack(2)
 
@@ -497,6 +509,7 @@ typedef enum enumDMUS_PATTERNT_TYPES
     DMUS_PATTERNT_RANDOM_ROW       = 5  /* Play randomly as a row: don't repeat any pattern until all have played. */
 } DMUS_PATTERNT_TYPES;
 
+
 #define DMUS_FOURCC_CHORDTRACK_LIST         mmioFOURCC('c','o','r','d')
 #define DMUS_FOURCC_CHORDTRACKHEADER_CHUNK  mmioFOURCC('c','r','d','h')
 #define DMUS_FOURCC_CHORDTRACKBODY_CHUNK    mmioFOURCC('c','r','d','b')
@@ -541,7 +554,7 @@ typedef struct _DMUS_IO_COMMAND
     (
         'cord'
         <crdh-ck>
-        <crdb-ck>       // Chord body chunk
+        <crdb-ck>...    // Chord body chunks
     )
 
         // <crdh-ck>
@@ -994,6 +1007,8 @@ typedef struct _DMUS_IO_WAVE_ITEM_HEADER
     DWORD           dwLoopStart;    /* Start point for a looping wave. */
     DWORD           dwLoopEnd;      /* End point for a looping wave. */
     DWORD           dwFlags;        /* Various flags, including whether this is a streaming wave and whether it can be invalidated. */
+    WORD            wVolumeRange;   /* Random range for volume. */
+    WORD            wPitchRange;    /* Random range for pitch. */
 } DMUS_IO_WAVE_ITEM_HEADER;
 
 /*
@@ -1166,9 +1181,14 @@ typedef struct _DMUS_IO_SEGMENT_HEADER
     REFERENCE_TIME rtLength;    /* Length, in reference time (overrides music time length.) */
     DWORD       dwFlags;
     DWORD       dwReserved;     /* Reserved. */
+    /* Added for DX9. */
+    REFERENCE_TIME rtLoopStart; /* Clock time loop start. */
+    REFERENCE_TIME rtLoopEnd;   /* Clock time loop end. */
+    REFERENCE_TIME rtPlayStart; /* Start of playback in clock time. */
 } DMUS_IO_SEGMENT_HEADER;
 
 #define DMUS_SEGIOF_REFLENGTH   1  /* Use the time in rtLength for the segment length. */
+#define DMUS_SEGIOF_CLOCKTIME   2  /* This is a clock time segment. */
 
 typedef struct _DMUS_IO_TRACK_HEADER
 {
@@ -1249,159 +1269,6 @@ RIFF
     (
         'trkx'
         <DMUS_IO_TRACK_EXTRAS_HEADER>  // DX8 Track flags header
-    )
-*/
-
-/*  File io for DirectMusic Song object */
-/*  Note: Song file format is not supported in DX8. */
-
-/* RIFF ids: */
-
-#define DMUS_FOURCC_SONG_FORM           mmioFOURCC('D','M','S','O') /* Entire song. */
-#define DMUS_FOURCC_SONG_CHUNK          mmioFOURCC('s','n','g','h') /* Song header info. */
-#define DMUS_FOURCC_SONGSEGMENTS_LIST   mmioFOURCC('s','e','g','l') /* List of embedded segments. */
-#define DMUS_FOURCC_SONGSEGMENT_LIST    mmioFOURCC('s','s','g','l') /* Container for a segment or segment reference. */
-#define DMUS_FOURCC_TOOLGRAPHS_LIST     mmioFOURCC('t','l','g','l') /* List of embedded tool graphs. */
-#define DMUS_FOURCC_SEGREFS_LIST        mmioFOURCC('s','r','s','l') /* List of segment references. */
-#define DMUS_FOURCC_SEGREF_LIST         mmioFOURCC('s','g','r','l') /* Container for a segment reference. */
-#define DMUS_FOURCC_SEGREF_CHUNK        mmioFOURCC('s','g','r','h') /* Segment reference header. */
-#define DMUS_FOURCC_SEGTRANS_CHUNK      mmioFOURCC('s','t','r','h') /* Set of transitions to this segment. */
-#define DMUS_FOURCC_TRACKREFS_LIST      mmioFOURCC('t','r','s','l') /* Set of track references within the segment reference. */
-#define DMUS_FOURCC_TRACKREF_LIST       mmioFOURCC('t','k','r','l') /* Container for a track reference. */
-#define DMUS_FOURCC_TRACKREF_CHUNK      mmioFOURCC('t','k','r','h') /* Track reference header. */
-
-/* io structures:*/
-
-typedef struct _DMUS_IO_SONG_HEADER
-{
-    DWORD       dwFlags;
-    DWORD       dwStartSegID;   /* Id of the segment that starts playback. */
-} DMUS_IO_SONG_HEADER;
-
-typedef struct _DMUS_IO_SEGREF_HEADER
-{
-    DWORD       dwID;           /* Each has a unique ID. Must be less than DMUS_SONG_MAXSEGID. */
-    DWORD       dwSegmentID;    /* Optional segment to link to. */
-    DWORD       dwToolGraphID;  /* Optional tool graph to use for processing. */
-    DWORD       dwFlags;        /* Various control flags. Currently reserved for future use. Must be 0. */
-    DWORD       dwNextPlayID;   /* ID of next segment, to chain segments into a song. */
-} DMUS_IO_SEGREF_HEADER;
-
-
-typedef struct _DMUS_IO_TRACKREF_HEADER
-{
-    DWORD       dwSegmentID;    /* Which segment to find this in. */
-    DWORD       dwFlags;        /* Reference control flags. */
-} DMUS_IO_TRACKREF_HEADER;
-
-/*  Transition definition chunk defines a transition, using an optional transition template
-    segment.
-*/
-
-typedef struct _DMUS_IO_TRANSITION_DEF
-{
-    DWORD       dwSegmentID;        /* Segment the transition goes to. */
-    DWORD       dwTransitionID;     /* Template segment to use for the transition. */
-    DWORD       dwPlayFlags;        /* Flags to use for transition. */
-} DMUS_IO_TRANSITION_DEF;
-
-#define DMUS_SONG_MAXSEGID      0x7FFFFFFF  /* Segment ids can not go higher than this. */
-#define DMUS_SONG_ANYSEG        0x80000000  /* Special ID to indicate any segment. */
-#define DMUS_SONG_NOSEG         0xFFFFFFFF  /* Special ID to indicate no segment. */
-#define DMUS_SONG_NOFROMSEG     0x80000001  /* Special ID for dwSegmentID to indicate transition from nothing (or outside the song) into this segment. */
-
-/*
-RIFF
-(
-    'DMSO'          // DirectMusic Song chunk
-    <sngh-ck>       // Song header chunk
-    [<guid-ck>]     // GUID for song
-    [<vers-ck>]     // Optional version info
-    [<UNFO-list>]   // Name, author, copyright info., comments
-    [<DMCN-form>]   // Optional container of objects embedded in file. Must precede segment list.
-    <segl-list>     // List of Segments
-    [<tlgl-list>]   // Optional list of ToolGraphs
-    [<DMAP-form>]   // Optional Audio Path - to be shared by all segments in song.
-    <srsl-list>     // List of segment references.
-)
-
-    // <sngh-ck>        
-    'sngh'
-    (
-        <DMUS_IO_SONG_HEADER>
-    )
-    
-    // <segl-list>
-    LIST
-    (
-        'segl'          // Array of segments
-        <ssgl-list>...  // Each segment is wrapped in this.
-    )
-
-    // <ssgl-list>
-    LIST
-    (
-        'ssgl'          // Segment container.
-        [DMSG-form]     // Each segment is either a full embedded segment RIFF form.
-        [DMRF-list]     // Or a reference to an external segment.
-    )
-
-    // <tlgl-list>
-    LIST
-    (
-        'tlgl'          // Array of toolgraphs
-        <DMTG-form>...  // Each toolgraph is a full RIFF form.
-    )
-
-    // <srsl-list>
-    LIST
-    (
-        'srsl'          // Array of segment references
-        <sgrl-list>...  // Each segment reference is contained in a RIFF list.
-    )
-
-    // <sgrl-list>      // Segment reference container.
-    LIST
-    (
-        'sgrl'
-        <sgrh-ck>       // Segment reference header chunk.
-        <segh-ck>       // Segment header chunk. Defines the segment. 
-        <UNFO-list>     // Name, author, etc. Primarily for name, though, which is required for Song->GetSegment().
-        [<strh-ck>]     // Segment transition chunk. Defines how to do transitions from other segments.
-        [<trsl-list>]   // List of track references, to create a segment from tracks in multiple segments.
-    )
-
-    // <sgrh-ck>        // Segment reference header chunk
-    (
-        'sgrh'
-        <DMUS_IO_SEGREF_HEADER>  // Segment reference header
-    )
-
-    // <strh-ck>        // Segment transition chunk. 
-    (
-        'strh'
-        <DMUS_IO_TRANSITION_DEF>    // Default transition.
-        <DMUS_IO_TRANSITION_DEF>... // Additional transitions.
-    )
-
-    // <trsl-list>      // Array of track references
-    (
-        'trsl'
-        <tkrl-list>...  // Each track reference is multiple chunks in a tkrl list.
-    )
-
-    // <tkrl-list>      // Track reference container
-    (
-        'tkrl'
-        <tkrh-ck>       // Track reference header chunk.
-        <trkh-ck>       // Normal track header chunk.
-        [<trkx-ck>]     // Optional track flags. 
-    )
-
-    // <tkrh-ck>        // Track reference header chunk
-    (
-        'tkrh'
-        <DMUS_IO_TRACKREF_HEADER>  // Track reference header
     )
 */
 
@@ -2195,47 +2062,6 @@ typedef struct _DMUS_IO_PARAMCONTROLTRACK_CURVEINFO
                     // sizeof DMUS_IO_PARAMCONTROLTRACK_CURVEINFO:DWORD
                     <DMUS_IO_PARAMCONTROLTRACK_CURVEINFO>... // curves, sorted in order of mtTime
                 )
-*/
-
-/* Melody formulation track */
-/* Note: Melody formulation file format is not supported in DX8. */
-
-typedef DMUS_CONNECTION_RULE DMUS_IO_CONNECTION_RULE; /* defined in dmusici.h */
-
-typedef DMUS_MELODY_FRAGMENT DMUS_IO_MELODY_FRAGMENT; /* defined in dmusici.h */
-
-#define DMUS_FOURCC_MELODYFORM_TRACK_LIST     mmioFOURCC( 'm', 'f', 'r', 'm' )
-#define DMUS_FOURCC_MELODYFORM_HEADER_CHUNK   mmioFOURCC( 'm', 'l', 'f', 'h' )
-#define DMUS_FOURCC_MELODYFORM_BODY_CHUNK     mmioFOURCC( 'm', 'l', 'f', 'b' )
-
-typedef struct _DMUS_IO_MELFORM
-{
-    DWORD        dwPlaymode;       /* NOT CURRENTLY USED - MUST BE 0 */   
-} DMUS_IO_MELFORM;
-
-
-/*
-    // <mfrm-list>
-    LIST
-    (
-        'mfrm'
-        <mlfh-ck>       // Melody formulation header chunk
-        <mlfb-ck>       // Melody formulation body chunk
-    )
-
-    // <mlfb-ck>
-    'mlfb'
-    (
-        <DMUS_IO_MELFORM>
-    )
-
-  // <mlfb-ck>
-    'mlfb'
-    (
-        //sizeof DMUS_IO_MELODY_FRAGMENT: DWORD
-        <DMUS_IO_MELODY_FRAGMENT>...
-    )
-
 */
 
 #if (DIRECTSOUND_VERSION >= 0x0800)

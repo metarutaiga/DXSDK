@@ -4,7 +4,7 @@
 // Desc: This file will be processed by the MIDL tool to 
 //       produce dmodshow.h and proxy-stub code.
 //
-// Copyright (c) 1999-2001, Microsoft Corporation.  All rights reserved.
+// Copyright (c) 1999 - 2002, Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
 
@@ -14,7 +14,6 @@ import "mediaobj.idl";
 
 // 94297043-bd82-4dfd-b0de-8177739c6d20
 cpp_quote("DEFINE_GUID(CLSID_DMOWrapperFilter, 0x94297043,0xbd82,0x4dfd,0xb0,0xde,0x81,0x77,0x73,0x9c,0x6d,0x20);")
-
 // bcd5796c-bd52-4d30-ab76-70f975b89199
 cpp_quote("DEFINE_GUID(CLSID_DMOFilterCategory,0xbcd5796c,0xbd52,0x4d30,0xab,0x76,0x70,0xf9,0x75,0xb8,0x91,0x99);")
 

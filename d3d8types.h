@@ -19,8 +19,13 @@
 
 #include <float.h>
 
+#if _MSC_VER >= 1200
+#pragma warning(push)
+#endif
 #pragma warning(disable:4201) // anonymous unions warning
+#if defined(_X86_) || defined(_IA64_)
 #pragma pack(4)
+#endif
 
 // D3DCOLOR is equivalent to D3DFMT_A8R8G8B8
 #ifndef D3DCOLOR_DEFINED
@@ -1668,7 +1673,11 @@ typedef struct _D3DDEVINFO_D3DVERTEXSTATS
 
 
 #pragma pack()
+#if _MSC_VER >= 1200
+#pragma warning(pop)
+#else
 #pragma warning(default:4201)
+#endif
 
 #endif /* (DIRECT3D_VERSION >= 0x0800) */
 #endif /* _D3D8TYPES(P)_H_ */

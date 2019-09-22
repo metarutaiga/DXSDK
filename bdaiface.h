@@ -1,16 +1,10 @@
-//+-------------------------------------------------------------------------
-//
-//  Microsoft Windows
-//  Copyright (C) Microsoft Corporation, 1999-2001.
-//
-//--------------------------------------------------------------------------
 
 #pragma warning( disable: 4049 )  /* more than 64k source lines */
 
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0347 */
+ /* File created by MIDL compiler version 6.00.0357 */
 /* Compiler settings for bdaiface.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -160,6 +154,12 @@ typedef interface IEnumPIDMap IEnumPIDMap;
 #define __IMPEG2PIDMap_FWD_DEFINED__
 typedef interface IMPEG2PIDMap IMPEG2PIDMap;
 #endif 	/* __IMPEG2PIDMap_FWD_DEFINED__ */
+
+
+#ifndef __IFrequencyMap_FWD_DEFINED__
+#define __IFrequencyMap_FWD_DEFINED__
+typedef interface IFrequencyMap IFrequencyMap;
+#endif 	/* __IFrequencyMap_FWD_DEFINED__ */
 
 
 /* header files for imported files */
@@ -3291,11 +3291,11 @@ void __RPC_STUB IBDA_DigitalDemodulator_get_SpectralInversion_Stub(
 #endif 	/* __IBDA_DigitalDemodulator_INTERFACE_DEFINED__ */
 
 
-/* interface __MIDL_itf_bdaiface_0413 */
+/* interface __MIDL_itf_bdaiface_0421 */
 /* [local] */ 
 
 typedef /* [public] */ 
-enum __MIDL___MIDL_itf_bdaiface_0413_0001
+enum __MIDL___MIDL_itf_bdaiface_0421_0001
     {	KSPROPERTY_IPSINK_MULTICASTLIST	= 0,
 	KSPROPERTY_IPSINK_ADAPTER_DESCRIPTION	= KSPROPERTY_IPSINK_MULTICASTLIST + 1,
 	KSPROPERTY_IPSINK_ADAPTER_ADDRESS	= KSPROPERTY_IPSINK_ADAPTER_DESCRIPTION + 1
@@ -3303,8 +3303,8 @@ enum __MIDL___MIDL_itf_bdaiface_0413_0001
 
 
 
-extern RPC_IF_HANDLE __MIDL_itf_bdaiface_0413_v0_0_c_ifspec;
-extern RPC_IF_HANDLE __MIDL_itf_bdaiface_0413_v0_0_s_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_bdaiface_0421_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_bdaiface_0421_v0_0_s_ifspec;
 
 #ifndef __IBDA_IPSinkControl_INTERFACE_DEFINED__
 #define __IBDA_IPSinkControl_INTERFACE_DEFINED__
@@ -3861,6 +3861,221 @@ void __RPC_STUB IMPEG2PIDMap_EnumPIDMap_Stub(
 
 
 #endif 	/* __IMPEG2PIDMap_INTERFACE_DEFINED__ */
+
+
+#ifndef __IFrequencyMap_INTERFACE_DEFINED__
+#define __IFrequencyMap_INTERFACE_DEFINED__
+
+/* interface IFrequencyMap */
+/* [restricted][hidden][unique][helpstring][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IFrequencyMap;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("06FB45C1-693C-4ea7-B79F-7A6A54D8DEF2")
+    IFrequencyMap : public IUnknown
+    {
+    public:
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE get_FrequencyMapping( 
+            /* [out] */ ULONG *ulCount,
+            /* [size_is][size_is][out] */ ULONG **ppulList) = 0;
+        
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE put_FrequencyMapping( 
+            /* [in] */ ULONG ulCount,
+            /* [size_is][in] */ ULONG pList[  ]) = 0;
+        
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE get_CountryCode( 
+            /* [out] */ ULONG *pulCountryCode) = 0;
+        
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE put_CountryCode( 
+            /* [in] */ ULONG ulCountryCode) = 0;
+        
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE get_DefaultFrequencyMapping( 
+            /* [in] */ ULONG ulCountryCode,
+            /* [out] */ ULONG *pulCount,
+            /* [size_is][size_is][out] */ ULONG **ppulList) = 0;
+        
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE get_CountryCodeList( 
+            /* [out] */ ULONG *pulCount,
+            /* [size_is][size_is][out] */ ULONG **ppulList) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IFrequencyMapVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IFrequencyMap * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IFrequencyMap * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IFrequencyMap * This);
+        
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *get_FrequencyMapping )( 
+            IFrequencyMap * This,
+            /* [out] */ ULONG *ulCount,
+            /* [size_is][size_is][out] */ ULONG **ppulList);
+        
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *put_FrequencyMapping )( 
+            IFrequencyMap * This,
+            /* [in] */ ULONG ulCount,
+            /* [size_is][in] */ ULONG pList[  ]);
+        
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *get_CountryCode )( 
+            IFrequencyMap * This,
+            /* [out] */ ULONG *pulCountryCode);
+        
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *put_CountryCode )( 
+            IFrequencyMap * This,
+            /* [in] */ ULONG ulCountryCode);
+        
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *get_DefaultFrequencyMapping )( 
+            IFrequencyMap * This,
+            /* [in] */ ULONG ulCountryCode,
+            /* [out] */ ULONG *pulCount,
+            /* [size_is][size_is][out] */ ULONG **ppulList);
+        
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *get_CountryCodeList )( 
+            IFrequencyMap * This,
+            /* [out] */ ULONG *pulCount,
+            /* [size_is][size_is][out] */ ULONG **ppulList);
+        
+        END_INTERFACE
+    } IFrequencyMapVtbl;
+
+    interface IFrequencyMap
+    {
+        CONST_VTBL struct IFrequencyMapVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IFrequencyMap_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IFrequencyMap_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IFrequencyMap_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IFrequencyMap_get_FrequencyMapping(This,ulCount,ppulList)	\
+    (This)->lpVtbl -> get_FrequencyMapping(This,ulCount,ppulList)
+
+#define IFrequencyMap_put_FrequencyMapping(This,ulCount,pList)	\
+    (This)->lpVtbl -> put_FrequencyMapping(This,ulCount,pList)
+
+#define IFrequencyMap_get_CountryCode(This,pulCountryCode)	\
+    (This)->lpVtbl -> get_CountryCode(This,pulCountryCode)
+
+#define IFrequencyMap_put_CountryCode(This,ulCountryCode)	\
+    (This)->lpVtbl -> put_CountryCode(This,ulCountryCode)
+
+#define IFrequencyMap_get_DefaultFrequencyMapping(This,ulCountryCode,pulCount,ppulList)	\
+    (This)->lpVtbl -> get_DefaultFrequencyMapping(This,ulCountryCode,pulCount,ppulList)
+
+#define IFrequencyMap_get_CountryCodeList(This,pulCount,ppulList)	\
+    (This)->lpVtbl -> get_CountryCodeList(This,pulCount,ppulList)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [helpstring] */ HRESULT STDMETHODCALLTYPE IFrequencyMap_get_FrequencyMapping_Proxy( 
+    IFrequencyMap * This,
+    /* [out] */ ULONG *ulCount,
+    /* [size_is][size_is][out] */ ULONG **ppulList);
+
+
+void __RPC_STUB IFrequencyMap_get_FrequencyMapping_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring] */ HRESULT STDMETHODCALLTYPE IFrequencyMap_put_FrequencyMapping_Proxy( 
+    IFrequencyMap * This,
+    /* [in] */ ULONG ulCount,
+    /* [size_is][in] */ ULONG pList[  ]);
+
+
+void __RPC_STUB IFrequencyMap_put_FrequencyMapping_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring] */ HRESULT STDMETHODCALLTYPE IFrequencyMap_get_CountryCode_Proxy( 
+    IFrequencyMap * This,
+    /* [out] */ ULONG *pulCountryCode);
+
+
+void __RPC_STUB IFrequencyMap_get_CountryCode_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring] */ HRESULT STDMETHODCALLTYPE IFrequencyMap_put_CountryCode_Proxy( 
+    IFrequencyMap * This,
+    /* [in] */ ULONG ulCountryCode);
+
+
+void __RPC_STUB IFrequencyMap_put_CountryCode_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring] */ HRESULT STDMETHODCALLTYPE IFrequencyMap_get_DefaultFrequencyMapping_Proxy( 
+    IFrequencyMap * This,
+    /* [in] */ ULONG ulCountryCode,
+    /* [out] */ ULONG *pulCount,
+    /* [size_is][size_is][out] */ ULONG **ppulList);
+
+
+void __RPC_STUB IFrequencyMap_get_DefaultFrequencyMapping_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring] */ HRESULT STDMETHODCALLTYPE IFrequencyMap_get_CountryCodeList_Proxy( 
+    IFrequencyMap * This,
+    /* [out] */ ULONG *pulCount,
+    /* [size_is][size_is][out] */ ULONG **ppulList);
+
+
+void __RPC_STUB IFrequencyMap_get_CountryCodeList_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IFrequencyMap_INTERFACE_DEFINED__ */
 
 
 /* Additional Prototypes for ALL interfaces */

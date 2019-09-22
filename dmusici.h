@@ -3,7 +3,7 @@
 *   dmusici.h -- This module contains the API for the                   *
 *                DirectMusic performance layer                          *
 *                                                                       *
-*   Copyright (c) 1998-1999 Microsoft Corporation
+*   Copyright (c) Microsoft Corporation.  All rights reserved.          *
 *                                                                       *
 ************************************************************************/
 
@@ -58,7 +58,6 @@ interface IDirectMusicPatternTrack;
 interface IDirectMusicContainer;
 interface IDirectMusicTool8;
 interface IDirectMusicTrack8;
-interface IDirectMusicSong;
 interface IDirectMusicAudioPath;
 #ifndef __cplusplus 
 typedef interface IDirectMusicTrack IDirectMusicTrack;
@@ -84,7 +83,6 @@ typedef interface IDirectMusicPatternTrack IDirectMusicPatternTrack;
 typedef interface IDirectMusicContainer IDirectMusicContainer;
 typedef interface IDirectMusicTool8 IDirectMusicTool8;
 typedef interface IDirectMusicTrack8 IDirectMusicTrack8;
-typedef interface IDirectMusicSong IDirectMusicSong;
 typedef interface IDirectMusicAudioPath IDirectMusicAudioPath;
 #endif
 
@@ -92,7 +90,6 @@ typedef enum enumDMUS_STYLET_TYPES
 {
     DMUS_STYLET_PATTERN         = 0,
     DMUS_STYLET_MOTIF           = 1,
-    DMUS_STYLET_FRAGMENT        = 2,
 } DMUS_STYLET_TYPES;
 
 
@@ -292,13 +289,13 @@ typedef enum enumDMUS_SEGF_FLAGS
     DMUS_SEGF_VALID_START_BEAT  = 1<<17,  /* 0x20000 In conjunction with DMUS_SEGF_ALIGN, allows the switch to occur on any beat. */
     DMUS_SEGF_VALID_START_GRID  = 1<<18,  /* 0x40000 In conjunction with DMUS_SEGF_ALIGN, allows the switch to occur on any grid. */
     DMUS_SEGF_VALID_START_TICK  = 1<<19,  /* 0x80000 In conjunction with DMUS_SEGF_ALIGN, allows the switch to occur any time. */
-    DMUS_SEGF_AUTOTRANSITION    = 1<<20,  /* 0x100000 Compose and play a transition segment, using either the transition template or transition embedded in song. */
+    DMUS_SEGF_AUTOTRANSITION    = 1<<20,  /* 0x100000 Compose and play a transition segment, using the transition template. */
     DMUS_SEGF_AFTERQUEUETIME    = 1<<21,  /* 0x200000 Make sure to play after the queue time. This is default for primary segments */
     DMUS_SEGF_AFTERLATENCYTIME  = 1<<22,  /* 0x400000 Make sure to play after the latency time. This is true for all segments, so this is a nop */
     DMUS_SEGF_SEGMENTEND        = 1<<23,  /* 0x800000 Play at the next end of segment. */
     DMUS_SEGF_MARKER            = 1<<24,  /* 0x1000000 Play at next marker in the primary segment. If there are no markers, default to any other resolution requests. */
     DMUS_SEGF_TIMESIG_ALWAYS    = 1<<25,  /* 0x2000000 Even if there is no primary segment, align start time with current time signature. */
-    DMUS_SEGF_USE_AUDIOPATH     = 1<<26,  /* 0x4000000 Uses the audio path that is embedded in the segment or song. */
+    DMUS_SEGF_USE_AUDIOPATH     = 1<<26,  /* 0x4000000 Uses the audio path that is embedded in the segment. */
     DMUS_SEGF_VALID_START_MEASURE = 1<<27, /* 0x8000000 In conjunction with DMUS_SEGF_ALIGN, allows the switch to occur on any bar. */
     DMUS_SEGF_INVALIDATE_PRI    = 1<<28   /* 0x10000000 invalidate only the current primary seg state */
 } DMUS_SEGF_FLAGS;
@@ -664,6 +661,7 @@ typedef struct _DMUS_WAVE_PMSG
 #define DMUS_WAVEF_STREAMING     2       /* If wave is streaming. */
 #define DMUS_WAVEF_NOINVALIDATE  4       /* Don't invalidate this wave. */
 #define DMUS_WAVEF_NOPREROLL     8       /* Don't preroll any wave data. */   
+#define DMUS_WAVEF_IGNORELOOPS   0x20    /* Ignore segment looping. */
 
 /* DMUS_LYRIC_PMSG */
 typedef struct _DMUS_LYRIC_PMSG
@@ -782,18 +780,6 @@ typedef struct _DMUS_SCRIPT_ERRORINFO
 #define DMUS_TRACKCONFIG_TRANS1_TOSEGSTART      0x1000 /* Get track info from start of To segment */
 #define DMUS_TRACKCONFIG_DEFAULT    (DMUS_TRACKCONFIG_CONTROL_ENABLED | DMUS_TRACKCONFIG_PLAY_ENABLED | DMUS_TRACKCONFIG_NOTIFICATION_ENABLED)
 
-/* #defines for melody fragments */
-/* Note: Melody formulation is not supported in DX8. */
-
-#define DMUS_MAX_FRAGMENTLABEL 20
-
-#define DMUS_FRAGMENTF_USE_REPEAT      0x1
-#define DMUS_FRAGMENTF_REJECT_REPEAT   (0x1 << 1)
-#define DMUS_FRAGMENTF_USE_LABEL       (0x1 << 2)
-
-#define DMUS_CONNECTIONF_INTERVALS     (0x1 << 1) /* Use transition intervals */
-#define DMUS_CONNECTIONF_OVERLAP       (0x1 << 2) /* Use overlapping notes for transitions */
-
 /* Get/SetParam structs for commands */
 /* PARAM structures, used by GetParam() and SetParam() */
 typedef struct _DMUS_COMMAND_PARAM
@@ -812,28 +798,6 @@ typedef struct _DMUS_COMMAND_PARAM_2
     BYTE bGrooveRange;
     BYTE bRepeatMode;
 } DMUS_COMMAND_PARAM_2;
-
-/* Get/SetParam structs for melody fragments */
-/* Note: Melody formulation is not supported in DX8. */
-typedef struct _DMUS_CONNECTION_RULE
-{
-    DWORD       dwFlags;      /* DMUS_CONNECTIONF_ flags */
-    DWORD       dwIntervals;  /* Legal transition intervals (first 24 bits; two-octave range) */
-} DMUS_CONNECTION_RULE;
-
-typedef struct _DMUS_MELODY_FRAGMENT
-{
-    MUSIC_TIME  mtTime;
-    DWORD       dwID;                   /* This fragment's ID */
-    WCHAR       wszVariationLabel[DMUS_MAX_FRAGMENTLABEL]; /* Each style translates this into a set of variations (held in part ref) */
-    DWORD       dwVariationFlags;       /* A set of variations */
-    DWORD       dwRepeatFragmentID;     /* ID of a fragment to repeat */
-    DWORD       dwFragmentFlags;        /* DMUS_FRAGMENTF_ flags */
-    DWORD       dwPlayModeFlags;        /* NOT CURRENTLY USED - MUST BE 0 */
-    DWORD       dwTransposeIntervals;   /* Legal transposition intervals (first 24 bits; two-octave range) */
-    DMUS_COMMAND_PARAM      Command;
-    DMUS_CONNECTION_RULE    ConnectionArc;
-} DMUS_MELODY_FRAGMENT;
 
 typedef IDirectMusicObject __RPC_FAR *LPDMUS_OBJECT;
 typedef IDirectMusicLoader __RPC_FAR *LPDMUS_LOADER;
@@ -1423,15 +1387,15 @@ DECLARE_INTERFACE_(IDirectMusicPerformance8, IDirectMusicPerformance)
                                            DWORD dwPChannelCount,                   /* Number of PChannels, if default audio path to be created. */
                                            DWORD dwFlags,                           /* DMUS_AUDIOF flags, if no pParams structure. */
                                            DMUS_AUDIOPARAMS *pParams) PURE;         /* Optional initialization structure, defining required voices, buffers, etc. */
-    STDMETHOD(PlaySegmentEx)        (THIS_ IUnknown* pSource,                       /* Segment to play. Alternately, could be an IDirectMusicSong (not supported in DX8.) */
-                                           WCHAR *pwzSegmentName,                   /* If song, which segment in the song (not supported in DX8.) */
+    STDMETHOD(PlaySegmentEx)        (THIS_ IUnknown* pSource,                       /* Segment to play. */
+                                           WCHAR *pwzSegmentName,                   /* Not supported in DX8. */
                                            IUnknown* pTransition,                   /* Optional template segment to compose transition with. */
                                            DWORD dwFlags,                           /* DMUS_SEGF_ flags. */ 
                                            __int64 i64StartTime,                    /* Time to start playback. */
                                            IDirectMusicSegmentState** ppSegmentState, /* Returned Segment State. */
                                            IUnknown *pFrom,                         /* Optional segmentstate or audiopath to replace. */
                                            IUnknown *pAudioPath) PURE;              /* Optional audioPath to play on. */
-    STDMETHOD(StopEx)               (THIS_ IUnknown *pObjectToStop,                 /* Segstate, AudioPath, Segment, or Song. */ 
+    STDMETHOD(StopEx)               (THIS_ IUnknown *pObjectToStop,                 /* Segstate, AudioPath, or Segment. */ 
                                            __int64 i64StopTime, 
                                            DWORD dwFlags) PURE;
     STDMETHOD(ClonePMsg)            (THIS_ DMUS_PMSG* pSourcePMSG,
@@ -1717,38 +1681,6 @@ DECLARE_INTERFACE_(IDirectMusicContainer, IUnknown)
 
 typedef IDirectMusicContainer IDirectMusicContainer8;
 
-/*/////////////////////////////////////////////////////////////////////
-// IDirectMusicSong */
-/* Note: Songs are not supported in DX8. */
-
-#undef  INTERFACE
-#define INTERFACE  IDirectMusicSong
-DECLARE_INTERFACE_(IDirectMusicSong, IUnknown)
-{
-    /* IUnknown */
-    STDMETHOD(QueryInterface)       (THIS_ REFIID, LPVOID FAR *) PURE;
-    STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
-    STDMETHOD_(ULONG,Release)       (THIS) PURE;
-
-    /* IDirectMusicSong */
-    STDMETHOD(Compose)               (THIS) PURE;
-    STDMETHOD(GetParam)              (THIS_ REFGUID rguidType, 
-                                            DWORD dwGroupBits, 
-                                            DWORD dwIndex, 
-                                            MUSIC_TIME mtTime, 
-                                            MUSIC_TIME* pmtNext, 
-                                            void* pParam) PURE;
-    STDMETHOD(GetSegment)            (THIS_ WCHAR *pwzName,                         /* Retrieve a specific segment by name. */
-                                            IDirectMusicSegment **ppSegment) PURE;  /* Returned segment. */
-    STDMETHOD(GetAudioPathConfig)    (THIS_ IUnknown ** ppAudioPathConfig) PURE;    /* Retrieve embedded audiopath configuration. */
-    STDMETHOD(Download)              (THIS_ IUnknown *pAudioPath) PURE;             /* Download entire song to ports on performance or audiopath. */
-    STDMETHOD(Unload)                (THIS_ IUnknown *pAudioPath) PURE;             /* Unload entire song from port on performance or audiopath. */
-    STDMETHOD(EnumSegment)           (THIS_ DWORD dwIndex,                          /* Nth segment to retrieve. */
-		                                    IDirectMusicSegment **ppSegment) PURE;  /* Pointer to segment. */
-};
-
-typedef IDirectMusicSong IDirectMusicSong8;
-
 /* CLSID's */
 DEFINE_GUID(CLSID_DirectMusicPerformance,0xd2ac2881, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicSegment,0xd2ac2882, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
@@ -1765,8 +1697,6 @@ DEFINE_GUID(CLSID_DirectMusicPatternTrack,0xd2ac2897, 0xb39b, 0x11d1, 0x87, 0x4,
 DEFINE_GUID(CLSID_DirectMusicScript,0x810b5013, 0xe88d, 0x11d2, 0x8b, 0xc1, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xb6); /* {810B5013-E88D-11d2-8BC1-00600893B1B6} */
 DEFINE_GUID(CLSID_DirectMusicContainer,0x9301e380, 0x1f22, 0x11d3, 0x82, 0x26, 0xd2, 0xfa, 0x76, 0x25, 0x5d, 0x47);
 DEFINE_GUID(CLSID_DirectSoundWave,0x8a667154, 0xf9cb, 0x11d2, 0xad, 0x8a, 0x0, 0x60, 0xb0, 0x57, 0x5a, 0xbc);
-/* Note: Songs are not supported in DX8. */
-DEFINE_GUID(CLSID_DirectMusicSong, 0xaed5f0a5, 0xd972, 0x483d, 0xa3, 0x84, 0x64, 0x9d, 0xfe, 0xb9, 0xc1, 0x81);
 DEFINE_GUID(CLSID_DirectMusicAudioPathConfig,0xee0b9ca0, 0xa81e, 0x11d3, 0x9b, 0xd1, 0x0, 0x80, 0xc7, 0x15, 0xa, 0x74);
 
 /* Special GUID for all object types. This is used by the loader. */
@@ -1867,14 +1797,6 @@ getting the seed from the system clock.
 */
 DEFINE_GUID(GUID_SeedVariations, 0x65b76fa5, 0xff37, 0x11d2, 0x81, 0x4e, 0x0, 0xc0, 0x4f, 0xa3, 0x6e, 0x58);
 
-/* Used to get/set melody fragments (pParam points to a DMUS_MELODY_FRAGMENT) */
-/* Note: Melody formulation is not supported in DX8. */
-DEFINE_GUID(GUID_MelodyFragment, 0xb291c7f2, 0xb616, 0x11d2, 0x97, 0xfa, 0x0, 0xc0, 0x4f, 0xa3, 0x6e, 0x58);
-
-/* Used to clear all melody fragments */
-/* Note: Melody formulation is not supported in DX8. */
-DEFINE_GUID(GUID_Clear_All_MelodyFragments, 0x8509fee6, 0xb617, 0x11d2, 0x97, 0xfa, 0x0, 0xc0, 0x4f, 0xa3, 0x6e, 0x58);
-
 /* Used to get the variations currently in effect across PChannels */
 DEFINE_GUID(GUID_Variations, 0x11f72cce, 0x26e6, 0x4ecd, 0xaf, 0x2e, 0xd6, 0x68, 0xe6, 0x67, 0x7, 0xd8);
 typedef struct _DMUS_VARIATIONS_PARAM
@@ -1941,9 +1863,6 @@ DEFINE_GUID(IID_IDirectMusicScript, 0x2252373a, 0x5814, 0x489b, 0x82, 0x9, 0x31,
 #define IID_IDirectMusicScript8 IID_IDirectMusicScript
 DEFINE_GUID(IID_IDirectMusicContainer, 0x9301e386, 0x1f22, 0x11d3, 0x82, 0x26, 0xd2, 0xfa, 0x76, 0x25, 0x5d, 0x47);
 #define IID_IDirectMusicContainer8 IID_IDirectMusicContainer
-/* Note: Songs are not supported in DX8. */
-DEFINE_GUID(IID_IDirectMusicSong, 0xa862b2ec, 0x3676, 0x4982, 0x85, 0xa, 0x78, 0x42, 0x77, 0x5e, 0x1d, 0x86);
-#define IID_IDirectMusicSong8 IID_IDirectMusicSong
 DEFINE_GUID(IID_IDirectMusicAudioPath,0xc87631f5, 0x23be, 0x4986, 0x88, 0x36, 0x5, 0x83, 0x2f, 0xcc, 0x48, 0xf9);
 #define IID_IDirectMusicAudioPath8 IID_IDirectMusicAudioPath
 /* unchanged interfaces (alias only) */

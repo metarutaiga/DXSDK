@@ -1,8 +1,8 @@
 /************************************************************************
 *                                                                       *
-*   dmerror.h -- Error code returned by DirectMusic API's               *
+*   dmerror.h -- Error codes returned by DirectMusic API's              *
 *                                                                       *
-*   Copyright (c) 1998-1999 Microsoft Corporation
+*   Copyright (c) Microsoft Corporation.  All rights reserved.          *
 *                                                                       *
 ************************************************************************/
 
@@ -793,7 +793,7 @@
 
 /* DMUS_E_NO_AUDIOPATH_CONFIG
  *
- * A segment or song was asked for its embedded audio path configuration,
+ * A segment was asked for its embedded audio path configuration,
  * but there isn't any. 
  */
 #define DMUS_E_NO_AUDIOPATH_CONFIG     MAKE_DMHRESULTERROR(0x0228)

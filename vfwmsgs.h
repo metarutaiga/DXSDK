@@ -973,7 +973,7 @@
 //
 // MessageText:
 //
-//  Either DirectDraw has not been installed or the Video Card capabilities are not suitable. Make sure the display is not in 16 color mode.%0
+//  Either DirectDraw has not been installed or the Video Card capabilities are not suitable. Make sure the display is not in 16 color mode or try changing the graphics mode.%0
 //
 #define VFW_E_DDRAW_CAPS_NOT_SUITABLE    ((HRESULT)0x80040273L)
 
@@ -1292,6 +1292,42 @@
 //  The VMR has not yet created a mixing component.  That is, IVMRFilterConfig::SetNumberofStreams has not yet been called.%0
 //
 #define VFW_E_VMR_NOT_IN_MIXER_MODE      ((HRESULT)0x80040296L)
+
+//
+// MessageId: VFW_E_VMR_NO_AP_SUPPLIED
+//
+// MessageText:
+//
+//  The application has not yet provided the VMR filter with a valid allocator-presenter object.%0
+//
+#define VFW_E_VMR_NO_AP_SUPPLIED         ((HRESULT)0x80040297L)
+
+//
+// MessageId: VFW_E_VMR_NO_DEINTERLACE_HW
+//
+// MessageText:
+//
+//  The VMR could not find any de-interlacing hardware on the current display device.%0
+//
+#define VFW_E_VMR_NO_DEINTERLACE_HW      ((HRESULT)0x80040298L)
+
+//
+// MessageId: VFW_E_VMR_NO_PROCAMP_HW
+//
+// MessageText:
+//
+//  The VMR could not find any ProcAmp hardware on the current display device.%0
+//
+#define VFW_E_VMR_NO_PROCAMP_HW          ((HRESULT)0x80040299L)
+
+//
+// MessageId: VFW_E_DVD_VMR9_INCOMPATIBLEDEC
+//
+// MessageText:
+//
+//  VMR9 does not work with VPE-based hardware decoders.%0
+//
+#define VFW_E_DVD_VMR9_INCOMPATIBLEDEC   ((HRESULT)0x8004029AL)
 
 //
 //

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------
 //
-//  Copyright (c) 1999-2001 Microsoft Corporation
+//  Copyright (c) 1999-2002 Microsoft Corporation
 //
 //  BDATIF.idl
 //
@@ -9,7 +9,7 @@
 cpp_quote("//+-------------------------------------------------------------------------")
 cpp_quote("//")
 cpp_quote("//  Microsoft Windows")
-cpp_quote("//  Copyright (C) 1999-2001 Microsoft Corporation. All Rights Reserved.")
+cpp_quote("//  Copyright (C) Microsoft Corporation, 1999-2002.")
 cpp_quote("//")
 cpp_quote("//--------------------------------------------------------------------------")
 cpp_quote("#if ( _MSC_VER >= 800 )")
@@ -28,11 +28,52 @@ cpp_quote("#endif")
 import "unknwn.idl";
 import "strmif.idl";
 import "tuner.idl";
+import "bdaiface.idl";
 #endif
 
 
 interface IMPEG2_TIF_CONTROL;
 interface IATSCChannelInfo;
+interface IMPEG2PIDMap;
+
+
+
+
+//******************************************************************************
+//
+//  IBDA_TIF_REGISTRATION interface
+//
+//  Implemented by the Microsoft ATSC/DVB BDA Network Provider
+//
+//      Used by a transport information filter (TIF) to Register with the NP 
+//	AND obtain an Interface to the Demux to set/ Remove PIDs.The TIF here passes 
+//      IUNKNOWN of the pin it is connecting to and obtains the IMPEG2PIDMAP interface
+//      implemented by the NP to Map/ UnMap pids.
+//
+
+[
+    object,
+    uuid(DFEF4A68-EE61-415f-9CCB-CD95F2F98A3A),
+    helpstring("BDA Network Provider Registration Inteface for DVB/ATSC Transport Information Filters"),
+    pointer_default(unique)
+]
+interface IBDA_TIF_REGISTRATION : IUnknown
+{
+
+    [helpstring("Used to register a transport analyzer with the Network Provider")]
+    HRESULT
+    RegisterTIFEx (
+        [in]  IPin *    pTIFInputPin,
+        [in, out] ULONG *   ppvRegistrationContext,
+        [in, out] IUnknown **    ppMpeg2DataControl
+        );
+
+    [helpstring("Used to unregister TIF with the Network Provider")]
+    HRESULT
+    UnregisterTIF (
+        [in] ULONG          pvRegistrationContext
+        );
+}
 
 
 //******************************************************************************
@@ -61,7 +102,7 @@ interface IMPEG2_TIF_CONTROL : IUnknown
     RegisterTIF (
         [in]  IUnknown *    pUnkTIF,
         [in, out] ULONG *   ppvRegistrationContext
-        );
+	);
 
     [helpstring("Used to unregister TIF with the Network Provider")]
     HRESULT
@@ -369,7 +410,7 @@ interface IGuideData : IUnknown
     //
     //  GetServices
     //      Returns an enumeration of tune requests for all services whose
-    //      information is found in the current transport stream.
+	//		information is found in the current transport stream.
     //
     //  Parameters
     //
@@ -380,9 +421,9 @@ interface IGuideData : IUnknown
     //
     //  Comments
     //      This call is used to enumerate all services whose information
-    //      can be found in the service descriptor table. Each tune request
-    //      in the IEnumTuneRequest * contains the tune request including the
-    //      locator data for the service.
+	//		can be found in the service descriptor table. Each tune request
+	//		in the IEnumTuneRequest * contains the tune request including the
+	//		locator data for the service.
     // 
     [helpstring("Returns an enumeration of services whose information is found in the given transport stream")]
     HRESULT
@@ -600,10 +641,10 @@ interface IGuideData : IUnknown
 //
 // {4764ff7c-fa95-4525-af4d-d32236db9e38}
 [
-    object,
-    uuid(4764ff7c-fa95-4525-af4d-d32236db9e38),
-    helpstring("IGuideDataLoader Interface"),
-    pointer_default(unique)
+	object,
+	uuid(4764ff7c-fa95-4525-af4d-d32236db9e38),
+	helpstring("IGuideDataLoader Interface"),
+	pointer_default(unique)
 ]
 interface IGuideDataLoader : IUnknown
 {
@@ -612,22 +653,26 @@ interface IGuideDataLoader : IUnknown
 };
 
 [
-    uuid(8224A083-7F8C-432D-B83E-3C5E9BDE3528),
-    version(1.0),
-    helpstring("psisload 1.0 Type Library")
+	uuid(8224A083-7F8C-432D-B83E-3C5E9BDE3528),
+	version(1.0),
+	helpstring("psisload 1.0 Type Library")
 ]
 library PSISLOADLib
 {
-    importlib("stdole32.tlb");
-    importlib("stdole2.tlb");
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
 
-    [
-        uuid(14EB8748-1753-4393-95AE-4F7E7A87AAD6),
-        helpstring("TIFLoad Class")
-    ]
-    coclass TIFLoad
-    {
-        interface IGuideDataLoader;
+	[
+		uuid(14EB8748-1753-4393-95AE-4F7E7A87AAD6),
+		helpstring("TIFLoad Class")
+	]
+	coclass TIFLoad
+	{
+		interface IGuideDataLoader;
         interface IGuideDataEvent;
-    };
+	};
 };
+
+cpp_quote("#if ( _MSC_VER >= 800 )")
+cpp_quote("#pragma warning(default:4201)    /* Nameless struct/union */")
+cpp_quote("#endif")

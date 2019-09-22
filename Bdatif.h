@@ -4,7 +4,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0347 */
+ /* File created by MIDL compiler version 6.00.0357 */
 /* Compiler settings for bdatif.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -41,6 +41,12 @@
 #endif
 
 /* Forward Declarations */ 
+
+#ifndef __IBDA_TIF_REGISTRATION_FWD_DEFINED__
+#define __IBDA_TIF_REGISTRATION_FWD_DEFINED__
+typedef interface IBDA_TIF_REGISTRATION IBDA_TIF_REGISTRATION;
+#endif 	/* __IBDA_TIF_REGISTRATION_FWD_DEFINED__ */
+
 
 #ifndef __IMPEG2_TIF_CONTROL_FWD_DEFINED__
 #define __IMPEG2_TIF_CONTROL_FWD_DEFINED__
@@ -106,6 +112,7 @@ typedef struct TIFLoad TIFLoad;
 #include "unknwn.h"
 #include "strmif.h"
 #include "tuner.h"
+#include "bdaiface.h"
 
 #ifdef __cplusplus
 extern "C"{
@@ -120,7 +127,7 @@ void __RPC_USER MIDL_user_free( void * );
 //+-------------------------------------------------------------------------
 //
 //  Microsoft Windows
-//  Copyright (C) Microsoft Corporation, 1999-2001.
+//  Copyright (C) Microsoft Corporation, 1999-2002.
 //
 //--------------------------------------------------------------------------
 #if ( _MSC_VER >= 800 )
@@ -133,8 +140,127 @@ void __RPC_USER MIDL_user_free( void * );
 
 
 
+
 extern RPC_IF_HANDLE __MIDL_itf_bdatif_0000_v0_0_c_ifspec;
 extern RPC_IF_HANDLE __MIDL_itf_bdatif_0000_v0_0_s_ifspec;
+
+#ifndef __IBDA_TIF_REGISTRATION_INTERFACE_DEFINED__
+#define __IBDA_TIF_REGISTRATION_INTERFACE_DEFINED__
+
+/* interface IBDA_TIF_REGISTRATION */
+/* [unique][helpstring][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IBDA_TIF_REGISTRATION;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("DFEF4A68-EE61-415f-9CCB-CD95F2F98A3A")
+    IBDA_TIF_REGISTRATION : public IUnknown
+    {
+    public:
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE RegisterTIFEx( 
+            /* [in] */ IPin *pTIFInputPin,
+            /* [out][in] */ ULONG *ppvRegistrationContext,
+            /* [out][in] */ IUnknown **ppMpeg2DataControl) = 0;
+        
+        virtual /* [helpstring] */ HRESULT STDMETHODCALLTYPE UnregisterTIF( 
+            /* [in] */ ULONG pvRegistrationContext) = 0;
+        
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct IBDA_TIF_REGISTRATIONVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IBDA_TIF_REGISTRATION * This,
+            /* [in] */ REFIID riid,
+            /* [iid_is][out] */ void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IBDA_TIF_REGISTRATION * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IBDA_TIF_REGISTRATION * This);
+        
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *RegisterTIFEx )( 
+            IBDA_TIF_REGISTRATION * This,
+            /* [in] */ IPin *pTIFInputPin,
+            /* [out][in] */ ULONG *ppvRegistrationContext,
+            /* [out][in] */ IUnknown **ppMpeg2DataControl);
+        
+        /* [helpstring] */ HRESULT ( STDMETHODCALLTYPE *UnregisterTIF )( 
+            IBDA_TIF_REGISTRATION * This,
+            /* [in] */ ULONG pvRegistrationContext);
+        
+        END_INTERFACE
+    } IBDA_TIF_REGISTRATIONVtbl;
+
+    interface IBDA_TIF_REGISTRATION
+    {
+        CONST_VTBL struct IBDA_TIF_REGISTRATIONVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IBDA_TIF_REGISTRATION_QueryInterface(This,riid,ppvObject)	\
+    (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
+
+#define IBDA_TIF_REGISTRATION_AddRef(This)	\
+    (This)->lpVtbl -> AddRef(This)
+
+#define IBDA_TIF_REGISTRATION_Release(This)	\
+    (This)->lpVtbl -> Release(This)
+
+
+#define IBDA_TIF_REGISTRATION_RegisterTIFEx(This,pTIFInputPin,ppvRegistrationContext,ppMpeg2DataControl)	\
+    (This)->lpVtbl -> RegisterTIFEx(This,pTIFInputPin,ppvRegistrationContext,ppMpeg2DataControl)
+
+#define IBDA_TIF_REGISTRATION_UnregisterTIF(This,pvRegistrationContext)	\
+    (This)->lpVtbl -> UnregisterTIF(This,pvRegistrationContext)
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+/* [helpstring] */ HRESULT STDMETHODCALLTYPE IBDA_TIF_REGISTRATION_RegisterTIFEx_Proxy( 
+    IBDA_TIF_REGISTRATION * This,
+    /* [in] */ IPin *pTIFInputPin,
+    /* [out][in] */ ULONG *ppvRegistrationContext,
+    /* [out][in] */ IUnknown **ppMpeg2DataControl);
+
+
+void __RPC_STUB IBDA_TIF_REGISTRATION_RegisterTIFEx_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+/* [helpstring] */ HRESULT STDMETHODCALLTYPE IBDA_TIF_REGISTRATION_UnregisterTIF_Proxy( 
+    IBDA_TIF_REGISTRATION * This,
+    /* [in] */ ULONG pvRegistrationContext);
+
+
+void __RPC_STUB IBDA_TIF_REGISTRATION_UnregisterTIF_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
+
+#endif 	/* __IBDA_TIF_REGISTRATION_INTERFACE_DEFINED__ */
+
 
 #ifndef __IMPEG2_TIF_CONTROL_INTERFACE_DEFINED__
 #define __IMPEG2_TIF_CONTROL_INTERFACE_DEFINED__
@@ -1589,6 +1715,17 @@ class DECLSPEC_UUID("14EB8748-1753-4393-95AE-4F7E7A87AAD6")
 TIFLoad;
 #endif
 #endif /* __PSISLOADLib_LIBRARY_DEFINED__ */
+
+/* interface __MIDL_itf_bdatif_0489 */
+/* [local] */ 
+
+#if ( _MSC_VER >= 800 )
+#pragma warning(default:4201)    /* Nameless struct/union */
+#endif
+
+
+extern RPC_IF_HANDLE __MIDL_itf_bdatif_0489_v0_0_c_ifspec;
+extern RPC_IF_HANDLE __MIDL_itf_bdatif_0489_v0_0_s_ifspec;
 
 /* Additional Prototypes for ALL interfaces */
 

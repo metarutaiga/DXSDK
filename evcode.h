@@ -58,10 +58,11 @@
 // used.  Such parameters should be zero.
 
 // Other defined EC_ regions:
-// DVD event codes           0x0100 - 0x0150 (dvdevcod.h)
-// audio device event codes  0x0200 - 0x0250 (audevcod.h)
+// DVD event codes              0x0100 - 0x0150 (dvdevcod.h)
+// audio device event codes     0x0200 - 0x0250 (audevcod.h)
 // WindowsMedia SDK-originated events 0x0251 - 0x0300 (see below)
-// MSVIDCTL                  0x0301 - 0x0325 (msvidctl.idl)
+// MSVIDCTL                     0x0301 - 0x0325 (msvidctl.idl)
+// stream buffer engine (PVR)   0x0326 - 0x0350 (sbe.idl)
 
 #define EC_COMPLETE                         0x01
 // ( HRESULT, void ) : defaulted (special)
@@ -351,6 +352,15 @@
 // change and the VMR was unable to accept the new format.
 
 
+#define EC_PREPROCESS_COMPLETE          0x56
+// Sent by the WM ASF writer filter (WMSDK V9 version) to signal the completion 
+// of a pre-process run when running in multipass encode mode. 
+// Param1 = 0, Param2 = IBaseFilter ptr of sending filter
+
+#define EC_CODECAPI_EVENT               0x57
+// Sent by the Codec API when an event is encountered.  Both the Data
+// must be freed by the recipient using CoTaskMemFree
+// Param1 = UserDataPointer, Param2 = VOID* Data
 
 //------------------------------------------
 //
@@ -364,8 +374,8 @@
 //
 // WindowsMedia SDK filter-specific events:
 //
-// 
-// Note that for EC_WMT_EVENT events the wmsdk-based filters use the following structure for 
+//
+// Note that for EC_WMT_EVENT events the wmsdk-based filters use the following structure for
 // passing event parameters to the app:
 #ifndef AM_WMT_EVENT_DATA_DEFINED
 #define AM_WMT_EVENT_DATA_DEFINED
@@ -395,13 +405,16 @@ typedef struct {
 // lParam2 is a pointer an AM_WMT_EVENT_DATA structure where,
 //                          hrStatus is the status code sent by the wmsdk
 //                          pData is specific to the lParam1 event
-// 
+//
 //     the following WMT_STATUS messages are sent by the WMSDK Reader filter for this event:
 //         WMT_NO_RIGHTS        - pData is a pointer to a WCHAR string containing a challenge URL
 //         WMT_ACQUIRE_LICENSE  - lParam2 is a pointer to a WM_GET_LICENSE_DATA struct
 //         WMT_NO_RIGHTS_EX     - lParam2 is a pointer to a WM_GET_LICENSE_DATA struct
 //         WMT_NEEDS_INDIVIDUALIZATION - lParam2 is NULL
 //         WMT_INDIVIDUALIZE    - lParam2 is a pointer to a WM_INDIVIDUALIZE_STATUS struct
+//     the WMSDK (V9) ASF Writer filter will send this event in response to a wmsdk-signaled error during file
+//         writing, along with the wmsdk WMT_STATUS error as the lParam1 and hrStatus embedded in the 
+//         AM_WMT_EVENT_DATA struct pointed to by the lParam2 pointer.
 //
 // end WMSDK-originated events
 //-----------------------------------------

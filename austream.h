@@ -4,7 +4,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0347 */
+ /* File created by MIDL compiler version 6.00.0357 */
 /* Compiler settings for austream.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -81,8 +81,8 @@ void __RPC_USER MIDL_user_free( void * );
 /* [local] */ 
 
 //
-//	The following declarations within the 'if 0' block are dummy typedefs used to make
-//	the ddstream.idl file build.  The actual definitions are contained in DDRAW.H
+//   The following declarations within the 'if 0' block are dummy typedefs used to make
+//   the ddstream.idl file build.  The actual definitions are contained in DDRAW.H
 //
 #if 0
 typedef struct tWAVEFORMATEX WAVEFORMATEX;

@@ -13,6 +13,9 @@
 #include <ole2.h>       // for DECLARE_INTERFACE and HRESULT
 
 /* avoid warnings in MSVC at Level4 */
+#if _MSC_VER >= 1200
+#pragma warning(push)
+#endif
 #pragma warning(disable:4201)
 
 
@@ -2140,7 +2143,12 @@ DEFINE_GUID(IID_IDirectPlay, 0x5454e9a0, 0xdb65, 0x11ce, 0x92, 0x1c, 0x00, 0xaa,
 };
 #endif
 
+/* restore warning settings */
+#if _MSC_VER >= 1200
+#pragma warning(pop)
+#else
 #pragma warning(default:4201)
+#endif
 
 #endif
 

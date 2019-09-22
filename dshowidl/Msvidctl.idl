@@ -1,19 +1,17 @@
-//------------------------------------------------------------------------------
-// File: MSVidCtl.idl
+// MSVidCtl.idl : IDL source for MSVidCtl.dll
 //
-// Desc: IDL source for MSVidCtl.dll.
-//
-// Copyright (c) 1999-2001, Microsoft Corporation.  All rights reserved.
-//------------------------------------------------------------------------------
 
 // This file will be processed by the MIDL tool to
 // produce the type library (MSVidCtl.tlb) and marshalling code.
 
 
+// Copyright (c) Microsoft Corporation 1998-2000
+//
+
 cpp_quote("//+-------------------------------------------------------------------------")
 cpp_quote("//")
 cpp_quote("//  Microsoft Windows")
-cpp_quote("//  Copyright (C) Microsoft Corporation, 1999-2001.")
+cpp_quote("//  Copyright (C) Microsoft Corporation, 1999-2000.")
 cpp_quote("//")
 cpp_quote("//--------------------------------------------------------------------------")
 cpp_quote("#pragma once")
@@ -22,54 +20,53 @@ cpp_quote("#pragma once")
 #ifndef DO_NO_IMPORTS
 #ifndef TUNING_MODEL_ONLY
 import "mshtml.idl";
-import "mstve.idl";
-import "mstvca.idl";
 import "segment.idl";
 #endif
 #endif
 
 #ifndef TUNING_MODEL_ONLY
 typedef enum {
-    dispidInputs,
-    dispidOutputs,
-    dispid_Inputs,
-    dispid_Outputs,
-    dispidVideoRenderers,
-    dispidAudioRenderers,
-    dispidFeatures,
-    dispidInput,
-    dispidOutput,
-    dispidVideoRenderer,
-    dispidAudioRenderer,
-    dispidSelectedFeatures,
-    dispidView,  // total graph control
-    dispidBuild,
-    dispidPause,
-    dispidRun,
-    dispidStop,
-    dispidDecompose,
-    dispidDisplaySize,
-    dispidMaintainAspectRatio,
-    dispidColorKey,
-    dispidStateChange,
-    dispidgetState,
-    dispidunbind,
-    dispidbind,
-    dispidDisableVideo,
-    dispidDisableAudio,
-    dispidViewNext,
+dispidInputs,
+dispidOutputs,
+dispid_Inputs,
+dispid_Outputs,
+dispidVideoRenderers,
+dispidAudioRenderers,
+dispidFeatures,
+dispidInput,
+dispidOutput,
+dispidVideoRenderer,
+dispidAudioRenderer,
+dispidSelectedFeatures,
+dispidView,  // total graph control
+dispidBuild,
+dispidPause,
+dispidRun,
+dispidStop,
+dispidDecompose,
+dispidDisplaySize,
+dispidMaintainAspectRatio,
+dispidColorKey,
+dispidStateChange,
+dispidgetState,
+dispidunbind,
+dispidbind,
+dispidDisableVideo,
+dispidDisableAudio,
+dispidViewNext,
+dispidServiceP
 } MSViddispidList;
 
 typedef enum {
     dslDefaultSize,
-    dslSourceSize = 0,   // synonym
-    dslHalfSourceSize,
-    dslDoubleSourceSize,
-    dslFullScreen,
-    dslHalfScreen,
-    dslQuarterScreen,
-    dslSixteenthScreen
-} DisplaySizeList;  
+	dslSourceSize = 0,   // synonym
+	dslHalfSourceSize,
+	dslDoubleSourceSize,
+	dslFullScreen,
+	dslHalfScreen,
+	dslQuarterScreen,
+	dslSixteenthScreen
+} DisplaySizeList;	
 
 typedef enum {
     STATE_UNBUILT =-1,
@@ -101,45 +98,45 @@ typedef enum {
         {
                 // stock props
                 [propget, id(DISPID_AUTOSIZE)]
-                    HRESULT AutoSize([out,retval]VARIANT_BOOL* pbool);
+					HRESULT AutoSize([out,retval]VARIANT_BOOL* pbool);
                 [propput, id(DISPID_AUTOSIZE)]
-                    HRESULT AutoSize([in]VARIANT_BOOL vbool);
+					HRESULT AutoSize([in]VARIANT_BOOL vbool);
                 [propget, id(DISPID_BACKCOLOR)]
-                    HRESULT BackColor([out,retval]OLE_COLOR* backcolor);
+					HRESULT BackColor([out,retval]OLE_COLOR* backcolor);
                 [propput, id(DISPID_BACKCOLOR)]
-                    HRESULT BackColor([in]OLE_COLOR backcolor);
+					HRESULT BackColor([in]OLE_COLOR backcolor);
                 [propget, id(DISPID_ENABLED)]
-                    HRESULT Enabled([out,retval]VARIANT_BOOL* pbool);
+					HRESULT Enabled([out,retval]VARIANT_BOOL* pbool);
                 [propput, id(DISPID_ENABLED)]
-                    HRESULT Enabled([in]VARIANT_BOOL vbool);
+					HRESULT Enabled([in]VARIANT_BOOL vbool);
                 [propget, id(DISPID_TABSTOP)]
-                    HRESULT TabStop([out, retval]VARIANT_BOOL* pbool);
+					HRESULT TabStop([out, retval]VARIANT_BOOL* pbool);
                 [propput, id(DISPID_TABSTOP)]
-                    HRESULT TabStop([in]VARIANT_BOOL vbool);
+					HRESULT TabStop([in]VARIANT_BOOL vbool);
                 [propget, id(DISPID_HWND)]
-                    HRESULT Window([out, retval]HWND* phwnd);
+					HRESULT Window([out, retval]HWND* phwnd);
                 [id(DISPID_REFRESH)]
-                    HRESULT Refresh();
-                // pseudo video renderer properties/methods that require access to ole container 
-                [propget, id(dispidDisplaySize)] 
-                    HRESULT DisplaySize([out,retval]DisplaySizeList *CurrentValue);
-                [propput, id(dispidDisplaySize)] 
-                    HRESULT DisplaySize([in]DisplaySizeList NewValue);
-                [propget, id(dispidMaintainAspectRatio)] 
-                    HRESULT MaintainAspectRatio([out,retval]VARIANT_BOOL *CurrentValue);
-                [propput, id(dispidMaintainAspectRatio)]
-                    HRESULT MaintainAspectRatio([in]VARIANT_BOOL NewValue);
+					HRESULT Refresh();
+				// pseudo video renderer properties/methods that require access to ole container 
+				[propget, id(dispidDisplaySize)] 
+					HRESULT DisplaySize([out,retval]DisplaySizeList *CurrentValue);
+				[propput, id(dispidDisplaySize)] 
+					HRESULT DisplaySize([in]DisplaySizeList NewValue);
+				[propget, id(dispidMaintainAspectRatio)] 
+					HRESULT MaintainAspectRatio([out,retval]VARIANT_BOOL *CurrentValue);
+				[propput, id(dispidMaintainAspectRatio)]
+					HRESULT MaintainAspectRatio([in]VARIANT_BOOL NewValue);
 
-                // non-stock visual propertiies that require coordination/implementation with
-                // core ctl drawing/painting function
-                [propget, id(dispidColorKey)] 
-                    HRESULT ColorKey([out,retval]OLE_COLOR *CurrentValue);
-                [propput, id(dispidColorKey)]
-                    HRESULT ColorKey([in]OLE_COLOR NewValue);
+				// non-stock visual propertiies that require coordination/implementation with
+				// core ctl drawing/painting function
+				[propget, id(dispidColorKey)] 
+					HRESULT ColorKey([out,retval]OLE_COLOR *CurrentValue);
+				[propput, id(dispidColorKey)]
+					HRESULT ColorKey([in]OLE_COLOR NewValue);
 
 
 
-                // available collections
+                // availablee collection
                 [propget, id(dispidInputs), helpstring("Available Input Devices")] HRESULT InputsAvailable([in] BSTR CategoryGuid, [out, retval] IMSVidInputDevices * *pVal);
                 [propget, id(dispidOutputs), helpstring("Available Output Devices")] HRESULT OutputsAvailable([in] BSTR CategoryGuid, [out, retval] IMSVidOutputDevices * *pVal);
                 [propget, id(dispid_Inputs), hidden, restricted, helpstring("Available Input Devices")] HRESULT _InputsAvailable([in] LPCGUID CategoryGuid, [out, retval] IMSVidInputDevices * *pVal);
@@ -147,7 +144,6 @@ typedef enum {
                 [propget, id(dispidVideoRenderers), helpstring("Available Video Renderers")] HRESULT VideoRenderersAvailable([out, retval] IMSVidVideoRendererDevices * *pVal);
                 [propget, id(dispidAudioRenderers), helpstring("Available Audio Renderers")] HRESULT AudioRenderersAvailable([out, retval] IMSVidAudioRendererDevices * *pVal);
                 [propget, id(dispidFeatures), helpstring("Available Features")] HRESULT FeaturesAvailable([out, retval] IMSVidFeatures * *pVal);
-
                 // current selections
                 [propget, id(dispidInput), helpstring("Currently Selected Input Device")] HRESULT InputActive([out, retval] IMSVidInputDevice **pVal);
                 [propput, id(dispidInput), helpstring("Currently Selected Input Device")] HRESULT InputActive([in] IMSVidInputDevice *pVal);
@@ -160,8 +156,8 @@ typedef enum {
                 [propget, id(dispidSelectedFeatures), helpstring("Currently Selected Features")] HRESULT FeaturesActive([out, retval] IMSVidFeatures **pVal);
                 [propput, id(dispidSelectedFeatures), helpstring("Currently Selected Features")] HRESULT FeaturesActive([in] IMSVidFeatures *pVal);
                 [propget, id(dispidgetState), helpstring("Check the current MSVidCtl state.")] HRESULT State([out, retval]MSVidCtlStateList* lState);
-
-                // methods              
+                // methods
+                
                 [id(dispidView), helpstring("Find an input device for viewing the specified item. This may be a string(VT_BSTR) or an object(VT_UNKNOWN).")] HRESULT View([in] VARIANT* v);
                 [id(dispidBuild), helpstring("Compose the graph")] HRESULT Build();
                 [id(dispidPause), helpstring("Stop the graph")] HRESULT Pause();
@@ -171,26 +167,26 @@ typedef enum {
                 [id(dispidDisableVideo), helpstring("set active video renderer to nothing")] HRESULT DisableVideo();
                 [id(dispidDisableAudio), helpstring("set active Audio renderer to nothing")] HRESULT DisableAudio();
                 [id(dispidViewNext), helpstring("Find another input device for viewing the specified item. Works like View except skips current input")] HRESULT ViewNext([in] VARIANT* v);
-
+                [propput, id(dispidServiceP), helpstring("Set Service Provider")] HRESULT ServiceProvider([in] IUnknown* pServiceP);
         };
 
  ///Added for the mseventbinder
-    [
+	[
         object,
         dual,
         oleautomation,
         hidden,
         nonextensible,
-        pointer_default(unique),        
-        uuid(C3A9F406-2222-436D-86D5-BA3229279EFB),
+        pointer_default(unique),		
+		uuid(C3A9F406-2222-436D-86D5-BA3229279EFB),
         helpstring("IMSEventBinder Interface"),
-    ]
-    interface IMSEventBinder : IDispatch {
-        [id(dispidbind), helpstring("method Bind")] HRESULT Bind([in]LPDISPATCH pEventObject, [in]BSTR EventName, [in]BSTR EventHandler, [out, retval] LONG * CancelID);
-        [id(dispidunbind), helpstring("method Unbind")] HRESULT Unbind([in]DWORD CancelCookie);
-    };
+	]
+	interface IMSEventBinder : IDispatch {
+		[id(dispidbind), helpstring("method Bind")] HRESULT Bind([in]LPDISPATCH pEventObject, [in]BSTR EventName, [in]BSTR EventHandler, [out, retval] LONG * CancelID);
+		[id(dispidunbind), helpstring("method Unbind")] HRESULT Unbind([in]DWORD CancelCookie);
+	};
 
-////    
+
 
 #endif // TUNING_MODEL_ONLY
 
@@ -218,7 +214,7 @@ library MSVidCtlLib
 // event interfaces
 ///////////////////////////////////////////////////////////////////////////////////////
 
-        [
+  [
                 uuid(B0EDF164-910A-11D2-B632-00C04F79498E),
                 helpstring("MS Video Control Events Interface")
         ]
@@ -226,7 +222,7 @@ library MSVidCtlLib
         {
         properties:
                 //  Event interface has no properties
-        methods:
+		methods:
             [id(DISPID_CLICK)] void Click();
             [id(DISPID_DBLCLICK)] void DblClick();
             [id(DISPID_KEYDOWN)] void KeyDown(short* KeyCode, short Shift);
@@ -284,8 +280,8 @@ library MSVidCtlLib
 
 
         [
-                uuid(011B3619-FE63-4814-8A84-15A194CE9CE3),
-                helpstring("MSVidWebDVD Class") 
+            uuid(011B3619-FE63-4814-8A84-15A194CE9CE3),
+            helpstring("MSVidWebDVD Class") 
         ]
         coclass MSVidWebDVD
         {
@@ -330,6 +326,31 @@ library MSVidCtlLib
             interface IMSVidGraphSegment;
         };
 
+// Stream Buffer Sink and Source and Playback
+        ///////////////////////////////////////////////////////////////////////////////////////
+        [
+            uuid(9E77AAC4-35E5-42a1-BDC2-8F3FF399847C),
+            helpstring("MS Video Control Stream Buffer Engine Sink Class")
+        ]
+        coclass MSVidStreamBufferSink
+        {
+            [default] interface IMSVidStreamBufferSink;
+            [default, source] interface IMSVidStreamBufferSinkEvent;
+            interface IMSVidGraphSegment;
+        };
+
+        //////////////////////////////////////////////////////////////////////////////////////
+        [
+                uuid(AD8E510D-217F-409b-8076-29C5E73B98E8),
+                helpstring("MS Video Control Stream Buffer Engine Playback Device Class")
+        ]
+        coclass MSVidStreamBufferSource
+        {
+                [default] interface IMSVidStreamBufferSource;
+                [default, source] interface IMSVidStreamBufferSourceEvent;
+                interface IMSVidGraphSegment;
+        };
+
 // features
 
         [
@@ -342,35 +363,31 @@ library MSVidCtlLib
         };
 
         [
+                uuid(BB530C63-D9DF-4b49-9439-63453962E598),
+                helpstring("MS Video Control Encoder")
+        ]
+        coclass MSVidEncoder
+        {
+                interface IMSVidEncoder;
+        };
+
+        [
+                uuid(0149EEDF-D08F-4142-8D73-D23903D21E90),
+                helpstring("MS Video Control Encoder")
+        ]
+        coclass MSVidXDS
+        {
+                interface IMSVidXDS;
+        };
+        
+		[
             uuid(7F9CB14D-48E4-43b6-9346-1AEBC39C64D3),
             helpstring("MS Video Control Standard Closed Captioning")
         ]
         coclass MSVidClosedCaptioning
         {
+			[default] interface IMSVidClosedCaptioning2;
             interface IMSVidClosedCaptioning;
-        };
-
-
-        [
-            uuid(1600F001-6666-4f66-B1E2-BF3C9FBB9BA6),
-            helpstring("MS Video Control TVE Feature Segment"),
-        ]
-        coclass MSVidTVEGSeg 
-        {
-            [default] interface IMSVidTVEGSeg;
-            interface ITVEFeature;                                  // 'active' service, outgoing events
-        //  interface IMSVidGraphSegment;                           // standard graph segment methods
-        };
-
-        [
-            uuid(1600F101-6666-4f66-B1E2-BF3C9FBB9BA6),
-            helpstring("MS Video Control CA Feature Segment"),
-        ]
-        coclass MSVidCAGSeg 
-        {
-            [default] interface IMSVidCAGSeg;
-            interface ICAManager;                                   // aggregates with this..
-        //  interface IMSVidGraphSegment;                           // standard graph segment methods
         };
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -380,13 +397,14 @@ library MSVidCtlLib
         ///////////////////////////////////////////////////////////////////////////////////////
         [
                 uuid(B0EDF163-910A-11D2-B632-00C04F79498E),
-                control,
+				control,
                 helpstring("MS Video Control Class")
         ]
         coclass MSVidCtl
         {
                 [default] interface IMSVidCtl;
                 [default, source] dispinterface _IMSVidCtlEvents;
+				interface IMSVidGraphSegmentContainer;
         };
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -479,6 +497,15 @@ library MSVidCtlLib
         };
 
         [
+                uuid(8D04238E-9FD1-41c6-8DE3-9E1EE309E935),
+                helpstring("MS Video Control Custom Composition for WebDVD to Audio Renderer")
+        ]
+        coclass MSVidWebDVDToAudioRenderer
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+        [
                 uuid(6AD28EE1-5002-4e71-AAF7-BD077907B1A4),
                 helpstring("MS Video Control Custom Composition for Mpeg2 Decoder to Closed Captioning")
         ]
@@ -487,28 +514,129 @@ library MSVidCtlLib
                 interface IMSVidCompositionSegment;
         };
 
+        [
+                uuid(9F50E8B1-9530-4ddc-825E-1AF81D47AED6),
+                helpstring("MS Video Control Custom Composition for Analog Capture to Stream Buffer Sink")
+        ]
+        coclass MSVidAnalogCaptureToStreamBufferSink
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+        [
+                uuid(ABE40035-27C3-4a2f-8153-6624471608AF),
+                helpstring("MS Video Control Custom Composition for Digital Capture to Stream Buffer Sink")
+        ]
+        coclass MSVidDigitalCaptureToStreamBufferSink
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+
+        [
+                uuid(38F03426-E83B-4e68-B65B-DCAE73304838),
+                helpstring("MS Video Control Custom Composition for Data Services to Stream Buffer Sink")
+        ]
+        coclass MSVidDataServicesToStreamBufferSink
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+        [
+                uuid(0429EC6E-1144-4bed-B88B-2FB9899A4A3D),
+                helpstring("MS Video Control Custom Composition for DataServices To XDS")
+        ]
+        coclass MSVidDataServicesToXDS
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+        [
+                uuid(A0B9B497-AFBC-45ad-A8A6-9B077C40D4F2),
+                helpstring("MS Video Control Custom Composition for Encoder to Stream Buffer Sink")
+        ]
+        coclass MSVidEncoderToStreamBufferSink
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+        [
+                uuid(B401C5EB-8457-427f-84EA-A4D2363364B0),
+                helpstring("MS Video Control Custom Composition for File Playback to Video Renderer")
+        ]
+        coclass MSVidFilePlaybackToVideoRenderer
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+        [
+                uuid(CC23F537-18D4-4ece-93BD-207A84726979),
+                helpstring("MS Video Control Custom Composition for File Playback to Audio Renderer")
+        ]
+        coclass MSVidFilePlaybackToAudioRenderer
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+        [
+                uuid(28953661-0231-41db-8986-21FF4388EE9B),
+                helpstring("MS Video Control Custom Composition for TV Tuner to Encoder")
+        ]
+        coclass MSVidAnalogTVToEncoder
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+		[
+                uuid(3C4708DC-B181-46a8-8DA8-4AB0371758CD),
+                helpstring("MS Video Control Custom Composition for SBE Source to Video renderer")
+        ]
+        coclass MSVidStreamBufferSourceToVideoRenderer
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+		[
+                uuid(3540D440-5B1D-49cb-821A-E84B8CF065A7),
+                helpstring("MS Video Control Custom Composition for TV Tuner to XDS")
+        ]
+        coclass MSVidAnalogCaptureToXDS
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+        [
+                uuid(9193A8F9-0CBA-400e-AA97-EB4709164576),
+                helpstring("MS Video Control Custom Composition for Stream Buffer Source to CC")
+        ]
+        coclass MSVidSBESourceToCC
+        {
+                interface IMSVidCompositionSegment;
+        };
+
+
 ///////////////////////////////////////////////////////////////////////////////////////
 // Miscellaneous
 ///////////////////////////////////////////////////////////////////////////////////////
 
-        [
-                uuid(11973C25-3529-40e4-9AB1-DDC164CBEF49),
-                helpstring("MS Video Control Rendering Behavior Factory")
-        ]
-        coclass MSVidRenderFactory
-        {
-                interface IElementBehaviorFactory;
-        };
         // Events
-        [
-            uuid(577FAA18-4518-445E-8F70-1473F8CF4BA4),
-            helpstring("MSEventBinder Class")
-        ]
-        coclass MSEventBinder
-        {
-            [default] interface IMSEventBinder;
-        };
+	    [
+		    uuid(577FAA18-4518-445E-8F70-1473F8CF4BA4),
+		    helpstring("MSEventBinder Class")
+	    ]
+	    coclass MSEventBinder
+	    {
+	        [default] interface IMSEventBinder;
+	    };
 
+        [
+            uuid(CAAFDD83-CEFC-4e3d-BA03-175F17A24F91),
+            helpstring("MSVidStreamBufferRecordingControl")
+        ]
+        coclass MSVidStreamBufferRecordingControl
+        {
+            [default] interface IMSVidStreamBufferRecordingControl;
+        };
         // vidrect class
         [
             hidden, restricted,
@@ -520,12 +648,12 @@ library MSVidCtlLib
             [default] interface IMSVidRect;
         };
 
-    // NOTE: there is no object factory for the following classes.  
+	// NOTE: there is no object factory for the following classes.  
     // the implementation for the underlying code is a c++ abstract base class.  
     // this coclass is only provided here to force vb to expose the base interface 
     // to enable polymorphic access to derived objects
     [
-        hidden, restricted,
+		hidden, restricted,
         uuid(6E40476F-9C49-4c3e-8BB9-8587958EFF74),
         helpstring("dummy class to expose base interface to VB")
     ]
@@ -534,7 +662,7 @@ library MSVidCtlLib
         [default] interface IMSVidDevice;
     };
     [
-        hidden, restricted,
+		hidden, restricted,
         uuid(AC1972F2-138A-4ca3-90DA-AE51112EDA28),
         helpstring("dummy class to expose base interface to VB")
     ]
@@ -543,7 +671,7 @@ library MSVidCtlLib
         [default] interface IMSVidInputDevice;
     };
     [
-        hidden, restricted,
+		hidden, restricted,
         uuid(95F4820B-BB3A-4e2d-BC64-5B817BC2C30E),
         helpstring("dummy class to expose base interface to VB")
     ]
@@ -552,7 +680,7 @@ library MSVidCtlLib
         [default] interface IMSVidVideoInputDevice;
     };
     [
-        hidden, restricted,
+		hidden, restricted,
         uuid(1990D634-1A5E-4071-A34A-53AAFFCE9F36),
         helpstring("dummy class to expose base interface to VB")
     ]
@@ -561,7 +689,7 @@ library MSVidCtlLib
         [default] interface IMSVidPlayback;
     };
     [
-        hidden, restricted,
+		hidden, restricted,
         uuid(7748530B-C08A-47ea-B24C-BE8695FF405F),
         helpstring("dummy class to expose base interface to VB")
     ]
@@ -570,7 +698,7 @@ library MSVidCtlLib
         [default] interface IMSVidFeature;
     };
     [
-        hidden, restricted,
+		hidden, restricted,
         uuid(87EB890D-03AD-4e9d-9866-376E5EC572ED),
         helpstring("dummy class to expose base interface to VB")
     ]

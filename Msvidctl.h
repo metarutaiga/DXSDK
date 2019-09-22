@@ -4,7 +4,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0347 */
+ /* File created by MIDL compiler version 6.00.0357 */
 /* Compiler settings for msvidctl.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -15,11 +15,6 @@
 */
 //@@MIDL_FILE_HEADING(  )
 
-
-#ifndef __LPCGUID_DEFINED__
-#define __LPCGUID_DEFINED__
-typedef const GUID *LPCGUID;
-#endif // __LPCGUID_DEFINED__
 
 /* verify that the <rpcndr.h> version is high enough to compile this file*/
 #ifndef __REQUIRED_RPCNDR_H_VERSION__
@@ -149,6 +144,30 @@ typedef struct MSVidAudioRenderer MSVidAudioRenderer;
 #endif 	/* __MSVidAudioRenderer_FWD_DEFINED__ */
 
 
+#ifndef __MSVidStreamBufferSink_FWD_DEFINED__
+#define __MSVidStreamBufferSink_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidStreamBufferSink MSVidStreamBufferSink;
+#else
+typedef struct MSVidStreamBufferSink MSVidStreamBufferSink;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidStreamBufferSink_FWD_DEFINED__ */
+
+
+#ifndef __MSVidStreamBufferSource_FWD_DEFINED__
+#define __MSVidStreamBufferSource_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidStreamBufferSource MSVidStreamBufferSource;
+#else
+typedef struct MSVidStreamBufferSource MSVidStreamBufferSource;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidStreamBufferSource_FWD_DEFINED__ */
+
+
 #ifndef __MSVidDataServices_FWD_DEFINED__
 #define __MSVidDataServices_FWD_DEFINED__
 
@@ -161,6 +180,30 @@ typedef struct MSVidDataServices MSVidDataServices;
 #endif 	/* __MSVidDataServices_FWD_DEFINED__ */
 
 
+#ifndef __MSVidEncoder_FWD_DEFINED__
+#define __MSVidEncoder_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidEncoder MSVidEncoder;
+#else
+typedef struct MSVidEncoder MSVidEncoder;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidEncoder_FWD_DEFINED__ */
+
+
+#ifndef __MSVidXDS_FWD_DEFINED__
+#define __MSVidXDS_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidXDS MSVidXDS;
+#else
+typedef struct MSVidXDS MSVidXDS;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidXDS_FWD_DEFINED__ */
+
+
 #ifndef __MSVidClosedCaptioning_FWD_DEFINED__
 #define __MSVidClosedCaptioning_FWD_DEFINED__
 
@@ -171,30 +214,6 @@ typedef struct MSVidClosedCaptioning MSVidClosedCaptioning;
 #endif /* __cplusplus */
 
 #endif 	/* __MSVidClosedCaptioning_FWD_DEFINED__ */
-
-
-#ifndef __MSVidTVEGSeg_FWD_DEFINED__
-#define __MSVidTVEGSeg_FWD_DEFINED__
-
-#ifdef __cplusplus
-typedef class MSVidTVEGSeg MSVidTVEGSeg;
-#else
-typedef struct MSVidTVEGSeg MSVidTVEGSeg;
-#endif /* __cplusplus */
-
-#endif 	/* __MSVidTVEGSeg_FWD_DEFINED__ */
-
-
-#ifndef __MSVidCAGSeg_FWD_DEFINED__
-#define __MSVidCAGSeg_FWD_DEFINED__
-
-#ifdef __cplusplus
-typedef class MSVidCAGSeg MSVidCAGSeg;
-#else
-typedef struct MSVidCAGSeg MSVidCAGSeg;
-#endif /* __cplusplus */
-
-#endif 	/* __MSVidCAGSeg_FWD_DEFINED__ */
 
 
 #ifndef __MSVidCtl_FWD_DEFINED__
@@ -317,6 +336,18 @@ typedef struct MSVidWebDVDToVideoRenderer MSVidWebDVDToVideoRenderer;
 #endif 	/* __MSVidWebDVDToVideoRenderer_FWD_DEFINED__ */
 
 
+#ifndef __MSVidWebDVDToAudioRenderer_FWD_DEFINED__
+#define __MSVidWebDVDToAudioRenderer_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidWebDVDToAudioRenderer MSVidWebDVDToAudioRenderer;
+#else
+typedef struct MSVidWebDVDToAudioRenderer MSVidWebDVDToAudioRenderer;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidWebDVDToAudioRenderer_FWD_DEFINED__ */
+
+
 #ifndef __MSVidMPEG2DecoderToClosedCaptioning_FWD_DEFINED__
 #define __MSVidMPEG2DecoderToClosedCaptioning_FWD_DEFINED__
 
@@ -329,16 +360,136 @@ typedef struct MSVidMPEG2DecoderToClosedCaptioning MSVidMPEG2DecoderToClosedCapt
 #endif 	/* __MSVidMPEG2DecoderToClosedCaptioning_FWD_DEFINED__ */
 
 
-#ifndef __MSVidRenderFactory_FWD_DEFINED__
-#define __MSVidRenderFactory_FWD_DEFINED__
+#ifndef __MSVidAnalogCaptureToStreamBufferSink_FWD_DEFINED__
+#define __MSVidAnalogCaptureToStreamBufferSink_FWD_DEFINED__
 
 #ifdef __cplusplus
-typedef class MSVidRenderFactory MSVidRenderFactory;
+typedef class MSVidAnalogCaptureToStreamBufferSink MSVidAnalogCaptureToStreamBufferSink;
 #else
-typedef struct MSVidRenderFactory MSVidRenderFactory;
+typedef struct MSVidAnalogCaptureToStreamBufferSink MSVidAnalogCaptureToStreamBufferSink;
 #endif /* __cplusplus */
 
-#endif 	/* __MSVidRenderFactory_FWD_DEFINED__ */
+#endif 	/* __MSVidAnalogCaptureToStreamBufferSink_FWD_DEFINED__ */
+
+
+#ifndef __MSVidDigitalCaptureToStreamBufferSink_FWD_DEFINED__
+#define __MSVidDigitalCaptureToStreamBufferSink_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidDigitalCaptureToStreamBufferSink MSVidDigitalCaptureToStreamBufferSink;
+#else
+typedef struct MSVidDigitalCaptureToStreamBufferSink MSVidDigitalCaptureToStreamBufferSink;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidDigitalCaptureToStreamBufferSink_FWD_DEFINED__ */
+
+
+#ifndef __MSVidDataServicesToStreamBufferSink_FWD_DEFINED__
+#define __MSVidDataServicesToStreamBufferSink_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidDataServicesToStreamBufferSink MSVidDataServicesToStreamBufferSink;
+#else
+typedef struct MSVidDataServicesToStreamBufferSink MSVidDataServicesToStreamBufferSink;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidDataServicesToStreamBufferSink_FWD_DEFINED__ */
+
+
+#ifndef __MSVidDataServicesToXDS_FWD_DEFINED__
+#define __MSVidDataServicesToXDS_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidDataServicesToXDS MSVidDataServicesToXDS;
+#else
+typedef struct MSVidDataServicesToXDS MSVidDataServicesToXDS;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidDataServicesToXDS_FWD_DEFINED__ */
+
+
+#ifndef __MSVidEncoderToStreamBufferSink_FWD_DEFINED__
+#define __MSVidEncoderToStreamBufferSink_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidEncoderToStreamBufferSink MSVidEncoderToStreamBufferSink;
+#else
+typedef struct MSVidEncoderToStreamBufferSink MSVidEncoderToStreamBufferSink;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidEncoderToStreamBufferSink_FWD_DEFINED__ */
+
+
+#ifndef __MSVidFilePlaybackToVideoRenderer_FWD_DEFINED__
+#define __MSVidFilePlaybackToVideoRenderer_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidFilePlaybackToVideoRenderer MSVidFilePlaybackToVideoRenderer;
+#else
+typedef struct MSVidFilePlaybackToVideoRenderer MSVidFilePlaybackToVideoRenderer;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidFilePlaybackToVideoRenderer_FWD_DEFINED__ */
+
+
+#ifndef __MSVidFilePlaybackToAudioRenderer_FWD_DEFINED__
+#define __MSVidFilePlaybackToAudioRenderer_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidFilePlaybackToAudioRenderer MSVidFilePlaybackToAudioRenderer;
+#else
+typedef struct MSVidFilePlaybackToAudioRenderer MSVidFilePlaybackToAudioRenderer;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidFilePlaybackToAudioRenderer_FWD_DEFINED__ */
+
+
+#ifndef __MSVidAnalogTVToEncoder_FWD_DEFINED__
+#define __MSVidAnalogTVToEncoder_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidAnalogTVToEncoder MSVidAnalogTVToEncoder;
+#else
+typedef struct MSVidAnalogTVToEncoder MSVidAnalogTVToEncoder;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidAnalogTVToEncoder_FWD_DEFINED__ */
+
+
+#ifndef __MSVidStreamBufferSourceToVideoRenderer_FWD_DEFINED__
+#define __MSVidStreamBufferSourceToVideoRenderer_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidStreamBufferSourceToVideoRenderer MSVidStreamBufferSourceToVideoRenderer;
+#else
+typedef struct MSVidStreamBufferSourceToVideoRenderer MSVidStreamBufferSourceToVideoRenderer;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidStreamBufferSourceToVideoRenderer_FWD_DEFINED__ */
+
+
+#ifndef __MSVidAnalogCaptureToXDS_FWD_DEFINED__
+#define __MSVidAnalogCaptureToXDS_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidAnalogCaptureToXDS MSVidAnalogCaptureToXDS;
+#else
+typedef struct MSVidAnalogCaptureToXDS MSVidAnalogCaptureToXDS;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidAnalogCaptureToXDS_FWD_DEFINED__ */
+
+
+#ifndef __MSVidSBESourceToCC_FWD_DEFINED__
+#define __MSVidSBESourceToCC_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidSBESourceToCC MSVidSBESourceToCC;
+#else
+typedef struct MSVidSBESourceToCC MSVidSBESourceToCC;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidSBESourceToCC_FWD_DEFINED__ */
 
 
 #ifndef __MSEventBinder_FWD_DEFINED__
@@ -351,6 +502,18 @@ typedef struct MSEventBinder MSEventBinder;
 #endif /* __cplusplus */
 
 #endif 	/* __MSEventBinder_FWD_DEFINED__ */
+
+
+#ifndef __MSVidStreamBufferRecordingControl_FWD_DEFINED__
+#define __MSVidStreamBufferRecordingControl_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class MSVidStreamBufferRecordingControl MSVidStreamBufferRecordingControl;
+#else
+typedef struct MSVidStreamBufferRecordingControl MSVidStreamBufferRecordingControl;
+#endif /* __cplusplus */
+
+#endif 	/* __MSVidStreamBufferRecordingControl_FWD_DEFINED__ */
 
 
 #ifndef __MSVidRect_FWD_DEFINED__
@@ -439,8 +602,6 @@ typedef struct MSVidOutput MSVidOutput;
 
 /* header files for imported files */
 #include "mshtml.h"
-#include "mstve.h"
-#include "mstvca.h"
 #include "segment.h"
 
 #ifdef __cplusplus
@@ -456,7 +617,7 @@ void __RPC_USER MIDL_user_free( void * );
 //+-------------------------------------------------------------------------
 //
 //  Microsoft Windows
-//  Copyright (C) Microsoft Corporation, 1999-2001.
+//  Copyright (C) Microsoft Corporation, 1999-2000.
 //
 //--------------------------------------------------------------------------
 #pragma once
@@ -489,7 +650,8 @@ enum __MIDL___MIDL_itf_msvidctl_0000_0001
 	dispidbind	= dispidunbind + 1,
 	dispidDisableVideo	= dispidbind + 1,
 	dispidDisableAudio	= dispidDisableVideo + 1,
-	dispidViewNext	= dispidDisableAudio + 1
+	dispidViewNext	= dispidDisableAudio + 1,
+	dispidServiceP	= dispidViewNext + 1
     } 	MSViddispidList;
 
 typedef /* [public][public][public] */ 
@@ -656,6 +818,9 @@ EXTERN_C const IID IID_IMSVidCtl;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ViewNext( 
             /* [in] */ VARIANT *v) = 0;
+        
+        virtual /* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE put_ServiceProvider( 
+            /* [in] */ IUnknown *pServiceP) = 0;
         
     };
     
@@ -873,6 +1038,10 @@ EXTERN_C const IID IID_IMSVidCtl;
             IMSVidCtl * This,
             /* [in] */ VARIANT *v);
         
+        /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_ServiceProvider )( 
+            IMSVidCtl * This,
+            /* [in] */ IUnknown *pServiceP);
+        
         END_INTERFACE
     } IMSVidCtlVtbl;
 
@@ -1037,6 +1206,9 @@ EXTERN_C const IID IID_IMSVidCtl;
 
 #define IMSVidCtl_ViewNext(This,v)	\
     (This)->lpVtbl -> ViewNext(This,v)
+
+#define IMSVidCtl_put_ServiceProvider(This,pServiceP)	\
+    (This)->lpVtbl -> put_ServiceProvider(This,pServiceP)
 
 #endif /* COBJMACROS */
 
@@ -1557,6 +1729,18 @@ void __RPC_STUB IMSVidCtl_ViewNext_Stub(
     DWORD *_pdwStubPhase);
 
 
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IMSVidCtl_put_ServiceProvider_Proxy( 
+    IMSVidCtl * This,
+    /* [in] */ IUnknown *pServiceP);
+
+
+void __RPC_STUB IMSVidCtl_put_ServiceProvider_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase);
+
+
 
 #endif 	/* __IMSVidCtl_INTERFACE_DEFINED__ */
 
@@ -1896,6 +2080,22 @@ class DECLSPEC_UUID("37B03544-A4C8-11d2-B634-00C04F79498E")
 MSVidAudioRenderer;
 #endif
 
+EXTERN_C const CLSID CLSID_MSVidStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("9E77AAC4-35E5-42a1-BDC2-8F3FF399847C")
+MSVidStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidStreamBufferSource;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("AD8E510D-217F-409b-8076-29C5E73B98E8")
+MSVidStreamBufferSource;
+#endif
+
 EXTERN_C const CLSID CLSID_MSVidDataServices;
 
 #ifdef __cplusplus
@@ -1904,28 +2104,28 @@ class DECLSPEC_UUID("334125C0-77E5-11d3-B653-00C04F79498E")
 MSVidDataServices;
 #endif
 
+EXTERN_C const CLSID CLSID_MSVidEncoder;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("BB530C63-D9DF-4b49-9439-63453962E598")
+MSVidEncoder;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidXDS;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("0149EEDF-D08F-4142-8D73-D23903D21E90")
+MSVidXDS;
+#endif
+
 EXTERN_C const CLSID CLSID_MSVidClosedCaptioning;
 
 #ifdef __cplusplus
 
 class DECLSPEC_UUID("7F9CB14D-48E4-43b6-9346-1AEBC39C64D3")
 MSVidClosedCaptioning;
-#endif
-
-EXTERN_C const CLSID CLSID_MSVidTVEGSeg;
-
-#ifdef __cplusplus
-
-class DECLSPEC_UUID("1600F001-6666-4f66-B1E2-BF3C9FBB9BA6")
-MSVidTVEGSeg;
-#endif
-
-EXTERN_C const CLSID CLSID_MSVidCAGSeg;
-
-#ifdef __cplusplus
-
-class DECLSPEC_UUID("1600F101-6666-4f66-B1E2-BF3C9FBB9BA6")
-MSVidCAGSeg;
 #endif
 
 EXTERN_C const CLSID CLSID_MSVidCtl;
@@ -2008,6 +2208,14 @@ class DECLSPEC_UUID("267db0b3-55e3-4902-949b-df8f5cec0191")
 MSVidWebDVDToVideoRenderer;
 #endif
 
+EXTERN_C const CLSID CLSID_MSVidWebDVDToAudioRenderer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("8D04238E-9FD1-41c6-8DE3-9E1EE309E935")
+MSVidWebDVDToAudioRenderer;
+#endif
+
 EXTERN_C const CLSID CLSID_MSVidMPEG2DecoderToClosedCaptioning;
 
 #ifdef __cplusplus
@@ -2016,12 +2224,92 @@ class DECLSPEC_UUID("6AD28EE1-5002-4e71-AAF7-BD077907B1A4")
 MSVidMPEG2DecoderToClosedCaptioning;
 #endif
 
-EXTERN_C const CLSID CLSID_MSVidRenderFactory;
+EXTERN_C const CLSID CLSID_MSVidAnalogCaptureToStreamBufferSink;
 
 #ifdef __cplusplus
 
-class DECLSPEC_UUID("11973C25-3529-40e4-9AB1-DDC164CBEF49")
-MSVidRenderFactory;
+class DECLSPEC_UUID("9F50E8B1-9530-4ddc-825E-1AF81D47AED6")
+MSVidAnalogCaptureToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDigitalCaptureToStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("ABE40035-27C3-4a2f-8153-6624471608AF")
+MSVidDigitalCaptureToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDataServicesToStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("38F03426-E83B-4e68-B65B-DCAE73304838")
+MSVidDataServicesToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidDataServicesToXDS;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("0429EC6E-1144-4bed-B88B-2FB9899A4A3D")
+MSVidDataServicesToXDS;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidEncoderToStreamBufferSink;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("A0B9B497-AFBC-45ad-A8A6-9B077C40D4F2")
+MSVidEncoderToStreamBufferSink;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidFilePlaybackToVideoRenderer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("B401C5EB-8457-427f-84EA-A4D2363364B0")
+MSVidFilePlaybackToVideoRenderer;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidFilePlaybackToAudioRenderer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("CC23F537-18D4-4ece-93BD-207A84726979")
+MSVidFilePlaybackToAudioRenderer;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidAnalogTVToEncoder;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("28953661-0231-41db-8986-21FF4388EE9B")
+MSVidAnalogTVToEncoder;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidStreamBufferSourceToVideoRenderer;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("3C4708DC-B181-46a8-8DA8-4AB0371758CD")
+MSVidStreamBufferSourceToVideoRenderer;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidAnalogCaptureToXDS;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("3540D440-5B1D-49cb-821A-E84B8CF065A7")
+MSVidAnalogCaptureToXDS;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidSBESourceToCC;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("9193A8F9-0CBA-400e-AA97-EB4709164576")
+MSVidSBESourceToCC;
 #endif
 
 EXTERN_C const CLSID CLSID_MSEventBinder;
@@ -2030,6 +2318,14 @@ EXTERN_C const CLSID CLSID_MSEventBinder;
 
 class DECLSPEC_UUID("577FAA18-4518-445E-8F70-1473F8CF4BA4")
 MSEventBinder;
+#endif
+
+EXTERN_C const CLSID CLSID_MSVidStreamBufferRecordingControl;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("CAAFDD83-CEFC-4e3d-BA03-175F17A24F91")
+MSVidStreamBufferRecordingControl;
 #endif
 
 EXTERN_C const CLSID CLSID_MSVidRect;

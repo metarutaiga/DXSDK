@@ -3,7 +3,7 @@
 //
 // Desc: WST Decoder related definitions and interfaces for ActiveMovie
 //
-// Copyright (c) 1999-2001, Microsoft Corporation.  All rights reserved.
+// Copyright (c) 1999 - 2001, Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 // 
 

@@ -4,12 +4,12 @@
 // Desc: Definition of the IMediaParams and associated interfaces. These
 //       interfaces are designed to allow communication of curve-following
 //       behaviors for parameters of objects which require dynamic changes
-//       to their parameters at run time.  All changes are specified by
+//       to their parameters at run time. All changes are specified by
 //       timestamp and curve type to ensure the parameters can be set
 //       at sufficient accuracy with predictable behavior on subsequent
 //       playback of the same curves.
 //
-// Copyright (c) 1999-2001, Microsoft Corporation.  All rights reserved.
+// Copyright (c) 1999 - 2002, Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
 

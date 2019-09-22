@@ -2,7 +2,7 @@
 *                                                                       *
 *   dmdls.h -- DLS download definitions for DirectMusic API's           *
 *                                                                       *
-*   Copyright (c) 1998-1999 Microsoft Corporation                       *
+*   Copyright (c) Microsoft Corporation.  All rights reserved.          *
 *                                                                       *
 ************************************************************************/
 

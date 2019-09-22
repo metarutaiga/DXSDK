@@ -4,7 +4,7 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 6.00.0347 */
+ /* File created by MIDL compiler version 6.00.0357 */
 /* Compiler settings for mmstream.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)
     protocol : dce , ms_ext, c_ext, robust
@@ -75,19 +75,19 @@ void __RPC_USER MIDL_user_free( void * );
 
 #define MS_ERROR_CODE(x) MAKE_HRESULT(1, FACILITY_ITF, (x) + 0x400)
 #define MS_SUCCESS_CODE(x) MAKE_HRESULT(0, FACILITY_ITF, x)
-#define MS_S_PENDING		             MS_SUCCESS_CODE(1)
-#define MS_S_NOUPDATE                     MS_SUCCESS_CODE(2)
-#define MS_S_ENDOFSTREAM	             MS_SUCCESS_CODE(3)
-#define MS_E_SAMPLEALLOC                  MS_ERROR_CODE(1)
-#define MS_E_PURPOSEID	             MS_ERROR_CODE(2)
-#define MS_E_NOSTREAM	             MS_ERROR_CODE(3)
-#define MS_E_NOSEEKING	             MS_ERROR_CODE(4)
-#define MS_E_INCOMPATIBLE                 MS_ERROR_CODE(5)
-#define MS_E_BUSY		             MS_ERROR_CODE(6)
-#define MS_E_NOTINIT		             MS_ERROR_CODE(7)
-#define MS_E_SOURCEALREADYDEFINED         MS_ERROR_CODE(8)
-#define MS_E_INVALIDSTREAMTYPE            MS_ERROR_CODE(9)
-#define MS_E_NOTRUNNING                   MS_ERROR_CODE(10)
+#define MS_S_PENDING                  MS_SUCCESS_CODE(1)
+#define MS_S_NOUPDATE                 MS_SUCCESS_CODE(2)
+#define MS_S_ENDOFSTREAM              MS_SUCCESS_CODE(3)
+#define MS_E_SAMPLEALLOC              MS_ERROR_CODE(1)
+#define MS_E_PURPOSEID                MS_ERROR_CODE(2)
+#define MS_E_NOSTREAM                 MS_ERROR_CODE(3)
+#define MS_E_NOSEEKING                MS_ERROR_CODE(4)
+#define MS_E_INCOMPATIBLE             MS_ERROR_CODE(5)
+#define MS_E_BUSY                     MS_ERROR_CODE(6)
+#define MS_E_NOTINIT                  MS_ERROR_CODE(7)
+#define MS_E_SOURCEALREADYDEFINED     MS_ERROR_CODE(8)
+#define MS_E_INVALIDSTREAMTYPE        MS_ERROR_CODE(9)
+#define MS_E_NOTRUNNING               MS_ERROR_CODE(10)
 // {A35FF56A-9FDA-11d0-8FDF-00C04FD9189D}
 DEFINE_GUID(MSPID_PrimaryVideo, 
 0xa35ff56a, 0x9fda, 0x11d0, 0x8f, 0xdf, 0x0, 0xc0, 0x4f, 0xd9, 0x18, 0x9d);
