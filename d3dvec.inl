@@ -5,7 +5,7 @@
  *                                                                *
  *   Float-valued 3D vector class for Direct3D.                   *
  *                                                                *
- *   Copyright (c) 1996-1997 Microsoft Corp. All rights reserved. *
+ *   Copyright (c) 1996-1998 Microsoft Corp. All rights reserved. *
  *                                                                *
  ******************************************************************/
 
@@ -236,5 +236,20 @@ CrossProduct (const _D3DVECTOR& v1, const _D3DVECTOR& v2)
 	result[2] = v1[0] * v2[1] - v1[1] * v2[0];
 
 	return result;
+}
+
+inline _D3DMATRIX
+operator* (const _D3DMATRIX& a, const _D3DMATRIX& b)
+{
+    _D3DMATRIX ret;
+    for (int i=0; i<4; i++) {
+        for (int j=0; j<4; j++) {
+            ret(i, j) = 0.0f;
+            for (int k=0; k<4; k++) {
+                ret(i, j) += a(i, k) * b(k, j);
+            }
+        }
+    }
+    return ret;
 }
 

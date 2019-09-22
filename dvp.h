@@ -14,9 +14,17 @@
 #include <objbase.h>
 #else
 #define IUnknown	    void
-#undef  CO_E_NOTINITIALIZED
-#define CO_E_NOTINITIALIZED 0x800401F0L
 #endif
+
+/*
+ * These definitions are required to allow polymorphic structure members (i.e. those
+ * that are referred to both as DWORDs and as pointers) to resolve into a type
+ * of correct size to hold the largest of those two types (i.e. pointer) on 64 bit
+ * systems. For 32 bit environments, ULONG_PTR resolves to a DWORD.
+ */
+#ifndef MAXULONG_PTR
+#define ULONG_PTR    DWORD
+#endif //MAXULONG_PTR
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +33,7 @@ extern "C" {
 /*
  * GUIDS used by DirectDrawVideoPort objects
  */
-#if defined( _WIN32 ) && !defined( _NO_COM )
+#if defined( _WIN32 ) && (!defined( _NO_COM ) || defined( DEFINE_GUID ))
 DEFINE_GUID( IID_IDDVideoPortContainer,		0x6C142760,0xA733,0x11CE,0xA5,0x21,0x00,0x20,0xAF,0x0B,0xE5,0x60 );
 DEFINE_GUID( IID_IDirectDrawVideoPort,		0xB36D93E0,0x2B43,0x11CF,0xA2,0xDE,0x00,0xAA,0x00,0xB9,0x33,0x56 );
 
@@ -201,7 +209,7 @@ typedef struct _DDVIDEOPORTCONNECT
     DWORD dwPortWidth;      // Width of the video port
     GUID  guidTypeID;       // Description of video port connection
     DWORD dwFlags;          // Connection flags
-    DWORD dwReserved1;      // Reserved, set to zero.
+    ULONG_PTR dwReserved1;      // Reserved, set to zero.
 } DDVIDEOPORTCONNECT;
 
 
@@ -218,16 +226,17 @@ typedef struct _DDVIDEOPORTCAPS
     DWORD dwVideoPortID;		// Video port ID (0 - (dwMaxVideoPorts -1))
     DWORD dwCaps;			// Video port capabilities
     DWORD dwFX;				// More video port capabilities
-    DWORD dwNumAutoFlipSurfaces;	// Number of autoflippable surfaces
+    DWORD dwNumAutoFlipSurfaces;	// Max number of autoflippable surfaces allowed
     DWORD dwAlignVideoPortBoundary;	// Byte restriction of placement within the surface
     DWORD dwAlignVideoPortPrescaleWidth;// Byte restriction of width after prescaling
     DWORD dwAlignVideoPortCropBoundary;	// Byte restriction of left cropping
     DWORD dwAlignVideoPortCropWidth;	// Byte restriction of cropping width
     DWORD dwPreshrinkXStep;		// Width can be shrunk in steps of 1/x
     DWORD dwPreshrinkYStep;		// Height can be shrunk in steps of 1/x
-    DWORD dwNumVBIAutoFlipSurfaces;	// Number of VBI autoflippable surfaces
-    DWORD dwReserved1;			// Reserved for future use
-    DWORD dwReserved2;			// Reserved for future use
+    DWORD dwNumVBIAutoFlipSurfaces;	// Max number of VBI autoflippable surfaces allowed
+    DWORD dwNumPreferredAutoflip;	// Optimal number of autoflippable surfaces for hardware
+    WORD  wNumFilterTapsX;              // Number of taps the prescaler uses in the X direction (0 - no prescale, 1 - replication, etc.)
+    WORD  wNumFilterTapsY;              // Number of taps the prescaler uses in the Y direction (0 - no prescale, 1 - replication, etc.)
 } DDVIDEOPORTCAPS;
 
 /*
@@ -265,6 +274,15 @@ typedef struct _DDVIDEOPORTCAPS
  */
 #define DDVPD_ALIGN		0x00000040l
 
+/*
+ * The dwNumPreferredAutoflip member is valid
+ */
+#define DDVPD_PREFERREDAUTOFLIP 0x00000080l
+
+/*
+ * The wNumFilterTapsX and wNumFilterTapsY fields are valid
+ */
+#define DDVPD_FILTERQUALITY     0x00000100l
 
 /*
  * DDVIDEOPORTDESC
@@ -278,10 +296,10 @@ typedef struct _DDVIDEOPORTDESC
     DWORD dwMicrosecondsPerField;	// Microseconds per video field
     DWORD dwMaxPixelsPerSecond;		// Maximum pixel rate per second
     DWORD dwVideoPortID;		// Video port ID (0 - (dwMaxVideoPorts -1))
-    DWORD dwReserved1;			// Reserved for future use - set to zero
+    DWORD dwReserved1;			// Reserved for future use - set to zero (struct padding)
     DDVIDEOPORTCONNECT VideoPortType; 	// Description of video port connection
-    DWORD dwReserved2;			// Reserved for future use - set to zero
-    DWORD dwReserved3;			// Reserved for future use - set to zero
+    ULONG_PTR dwReserved2;		// Reserved for future use - set to zero
+    ULONG_PTR dwReserved3;		// Reserved for future use - set to zero
 } DDVIDEOPORTDESC;
 
 
@@ -301,8 +319,8 @@ typedef struct _DDVIDEOPORTINFO
     LPDDPIXELFORMAT lpddpfVBIInputFormat; // Input format of the VBI data
     LPDDPIXELFORMAT lpddpfVBIOutputFormat;// Output format of the data
     DWORD dwVBIHeight;			// Specifies the number of lines of data within the vertical blanking interval.
-    DWORD dwReserved1;			// Reserved for future use - set to zero
-    DWORD dwReserved2;			// Reserved for future use - set to zero
+    ULONG_PTR dwReserved1;		// Reserved for future use - set to zero
+    ULONG_PTR dwReserved2;		// Reserved for future use - set to zero
 } DDVIDEOPORTINFO;
 
 
@@ -317,8 +335,8 @@ typedef struct _DDVIDEOPORTBANDWIDTH
     DWORD dwColorkey;			// Zoom factor at which overlay w/ colorkey is supported
     DWORD dwYInterpolate;		// Zoom factor at which overlay w/ Y interpolation is supported
     DWORD dwYInterpAndColorkey;		// Zoom factor at which ovelray w/ Y interpolation and colorkeying is supported
-    DWORD dwReserved1;			// Reserved for future use - set to zero
-    DWORD dwReserved2;			// Reserved for future use - set to zero
+    ULONG_PTR dwReserved1;		// Reserved for future use - set to zero
+    ULONG_PTR dwReserved2;		// Reserved for future use - set to zero
 } DDVIDEOPORTBANDWIDTH;
 
 
@@ -332,8 +350,8 @@ typedef struct _DDVIDEOPORTSTATUS
     DWORD dwFlags;           		// Currently not used
     DWORD dwReserved1;			// Reserved for future use
     DDVIDEOPORTCONNECT VideoPortType;	// Information about the connection
-    DWORD dwReserved2;			// Reserved for future use
-    DWORD dwReserved3;			// Reserved for future use
+    ULONG_PTR dwReserved2;		// Reserved for future use
+    ULONG_PTR dwReserved3;		// Reserved for future use
 } DDVIDEOPORTSTATUS;
 
 /*============================================================================
@@ -383,8 +401,10 @@ typedef struct _DDVIDEOPORTSTATUS
 #define DDVPCONNECT_DISCARDSVREFDATA		0x00000008l
 
 /*
- * Device will write half lines into the frame buffer, sometimes causing
- * the data to not be displayed correctly.
+ * When this is set be the driver and passed to the client, this
+ * indicates that the device will write half lines into the frame buffer
+ * if half lines are provided by the decoder.  If this is set by the client,
+ * this indicates that the decoder will be supplying half lines.
  */
 #define DDVPCONNECT_HALFLINE			0x00000010l
 
@@ -485,6 +505,19 @@ typedef struct _DDVIDEOPORTSTATUS
  * Indicates that the video port can write data directly to system memory
  */
 #define DDVPCAPS_SYSTEMMEMORY			0x00001000l
+
+/*
+ * Indicates that the VBI and video portions of the video stream can
+ * be controlled by an independent processes.
+ */
+#define DDVPCAPS_VBIANDVIDEOINDEPENDENT		0x00002000l
+
+/*
+ * Indicates that the video port contains high quality hardware
+ * de-interlacing hardware that should be used instead of the
+ * bob/weave algorithms.
+ */
+#define DDVPCAPS_HARDWAREDEINTERLACE		0x00004000l
 
 
 /****************************************************************************
@@ -607,6 +640,12 @@ typedef struct _DDVIDEOPORTSTATUS
  */
 #define DDVPFX_IGNOREVBIXCROP			0x00040000l
 
+/*
+ * Indicates that interleaving can be disabled for data within the
+ * vertical blanking interval.
+ */
+#define DDVPFX_VBINOINTERLEAVE			0x00080000l
+
 
 /****************************************************************************
  *
@@ -695,6 +734,17 @@ typedef struct _DDVIDEOPORTSTATUS
  */
 #define DDVP_IGNOREVBIXCROP			0x00002000l
 
+/*
+ * Indicates that interleaving can be disabled for data within the
+ * vertical blanking interval.
+ */
+#define DDVP_VBINOINTERLEAVE			0x00004000l
+
+/*
+ * Indicates that the video port should use the hardware
+ * de-interlacing hardware.
+ */
+#define DDVP_HARDWAREDEINTERLACE		0x00008000l
 
 /****************************************************************************
  *
@@ -711,7 +761,6 @@ typedef struct _DDVIDEOPORTSTATUS
  * Return formats for the VBI data
  */
 #define DDVPFORMAT_VBI				0x00000002l
-
 
 /****************************************************************************
  *
@@ -822,6 +871,41 @@ typedef struct _DDVIDEOPORTSTATUS
  * size.
  */
 #define DDVPBCAPS_DESTINATION			0x00000002l
+
+/****************************************************************************
+ *
+ * DDVIDEOPORTCONTAINER CreateVideoPort flags
+ *
+ ****************************************************************************/
+
+/*
+ * The process only wants to control the VBI portion of the video stream.
+ */
+#define DDVPCREATE_VBIONLY			0x00000001l
+
+/*
+ * The process only wants to control the non-VBI (video) portion of
+ * the video stream.
+ */
+#define DDVPCREATE_VIDEOONLY			0x00000002l
+
+/****************************************************************************
+ *
+ * DDVIDEOPORTSTATUS flags
+ *
+ ****************************************************************************/
+
+/*
+ * The video port interface is only controlling the VBI portion of the
+ * video stream
+ */
+#define DDVPSTATUS_VBIONLY			0x00000001l
+
+/*
+ * The video port interface is only controlling the video portion of the
+ * video stream
+ */
+#define DDVPSTATUS_VIDEOONLY			0x00000002l
 
 
 #ifdef __cplusplus
