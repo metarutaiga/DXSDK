@@ -44,8 +44,8 @@ extern "C" {
 //      Name of the entrypoint function where execution should begin.
 //  pProfile
 //      Instruction set to be used when generating code.  Currently supported
-//      profiles are "vs_1_1", "vs_2_0", "vs_2_a", "vs_2_sw", "ps_1_1", 
-//      "ps_1_2", "ps_1_3", "ps_1_4", "ps_2_0", "ps_2_a", "ps_2_sw", "tx_1_0"
+//      profiles are "vs_1_1", "vs_2_0", "vs_2_a", "vs_2_sw", "ps_2_0", 
+//      "ps_2_a", "ps_2_sw", "tx_1_0"
 //  Flags1
 //      See D3D10_SHADER_xxx flags.
 //  Flags2

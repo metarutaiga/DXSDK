@@ -1,3 +1,8 @@
+/*-------------------------------------------------------------------------------------
+ *
+ * Copyright (c) Microsoft Corporation
+ *
+ *-------------------------------------------------------------------------------------*/
 
 
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
@@ -6,7 +11,7 @@
  /* File created by MIDL compiler version 7.00.0499 */
 /* Compiler settings for d3d10.idl:
     Oicf, W1, Zp8, env=Win64 (32b run)
-    protocol : dce , ms_ext, c_ext, robust
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -597,6 +602,10 @@ extern "C"{
 
 #define D3D_SPEC_VERSION	( 1.050005 )
 #endif
+#if !defined( __d3d10_1_h__ ) && !(D3D10_HEADER_MINOR_VERSION >= 1)
+#define D3D10_1_IA_VERTEX_INPUT_STRUCTURE_ELEMENT_COUNT D3D10_IA_VERTEX_INPUT_STRUCTURE_ELEMENT_COUNT
+#define D3D10_1_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT D3D10_IA_VERTEX_INPUT_STRUCTURE_ELEMENT_COUNT
+#endif
 #define	_FACD3D10	( 0x879 )
 
 #define	_FACD3D10DEBUG	( ( _FACD3D10 + 1 )  )
@@ -649,6 +658,16 @@ enum D3D10_PRIMITIVE_TOPOLOGY
 	D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ	= 12,
 	D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ	= 13
     } 	D3D10_PRIMITIVE_TOPOLOGY;
+
+typedef 
+enum D3D10_PRIMITIVE
+    {	D3D10_PRIMITIVE_UNDEFINED	= 0,
+	D3D10_PRIMITIVE_POINT	= 1,
+	D3D10_PRIMITIVE_LINE	= 2,
+	D3D10_PRIMITIVE_TRIANGLE	= 3,
+	D3D10_PRIMITIVE_LINE_ADJ	= 6,
+	D3D10_PRIMITIVE_TRIANGLE_ADJ	= 7
+    } 	D3D10_PRIMITIVE;
 
 typedef 
 enum D3D10_CULL_MODE
@@ -4012,7 +4031,8 @@ enum D3D10_FORMAT_SUPPORT
 	D3D10_FORMAT_SUPPORT_DISPLAY	= 0x80000,
 	D3D10_FORMAT_SUPPORT_CAST_WITHIN_BIT_LAYOUT	= 0x100000,
 	D3D10_FORMAT_SUPPORT_MULTISAMPLE_RENDERTARGET	= 0x200000,
-	D3D10_FORMAT_SUPPORT_MULTISAMPLE_LOAD	= 0x400000
+	D3D10_FORMAT_SUPPORT_MULTISAMPLE_LOAD	= 0x400000,
+	D3D10_FORMAT_SUPPORT_SHADER_GATHER	= 0x800000
     } 	D3D10_FORMAT_SUPPORT;
 
 
@@ -4825,9 +4845,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE IASetVertexBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppVertexBuffers,
             /*  */ 
@@ -5083,9 +5103,9 @@ EXTERN_C const IID IID_ID3D10Device;
         
         virtual void STDMETHODCALLTYPE IAGetVertexBuffers( 
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount_opt(NumBuffers)  ID3D10Buffer **ppVertexBuffers,
             /*  */ 
@@ -5294,7 +5314,7 @@ EXTERN_C const IID IID_ID3D10Device;
             /*  */ 
             __in_ecount(NumElements)  const D3D10_INPUT_ELEMENT_DESC *pInputElementDescs,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_STRUCTURE_ELEMENT_COUNT )  UINT NumElements,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_STRUCTURE_ELEMENT_COUNT )  UINT NumElements,
             /*  */ 
             __in  const void *pShaderBytecodeWithInputSignature,
             /*  */ 
@@ -5532,9 +5552,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *IASetVertexBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __in_ecount(NumBuffers)  ID3D10Buffer *const *ppVertexBuffers,
             /*  */ 
@@ -5824,9 +5844,9 @@ EXTERN_C const IID IID_ID3D10Device;
         void ( STDMETHODCALLTYPE *IAGetVertexBuffers )( 
             ID3D10Device * This,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - 1 )  UINT StartSlot,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT - StartSlot )  UINT NumBuffers,
             /*  */ 
             __out_ecount_opt(NumBuffers)  ID3D10Buffer **ppVertexBuffers,
             /*  */ 
@@ -6067,7 +6087,7 @@ EXTERN_C const IID IID_ID3D10Device;
             /*  */ 
             __in_ecount(NumElements)  const D3D10_INPUT_ELEMENT_DESC *pInputElementDescs,
             /*  */ 
-            __in_range( 0, D3D10_IA_VERTEX_INPUT_STRUCTURE_ELEMENT_COUNT )  UINT NumElements,
+            __in_range( 0, D3D10_1_IA_VERTEX_INPUT_STRUCTURE_ELEMENT_COUNT )  UINT NumElements,
             /*  */ 
             __in  const void *pShaderBytecodeWithInputSignature,
             /*  */ 

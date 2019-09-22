@@ -250,6 +250,7 @@ typedef enum D3D10_NAME
     // Names meaningful to HLSL only
     D3D10_NAME_TARGET = 64,
     D3D10_NAME_DEPTH = 65,
+    D3D10_NAME_COVERAGE = 66,
 } D3D10_NAME;
 
 typedef enum D3D10_RESOURCE_RETURN_TYPE

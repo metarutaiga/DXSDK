@@ -23,6 +23,11 @@
 #pragma warning(disable:4214)   // nonstandard extension used : bit field types other than int
 
 #pragma pack(push, 1)
+#if !defined(_X86_)
+    #define XACTUNALIGNED __unaligned
+#else
+    #define XACTUNALIGNED
+#endif
 
 #ifdef _M_PPCBE
 #pragma bitfield_order(push, lsb_to_msb)
@@ -118,7 +123,7 @@ typedef const WAVEBANKSEGIDX *LPCWAVEBANKSEGIDX;
 
 namespace XACTWaveBank
 {
-    __inline void SwapBytes(DWORD &dw)
+    __inline void SwapBytes(XACTUNALIGNED DWORD &dw)
     {
 
 #ifdef _X86_
@@ -139,7 +144,7 @@ namespace XACTWaveBank
 
     }
 
-    __inline void SwapBytes(WORD &w)
+    __inline void SwapBytes(XACTUNALIGNED WORD &w)
     {
 
 #ifdef _X86_

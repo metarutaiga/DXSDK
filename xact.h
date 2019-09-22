@@ -18,14 +18,14 @@ Abstract:
 #define _XACT_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs (Version 2.8)
+// XACT class and interface IDs (Version 2.9)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,             77c56bf4, 18a1, 42b0, 88, af, 50, 72, ce, 81, 49, 49);
-    DEFINE_CLSID(XACTAuditionEngine,     46f7c2b1, 774b, 419e, 9a, be, a4, 8f, b0, 42, a3, b0);
-    DEFINE_CLSID(XACTDebugEngine,        307473ef, c3d4, 4d97, 9b, 9c, ce, 23, 92, 85, 21, db);
-    DEFINE_IID(IXACTEngine,              f1fff4f0, ec75, 45cb, 98, 6d, e6, 37, f7, e7, cd, d5);
+    DEFINE_CLSID(XACTEngine,         343e68e6, 8f82, 4a8d, a2, da, 6e, 9a, 94, 4b, 37, 8c);
+    DEFINE_CLSID(XACTAuditionEngine, cedde475, 50b5, 47ef, 91, a7, 3b, 49, a0, e8, e5, 88);
+    DEFINE_CLSID(XACTDebugEngine,    3cbb606b, 06f1, 473e, 9d, d5, 0e, 4a, 3b, 47, 14, 13);
+    DEFINE_IID(IXACTEngine,          893ff2e4, 8d03, 4d5f, b0, aa, 36, 3a, 9c, bb, f4, 37);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
@@ -149,8 +149,10 @@ static const XACTCATEGORY           XACTCATEGORY_MAX                = 0xfffe;
 static const XACTCATEGORY           XACTCATEGORY_INVALID            = 0xffff;
 static const XACTCHANNEL            XACTCHANNEL_MIN                 = 0;
 static const XACTCHANNEL            XACTCHANNEL_MAX                 = 0xFF;
-static const XACTPITCH              XACTPITCH_MIN                   = -1200;
+static const XACTPITCH              XACTPITCH_MIN                   = -1200; // pitch change allowable per individual content field
 static const XACTPITCH              XACTPITCH_MAX                   = 1200;
+static const XACTPITCH              XACTPITCH_MIN_TOTAL             = -2400; // total allowable pitch change, use with IXACTWave.SetPitch()
+static const XACTPITCH              XACTPITCH_MAX_TOTAL             = 2400;
 static const XACTVOLUME             XACTVOLUME_MIN                  = 0.0f;
 static const XACTVOLUME             XACTVOLUME_MAX                  = FLT_MAX;
 static const XACTVARIABLEVALUE      XACTPARAMETERVALUE_MIN          = -FLT_MAX;

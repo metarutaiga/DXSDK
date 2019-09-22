@@ -6,7 +6,7 @@
  /* File created by MIDL compiler version 7.00.0499 */
 /* Compiler settings for dxgi.idl:
     Oicf, W1, Zp8, env=Win64 (32b run)
-    protocol : dce , ms_ext, c_ext, robust
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -123,6 +123,7 @@ extern "C"{
 #define DXGI_USAGE_BACK_BUFFER              ( 1L << (2 + 4) )
 #define DXGI_USAGE_SHARED                   ( 1L << (3 + 4) )
 #define DXGI_USAGE_READ_ONLY                ( 1L << (4 + 4) )
+#define DXGI_USAGE_DISCARD_ON_PRESENT       ( 1L << (5 + 4) )
 typedef UINT DXGI_USAGE;
 
 typedef struct DXGI_FRAME_STATISTICS
