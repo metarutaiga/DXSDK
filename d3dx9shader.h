@@ -1002,6 +1002,95 @@ HRESULT WINAPI
         LPD3DXFRAGMENTLINKER*           ppFragmentLinker);
 
 
+//----------------------------------------------------------------------------
+// D3DXPreprocessShader:
+// ---------------------
+// Runs the preprocessor on the specified shader or effect, but does
+// not actually compile it.  This is useful for evaluating the #includes
+// and #defines in a shader and then emitting a reformatted token stream
+// for debugging purposes or for generating a self-contained shader.
+//
+// Parameters:
+//  pSrcFile
+//      Source file name
+//  hSrcModule
+//      Module handle. if NULL, current module will be used
+//  pSrcResource
+//      Resource name in module
+//  pSrcData
+//      Pointer to source code
+//  SrcDataLen
+//      Size of source code, in bytes
+//  pDefines
+//      Optional NULL-terminated array of preprocessor macro definitions.
+//  pInclude
+//      Optional interface pointer to use for handling #include directives.
+//      If this parameter is NULL, #includes will be honored when assembling
+//      from file, and will error when assembling from resource or memory.
+//  ppShaderText
+//      Returns a buffer containing a single large string that represents
+//      the resulting formatted token stream
+//  ppErrorMsgs
+//      Returns a buffer containing a listing of errors and warnings that were
+//      encountered during assembly.  If you are running in a debugger,
+//      these are the same messages you will see in your debug output.
+//----------------------------------------------------------------------------
+
+HRESULT WINAPI 
+    D3DXPreprocessShaderFromFileA(
+        LPCSTR                       pSrcFile,
+        CONST D3DXMACRO*             pDefines,
+        LPD3DXINCLUDE                pInclude,
+        LPD3DXBUFFER*                ppShaderText,
+        LPD3DXBUFFER*                ppErrorMsgs);
+                                             
+HRESULT WINAPI 
+    D3DXPreprocessShaderFromFileW(
+        LPCWSTR                      pSrcFile,
+        CONST D3DXMACRO*             pDefines,
+        LPD3DXINCLUDE                pInclude,
+        LPD3DXBUFFER*                ppShaderText,
+        LPD3DXBUFFER*                ppErrorMsgs);
+
+#ifdef UNICODE
+#define D3DXPreprocessShaderFromFile D3DXPreprocessShaderFromFileW
+#else
+#define D3DXPreprocessShaderFromFile D3DXPreprocessShaderFromFileA
+#endif
+                                             
+HRESULT WINAPI 
+    D3DXPreprocessShaderFromResourceA(
+        HMODULE                      hSrcModule,
+        LPCSTR                       pSrcResource,
+        CONST D3DXMACRO*             pDefines,
+        LPD3DXINCLUDE                pInclude,
+        LPD3DXBUFFER*                ppShaderText,
+        LPD3DXBUFFER*                ppErrorMsgs);
+
+HRESULT WINAPI 
+    D3DXPreprocessShaderFromResourceW(
+        HMODULE                      hSrcModule,
+        LPCWSTR                      pSrcResource,
+        CONST D3DXMACRO*             pDefines,
+        LPD3DXINCLUDE                pInclude,
+        LPD3DXBUFFER*                ppShaderText,
+        LPD3DXBUFFER*                ppErrorMsgs);
+
+#ifdef UNICODE
+#define D3DXPreprocessShaderFromResource D3DXPreprocessShaderFromResourceW
+#else
+#define D3DXPreprocessShaderFromResource D3DXPreprocessShaderFromResourceA
+#endif
+
+HRESULT WINAPI 
+    D3DXPreprocessShader(
+        LPCSTR                       pSrcData,
+        UINT                         SrcDataSize,
+        CONST D3DXMACRO*             pDefines,
+        LPD3DXINCLUDE                pInclude,
+        LPD3DXBUFFER*                ppShaderText,
+        LPD3DXBUFFER*                ppErrorMsgs);
+
 
 #ifdef __cplusplus
 }

@@ -10,8 +10,8 @@
 // be declared and defined in such a way that clients can obtain the GUIDs using
 // either the __uuidof() extension or the old-style CLSID_Foo / IID_IFoo names.
 // If using the latter approach, the client can also choose whether to get the
-// GUID definitions by #defining INITGUID or by linking to a GUID library.
-// This works in either C or C++.  FIXME: Unfortunately, it's uglier than sin.
+// GUID definitions by defining the INITGUID preprocessor constant or by linking
+// to a GUID library.  This works in either C or C++.
 
 #ifdef __cplusplus
 

@@ -100,6 +100,8 @@ static const XACTVARIABLEVALUE XACTPARAMETERVALUE_MAX = FLT_MAX;
 static const XAUDIOVOICEINDEX XACTMAXOUTPUTVOICECOUNT = 3;
 #endif // _XBOX
 
+#define XACT_CONTENT_VERSION    35
+
 //------------------------------------------------------------------------------
 // XACT Parameters
 //------------------------------------------------------------------------------
@@ -119,6 +121,19 @@ typedef const XACT_FILEIO_CALLBACKS *PCXACT_FILEIO_CALLBACKS;
 // The callback that receives the notifications.
 typedef void (__stdcall * XACT_NOTIFICATION_CALLBACK)(const XACT_NOTIFICATION* pNotification);
 
+#ifndef _XBOX
+
+#define XACT_RENDERER_ID_LENGTH    0xff   // Maximum number of characters allowed in the renderer ID
+#define XACT_RENDERER_NAME_LENGTH  0xff   // Maximum number of characters allowed in the renderer display name.
+
+// Renderer details
+typedef struct XACT_RENDERER_DETAILS
+{
+    WCHAR rendererID[XACT_RENDERER_ID_LENGTH];      // The string ID for the rendering device.
+    WCHAR displayName[XACT_RENDERER_NAME_LENGTH];   // A friendly name suitable for display to a human.
+} XACT_RENDERER_DETAILS, *LPXACT_RENDERER_DETAILS;
+#endif
+
 // Runtime (engine) parameters
 typedef struct XACT_RUNTIME_PARAMETERS
 {
@@ -128,7 +143,10 @@ typedef struct XACT_RUNTIME_PARAMETERS
     DWORD                           globalSettingsFlags;            // Flags for global settings
     DWORD                           globalSettingsAllocAttributes;  // Global settings buffer allocation attributes (see XMemAlloc)
     XACT_FILEIO_CALLBACKS           fileIOCallbacks;                // File I/O callbacks
-    XACT_NOTIFICATION_CALLBACK      fnNotificationCallback;        // Callback that receives notifications.
+    XACT_NOTIFICATION_CALLBACK      fnNotificationCallback;         // Callback that receives notifications.
+#ifndef _XBOX
+    PWSTR                           pRendererID;                    // Ptr to the ID for the audio renderer the engine should connect to.
+#endif
 } XACT_RUNTIME_PARAMETERS, *LPXACT_RUNTIME_PARAMETERS;
 typedef const XACT_RUNTIME_PARAMETERS *LPCXACT_RUNTIME_PARAMETERS;
 
@@ -468,7 +486,8 @@ __inline HRESULT __stdcall IXACTWaveBank_GetState(IXACTWaveBank* pWaveBank, DWOR
 //------------------------------------------------------------------------------
 
 // Cue Flags
-static const DWORD XACT_FLAG_CUE_STOP_IMMEDIATE = 0x00000001;
+static const DWORD XACT_FLAG_CUE_STOP_RELEASE           = 0x00000000;
+static const DWORD XACT_FLAG_CUE_STOP_IMMEDIATE         = 0x00000001;
 
 // Mutually exclusive states
 static const DWORD XACT_CUESTATE_CREATED   = 0x00000001;  // Created, but nothing else
@@ -489,6 +508,7 @@ STDAPI IXACTCue_GetChannelMap(IXACTCue*, LPXACTCHANNELMAP pChannelMap, DWORD Buf
 STDAPI IXACTCue_SetChannelMap(IXACTCue*, LPCXACTCHANNELMAP pChannelMap);
 STDAPI IXACTCue_GetChannelVolume(IXACTCue*, LPXACTCHANNELVOLUME pVolume);
 STDAPI IXACTCue_SetChannelVolume(IXACTCue*, LPCXACTCHANNELVOLUME pVolume);
+STDAPI IXACTCue_SetMatrixCoefficients(IXACTCue*, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients);
 STDAPI_(XACTVARIABLEINDEX) IXACTCue_GetVariableIndex(IXACTCue* pCue, PCSTR szFriendlyName);
 STDAPI IXACTCue_SetVariable(IXACTCue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue);
 STDAPI IXACTCue_GetVariable(IXACTCue* pCue, XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* nValue);
@@ -512,6 +532,7 @@ DECLARE_INTERFACE(IXACTCue)
     STDMETHOD(SetChannelMap)(THIS_ LPCXACTCHANNELMAP pChannelMap) PURE;
     STDMETHOD(GetChannelVolume)(THIS_ LPXACTCHANNELVOLUME pVolume) PURE;
     STDMETHOD(SetChannelVolume)(THIS_ LPCXACTCHANNELVOLUME pVolume) PURE;
+    STDMETHOD(SetMatrixCoefficients)(THIS_ UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients) PURE;
     STDMETHOD_(XACTVARIABLEINDEX, GetVariableIndex)(THIS_ PCSTR szFriendlyName) PURE;
     STDMETHOD(SetVariable)(THIS_ XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE nValue) PURE;
     STDMETHOD(GetVariable)(THIS_ XACTVARIABLEINDEX nIndex, XACTVARIABLEVALUE* nValue) PURE;
@@ -563,6 +584,11 @@ __inline HRESULT __stdcall IXACTCue_GetChannelVolume(IXACTCue* pCue, LPXACTCHANN
 __inline HRESULT __stdcall IXACTCue_SetChannelVolume(IXACTCue* pCue, LPCXACTCHANNELVOLUME pVolume)
 {
     return pCue->SetChannelVolume(pVolume);
+}
+
+__inline HRESULT __stdcall IXACTCue_SetMatrixCoefficients(IXACTCue* pCue, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
+{
+    return pCue->SetMatrixCoefficients(uSrcChannelCount, uDstChannelCount, pMatrixCoefficients);
 }
 
 __inline XACTVARIABLEINDEX __stdcall IXACTCue_GetVariableIndex(IXACTCue* pCue, PCSTR szFriendlyName)
@@ -644,6 +670,11 @@ __inline HRESULT __stdcall IXACTCue_SetChannelVolume(IXACTCue* pCue, LPCXACTCHAN
     return pCue->lpVtbl->SetChannelVolume(pCue, pVolume);
 }
 
+__inline HRESULT __stdcall IXACTCue_SetMatrixCoefficients(IXACTCue* pCue, UINT32 uSrcChannelCount, UINT32 uDstChannelCount, float* pMatrixCoefficients)
+{
+    return pCue->lpVtbl->SetMatrixCoefficients(pCue, uSrcChannelCount, uDstChannelCount, pMatrixCoefficients);
+}
+
 __inline XACTVARIABLEINDEX __stdcall IXACTCue_GetVariableIndex(IXACTCue* pCue, PCSTR szFriendlyName)
 {
     return pCue->lpVtbl->GetVariableIndex(pCue, szFriendlyName);
@@ -723,6 +754,11 @@ DECLARE_INTERFACE_(IXACTEngine, IUnknown)
 
     STDMETHOD_(ULONG, AddRef)(THIS) PURE;
     STDMETHOD_(ULONG, Release)(THIS) PURE;
+
+#ifndef _XBOX
+    STDMETHOD(GetRendererCount)(THIS_ XACTINDEX* pnRendererCount) PURE;
+    STDMETHOD(GetRendererDetails)(THIS_ XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails) PURE;
+#endif
 
     STDMETHOD(Initialize)(THIS_ const XACT_RUNTIME_PARAMETERS* pParams) PURE;
     STDMETHOD(ShutDown)(THIS) PURE;
@@ -1022,6 +1058,8 @@ __inline HRESULT __stdcall XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine**
 #define XACTENGINE_E_SELECTVARIATION           XACTENGINEERROR(0x014)   // Unable to select a variation
 #define XACTENGINE_E_MULTIPLEAUDITIONENGINES   XACTENGINEERROR(0x015)   // There can be only one audition engine
 #define XACTENGINE_E_WAVEBANKNOTPREPARED       XACTENGINEERROR(0x016)   // The wavebank is not prepared
+#define XACTENGINE_E_NORENDERER                XACTENGINEERROR(0x017)   // No audio device found on.
+#define XACTENGINE_E_INVALIDENTRYCOUNT         XACTENGINEERROR(0x018)   // Invalid entry count for channel maps
 
 #define XACTENGINE_E_AUDITION_WRITEFILE        XACTENGINEERROR(0x101)  // Error writing a file during auditioning
 #define XACTENGINE_E_AUDITION_NOSOUNDBANK      XACTENGINEERROR(0x102)  // Missing a soundbank
