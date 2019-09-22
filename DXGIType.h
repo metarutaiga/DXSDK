@@ -3,10 +3,10 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 7.00.0497 */
+ /* File created by MIDL compiler version 7.00.0499 */
 /* Compiler settings for dxgitype.idl:
-    Oicf, W1, Zp8, env=Win32 (32b run)
-    protocol : dce , ms_ext, c_ext, robust
+    Oicf, W1, Zp8, env=Win64 (32b run)
+    protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
          __declspec(uuid()), __declspec(selectany), __declspec(novtable)
@@ -19,7 +19,7 @@
 
 /* verify that the <rpcndr.h> version is high enough to compile this file*/
 #ifndef __REQUIRED_RPCNDR_H_VERSION__
-#define __REQUIRED_RPCNDR_H_VERSION__ 475
+#define __REQUIRED_RPCNDR_H_VERSION__ 500
 #endif
 
 /* verify that the <rpcsal.h> version is high enough to compile this file*/
@@ -65,6 +65,7 @@ extern "C"{
 #define DXGI_STATUS_NO_DESKTOP_ACCESS       MAKE_DXGI_STATUS(5 )
 #define DXGI_STATUS_GRAPHICS_VIDPN_SOURCE_IN_USE       MAKE_DXGI_STATUS(6 )
 #define DXGI_STATUS_MODE_CHANGED            MAKE_DXGI_STATUS(7 )
+#define DXGI_STATUS_MODE_CHANGE_IN_PROGRESS MAKE_DXGI_STATUS(8 )
 #define DXGI_ERROR_INVALID_CALL    MAKE_DXGI_HRESULT( 1 )
 #define DXGI_ERROR_NOT_FOUND    MAKE_DXGI_HRESULT( 2 )
 #define DXGI_ERROR_MORE_DATA    MAKE_DXGI_HRESULT( 3 )
@@ -74,8 +75,10 @@ extern "C"{
 #define DXGI_ERROR_DEVICE_RESET    MAKE_DXGI_HRESULT( 7 )
 #define DXGI_ERROR_WAS_STILL_DRAWING    MAKE_DXGI_HRESULT( 10 )
 #define DXGI_ERROR_FRAME_STATISTICS_DISJOINT MAKE_DXGI_HRESULT( 11 )
+#define DXGI_ERROR_GRAPHICS_VIDPN_SOURCE_IN_USE MAKE_DXGI_HRESULT( 12 )
 #define DXGI_ERROR_DRIVER_INTERNAL_ERROR    MAKE_DXGI_HRESULT( 32 )
 #define DXGI_ERROR_NONEXCLUSIVE    MAKE_DXGI_HRESULT( 33 )
+#define DXGI_ERROR_NOT_CURRENTLY_AVAILABLE   MAKE_DXGI_HRESULT( 34 )
 #define DXGI_FORMAT_DEFINED 1
 typedef 
 enum DXGI_FORMAT

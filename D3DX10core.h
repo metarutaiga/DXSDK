@@ -37,7 +37,7 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////////
 
 #define D3DX10_VERSION 0x1002
-#define D3DX10_SDK_VERSION 1000
+#define D3DX10_SDK_VERSION 1001
 
 HRESULT WINAPI D3DX10CheckVersion(UINT D3DSdkVersion, UINT D3DX10SdkVersion);
 UINT WINAPI D3DX10GetDriverLevel(ID3D10Device *pDevice);
@@ -399,14 +399,76 @@ HRESULT WINAPI
 
 HRESULT WINAPI D3DX10UnsetAllDeviceObjects(ID3D10Device *pDevice);
 
+//////////////////////////////////////////////////////////////////////////////
+// D3DX10ReflectShader
+// ----------
+// Shader code contains metadata that can be inspected via the
+// reflection APIs.
+//
+// Parameters:
+//  ppReflector -
+//    Returns a reflection API interface for the given shader code.
+//
+//////////////////////////////////////////////////////////////////////////////
+
+HRESULT WINAPI
+     D3DX10ReflectShader(
+         CONST void *pShaderBytecode,
+         SIZE_T BytecodeLength,
+         interface ID3D10ShaderReflection1 **ppReflector);
+
+//----------------------------------------------------------------------------
+// D3DX10DisassembleShader:
+// ----------------------
+// Takes a binary shader, and returns a buffer containing text assembly.
+//
+// Parameters:
+//  pShader
+//      Pointer to the shader byte code.
+//  BytecodeLength
+//      Size of the shader byte code in bytes.
+//  EnableColorCode
+//      Emit HTML tags for color coding the output?
+//  pComments
+//      Pointer to a comment string to include at the top of the shader.
+//  ppDisassembly
+//      Returns a buffer containing the disassembled shader.
+//----------------------------------------------------------------------------
+
+HRESULT WINAPI
+    D3DX10DisassembleShader(
+        CONST void *pShader,
+        SIZE_T BytecodeLength,
+        BOOL EnableColorCode,
+        LPCSTR pComments,
+        interface ID3D10Blob** ppDisassembly);
+
+//----------------------------------------------------------------------------
+// D3DX10DisassembleEffect:
+// -----------------------
+// Takes an effect interface, and returns a buffer containing text assembly.
+//
+// Parameters:
+//  pEffect
+//      Pointer to the runtime effect interface.
+//  EnableColorCode
+//      Emit HTML tags for color coding the output?
+//  ppDisassembly
+//      Returns a buffer containing the disassembled effect.
+//----------------------------------------------------------------------------
+
+HRESULT WINAPI
+    D3DX10DisassembleEffect(
+        interface ID3D10Effect *pEffect,
+        BOOL EnableColorCode,
+        interface ID3D10Blob **ppDisassembly);
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus
 
 ///////////////////////////////////////////////////////////////////////////
-//
-// TODO: move these to a central error header file
-// 
+
 #define _FACD3D  0x876
 #define MAKE_D3DHRESULT( code )  MAKE_HRESULT( 1, _FACD3D, code )
 #define MAKE_D3DSTATUS( code )  MAKE_HRESULT( 0, _FACD3D, code )

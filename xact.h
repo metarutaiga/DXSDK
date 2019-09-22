@@ -18,14 +18,14 @@ Abstract:
 #define _XACT_H_
 
 //------------------------------------------------------------------------------
-// XACT class and interface IDs (Version 2.6)
+// XACT class and interface IDs (Version 2.7)
 //------------------------------------------------------------------------------
 #ifndef _XBOX // XACT COM support only exists on Windows
     #include <comdecl.h> // For DEFINE_CLSID, DEFINE_IID and DECLARE_INTERFACE
-    DEFINE_CLSID(XACTEngine,         3a2495ce, 31d0, 435b, 8c, cf, e9, f0, 84, 3f, d9, 60);
-    DEFINE_CLSID(XACTAuditionEngine, a17e147b, c168, 45d4, 95, f6, b2, 15, 15, ec, 1e, 66);
-    DEFINE_CLSID(XACTDebugEngine,    fe7e064f, f9ea, 49ee, ba, 64, 84, 5e, 42, 35, 59, c5);
-    DEFINE_IID(IXACTEngine,         5a5d41d0, 2161, 4a39, aa, dc, 11, 49, 30, 14, 7e, aa);
+    DEFINE_CLSID(XACTEngine,         cd0d66ec, 8057, 43f5, ac, bd, 66, df, b3, 6f, d7, 8c);
+    DEFINE_CLSID(XACTAuditionEngine, 9b94bf7a, ce0f, 4c68, 8b, 5e, d0, 62, cb, 37, 30, c3);
+    DEFINE_CLSID(XACTDebugEngine,    1bd54a4b, a1dc, 4e4c, 92, a2, 73, ed, 33, 55, 21, 48);
+    DEFINE_IID(IXACTEngine,          c2f0af68, 1f6d, 40ed, 96, 4f, 26, 25, 68, 42, ed, c4);
 #endif
 
 // Ignore the rest of this header if only the GUID definitions were requested:
@@ -74,6 +74,56 @@ typedef BYTE  XACTLOOPCOUNT;        // For all loops / recurrences
 typedef BYTE  XACTVARIATIONWEIGHT;  // Variation weight
 typedef BYTE  XACTPRIORITY;         // Sound priority
 typedef BYTE  XACTINSTANCELIMIT;    // Instance limitations
+
+//------------------------------------------------------------------------------
+// Standard win32 multimedia definitions
+//------------------------------------------------------------------------------
+#ifndef WAVE_FORMAT_IEEE_FLOAT
+    #define  WAVE_FORMAT_IEEE_FLOAT 0x0003
+#endif
+
+#ifndef WAVE_FORMAT_EXTENSIBLE
+    #define  WAVE_FORMAT_EXTENSIBLE 0xFFFE
+#endif
+
+#ifndef _WAVEFORMATEX_
+#define _WAVEFORMATEX_
+    #pragma pack(push, 1)
+    typedef struct tWAVEFORMATEX
+    {
+        WORD    wFormatTag;      // format type
+        WORD    nChannels;       // number of channels (i.e. mono, stereo...)
+        DWORD   nSamplesPerSec;  // sample rate
+        DWORD   nAvgBytesPerSec; // for buffer estimation
+        WORD    nBlockAlign;     // block size of data
+        WORD    wBitsPerSample;  // Number of bits per sample of mono data
+        WORD    cbSize;          // The count in bytes of the size of extra information (after cbSize)
+
+    } WAVEFORMATEX, *PWAVEFORMATEX;
+    typedef WAVEFORMATEX NEAR *NPWAVEFORMATEX;
+    typedef WAVEFORMATEX FAR  *LPWAVEFORMATEX;
+    #pragma pack(pop)
+#endif
+
+#ifndef _WAVEFORMATEXTENSIBLE_
+#define _WAVEFORMATEXTENSIBLE_
+    #pragma pack(push, 1)
+    typedef struct
+    {
+        WAVEFORMATEX    Format;              // WAVEFORMATEX data
+
+        union
+        {
+            WORD        wValidBitsPerSample; // Bits of precision
+            WORD        wSamplesPerBlock;    // Samples per block of audio data, valid if wBitsPerSample==0
+            WORD        wReserved;           // Unused -- If neither applies, set to zero.
+        } Samples;
+
+        DWORD           dwChannelMask;       // Speaker usage bitmask
+        GUID            SubFormat;           // Sub-format identifier
+    } WAVEFORMATEXTENSIBLE, *PWAVEFORMATEXTENSIBLE;
+    #pragma pack(pop)
+#endif
 
 //------------------------------------------------------------------------------
 // Constants
@@ -275,12 +325,12 @@ typedef struct XACT_VARIATION_PROPERTIES
 // Structure used to return the properties of the sound referenced by a variation.
 typedef struct XACT_SOUND_PROPERTIES
 {
-    XACTCATEGORY            category;           // Category this sound belongs to
-    BYTE                    priority;           // Priority of this variation
-    XACTPITCH               pitch;              // Current pitch set on the active variation
-    XACTVOLUME              volume;             // Current volume set on the active variation
-    XACTINDEX               numTracks;          // Number of tracks in the active variation
-    XACT_TRACK_PROPERTIES   arrTrackProperties; // Array of active track properties (has numTracks number of elements)
+    XACTCATEGORY            category;               // Category this sound belongs to
+    BYTE                    priority;               // Priority of this variation
+    XACTPITCH               pitch;                  // Current pitch set on the active variation
+    XACTVOLUME              volume;                 // Current volume set on the active variation
+    XACTINDEX               numTracks;              // Number of tracks in the active variation
+    XACT_TRACK_PROPERTIES   arrTrackProperties[1];  // Array of active track properties (has numTracks number of elements)
 
 } XACT_SOUND_PROPERTIES, *LPXACT_SOUND_PROPERTIES;
 
@@ -1099,6 +1149,7 @@ STDAPI_(ULONG) IXACTEngine_Release(IXACTEngine* pEngine);
 STDAPI IXACTEngine_GetRendererCount(IXACTEngine* pEngine, XACTINDEX* pnRendererCount);
 STDAPI IXACTEngine_GetRendererDetails(IXACTEngine* pEngine, XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails);
 #endif
+STDAPI IXACTEngine_GetFinalMixFormat(IXACTEngine* pEngine, WAVEFORMATEXTENSIBLE* pFinalMixFormat);
 STDAPI IXACTEngine_Initialize(IXACTEngine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams);
 STDAPI IXACTEngine_ShutDown(IXACTEngine* pEngine);
 STDAPI IXACTEngine_DoWork(IXACTEngine* pEngine);
@@ -1138,6 +1189,7 @@ DECLARE_INTERFACE_(IXACTEngine, IUnknown)
     STDMETHOD(GetRendererDetails)(THIS_ XACTINDEX nRendererIndex, LPXACT_RENDERER_DETAILS pRendererDetails) PURE;
 #endif
 
+    STDMETHOD(GetFinalMixFormat)(THIS_ WAVEFORMATEXTENSIBLE* pFinalMixFormat) PURE;
     STDMETHOD(Initialize)(THIS_ const XACT_RUNTIME_PARAMETERS* pParams) PURE;
     STDMETHOD(ShutDown)(THIS) PURE;
 
@@ -1187,6 +1239,11 @@ __inline HRESULT __stdcall IXACTEngine_GetRendererDetails(IXACTEngine* pEngine, 
     return pEngine->GetRendererDetails(nRendererIndex, pRendererDetails);
 }
 #endif
+
+__inline HRESULT __stdcall IXACTEngine_GetFinalMixFormat(IXACTEngine* pEngine, WAVEFORMATEXTENSIBLE* pFinalMixFormat)
+{
+    return pEngine->GetFinalMixFormat(pFinalMixFormat);
+}
 
 __inline HRESULT __stdcall IXACTEngine_Initialize(IXACTEngine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams)
 {
@@ -1301,6 +1358,11 @@ __inline HRESULT __stdcall IXACTEngine_GetRendererDetails(IXACTEngine* pEngine, 
     return pEngine->lpVtbl->GetRendererDetails(pEngine, nRendererIndex, pRendererDetails);
 }
 #endif
+
+__inline HRESULT __stdcall IXACTEngine_GetFinalMixFormat(IXACTEngine* pEngine, WAVEFORMATEXTENSIBLE* pFinalMixFormat)
+{
+    return pEngine->lpVtbl->GetFinalMixFormat(pEngine, pFinalMixFormat);
+}
 
 __inline HRESULT __stdcall IXACTEngine_Initialize(IXACTEngine* pEngine, const XACT_RUNTIME_PARAMETERS* pParams)
 {
@@ -1440,13 +1502,8 @@ STDAPI XACTCreateEngine(DWORD dwCreationFlags, IXACTEngine** ppEngine);
 
 #ifndef _XBOX
 
-#if defined (UNICODE)
-#   define XACT_DEBUGENGINE_REGISTRY_KEY   L"Software\\Microsoft\\XACT"
-#   define XACT_DEBUGENGINE_REGISTRY_VALUE L"DebugEngine"
-#else
-#   define XACT_DEBUGENGINE_REGISTRY_KEY   "Software\\Microsoft\\XACT"
-#   define XACT_DEBUGENGINE_REGISTRY_VALUE "DebugEngine"
-#endif
+#define XACT_DEBUGENGINE_REGISTRY_KEY   TEXT("Software\\Microsoft\\XACT")
+#define XACT_DEBUGENGINE_REGISTRY_VALUE TEXT("DebugEngine")
 
 #ifdef __cplusplus
 

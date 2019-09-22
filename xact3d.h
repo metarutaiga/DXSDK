@@ -19,6 +19,9 @@
     #include <x3daudio.h>
     #include <xact.h>
 
+    #pragma warning(push)
+    #pragma warning(disable: 4701) // disable "local variable may be used without having been initialized" compile warning
+
     // Supported speaker positions, represented as azimuth angles.
     //
     // Here's a picture of the azimuth angles for the 8 cardinal points,
@@ -107,35 +110,37 @@
     //  Initializes the 3D API's:
     //
     // REMARKS:
-    //  This method only needs to be called once
-    //  The number of bits set in SpeakerChannelMask should equal the number of
-    //  channels expected on the final mix.
+    //  This method only needs to be called once.
+    //  X3DAudio will be initialized such that its speaker channel mask
+    //  matches the format of the given XACT engine's final mix.
     //
     // PARAMETERS:
-    //  SpeakerChannelMask - [in]  speaker geometry configuration on the final mix, specifies assignment of channels to speaker positions, defined as per WAVEFORMATEXTENSIBLE.dwChannelMask, must be != 0
-    //                             Currently only SPEAKER_STEREO and SPEAKER_5POINT1 is supported by X3DAudio.
-    //  pEngine            - [in]  pointer to the XACT engine
-    //  X3DInstance        - [out] Handle to the X3DAudio instance
+    //  pEngine     - [in]  XACT engine
+    //  X3DInstance - [out] X3DAudio instance handle
     //
     // RETURN VALUE:
     //  HResult error code
     ////
-    EXTERN_C HRESULT inline XACT3DInitialize (UINT32 SpeakerChannelMask, IXACTEngine* pEngine, X3DAUDIO_HANDLE X3DInstance)
+    EXTERN_C HRESULT inline XACT3DInitialize (IXACTEngine* pEngine, X3DAUDIO_HANDLE X3DInstance)
     {
         HRESULT hr = S_OK;
         if (pEngine == NULL) {
             hr = E_POINTER;
         }
 
-        XACTVARIABLEVALUE nSpeedOfSound = 0.0f;
+        XACTVARIABLEVALUE nSpeedOfSound;
         if (SUCCEEDED(hr)) {
             XACTVARIABLEINDEX xactSpeedOfSoundID = pEngine->GetGlobalVariableIndex("SpeedOfSound");
             hr = pEngine->GetGlobalVariable(xactSpeedOfSoundID, &nSpeedOfSound);
         }
-        if (SUCCEEDED(hr)) {
-            X3DAudioInitialize(SpeakerChannelMask, nSpeedOfSound, X3DInstance);
-        }
 
+        if (SUCCEEDED(hr)) {
+            WAVEFORMATEXTENSIBLE wfxFinalMixFormat;
+            hr = pEngine->GetFinalMixFormat(&wfxFinalMixFormat);
+            if (SUCCEEDED(hr)) {
+                X3DAudioInitialize(wfxFinalMixFormat.dwChannelMask, nSpeedOfSound, X3DInstance);
+            }
+        }
         return hr;
     }
 
@@ -144,11 +149,41 @@
     // DESCRIPTION:
     //  Calculates DSP settings with respect to 3D parameters:
     //
+    // REMARKS:
+    //  Note the following flags are always specified for XACT3D calculation:
+    //  X3DAUDIO_CALCULATE_MATRIX | X3DAUDIO_CALCULATE_DOPPLER | X3DAUDIO_CALCULATE_EMITTER_ANGLE
+    //
+    //  This means the caller must set at least the following fields:
+    //    X3DAUDIO_LISTENER.OrientFront
+    //    X3DAUDIO_LISTENER.OrientTop
+    //    X3DAUDIO_LISTENER.Position
+    //    X3DAUDIO_LISTENER.Velocity
+    //
+    //    X3DAUDIO_EMITTER.OrientFront
+    //    X3DAUDIO_EMITTER.OrientTop, if emitter is multi-channel
+    //    X3DAUDIO_EMITTER.Position
+    //    X3DAUDIO_EMITTER.Velocity
+    //    X3DAUDIO_EMITTER.ChannelCount
+    //    X3DAUDIO_EMITTER.CurveDistanceScaler
+    //    X3DAUDIO_EMITTER.DopplerScaler
+    //
+    //    X3DAUDIO_DSP_SETTINGS.pMatrixCoefficients, the caller need only allocate space for SrcChannelCount*DstChannelCount elements
+    //    X3DAUDIO_DSP_SETTINGS.SrcChannelCount
+    //    X3DAUDIO_DSP_SETTINGS.DstChannelCount
+    //
+    //  If X3DAUDIO_EMITTER.pChannelAzimuths is left NULL for multi-channel emitters,
+    //  a default channel radius and channel azimuth array will be applied below.
+    //  Distance curves such as X3DAUDIO_EMITTER.pVolumeCurve should be
+    //  left NULL as XACT's native RPCs will be used to define DSP behaviour
+    //  with respect to normalized distance.
+    //
+    //  See X3DAudio.h for information regarding X3DAudio types.
+    //
     // PARAMETERS:
-    //  X3DInstance        - [in]  X3DAudio instance (returned from XACT3DInitialize)
-    //  pListener          - [in]  point of 3D audio reception
-    //  pEmitter           - [in]  3D audio source
-    //  pDSPSettings       - [out] receives calculation results, applied to an XACT cue via XACT3DApply
+    //  X3DInstance  - [in]  X3DAudio instance handle, returned from XACT3DInitialize()
+    //  pListener    - [in]  point of 3D audio reception
+    //  pEmitter     - [in]  3D audio source
+    //  pDSPSettings - [out] receives calculation results, applied to an XACT cue via XACT3DApply()
     //
     // RETURN VALUE:
     //  HResult error code
@@ -160,7 +195,7 @@
             hr = E_POINTER;
         }
 
-        if(SUCCEEDED(hr)) {
+        if (SUCCEEDED(hr)) {
             if (pEmitter->ChannelCount > 1 && pEmitter->pChannelAzimuths == NULL) {
                 pEmitter->ChannelRadius = 1.0f;
 
@@ -176,7 +211,7 @@
             }
         }
 
-        if(SUCCEEDED(hr)) {
+        if (SUCCEEDED(hr)) {
             static X3DAUDIO_DISTANCE_CURVE_POINT DefaultCurvePoints[2] = { 0.0f, 1.0f, 1.0f, 1.0f };
             static X3DAUDIO_DISTANCE_CURVE       DefaultCurve          = { (X3DAUDIO_DISTANCE_CURVE_POINT*)&DefaultCurvePoints[0], 2 };
             if (pEmitter->pVolumeCurve == NULL) {
@@ -186,7 +221,7 @@
                 pEmitter->pLFECurve = &DefaultCurve;
             }
 
-            X3DAudioCalculate(X3DInstance, pListener, pEmitter, X3DAUDIO_CALCULATE_MATRIX | X3DAUDIO_CALCULATE_DOPPLER | X3DAUDIO_CALCULATE_EMITTER_ANGLE, pDSPSettings);
+            X3DAudioCalculate(X3DInstance, pListener, pEmitter, (X3DAUDIO_CALCULATE_MATRIX | X3DAUDIO_CALCULATE_DOPPLER | X3DAUDIO_CALCULATE_EMITTER_ANGLE), pDSPSettings);
         }
 
         return hr;
@@ -195,10 +230,10 @@
 
     ////
     // DESCRIPTION:
-    //  Applies a 3D calculation returned by XACT3DCalculate to a cue:
+    //  Applies results from a call to XACT3DCalculate() to a cue.
     //
     // PARAMETERS:
-    //  pDSPSettings - [in] calculation results generated by XACT3DCalculate
+    //  pDSPSettings - [in] calculation results generated by XACT3DCalculate()
     //  pCue         - [in] cue to which to apply pDSPSettings
     //
     // RETURN VALUE:
@@ -231,5 +266,6 @@
     }
 
 
+    #pragma warning(pop)
 #endif // __XACT3D_H__
 //---------------------------------<-EOF->----------------------------------//

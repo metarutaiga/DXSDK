@@ -10,7 +10,16 @@
  | DUTY: Cross-platform stand-alone 3D audio math library                   |
  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
   NOTES:
-    1.  Definition of terms:
+    1.  USE THE DEBUG X3DAUDIO DLL TO ENABLE PARAMETER VALIDATION VIA ASSERTS!
+        Here's how:
+        Copy X3DAudioD1_X.dll to where your application exists.
+        The dll can be found in the DXSDK under Utilities\Bin\x86\ (or x64).
+        Rename X3DAudioD1_X.dll to X3DAudio1_X.dll to use the debug version.
+
+        Only parameters required by DSP settings being calculated as
+        stipulated by the calculation control flags are validated.
+
+    2.  Definition of terms:
             LFE: Low Frequency Effect -- always omnidirectional.
             LPF: Low Pass Filter, divided into two classifications:
                  Direct -- Applied to the direct signal path,
@@ -18,12 +27,12 @@
                  Reverb -- Applied to the reverb signal path,
                            used for occlusion effect only.
 
-    2.  Volume level is expressed as a linear amplitude scaler:
+    3.  Volume level is expressed as a linear amplitude scaler:
         1.0f represents no attenuation applied to the original signal,
         0.5f denotes an attenuation of 6dB, and 0.0f results in silence.
         Amplification (volume > 1.0f) is also allowed, and is not clamped.
 
-    3.  X3DAudio uses a left-handed Cartesian coordinate system with values
+    4.  X3DAudio uses a left-handed Cartesian coordinate system with values
         on the x-axis increasing from left to right, on the y-axis from
         bottom to top, and on the z-axis from near to far.
         Azimuths are measured clockwise from a given reference direction.
@@ -35,7 +44,7 @@
         Metric constants are supplied only as a convenience.
         Distance is calculated using the Euclidean norm formula.
 
-    4.  Only real values are permissible with functions using 32-bit
+    5.  Only real values are permissible with functions using 32-bit
         float parameters -- NAN and infinite values are not accepted.
         All computation occurs in 32-bit precision mode.                    */
 
@@ -49,7 +58,8 @@
     #include <d3d9types.h>
 
     // speaker geometry configuration flags, specifies assignment of channels to speaker positions, defined as per WAVEFORMATEXTENSIBLE.dwChannelMask
-    #if !defined(SPEAKER_FRONT_LEFT)
+    #if !defined(_SPEAKER_POSITIONS_)
+        #define _SPEAKER_POSITIONS_
         #define SPEAKER_FRONT_LEFT            0x00000001
         #define SPEAKER_FRONT_RIGHT           0x00000002
         #define SPEAKER_FRONT_CENTER          0x00000004
@@ -68,6 +78,8 @@
         #define SPEAKER_TOP_BACK_LEFT         0x00008000
         #define SPEAKER_TOP_BACK_CENTER       0x00010000
         #define SPEAKER_TOP_BACK_RIGHT        0x00020000
+        #define SPEAKER_RESERVED              0x7FFC0000 // bit mask locations reserved for future use
+        #define SPEAKER_ALL                   0x80000000 // used to specify that any possible permutation of speaker configurations
     #endif
 
     // standard speaker geometry configurations, used with X3DAudioInitialize
@@ -262,7 +274,7 @@
     // delay time array, and initializing the channel counts when used.
     typedef struct X3DAUDIO_DSP_SETTINGS
     {
-        FLOAT32* pMatrixCoefficients; // [in] matrix coefficient table, receives an array representing the volume level of each source channel present in each destination channel with the source channels being the column index and the destination channels being the row index of the table, must have at least SrcChannelCount*DstChannelCount elements
+        FLOAT32* pMatrixCoefficients; // [in] matrix coefficient table, receives an array representing the volume level used to send from source channel S to destination channel D, stored as pMatrixCoefficients[SrcChannelCount * D + S], must have at least SrcChannelCount*DstChannelCount elements
         FLOAT32* pDelayTimes;         // [in] delay time array, receives delays for each destination channel in milliseconds, must have at least DstChannelCount elements (stereo final mix only)
         UINT32 SrcChannelCount;       // [in] number of source channels, must equal number of channels on respective emitter
         UINT32 DstChannelCount;       // [in] number of destination channels, must equal number of channels on the final mix
