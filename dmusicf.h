@@ -16,6 +16,8 @@
 
 #include <mmsystem.h>
 
+#include <pshpack8.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -30,29 +32,27 @@ typedef interface IDirectMusicCollection IDirectMusicCollection;
 #define DMUS_FOURCC_GUID_CHUNK        mmioFOURCC('g','u','i','d')
 #define DMUS_FOURCC_INFO_LIST         mmioFOURCC('I','N','F','O')
 #define DMUS_FOURCC_UNFO_LIST         mmioFOURCC('U','N','F','O')
+#define DMUS_FOURCC_UNAM_CHUNK         mmioFOURCC('U','N','A','M')
+#define DMUS_FOURCC_UART_CHUNK         mmioFOURCC('U','A','R','T')
+#define DMUS_FOURCC_UCOP_CHUNK         mmioFOURCC('U','C','O','P')
+#define DMUS_FOURCC_USBJ_CHUNK         mmioFOURCC('U','S','B','J')
+#define DMUS_FOURCC_UCMT_CHUNK         mmioFOURCC('U','C','M','T')
 #define DMUS_FOURCC_CATEGORY_CHUNK    mmioFOURCC('c','a','t','g')
 #define DMUS_FOURCC_VERSION_CHUNK     mmioFOURCC('v','e','r','s')
 
-typedef struct _DMUS_COMMAND_PARAM
-{
-    BYTE bCommand;
-    BYTE bGrooveLevel;
-    BYTE bGrooveRange;
-} DMUS_COMMAND_PARAM;
 /* The following structures are used by the Tracks, and are the packed structures */
 /* that are passed to the Tracks inside the IStream. */
 
 
 typedef struct _DMUS_IO_SEQ_ITEM
 {
-    long    lTime;
-    long    lDuration;
-    BYTE    bEventType;
-    BYTE    bStatus;
-    BYTE    bByte1;
-    BYTE    bByte2;
-    BYTE    bType;
-    BYTE    bPad[3];
+    MUSIC_TIME    mtTime;
+    MUSIC_TIME    mtDuration;
+    DWORD         dwPChannel;
+    short         nOffset; 
+    BYTE          bStatus;
+    BYTE          bByte1;
+    BYTE          bByte2;
 } DMUS_IO_SEQ_ITEM;
 
 
@@ -62,6 +62,7 @@ typedef struct _DMUS_IO_CURVE_ITEM
     MUSIC_TIME  mtDuration;
     MUSIC_TIME  mtResetDuration;
     DWORD       dwPChannel;
+    short       nOffset;
     short       nStartValue;
     short       nEndValue;
     short       nResetValue;
@@ -69,79 +70,47 @@ typedef struct _DMUS_IO_CURVE_ITEM
     BYTE        bCurveShape;
     BYTE        bCCData;
     BYTE        bFlags;
-    BYTE        bPad[2];
 } DMUS_IO_CURVE_ITEM;
 
 
 typedef struct _DMUS_IO_TEMPO_ITEM
 {
-    long    lTime;
-    double  dblTempo;
+    MUSIC_TIME    lTime;
+    double        dblTempo;
 } DMUS_IO_TEMPO_ITEM;
 
 
 typedef struct _DMUS_IO_SYSEX_ITEM
 {
-    long    lTime;
-    DWORD   dwSysExLength;
-    BYTE*   pbSysExData;
+    MUSIC_TIME    mtTime;
+    DWORD         dwPChannel;
+    DWORD         dwSysExLength;
 } DMUS_IO_SYSEX_ITEM;
 
 
-typedef struct _DMUS_IO_BANKSELECT_ITEM
-{
-    BYTE    byLSB;
-    BYTE    byMSB;
-    BYTE    byPad[2];
-} DMUS_IO_BANKSELECT_ITEM;
-
-
-typedef struct _DMUS_IO_PATCH_ITEM
-{
-    long                        lTime;
-    BYTE                        byStatus;
-    BYTE                        byByte1;
-    BYTE                        byByte2;
-    BYTE                        byMSB;
-    BYTE                        byLSB;
-    BYTE                        byPad[3];
-    DWORD                       dwFlags;
-    IDirectMusicCollection*     pIDMCollection;
-    struct _DMUS_IO_PATCH_ITEM* pNext;  
-} DMUS_IO_PATCH_ITEM;
-
 typedef struct _DMUS_IO_TIMESIGNATURE_ITEM
 {
-    long    lTime;
-    BYTE    bBeatsPerMeasure;   /* beats per measure (top of time sig) */
-    BYTE    bBeat;              /* what note receives the beat (bottom of time sig.) */
-                                /* we can assume that 0 means 256th note */
-    WORD    wGridsPerBeat;      /* grids per beat */
+    MUSIC_TIME    lTime;
+    BYTE          bBeatsPerMeasure;   /* beats per measure (top of time sig) */
+    BYTE          bBeat;              /* what note receives the beat (bottom of time sig.) */
+                                      /* we can assume that 0 means 256th note */
+    WORD          wGridsPerBeat;      /* grids per beat */
 } DMUS_IO_TIMESIGNATURE_ITEM;
 
-typedef struct _DMUS_SUBCHORD
+/* PARAM structures, used by GetParam() and SetParam() */
+typedef struct _DMUS_COMMAND_PARAM
 {
-    DWORD   dwChordPattern;     /* Notes in the subchord */
-    DWORD   dwScalePattern;     /* Notes in the scale */
-    DWORD   dwInversionPoints;  /* Where inversions can occur */
-    DWORD   dwLevels;           /* Which levels are supported by this subchord */
-    BYTE    bChordRoot;         /* Root of the subchord */
-    BYTE    bScaleRoot;         /* Root of the scale */
-} DMUS_SUBCHORD;
+    BYTE bCommand;
+    BYTE bGrooveLevel;
+    BYTE bGrooveRange;
+} DMUS_COMMAND_PARAM;
 
-typedef struct _DMUS_CHORD_PARAM
-{
-    WCHAR           wszName[16];        /* Name of the chord */
-    WORD            wMeasure;           /* Measure this falls on */
-    BYTE            bBeat;              /* Beat this falls on */
-    BYTE            bSubChordCount;     /* Number of chords in the list of subchords */
-    DMUS_SUBCHORD   SubChordList[DMUS_MAXSUBCHORD]; /* List of sub chords */
-} DMUS_CHORD_PARAM;
+typedef DMUS_CHORD_KEY DMUS_CHORD_PARAM; /* DMUS_CHORD_KEY defined in dmusici.h */
 
 typedef struct _DMUS_RHYTHM_PARAM
 {
     DMUS_TIMESIGNATURE  TimeSig;
-    DWORD           dwRhythmPattern;
+    DWORD               dwRhythmPattern;
 } DMUS_RHYTHM_PARAM;
 
 typedef struct _DMUS_TEMPO_PARAM
@@ -155,6 +124,7 @@ typedef struct _DMUS_MUTE_PARAM
 {
     DWORD   dwPChannel;
     DWORD   dwPChannelMap;
+    BOOL    fMute;
 } DMUS_MUTE_PARAM;
 
 /* Style chunks */
@@ -170,18 +140,41 @@ typedef struct _DMUS_MUTE_PARAM
 #define DMUS_FOURCC_RHYTHM_CHUNK      mmioFOURCC('r','h','t','m')
 #define DMUS_FOURCC_PARTREF_LIST      mmioFOURCC('p','r','e','f')
 #define DMUS_FOURCC_PARTREF_CHUNK     mmioFOURCC('p','r','f','c')
+#define DMUS_FOURCC_STYLE_PERS_REF_LIST   mmioFOURCC('p', 'r', 'r', 'f')
+#define DMUS_FOURCC_MOTIFSETTINGS_CHUNK   mmioFOURCC('m', 't', 'f', 's')
 
-#define DMUS_PLAYMODE_SCALE_ROOT            1
-#define DMUS_PLAYMODE_CHORD_ROOT            2
-#define DMUS_PLAYMODE_SCALE_INTERVALS   4
-#define DMUS_PLAYMODE_CHORD_INTERVALS   8
-#define DMUS_PLAYMODE_NONE              16
-#define DMUS_PLAYMODE_FIXED             0
-#define DMUS_PLAYMODE_FIXEDTOSCALE      DMUS_PLAYMODE_SCALE_ROOT
-#define DMUS_PLAYMODE_FIXEDTOCHORD      DMUS_PLAYMODE_CHORD_ROOT
-#define DMUS_PLAYMODE_PEDALPOINT        (DMUS_PLAYMODE_SCALE_ROOT | DMUS_PLAYMODE_SCALE_INTERVALS)
-#define DMUS_PLAYMODE_PURPLEIZED        (DMUS_PLAYMODE_SCALE_INTERVALS | DMUS_PLAYMODE_CHORD_INTERVALS | DMUS_PLAYMODE_CHORD_ROOT)
-#define DMUS_PLAYMODE_NORMALCHORD       (DMUS_PLAYMODE_CHORD_ROOT | DMUS_PLAYMODE_CHORD_INTERVALS)
+/* Flags used by variations: these make up the DWORDs in dwVariationChoices.               */
+
+/* These flags determine the types of chords supported by a given variation in DirectMusic */
+/* mode.  The first seven flags (bits 1-7) are set if the variation supports major chords  */
+/* rooted in scale positions, so, e.g., if bits 1, 2, and 4 are set, the variation         */
+/* supports major chords rooted in the tonic, second, and fourth scale positions.  The     */
+/* next seven flags serve the same purpose, but for minor chords, and the following seven  */
+/* flags serve the same purpose for chords that are not major or minor (e.g., SUS 4        */
+/* chords).  Bits 22, 23, and 24 are set if the variation supports chords rooted in the    */
+/* scale, chords rooted sharp of scale tones, and chords rooted flat of scale tones,       */
+/* respectively.  For example, to support a C# minor chord in the scale of C Major,        */
+/* bits 8 (for tonic minor) and 24 (for sharp) need to be set.  Bits 25, 26, an 27 handle  */
+/* chords that are triads, 6th or 7th chords, and chords with extensions, respectively.    */
+/* bits 28 and 29 handle chords that are followed by tonic and dominant chords,            */
+/* respectively.                                                                           */
+#define DMUS_VARIATIONF_MAJOR        0x0000007F /* Seven positions in the scale - major chords. */    
+#define DMUS_VARIATIONF_MINOR        0x00003F80 /* Seven positions in the scale - minor chords. */    
+#define DMUS_VARIATIONF_OTHER        0x001FC000 /* Seven positions in the scale - other chords. */    
+#define DMUS_VARIATIONF_ROOT_SCALE   0x00200000 /* Handles chord roots in the scale. */         
+#define DMUS_VARIATIONF_ROOT_FLAT    0x00400000 /* Handles flat chord roots (based on scale notes). */         
+#define DMUS_VARIATIONF_ROOT_SHARP   0x00800000 /* Handles sharp chord roots (based on scale notes). */         
+#define DMUS_VARIATIONF_TYPE_TRIAD   0x01000000 /* Handles simple chords - triads. */  
+#define DMUS_VARIATIONF_TYPE_6AND7   0x02000000 /* Handles simple chords - 6 and 7. */  
+#define DMUS_VARIATIONF_TYPE_COMPLEX 0x04000000 /* Handles complex chords. */  
+#define DMUS_VARIATIONF_DEST_TO1     0x08000000 /* Handles transitions to 1 chord. */  
+#define DMUS_VARIATIONF_DEST_TO5     0x10000000 /* Handles transitions to 5 chord. */  
+
+/* The top three bits of the variation flags are the Mode bits.  If all are 0, it's IMA. */  
+/* If the smallest is 1, it's Direct Music. */
+#define DMUS_VARIATIONF_MODES        0xE0000000
+#define DMUS_VARIATIONF_IMA25_MODE   0x00000000
+#define DMUS_VARIATIONF_DMUS_MODE    0x20000000
 
 #pragma pack(2)
 
@@ -197,7 +190,7 @@ typedef struct _DMUS_IO_TIMESIG
 
 typedef struct _DMUS_IO_STYLE
 {
-    DMUS_IO_TIMESIG         timeSig;        /* Styles have a default Time Signature */
+    DMUS_IO_TIMESIG     timeSig;        /* Styles have a default Time Signature */
     double              dblTempo;   
 } DMUS_IO_STYLE;
 
@@ -219,7 +212,7 @@ typedef struct _DMUS_IO_PATTERN
 typedef struct _DMUS_IO_STYLEPART
 {
     DMUS_IO_TIMESIG     timeSig;        /* can override pattern's */
-    DWORD               dwVariationChoices[32]; /* // MOAW choice bitfield */
+    DWORD               dwVariationChoices[32]; /* MOAW choice bitfield */
     GUID                guidPartID;     /* identifies the part */
     WORD                wNbrMeasures;   /* length of the Part */
     BYTE                bPlayModeFlags; /* see PLAYMODE flags */
@@ -273,21 +266,31 @@ typedef struct _DMUS_IO_STYLECURVE
                                    Other bits are reserved. */
 } DMUS_IO_STYLECURVE;
 
+typedef struct _DMUS_IO_MOTIFSETTINGS
+{
+    DWORD       dwRepeats;      /* Number of repeats. By default, 0. */
+    MUSIC_TIME  mtPlayStart;    /* Start of playback. By default, 0. */
+    MUSIC_TIME  mtLoopStart;    /* Start of looping portion. By default, 0. */
+    MUSIC_TIME  mtLoopEnd;      /* End of loop. Must be greater than mtLoopStart. By default equal to length of motif. */
+    DWORD       dwResolution;   /* Default resolution. */
+} DMUS_IO_MOTIFSETTINGS;
+
 #pragma pack()
 
 
 /*
 RIFF
 (
-    'STYL'          // Style
+    'DMST'          // Style
     <styh-ck>       // Style header chunk
     <guid-ck>       // Every Style has a GUID
-    [<INFO-list>]   // Name, author, copyright info., comments
+    [<UNFO-list>]   // Name, author, copyright info., comments
     [<vers-ck>]     // version chunk
     <part-list>...  // List of parts in the Style, used by patterns
     <pttn-list>...  // List of patterns in the Style
     <DMBD-form>...  // List of bands in the Style
     [<motf-list>]   // List of motifs in the Style
+    [<prrf-list>]   // List of chord map references in the Style
 )
 
     // <styh-ck>
@@ -313,7 +316,7 @@ RIFF
     (
         'part'
         <prth-ck>       // Part header chunk
-        [<INFO-list>]
+        [<UNFO-list>]
         [<note-ck>]     // List of notes in Part
         [<crve-ck>]     // List of curves in Part
     )
@@ -344,7 +347,8 @@ RIFF
         'pttn'
         <ptnh-ck>       // Pattern header chunk
         <rhtm-ck>       // List of rhythms for chord matching
-        [<INFO-list>]
+        [<UNFO-list>]
+        [<mtfs-ck>]     // Motif settings chunk
         <pref-list>...  // List of part reference id's
     )
 
@@ -373,6 +377,19 @@ RIFF
         (
             <DMUS_IO_PARTREF>
         )
+
+        // <mtfs-ck>
+        mtfs
+        (
+            <DMUS_IO_MOTIFSETTINGS>
+        )
+
+    // <prrf-list>
+    LIST
+    (
+        'prrf'
+        // some number of <DMRF>
+    )
 */
 
 /* Chord and command file formats */
@@ -414,10 +431,10 @@ typedef struct _DMUS_IO_COMMAND
 
 /*
 
-    // <chrd-list>
+    // <cord-list>
     LIST
     (
-        'chrd'
+        'cord'
         <crdh-ck>
         <crdb-ck>       // Chord body chunk
     )
@@ -448,87 +465,6 @@ typedef struct _DMUS_IO_COMMAND
 
 */
 
-/*
-RIFF
-(
-    'DMPF'          // DirectMusic Performance chunk
-    [<prfh-ck>]     // Performance header chunk
-    [<guid-ck>]     // GUID for performance
-    [<vers-ck>]     // Optional version info
-    [<INFO-list>]   // Name, author, copyright info., comments
-    [<ptgl-list>]   // List of Port groups, which are lists of desired port properties and
-                    // the PChannels to assign the Port.
-    [<ntfl-list>]   // List of notifications
-    [<glbl-list>]   // List of global data
-    [<DMTG-form>]   // Optional ToolGraph
-)
-
-    // <prfh-ck>
-    'prfh'          // Performance header
-    (
-        <DMUS_IO_PERFORMANCE_HEADER>
-    )
-    
-    // <guid-ck>
-    'guid'
-    (
-        <GUID>
-    )
-
-    // <vers-ck>
-    vers
-    (
-        <DMUS_IO_VERSION>
-    )
-
-    // <ptgl-list>
-    LIST
-    (
-        'ptgl'          // List of Port groups
-        <pspl-list>     // List of support items for this group
-    )
-
-    // <ntfl-list>
-    LIST
-    (
-        'ntfl'          // List of notifications
-        <guid-ck>       // Notification guid
-    )
-
-    // <glbl-list>
-    LIST
-    (
-        'glbl'          // List of global data
-        <glbd-ck>       // The data.
-    )
-
-        // <glbd-ck>
-        'glbd'
-        (
-            <DMUS_IO_GLOBAL_DATA>
-        )
-
-// <pspl-list>
-LIST
-(
-    'pspl'              // List of port support items
-    <psph-ck>           // Port support item header chunk
-    <pchn-ck>           // PChannels that want this Port
-)
-
-    // <pchn-ck>
-    'pchn'
-    (
-        <DMUS_IO_PCHANNELS>
-    )
-
-    // <psph-ck>            // Port support item header chunk
-    (
-        'psph'              // Port support item header
-        <DMUS_IO_PORT_SUPPORT_HEADER>
-    )
-*/
-    
 /*  File io for DirectMusic Tool and ToolGraph objects
 */
 
@@ -557,7 +493,7 @@ RIFF
     'DMTG'          // DirectMusic ToolGraph chunk
     [<guid-ck>]     // GUID for ToolGraph
     [<vers-ck>]     // Optional version info
-    [<INFO-list>]   // Name, author, copyright info., comments
+    [<UNFO-list>]   // Name, author, copyright info., comments
     <toll-list>     // List of Tools
 )
 
@@ -587,7 +523,7 @@ RIFF
     <tolh-ck>
     [<guid-ck>]     // Optional GUID for tool object instance (not to be confused with Class id in track header)
     [<vers-ck>]     // Optional version info
-    [<INFO-list>]   // Optional name, author, copyright info., comments
+    [<UNFO-list>]   // Optional name, author, copyright info., comments
     [<data>]        // Tool data. Must be a RIFF readable chunk.
 )
 
@@ -626,7 +562,7 @@ RIFF
     [<bdth-ck>]     // Band track header
     [<guid-ck>]     // GUID for band track
     [<vers-ck>]     // Optional version info
-    [<INFO-list>]   // Name, author, copyright info., comments
+    [<UNFO-list>]   // Name, author, copyright info., comments
     <lbdl-list>     // List of Band Lists
 )
 
@@ -680,18 +616,21 @@ RIFF
 #define DMUS_FOURCC_INSTRUMENT_LIST     mmioFOURCC('l','b','i','n')
 #define DMUS_FOURCC_INSTRUMENT_CHUNK    mmioFOURCC('b','i','n','s')
 
-// Flags for DMUS_IO_INSTRUMENT
-#define DMUS_IO_INST_PATCH          (1 << 0)        // dwPatch is valid.
-#define DMUS_IO_INST_BANKSELECT_MSB (1 << 1)        // dwPatch contains a valid Bank Select MSB part
-#define DMUS_IO_INST_BANKSELECT_LSB (1 << 2)        // dwPatch contains a valid Bank Select LSB part
-#define DMUS_IO_INST_ASSIGN_PATCH   (1 << 3)        // dwAssignPatch is valid
-#define DMUS_IO_INST_NOTERANGES     (1 << 4)        // dwNoteRanges is valid
-#define DMUS_IO_INST_PAN            (1 << 5)        // bPan is valid
-#define DMUS_IO_INST_VOLUME         (1 << 6 )       // bVolume is valid
-#define DMUS_IO_INST_TRANSPOSE      (1 << 7)        // nTranspose is valid
-#define DMUS_IO_INST_GM             (1 << 8)        // Instrument is from GM collection
-#define DMUS_IO_INST_GS             (1 << 9)        // Instrument is from GS collection
-#define DMUS_IO_INST_VPATCH         (1 << 10)       // Instrument dwPatch is a virtual patch
+/* Flags for DMUS_IO_INSTRUMENT
+ */
+#define DMUS_IO_INST_PATCH          (1 << 0)        /* dwPatch is valid. */
+#define DMUS_IO_INST_BANKSELECT     (1 << 1)        /* dwPatch contains a valid Bank Select MSB and LSB part */
+#define DMUS_IO_INST_ASSIGN_PATCH   (1 << 3)        /* dwAssignPatch is valid */
+#define DMUS_IO_INST_NOTERANGES     (1 << 4)        /* dwNoteRanges is valid */
+#define DMUS_IO_INST_PAN            (1 << 5)        /* bPan is valid */
+#define DMUS_IO_INST_VOLUME         (1 << 6 )       /* bVolume is valid */
+#define DMUS_IO_INST_TRANSPOSE      (1 << 7)        /* nTranspose is valid */
+#define DMUS_IO_INST_GM             (1 << 8)        /* Instrument is from GM collection */
+#define DMUS_IO_INST_GS             (1 << 9)        /* Instrument is from GS collection */
+#define DMUS_IO_INST_XG             (1 << 10)       /* Instrument is from XG collection */
+#define DMUS_IO_INST_CHANNEL_PRIORITY (1 << 11)     /* dwChannelPriority is valid */
+#define DMUS_IO_INST_USE_DEFAULT_GM_SET (1 << 12)   /* Always use the default GM set for this patch,  */
+                                                    /* don't rely on the synth caps stating GM or GS in hardware. */
 
 /*  io structures */
 typedef struct _DMUS_IO_INSTRUMENT
@@ -704,6 +643,7 @@ typedef struct _DMUS_IO_INSTRUMENT
     BYTE    bPan;               /* Pan for instrument */
     BYTE    bVolume;            /* Volume for instrument */
     short   nTranspose;         /* Number of semitones to transpose notes */
+    DWORD   dwChannelPriority;  /* Channel priority */
 } DMUS_IO_INSTRUMENT;
 
 /*
@@ -713,7 +653,7 @@ RIFF
     'DMBD'          // DirectMusic Band chunk
     [<guid-ck>]     // GUID for band
     [<vers-ck>]     // Optional version info
-    [<INFO-list>]   // Name, author, copyright info., comments
+    [<UNFO-list>]   // Name, author, copyright info., comments
     <lbil-list>     // List of Instruments
 )
 
@@ -789,7 +729,7 @@ RIFF
     <segh-ck>       // Segment header chunk
     [<guid-ck>]     // GUID for segment
     [<vers-ck>]     // Optional version info
-    [<INFO-list>]   // Name, author, copyright info., comments
+    [<UNFO-list>]   // Name, author, copyright info., comments
     <trkl-list>     // List of Tracks
     [<DMTG-form>]   // Optional ToolGraph
 )
@@ -826,7 +766,7 @@ RIFF
     <trkh-ck>
     [<guid-ck>]     // Optional GUID for track object instance (not to be confused with Class id in track header)
     [<vers-ck>]     // Optional version info
-    [<INFO-list>]   // Optional name, author, copyright info., comments
+    [<UNFO-list>]   // Optional name, author, copyright info., comments
     [<data>]        // Track data. Must be a RIFF readable chunk.
 )
 
@@ -911,71 +851,11 @@ LIST
     )
 */
 
-/*  File i/o for DirectMusic Performance object */
-
-/*  RIFF ids: */
-
-#define DMUS_FOURCC_PERFORMANCE_FORM        mmioFOURCC('D','M','P','F')
-#define DMUS_FOURCC_PERFORMANCE_CHUNK       mmioFOURCC('p','r','f','h')
-#define DMUS_FOURCC_PERF_PORTGROUP_LIST     mmioFOURCC('p','t','g','l')
-#define DMUS_FOURCC_PERF_NOTIFICATION_LIST  mmioFOURCC('n','t','f','l')
-#define DMUS_FOURCC_PERF_GLOBAL_DATA_LIST   mmioFOURCC('g','l','b','l')
-#define DMUS_FOURCC_PERF_SUPPORT_LIST       mmioFOURCC('p','s','p','l')
-#define DMUS_FOURCC_PERF_SUPPORT_CHUNK      mmioFOURCC('p','s','p','h')
-#define DMUS_FOURCC_PERF_PCHANNELS_CHUNK    mmioFOURCC('p','c','h','n')
-/*  io structures: */
-
-typedef struct _DMUS_IO_PERFORMANCE_HEADER
-{
-    DWORD       dwPrepareTime;  /* time ahead, in ms, to transport */
-    DWORD       dwPrePlayTime;  /* time ahead, in ms, of latency clock to pack events */
-} DMUS_IO_PERFORMANCE_HEADER;
-
-typedef enum _DMUS_SUPPORTTYPE  /* identifies the type of data in DMUS_IO_USSupportData */
-{
-    DMUS_ST_BOOL = 0,
-    DMUS_ST_DWORD = 1,
-    DMUS_ST_LONG = 2
-} DMUS_SUPPORTTYPE;
-
-typedef struct _DMUS_IO_SUPPORT_DATA        /* data used in DMUS_IO_USPortSupportHeader */
-{
-    DMUS_SUPPORTTYPE    type;       /* identifies which member of the union is valid */
-    union
-    {
-        BOOL    fVal;
-        DWORD   dwVal;
-        LONG    lVal;
-    };
-} DMUS_IO_SUPPORT_DATA;
-
-typedef struct _DMUS_IO_PORT_SUPPORT_HEADER /* identifies desired port properties */
-{
-    GUID                guidID;         /* Support ID. */
-    DMUS_IO_SUPPORT_DATA    lowData;    /* Low range of data, inclusive. If BOOL type, */
-                                        /* ignore highData. Otherwise, combine lowData */
-                                        /* and highData into a range. */
-    DMUS_IO_SUPPORT_DATA    highData;   /* High range of data, inclusive */
-} DMUS_IO_PORT_SUPPORT_HEADER;
-
-typedef struct _DMUS_IO_PCHANNELS   /* Holds the PChannels to assign to a Port */
-{
-    DWORD       cPChannels;     /* Number of items in channels array.  */
-    DWORD       adwPChannels[1];/* Array of PChannels, size determined by cPChannels. */
-} DMUS_IO_PCHANNELS;
-
-typedef struct _DMUS_IO_GLOBAL_DATA /* Holds the global data information */
-{
-    GUID        guid;       /* The global data guid */
-    DWORD       dwSize;     /* The size of the data */
-    char        acData[1];  /* Holds the data of the global data, size determine by dwSize */
-} DMUS_IO_GLOBAL_DATA;
-
-/* personalities */
+/* Chord Maps */
 
 /* runtime chunks */
-#define DMUS_FOURCC_PERSONALITY_FORM    mmioFOURCC('D','M','P','R')
-#define DMUS_FOURCC_IOPERSONALITY_CHUNK mmioFOURCC('p','e','r','h')
+#define DMUS_FOURCC_CHORDMAP_FORM       mmioFOURCC('D','M','P','R')
+#define DMUS_FOURCC_IOCHORDMAP_CHUNK    mmioFOURCC('p','e','r','h')
 #define DMUS_FOURCC_SUBCHORD_CHUNK      mmioFOURCC('c','h','d','t')
 #define DMUS_FOURCC_CHORDENTRY_CHUNK    mmioFOURCC('c','h','e','h')
 #define DMUS_FOURCC_SUBCHORDID_CHUNK    mmioFOURCC('s','b','c','n')
@@ -994,15 +874,38 @@ typedef struct _DMUS_IO_GLOBAL_DATA /* Holds the global data information */
 
 #define DMUS_FOURCC_SIGNPOST_LIST       mmioFOURCC('s','p','s','q')
 
+/* values for dwChord field of DMUS_IO_PERS_SIGNPOST */
+/* DMUS_SIGNPOSTF_ flags are also used in templates (DMUS_IO_SIGNPOST) */
+#define DMUS_SIGNPOSTF_A        1      
+#define DMUS_SIGNPOSTF_B        2
+#define DMUS_SIGNPOSTF_C        4
+#define DMUS_SIGNPOSTF_D        8
+#define DMUS_SIGNPOSTF_E        0x10
+#define DMUS_SIGNPOSTF_F        0x20
+#define DMUS_SIGNPOSTF_LETTER   (DMUS_SIGNPOSTF_A | DMUS_SIGNPOSTF_B | DMUS_SIGNPOSTF_C | DMUS_SIGNPOSTF_D | DMUS_SIGNPOSTF_E | DMUS_SIGNPOSTF_F)
+#define DMUS_SIGNPOSTF_1        0x100
+#define DMUS_SIGNPOSTF_2        0x200
+#define DMUS_SIGNPOSTF_3        0x400
+#define DMUS_SIGNPOSTF_4        0x800
+#define DMUS_SIGNPOSTF_5        0x1000
+#define DMUS_SIGNPOSTF_6        0x2000
+#define DMUS_SIGNPOSTF_7        0x4000
+#define DMUS_SIGNPOSTF_ROOT     (DMUS_SIGNPOSTF_1 | DMUS_SIGNPOSTF_2 | DMUS_SIGNPOSTF_3 | DMUS_SIGNPOSTF_4 | DMUS_SIGNPOSTF_5 | DMUS_SIGNPOSTF_6 | DMUS_SIGNPOSTF_7)
+#define DMUS_SIGNPOSTF_CADENCE  0x8000
+
+/* values for dwChord field of DMUS_IO_PERS_SIGNPOST */
+#define DMUS_SPOSTCADENCEF_1  2   /* Use the first cadence chord. */
+#define DMUS_SPOSTCADENCEF_2  4   /* Use the second cadence chord. */
+
 /* run time data structs */
-typedef struct _DMUS_IO_PERSONALITY
+typedef struct _DMUS_IO_CHORDMAP
 {
     WCHAR   wszLoadName[20];
     DWORD   dwScalePattern;
     DWORD   dwFlags;
-} DMUS_IO_PERSONALITY;
+} DMUS_IO_CHORDMAP;
 
-typedef struct _DMUS_IO_PERS_SUBCHORD
+typedef struct _DMUS_IO_CHORDMAP_SUBCHORD
 {
     DWORD   dwChordPattern;
     DWORD   dwScalePattern;
@@ -1011,7 +914,10 @@ typedef struct _DMUS_IO_PERS_SUBCHORD
     BYTE    bScaleRoot;
     WORD    wCFlags;
     DWORD   dwLevels;   /* parts or which subchord levels this chord supports */
-} DMUS_IO_PERS_SUBCHORD;
+} DMUS_IO_CHORDMAP_SUBCHORD;
+
+/* Legacy name... */
+typedef DMUS_IO_CHORDMAP_SUBCHORD DMUS_IO_PERS_SUBCHORD;
 
 typedef struct _DMUS_IO_CHORDENTRY
 {
@@ -1028,37 +934,28 @@ typedef struct _DMUS_IO_NEXTCHORD
     WORD    wConnectionID;  /* points to an ioChordEntry */
 } DMUS_IO_NEXTCHORD;
 
-typedef struct _DMUS_IO_PERS_SIGNPOST
+typedef struct _DMUS_IO_CHORDMAP_SIGNPOST
 {
     DWORD   dwChords;   /* 1bit per group */
     DWORD   dwFlags;
-} DMUS_IO_PERS_SIGNPOST;
+} DMUS_IO_CHORDMAP_SIGNPOST;
+
+/* Legacy name... */
+typedef DMUS_IO_CHORDMAP_SIGNPOST DMUS_IO_PERS_SIGNPOST;
 
 /*
 RIFF
 (
     'DMPR'
-    <perh-ck>           // Personality header chunk
+    <perh-ck>           // Chord map header chunk
     [<guid-ck>]         // guid chunk
     [<vers-ck>]         // version chunk (two DWORDS)
-    <INFO-list>         // standard MS Info chunk
+    [<UNFO-list>]       // Unfo chunk
     <chdt-ck>           // subchord database
     <chpl-list>         // chord palette
     <cmap-list>         // chord map
-    <spst-list>         // signpost list
+    <spsq-list>         // signpost list
  )
-
- <chdt> ::= chdt(<cbChordSize::WORD>  <ioSubChord> ... )
-
-<chpl-list> ::= LIST('chpl' 
-                                <chrd-list> ... // chord definition
-                             )
-
-<chrd-list> ::= LIST('chrd' 
-                                <INAM-ck>   // name of chord in wide char format
-                                <sbcn-ck>   // list of subchords composing chord
-                                [<ched-ck>] //  optional chord edit flags
-                                )
 
 <cmap-list> ::= LIST('cmap' <choe-list> )
 
@@ -1066,23 +963,38 @@ RIFF
                                 <cheh-ck>   // chord entry data
                                 <chrd-list> // chord definition
                                 <ncsq-ck>   // connecting(next) chords
-                                )
+                     )
+
+<chrd-list> ::= LIST('chrd' 
+                                <INAM-ck>   // name of chord in wide char format
+                                <sbcn-ck>   // list of subchords composing chord
+                    )
+
+<chpl-list> ::= LIST('chpl' 
+                                <chrd-list> ... // chord definition
+                    )
+
+<spsq-list> ::== LIST('spsq' <spst-list> ... )
 
 <spst-list> ::= LIST('spst'
                              <spsh-ck>
                              <chrd-list>
                              [<cade-list>]
-                             )
+                    )
 
 <cade-list> ::= LIST('cade' <chrd-list> ...)
-                                
-<sbcn-ck> ::= sbcn(<cSubChordID:WORD>)
 
-<cheh-ck> ::= cheh(i<DMUS_IO_CHORDENTRY>)
+<perh-ck> ::= perh(<DMUS_IO_CHORDMAP>)
 
-<ncrd-ck> ::= ncrd(<DMUS_IO_NEXTCHORD>)
+<chdt-ck> ::= chdt(<cbChordSize::WORD>
+                   <DMUS_IO_PERS_SUBCHORD> ... )
 
-<ncsq-ck> ::= ncsq(<wNextChordSize:WORD> <DMUS_IO_NEXTCHORD>...)
+<cheh-ck> ::= cheh(<DMUS_IO_CHORDENTRY>)
+
+<sbcn-ck> ::= sbcn(<cSubChordID:WORD> ...)
+
+<ncsq-ck> ::= ncsq(<wNextChordSize:WORD> 
+                   <DMUS_IO_NEXTCHORD>...)
 
 <spsh-ck> ::= spsh(<DMUS_IO_PERS_SIGNPOST>)
 
@@ -1132,7 +1044,7 @@ typedef struct _DMUS_IO_MUTE
 
 */
 
-/* Used for both style and personality tracks */
+/* Used for both style and chord map tracks */
 
 #define DMUS_FOURCC_TIME_STAMP_CHUNK    mmioFOURCC('s', 't', 'm', 'p')
 
@@ -1160,7 +1072,7 @@ typedef struct _DMUS_IO_MUTE
 
 */
 
-/* Personality tracks */
+/* Chord map tracks */
 
 #define DMUS_FOURCC_PERS_TRACK_LIST mmioFOURCC('p', 'f', 't', 'r')
 #define DMUS_FOURCC_PERS_REF_LIST   mmioFOURCC('p', 'f', 'r', 'f')
@@ -1201,38 +1113,38 @@ typedef struct _DMUS_IO_MUTE
     )
   */
 
-#define DMUS_FOURCC_SEQ_TRACK       mmioFOURCC('s','q','t','r')
+#define DMUS_FOURCC_SEQ_TRACK       mmioFOURCC('s','e','q','t')
+#define DMUS_FOURCC_SEQ_LIST        mmioFOURCC('e','v','t','l')
+#define DMUS_FOURCC_CURVE_LIST      mmioFOURCC('c','u','r','l')
 
 /*
     // sequence track
-    'sqtr'
+    'seqt'
     (
-        // sizeof DMUS_IO_SEQ_ITEM: DWORD
-        <DMUS_IO_SEQ_ITEM>...
+        // sequence list
+        'evtl'
+        (
+            // sizeof DMUS_IO_SEQ_ITEM: DWORD
+            <DMUS_IO_SEQ_ITEM>...
+        )
+        // curve list
+        'curl'
+        (
+            // sizeof DMUS_IO_CURVE_ITEM: DWORD
+            <DMUS_IO_CURVE_ITEM>...
+        )
     )
 */
 
-#define DMUS_FOURCC_CURVE_TRACK     mmioFOURCC('c','v','t','r')
-
-/*
-    // curve track
-    'cvtr'
-    (
-        // sizeof DMUS_IO_CURVE_ITEM: DWORD
-        <DMUS_IO_CURVE_ITEM>...
-    )
-*/
-
-#define DMUS_FOURCC_SYSEX_TRACK     mmioFOURCC('s','y','s','x')
+#define DMUS_FOURCC_SYSEX_TRACK     mmioFOURCC('s','y','e','x')
 
 /*
     // sysex track
-    'sysx'
+    'syex'
     (
         // list of:
         // {
-        //      time of the sys-ex message: long
-        //      length of the sys-ex data: DWORD
+        //      <DMUS_IO_SYSEX_ITEM>
         //      sys-ex: data
         // }...
     )
@@ -1252,5 +1164,7 @@ typedef struct _DMUS_IO_MUTE
 #ifdef __cplusplus
 }; /* extern "C" */
 #endif
+
+#include <poppack.h>
 
 #endif /* #ifndef _DMUSICF_ */

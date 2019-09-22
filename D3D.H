@@ -70,6 +70,7 @@ struct IDirect3DExecuteBuffer;
 struct IDirect3DLight;
 struct IDirect3DMaterial;
 struct IDirect3DMaterial2;
+struct IDirect3DMaterial3;
 struct IDirect3DTexture;
 struct IDirect3DTexture2;
 struct IDirect3DViewport;

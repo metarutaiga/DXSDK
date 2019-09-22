@@ -38,6 +38,7 @@ extern "C" {
 #define DSETUPERR_UNKNOWNOS             -11
 #define DSETUPERR_USERHITCANCEL         -12
 #define DSETUPERR_NOTPREINSTALLEDONNT   -13
+#define DSETUPERR_NEWERVERSION			-14
 
 // DSETUP flags. DirectX 5.0 apps should use these flags only.
 #define DSETUP_DDRAWDRV         0x00000008      /* install DirectDraw Drivers           */

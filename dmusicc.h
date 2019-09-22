@@ -17,97 +17,18 @@
 #include <mmsystem.h>
 
 #include "dls1.h"
+#include "dmerror.h"
+#include "dmdls.h"
+#include "dsound.h"
+
+#include <pshpack8.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define FACILITY_DIRECTMUSIC      0x878       /* Shared with DirectSound */
-#define DMUS_ERRBASE              0x1000      /* Make error codes human readable in hex */
-    
-#define MAKE_DMHRESULTSUCCESS(code)     MAKE_HRESULT(0, FACILITY_DIRECTMUSIC, (DMUS_ERRBASE + (code)))
-#define MAKE_DMHRESULTERROR(code)       MAKE_HRESULT(1, FACILITY_DIRECTMUSIC, (DMUS_ERRBASE + (code)))
-
-#define DMUS_S_ALREADY_DOWNLOADED       MAKE_DMHRESULTSUCCESS(0x090)
-#define DMUS_S_PARTIALLOAD              MAKE_DMHRESULTSUCCESS(0x091)
-
-#define DMUS_S_REQUEUE                  MAKE_DMHRESULTSUCCESS(0x200)
-#define DMUS_S_FREE                     MAKE_DMHRESULTSUCCESS(0x201)
-#define DMUS_S_END                      MAKE_DMHRESULTSUCCESS(0x202)
-
-#define DMUS_E_NO_DRIVER                MAKE_DMHRESULTERROR(0x0100)
-#define DMUS_E_DRIVER_FAILED            MAKE_DMHRESULTERROR(0x0101)
-#define DMUS_E_PORTS_OPEN               MAKE_DMHRESULTERROR(0x0102)
-#define DMUS_E_DEVICE_IN_USE            MAKE_DMHRESULTERROR(0x0103)
-#define DMUS_E_INSUFFICIENTBUFFER       MAKE_DMHRESULTERROR(0x0104)
-#define DMUS_E_BUFFERNOTSET             MAKE_DMHRESULTERROR(0x0105)
-#define DMUS_E_BUFFERNOTAVAILABLE       MAKE_DMHRESULTERROR(0x0106)
-#define DMUS_E_NOTINITED                MAKE_DMHRESULTERROR(0x0107)
-#define DMUS_E_NOTADLSCOL               MAKE_DMHRESULTERROR(0x0108)
-#define DMUS_E_INVALIDOFFSET            MAKE_DMHRESULTERROR(0x0109)
-#define DMUS_E_INVALIDID                MAKE_DMHRESULTERROR(0x0110)
-#define DMUS_E_ALREADY_LOADED           MAKE_DMHRESULTERROR(0x0111)
-#define DMUS_E_INVALIDPOS               MAKE_DMHRESULTERROR(0x0113)
-#define DMUS_E_INVALIDPATCH             MAKE_DMHRESULTERROR(0x0114)
-#define DMUS_E_CANNOTSEEK               MAKE_DMHRESULTERROR(0x0115)
-#define DMUS_E_CANNOTWRITE              MAKE_DMHRESULTERROR(0x0116)
-#define DMUS_E_CHUNKNOTFOUND            MAKE_DMHRESULTERROR(0x0117)
-#define DMUS_E_INVALID_DOWNLOADID       MAKE_DMHRESULTERROR(0x0119)
-#define DMUS_E_NOT_DOWNLOADED_TO_PORT   MAKE_DMHRESULTERROR(0x0120)
-#define DMUS_E_ALREADY_DOWNLOADED       MAKE_DMHRESULTERROR(0x0121)
-#define DMUS_E_UNKNOWN_PROPERTY         MAKE_DMHRESULTERROR(0x0122)
-#define DMUS_E_SET_UNSUPPORTED          MAKE_DMHRESULTERROR(0x0123)
-#define DMUS_E_GET_UNSUPPORTED          MAKE_DMHRESULTERROR(0x0124)
-#define DMUS_E_NOTMONO                  MAKE_DMHRESULTERROR(0x0125)
-#define DMUS_E_BADARTICULATION          MAKE_DMHRESULTERROR(0x0126)
-#define DMUS_E_BADINSTRUMENT            MAKE_DMHRESULTERROR(0x0127)
-#define DMUS_E_BADWAVELINK              MAKE_DMHRESULTERROR(0x0128)
-#define DMUS_E_NOARTICULATION           MAKE_DMHRESULTERROR(0x0129)
-#define DMUS_E_NOTPCM                   MAKE_DMHRESULTERROR(0x012A)
-#define DMUS_E_BADWAVE                  MAKE_DMHRESULTERROR(0x012B)
-#define DMUS_E_BADOFFSETTABLE           MAKE_DMHRESULTERROR(0x012C)
-#define DMUS_E_UNKNOWNDOWNLOAD          MAKE_DMHRESULTERROR(0x012D)
-#define DMUS_E_NOSYNTHSINK              MAKE_DMHRESULTERROR(0x012E)
-#define DMUS_E_ALREADYOPEN              MAKE_DMHRESULTERROR(0x012F)
-#define DMUS_E_ALREADYCLOSED            MAKE_DMHRESULTERROR(0x0130)
-#define DMUS_E_SYNTHNOTCONFIGURED       MAKE_DMHRESULTERROR(0x0131)
-#define DMUS_E_SYNTHACTIVE              MAKE_DMHRESULTERROR(0x0132)
-
-#define DMUS_E_UNSUPPORTED_STREAM       MAKE_DMHRESULTERROR(0x0150)
-#define DMUS_E_ALREADY_INITED           MAKE_DMHRESULTERROR(0x0151)
-#define DMUS_E_INVALID_BAND             MAKE_DMHRESULTERROR(0x0152)
-#define DMUS_E_CANNOT_ADD_AFTER_INITED  MAKE_DMHRESULTERROR(0x0153)
-#define DMUS_E_NOT_INITED               MAKE_DMHRESULTERROR(0x0154)
-#define DMUS_E_TRACK_HDR_NOT_FIRST_CK   MAKE_DMHRESULTERROR(0x0155)
-#define DMUS_E_TOOL_HDR_NOT_FIRST_CK    MAKE_DMHRESULTERROR(0x0156)
-#define DMUS_E_INVALID_TRACK_HDR        MAKE_DMHRESULTERROR(0x0157)
-#define DMUS_E_INVALID_TOOL_HDR         MAKE_DMHRESULTERROR(0x0158)
-#define DMUS_E_ALL_TOOLS_FAILED         MAKE_DMHRESULTERROR(0x0159)
-#define DMUS_E_ALL_TRACKS_FAILED        MAKE_DMHRESULTERROR(0x0160)
-#define DMUS_E_NOT_FOUND                MAKE_DMHRESULTERROR(0x0161)
-#define DMUS_E_NOT_INIT                 MAKE_DMHRESULTERROR(0x0162)
-
-#define DMUS_E_NO_MASTER_CLOCK          MAKE_DMHRESULTERROR(0x0170)
-
-#define DMUS_E_LOADER_NOCLASSID         MAKE_DMHRESULTERROR(0x0180)
-#define DMUS_E_LOADER_BADPATH           MAKE_DMHRESULTERROR(0x0181)
-#define DMUS_E_LOADER_FAILEDOPEN        MAKE_DMHRESULTERROR(0x0182)
-#define DMUS_E_LOADER_FORMATNOTSUPPORTED    MAKE_DMHRESULTERROR(0x0183)
-
 #define DMUS_MAX_DESCRIPTION 128
 #define DMUS_MAX_DRIVER 128
-
-#define DMUS_PC_INPUTCLASS       (0)
-#define DMUS_PC_OUTPUTCLASS      (1)
-
-#define DMUS_PC_DLS              (0x00000001)
-#define DMUS_PC_EXTERNAL         (0x00000002)
-#define DMUS_PC_SOFTWARESYNTH    (0x00000004)
-#define DMUS_PC_MEMORYSIZEFIXED  (0x00000008)
-#define DMUS_PC_GMINHARDWARE     (0x00000010)
-#define DMUS_PC_GSINHARDWARE     (0x00000020)
-#define DMUS_PC_REVERB           (0x00000040)
-#define DMUS_PC_SYSTEMMEMORY     (0x7FFFFFFF)
 
 typedef struct _DMUS_BUFFERDESC *LPDMUS_BUFFERDESC;
 typedef struct _DMUS_BUFFERDESC{
@@ -117,6 +38,32 @@ typedef struct _DMUS_BUFFERDESC{
     DWORD cbBuffer;
 } DMUS_BUFFERDESC;
 
+/* DMUS_EFFECT_ flags are used in the dwEffectFlags fields of both DMUS_PORTCAPS 
+ * and DMUS_PORTPARAMS.
+ */
+#define DMUS_EFFECT_NONE             0x00000000
+#define DMUS_EFFECT_REVERB           0x00000001
+#define DMUS_EFFECT_CHORUS           0x00000002
+
+/* For DMUS_PORTCAPS dwClass
+ */ 
+#define DMUS_PC_INPUTCLASS       (0)
+#define DMUS_PC_OUTPUTCLASS      (1)
+
+/* For DMUS_PORTCAPS dwFlags
+ */
+#define DMUS_PC_DLS              (0x00000001)
+#define DMUS_PC_EXTERNAL         (0x00000002)
+#define DMUS_PC_SOFTWARESYNTH    (0x00000004)
+#define DMUS_PC_MEMORYSIZEFIXED  (0x00000008)
+#define DMUS_PC_GMINHARDWARE     (0x00000010)
+#define DMUS_PC_GSINHARDWARE     (0x00000020)
+#define DMUS_PC_XGINHARDWARE     (0x00000040)
+#define DMUS_PC_DIRECTSOUND      (0x00000080)
+#define DMUS_PC_SHAREABLE        (0x00000100)
+#define DMUS_PC_SYSTEMMEMORY     (0x7FFFFFFF)
+
+
 typedef struct _DMUS_PORTCAPS *LPDMUS_PORTCAPS;
 typedef struct _DMUS_PORTCAPS
 {
@@ -124,11 +71,31 @@ typedef struct _DMUS_PORTCAPS
     DWORD   dwFlags;
     GUID    guidPort;
     DWORD   dwClass;
+    DWORD   dwType;
     DWORD   dwMemorySize;
     DWORD   dwMaxChannelGroups;
     DWORD   dwMaxVoices;    
+    DWORD   dwMaxAudioChannels;
+    DWORD   dwEffectFlags;
     WCHAR   wszDescription[DMUS_MAX_DESCRIPTION];
 } DMUS_PORTCAPS;
+
+/* Values for DMUS_PORTCAPS dwType. This field indicates the underlying 
+ * driver type of the port.
+ */
+#define DMUS_PORT_WINMM_DRIVER      (0)
+#define DMUS_PORT_USER_MODE_SYNTH   (1)
+#define DMUS_PORT_KERNEL_MODE       (2)
+
+/* These flags (set in dwValidParams) indicate which other members of the */
+/* DMUS_PORTPARAMS are valid. */
+/* */
+#define DMUS_PORTPARAMS_VOICES           0x00000001
+#define DMUS_PORTPARAMS_CHANNELGROUPS    0x00000002
+#define DMUS_PORTPARAMS_AUDIOCHANNELS    0x00000004
+#define DMUS_PORTPARAMS_SAMPLERATE       0x00000008
+#define DMUS_PORTPARAMS_EFFECTS          0x00000020
+#define DMUS_PORTPARAMS_SHARE            0x00000040
 
 typedef struct _DMUS_PORTPARAMS *LPDMUS_PORTPARAMS;
 typedef struct _DMUS_PORTPARAMS
@@ -137,19 +104,11 @@ typedef struct _DMUS_PORTPARAMS
     DWORD   dwValidParams;
     DWORD   dwVoices;
     DWORD   dwChannelGroups;
-    BOOL    fStereo;
+    DWORD   dwAudioChannels;
     DWORD   dwSampleRate;
-    BOOL    fReverb;
+    DWORD   dwEffectFlags;
+    BOOL    fShare;
 } DMUS_PORTPARAMS;
-
-/* These flags (set in dwValidParams) indicate which other members of the */
-/* DMUS_PORTPARAMS are valid. */
-/* */
-#define DMUS_PORTPARAMS_VOICES           0x00000001
-#define DMUS_PORTPARAMS_CHANNELGROUPS    0x00000002
-#define DMUS_PORTPARAMS_STEREO           0x00000004
-#define DMUS_PORTPARAMS_SAMPLERATE       0x00000008
-#define DMUS_PORTPARAMS_REVERB           0x00000010
 
 typedef struct _DMUS_SYNTHSTATS *LPDMUS_SYNTHSTATS;
 typedef struct _DMUS_SYNTHSTATS
@@ -173,6 +132,29 @@ typedef struct _DMUS_SYNTHSTATS
 
 #define DMUS_SYNTHSTATS_SYSTEMMEMORY    DMUS_PC_SYSTEMMEMORY
 
+typedef struct _DMUS_WAVES_REVERB_PARAMS
+{
+    float   fInGain;        /* Input gain in dB (to avoid output overflows) */
+    float   fReverbMix;     /* Reverb mix in dB. 0dB means 100% wet reverb (no direct signal)
+                            Negative values gives less wet signal.
+                            The coeficients are calculated so that the overall output level stays 
+                            (approximately) constant regardless of the ammount of reverb mix. */
+    float   fReverbTime;    /* The reverb decay time, in milliseconds. */
+    float   fHighFreqRTRatio; /* The ratio of the high frequencies to the global reverb time. 
+                            Unless very 'splashy-bright' reverbs are wanted, this should be set to 
+                            a value < 1.0.
+                            For example if dRevTime==1000ms and dHighFreqRTRatio=0.1 than the 
+                            decay time for high frequencies will be 100ms.*/
+
+} DMUS_WAVES_REVERB_PARAMS;
+
+/*  Note: Default values for Reverb are:
+    fInGain             = 0.0dB   (no change in level)
+    fReverbMix          = -10.0dB   (a reasonable reverb mix)
+    fReverbTime         = 1000.0ms (one second global reverb time)
+    fHighFreqRTRatio    = 0.001    (the ratio of the high frequencies to the global reverb time) 
+*/
+
 typedef enum
 {
     DMUS_CLOCK_SYSTEM = 0,
@@ -188,225 +170,17 @@ typedef struct _DMUS_CLOCKINFO
     WCHAR           wszDescription[DMUS_MAX_DESCRIPTION];
 } DMUS_CLOCKINFO;
 
-typedef LONGLONG REFERENCE_TIME;
-typedef REFERENCE_TIME *LPREFERENCE_TIME;
-
-#define DMUS_EVENTCLASS_CHANNELMSG (0x00000000)
-#define DMUS_EVENTCLASS_SYSEX      (0x00000001)
-
-typedef long PCENT;     /* Pitch cents */
-typedef long GCENT;     /* Gain cents */
-typedef long TCENT;     /* Time cents */
-typedef long PERCENT;   /* Per.. cent! */
-
-typedef struct _DMUS_DOWNLOADINFO
-{
-    DWORD dwDLType;
-    DWORD dwDLId;
-    DWORD dwNumOffsetTableEntries;
-    DWORD cbSizeData;
-} DMUS_DOWNLOADINFO;
-
-#define DMUS_DOWNLOADINFO_INSTRUMENT    1
-#define DMUS_DOWNLOADINFO_WAVE          2
-
-#define DMUS_DEFAULT_SIZE_OFFSETTABLE   1
-
-/* Flags for DMUS_INSTRUMENT's ulFlags member */
- 
-#define DMUS_INSTRUMENT_GM_INSTRUMENT   (1 << 0)
-
-typedef struct _DMUS_OFFSETTABLE
-{
-    ULONG ulOffsetTable[DMUS_DEFAULT_SIZE_OFFSETTABLE];
-} DMUS_OFFSETTABLE;
-
-typedef struct _DMUS_INSTRUMENT
-{
-    ULONG           ulPatch;
-    ULONG           ulFirstRegionIdx;             
-    ULONG           ulGlobalArtIdx;         /* If zero the instrument does not have an articulation */
-    ULONG           ulFirstExtCkIdx;        /* If zero no 3rd party entenstion chunks associated with the instrument */
-    ULONG           ulCopyrightIdx;         /* If zero no Copyright information associated with the instrument */
-    ULONG           ulFlags;                        
-} DMUS_INSTRUMENT;
-
-typedef struct _DMUS_REGION
-{
-    RGNRANGE        RangeKey;
-    RGNRANGE        RangeVelocity;
-    USHORT          fusOptions;
-    USHORT          usKeyGroup;
-    ULONG           ulRegionArtIdx;         /* If zero the region does not have an articulation */
-    ULONG           ulNextRegionIdx;        /* If zero no more regions */
-    ULONG           ulFirstExtCkIdx;        /* If zero no 3rd party entenstion chunks associated with the region */
-    WAVELINK        WaveLink;
-    WSMPL           WSMP;                   /*  If WSMP.cSampleLoops > 1 then a WLOOP is included */
-    WLOOP           WLOOP[1];
-} DMUS_REGION;
-
-typedef struct _DMUS_LFOPARAMS
-{
-    PCENT       pcFrequency;
-    TCENT       tcDelay;
-    GCENT       gcVolumeScale;
-    PCENT       pcPitchScale;
-    GCENT       gcMWToVolume;
-    PCENT       pcMWToPitch;
-} DMUS_LFOPARAMS;
-
-typedef struct _DMUS_VEGPARAMS
-{
-    TCENT       tcAttack;
-    TCENT       tcDecay;
-    PERCENT     ptSustain;
-    TCENT       tcRelease;
-    TCENT       tcVel2Attack;
-    TCENT       tcKey2Decay;
-} DMUS_VEGPARAMS;
-
-typedef struct _DMUS_PEGPARAMS
-{
-    TCENT       tcAttack;
-    TCENT       tcDecay;
-    PERCENT     ptSustain;
-    TCENT       tcRelease;
-    TCENT       tcVel2Attack;
-    TCENT       tcKey2Decay;
-    PCENT       pcRange;
-} DMUS_PEGPARAMS;
-
-typedef struct _DMUS_MSCPARAMS
-{
-    PERCENT     ptDefaultPan;
-} DMUS_MSCPARAMS;
-
-typedef struct _DMUS_ARTICPARAMS
-{
-    DMUS_LFOPARAMS   LFO;
-    DMUS_VEGPARAMS   VolEG;
-    DMUS_PEGPARAMS   PitchEG;
-    DMUS_MSCPARAMS   Misc;
-} DMUS_ARTICPARAMS;
-
-typedef struct _DMUS_ARTICULATION
-{
-    ULONG           ulArt1Idx;              /* If zero no DLS Level 1 articulation chunk */
-    ULONG           ulFirstExtCkIdx;        /* If zero no 3rd party entenstion chunks associated with the articulation */
-} DMUS_ARTICULATION;
-
-#define DMUS_MIN_DATA_SIZE 4       
-/*  The actual number is determined by cbSize of struct _DMUS_EXTENSIONCHUNK */
-
-typedef struct _DMUS_EXTENSIONCHUNK
-{
-    ULONG           cbSize;                      /*  Size of extension chunk  */
-    ULONG           ulNextExtCkIdx;              /*  If zero no more 3rd party entenstion chunks */
-    FOURCC          ExtCkID;                                      
-    BYTE            byExtCk[DMUS_MIN_DATA_SIZE]; /*  The actual number that follows is determined by cbSize */
-} DMUS_EXTENSIONCHUNK;
-
-/*  The actual number is determined by cbSize of struct _DMUS_COPYRIGHT */
-
-typedef struct _DMUS_COPYRIGHT
-{
-    ULONG           cbSize;                             /*  Size of copyright information */
-    BYTE            byCopyright[DMUS_MIN_DATA_SIZE];    /*  The actual number that follows is determined by cbSize */
-} DMUS_COPYRIGHT;
-
-typedef struct _DMUS_WAVEDATA
-{
-    ULONG           cbSize;
-    BYTE            byData[DMUS_MIN_DATA_SIZE]; 
-} DMUS_WAVEDATA;
-
-typedef struct _DMUS_WAVE
-{
-    ULONG           ulFirstExtCkIdx;    /* If zero no 3rd party entenstion chunks associated with the wave */
-    ULONG           ulCopyrightIdx;     /* If zero no Copyright information associated with the wave */
-    WAVEFORMATEX    WaveformatEx;       
-    DMUS_WAVEDATA   WaveData;           /* Wave data */
-} DMUS_WAVE;
-
-typedef struct _DMUS_NOTERANGE *LPDMUS_NOTERANGE;
-typedef struct _DMUS_NOTERANGE
-{
-    DWORD           dwLowNote;  /* Sets the low note for the range of MIDI note events to which the instrument responds.*/
-    DWORD           dwHighNote; /* Sets the high note for the range of MIDI note events to which the instrument responds.*/
-} DMUS_NOTERANGE;
-
-/* Software synths are enumerated from under this registry key.
- */
-#define REGSTR_PATH_SOFTWARESYNTHS  "Software\\Microsoft\\DirectMusic\\SoftwareSynths"
-
 interface IDirectMusicBuffer;
 interface IDirectMusicPort;
+interface IDirectMusicThru;
 interface IReferenceClock;
-interface IDirectMusicSynth;
-interface IDirectMusicSynthSink;
 
 #ifndef __cplusplus 
 typedef interface IDirectMusicBuffer IDirectMusicBuffer;
 typedef interface IDirectMusicPort IDirectMusicPort;
+typedef interface IDirectMusicThru IDirectMusicThru;
 typedef interface IReferenceClock IReferenceClock;
-typedef interface IDirectMusicSynth IDirectMusicSynth;
-typedef interface IDirectMusicSynthSink IDirectMusicSynthSink;
 #endif
-
-#undef  INTERFACE
-#define INTERFACE  IDirectMusicSynth
-DECLARE_INTERFACE_(IDirectMusicSynth, IUnknown)
-{
-    /* IUnknown */
-    STDMETHOD(QueryInterface)       (THIS_ REFIID, LPVOID FAR *) PURE;
-    STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
-    STDMETHOD_(ULONG,Release)       (THIS) PURE;
-
-    /* IDirectMusicSynth */
-    STDMETHOD(Open)                 (THIS_ LPDMUS_PORTPARAMS pPortParams) PURE;
-    STDMETHOD(Close)                (THIS) PURE;
-    STDMETHOD(SetNumChannelGroups)  (THIS_ DWORD dwGroups) PURE;
-    STDMETHOD(Download)             (THIS_ LPHANDLE phDownload, 
-                                           LPVOID pvData, 
-                                           LPBOOL pbFree ) PURE;
-    STDMETHOD(Unload)               (THIS_ HANDLE hDownload, 
-                                           HRESULT ( CALLBACK *lpFreeHandle)(HANDLE,HANDLE), 
-                                           HANDLE hUserData ) PURE; 
-    STDMETHOD(PlayBuffer)           (THIS_ REFERENCE_TIME rt, 
-                                           LPBYTE pbBuffer, 
-                                           DWORD cbBuffer) PURE;
-    STDMETHOD(GetRunningStats)      (THIS_ LPDMUS_SYNTHSTATS pStats) PURE;
-    STDMETHOD(GetPortCaps)          (THIS_ LPDMUS_PORTCAPS pCaps) PURE;
-    STDMETHOD(SetMasterClock)       (THIS_ IReferenceClock *pClock) PURE;
-    STDMETHOD(GetLatencyClock)      (THIS_ IReferenceClock **ppClock) PURE;
-    STDMETHOD(Activate)             (THIS_ HWND hWnd, BOOL fEnable) PURE;
-    STDMETHOD(SetSynthSink)         (THIS_ IDirectMusicSynthSink *pSynthSink) PURE;
-    STDMETHOD(Render)               (THIS_ short *pBuffer, 
-                                           DWORD dwLength, 
-                                           DWORD dwPosition) PURE;
-};
-
-#undef  INTERFACE
-#define INTERFACE  IDirectMusicSynthSink
-DECLARE_INTERFACE_(IDirectMusicSynthSink, IUnknown)
-{
-    /* IUnknown */
-    STDMETHOD(QueryInterface)       (THIS_ REFIID, LPVOID FAR *) PURE;
-    STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
-    STDMETHOD_(ULONG,Release)       (THIS) PURE;
-
-    /* IDirectMusicSynthSink */
-    STDMETHOD(Init)                 (THIS_ IDirectMusicSynth *pSynth) PURE;
-    STDMETHOD(SetFormat)            (THIS_ LPCWAVEFORMATEX pWaveFormat) PURE;
-    STDMETHOD(SetMasterClock)       (THIS_ IReferenceClock *pClock) PURE;
-    STDMETHOD(GetLatencyClock)      (THIS_ IReferenceClock **ppClock) PURE;
-    STDMETHOD(Activate)             (THIS_ HWND hWnd, 
-                                           BOOL fEnable) PURE;
-    STDMETHOD(SampleToRefTime)      (THIS_ DWORD dwSampleTime,
-                                           REFERENCE_TIME *prfTime) PURE;
-    STDMETHOD(RefTimeToSample)      (THIS_ REFERENCE_TIME rfTime, 
-                                           DWORD *pdwSampleTime) PURE;
-};
 
 typedef IDirectMusicBuffer *LPDIRECTMUSICBUFFER;
 typedef IDirectMusicPort *LPDIRECTMUSICPORT;
@@ -426,8 +200,7 @@ DECLARE_INTERFACE_(IDirectMusic, IUnknown)
     STDMETHOD(CreateMusicBuffer)    (THIS_ LPDMUS_BUFFERDESC pBufferDesc, 
                                            LPDIRECTMUSICBUFFER *ppBuffer, 
                                            LPUNKNOWN pUnkOuter) PURE;
-    STDMETHOD(CreatePort)           (THIS_ REFGUID rguidPort, 
-                                           REFGUID rguidSink, 
+    STDMETHOD(CreatePort)           (THIS_ REFCLSID rclsidPort, 
                                            LPDMUS_PORTPARAMS pPortParams, 
                                            LPDIRECTMUSICPORT *ppPort, 
                                            LPUNKNOWN pUnkOuter) PURE;
@@ -436,16 +209,11 @@ DECLARE_INTERFACE_(IDirectMusic, IUnknown)
     STDMETHOD(GetMasterClock)       (THIS_ LPGUID pguidClock, 
                                            IReferenceClock **ppReferenceClock) PURE;
     STDMETHOD(SetMasterClock)       (THIS_ REFGUID rguidClock) PURE;
-    STDMETHOD(Activate)             (THIS_ HWND hWnd, 
-                                           BOOL fEnable) PURE;
-    STDMETHOD(GetPortProperty)      (THIS_ REFGUID rguidPort, 
-                                           REFGUID rguidPropSet, 
-                                           UINT uId, 
-                                           LPVOID pPropertyData, 
-                                           ULONG ulDataLength, 
-                                           ULONG *pulBytesReturned) PURE;
+    STDMETHOD(Activate)             (THIS_ BOOL fEnable) PURE;
     STDMETHOD(GetDefaultPort)       (THIS_ LPGUID pguidPort) PURE;
-    STDMETHOD(SetDefaultPort)       (THIS_ REFGUID rguidPort) PURE;
+    STDMETHOD(SetDirectSound)       (THIS_ LPDIRECTSOUND pDirectSound,
+                                           HWND hWnd) PURE;
+    
 };
 
 #undef  INTERFACE
@@ -461,11 +229,11 @@ DECLARE_INTERFACE_(IDirectMusicBuffer, IUnknown)
     STDMETHOD(Flush)                (THIS) PURE;
     STDMETHOD(TotalTime)            (THIS_ LPREFERENCE_TIME prtTime) PURE;
     
-    STDMETHOD(PackChannelMsg)       (THIS_ REFERENCE_TIME rt,
+    STDMETHOD(PackStructured)       (THIS_ REFERENCE_TIME rt,
                                            DWORD dwChannelGroup,
                                            DWORD dwChannelMessage) PURE;
     
-    STDMETHOD(PackSysEx)            (THIS_ REFERENCE_TIME rt,
+    STDMETHOD(PackUnstructured)     (THIS_ REFERENCE_TIME rt,
                                            DWORD dwChannelGroup,
                                            DWORD cb,
                                            LPBYTE lpb) PURE;
@@ -485,6 +253,31 @@ DECLARE_INTERFACE_(IDirectMusicBuffer, IUnknown)
     STDMETHOD(SetStartTime)         (THIS_ REFERENCE_TIME rt) PURE;
     STDMETHOD(SetUsedBytes)         (THIS_ DWORD cb) PURE;
 };
+
+/* Format of DirectMusic events in a buffer
+ *
+ * A buffer contains 1 or more events, each with the following header.
+ * Immediately following the header is the event data. The header+data
+ * size is rounded to the nearest quadword (8 bytes).
+ */
+ 
+#include <pshpack4.h>                       /* Do not pad at end - that's where the data is */ 
+typedef struct _DMUS_EVENTHEADER *LPDMUS_EVENTHEADER;
+typedef struct _DMUS_EVENTHEADER
+{
+    DWORD           cbEvent;                /* Unrounded bytes in event */
+    DWORD           dwChannelGroup;         /* Channel group of event */
+    REFERENCE_TIME  rtDelta;                /* Delta from start time of entire buffer */
+    DWORD           dwFlags;                /* Flags DMUS_EVENT_xxx */
+} DMUS_EVENTHEADER;
+#include <poppack.h>
+
+#define DMUS_EVENT_STRUCTURED   0x00000001  /* Unstructured data (SysEx, etc.) */
+
+/* The number of bytes to allocate for an event with 'cb' data bytes.
+ */ 
+#define QWORD_ALIGN(x) (((x) + 7) & ~7)
+#define DMUS_EVENT_SIZE(cb) QWORD_ALIGN(sizeof(DMUS_EVENTHEADER) + cb)
 
 #undef  INTERFACE
 #define INTERFACE  IDirectMusicInstrument
@@ -561,11 +354,72 @@ DECLARE_INTERFACE_(IDirectMusicPortDownload, IUnknown)
                                            IDirectMusicDownload** ppIDMDownload) PURE;
     STDMETHOD(GetDLId)              (THIS_ DWORD* pdwStartDLId, 
                                            DWORD dwCount) PURE;
-    STDMETHOD(GetPrepend)           (THIS_ DWORD* pdwPrepend) PURE;
     STDMETHOD(GetAppend)            (THIS_ DWORD* pdwAppend) PURE;
     STDMETHOD(Download)             (THIS_ IDirectMusicDownload* pIDMDownload) PURE;
     STDMETHOD(Unload)               (THIS_ IDirectMusicDownload* pIDMDownload) PURE;
 };
+
+/* Standard values for voice priorities. Numerically higher priorities are higher in priority.
+ * These priorities are used to set the voice priority for all voices on a channel. They are
+ * used in the dwPriority parameter of IDirectMusicPort::GetPriority and returned in the
+ * lpwPriority parameter of pdwPriority.
+ *
+ * These priorities are shared with DirectSound.
+ */
+
+#ifndef _DIRECTAUDIO_PRIORITIES_DEFINED_
+#define _DIRECTAUDIO_PRIORITIES_DEFINED_
+
+#define DAUD_CRITICAL_VOICE_PRIORITY    (0xF0000000)
+#define DAUD_HIGH_VOICE_PRIORITY        (0xC0000000)
+#define DAUD_STANDARD_VOICE_PRIORITY    (0x80000000)
+#define DAUD_LOW_VOICE_PRIORITY         (0x40000000)
+#define DAUD_PERSIST_VOICE_PRIORITY     (0x10000000) 
+
+/* These are the default priorities assigned if not overridden. By default priorities are
+ * equal across channel groups (e.g. channel 5 on channel group 1 has the same priority as
+ * channel 5 on channel group 2).
+ *
+ * In accordance with DLS level 1, channel 10 has the highest priority, followed by 1 through 16
+ * except for 10.
+ */
+#define DAUD_CHAN1_VOICE_PRIORITY_OFFSET    (0x0000000E)
+#define DAUD_CHAN2_VOICE_PRIORITY_OFFSET    (0x0000000D)
+#define DAUD_CHAN3_VOICE_PRIORITY_OFFSET    (0x0000000C)
+#define DAUD_CHAN4_VOICE_PRIORITY_OFFSET    (0x0000000B)
+#define DAUD_CHAN5_VOICE_PRIORITY_OFFSET    (0x0000000A)
+#define DAUD_CHAN6_VOICE_PRIORITY_OFFSET    (0x00000009)
+#define DAUD_CHAN7_VOICE_PRIORITY_OFFSET    (0x00000008)
+#define DAUD_CHAN8_VOICE_PRIORITY_OFFSET    (0x00000007)
+#define DAUD_CHAN9_VOICE_PRIORITY_OFFSET    (0x00000006)
+#define DAUD_CHAN10_VOICE_PRIORITY_OFFSET   (0x0000000F)
+#define DAUD_CHAN11_VOICE_PRIORITY_OFFSET   (0x00000005)
+#define DAUD_CHAN12_VOICE_PRIORITY_OFFSET   (0x00000004)
+#define DAUD_CHAN13_VOICE_PRIORITY_OFFSET   (0x00000003)
+#define DAUD_CHAN14_VOICE_PRIORITY_OFFSET   (0x00000002)
+#define DAUD_CHAN15_VOICE_PRIORITY_OFFSET   (0x00000001)
+#define DAUD_CHAN16_VOICE_PRIORITY_OFFSET   (0x00000000)
+ 
+ 
+#define DAUD_CHAN1_DEF_VOICE_PRIORITY   (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN1_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN2_DEF_VOICE_PRIORITY   (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN2_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN3_DEF_VOICE_PRIORITY   (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN3_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN4_DEF_VOICE_PRIORITY   (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN4_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN5_DEF_VOICE_PRIORITY   (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN5_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN6_DEF_VOICE_PRIORITY   (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN6_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN7_DEF_VOICE_PRIORITY   (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN7_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN8_DEF_VOICE_PRIORITY   (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN8_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN9_DEF_VOICE_PRIORITY   (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN9_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN10_DEF_VOICE_PRIORITY  (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN10_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN11_DEF_VOICE_PRIORITY  (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN11_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN12_DEF_VOICE_PRIORITY  (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN12_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN13_DEF_VOICE_PRIORITY  (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN13_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN14_DEF_VOICE_PRIORITY  (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN14_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN15_DEF_VOICE_PRIORITY  (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN15_VOICE_PRIORITY_OFFSET)
+#define DAUD_CHAN16_DEF_VOICE_PRIORITY  (DAUD_STANDARD_VOICE_PRIORITY | DAUD_CHAN16_VOICE_PRIORITY_OFFSET)
+
+#endif  /* _DIRECTAUDIO_PRIORITIES_DEFINED_ */
+
 
 #undef  INTERFACE
 #define INTERFACE  IDirectMusicPort
@@ -599,8 +453,29 @@ DECLARE_INTERFACE_(IDirectMusicPort, IUnknown)
                                            LPOVERLAPPED lpOverlapped) PURE;
     STDMETHOD(SetNumChannelGroups)  (THIS_ DWORD dwChannelGroups) PURE;
     STDMETHOD(GetNumChannelGroups)  (THIS_ LPDWORD pdwChannelGroups) PURE;
-    STDMETHOD(GetInterfaces)        (THIS_ LPUNKNOWN *ppUnknownPort, 
-                                           LPUNKNOWN *ppUnknownSink) PURE;
+    STDMETHOD(Activate)             (THIS_ BOOL fActive) PURE;
+    STDMETHOD(SetChannelPriority)   (THIS_ DWORD dwChannelGroup, DWORD dwChannel, DWORD dwPriority) PURE;
+    STDMETHOD(GetChannelPriority)   (THIS_ DWORD dwChannelGroup, DWORD dwChannel, LPDWORD pdwPriority) PURE;
+    STDMETHOD(SetDirectSound)       (THIS_ LPDIRECTSOUND pDirectSound, LPDIRECTSOUNDBUFFER pDirectSoundBuffer) PURE;
+    STDMETHOD(GetFormat)            (THIS_ LPWAVEFORMATEX pWaveFormatEx, LPDWORD pdwWaveFormatExSize, LPDWORD pdwBufferSize) PURE;
+};
+
+#undef  INTERFACE
+#define INTERFACE  IDirectMusicThru
+DECLARE_INTERFACE_(IDirectMusicThru, IUnknown)
+{
+    /*  IUnknown */
+    STDMETHOD(QueryInterface)       (THIS_ REFIID, LPVOID FAR *) PURE;
+    STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
+    STDMETHOD_(ULONG,Release)       (THIS) PURE;
+    
+    /* IDirectMusicThru 
+     */
+    STDMETHOD(ThruChannel)          (THIS_ DWORD dwSourceChannelGroup, 
+                                           DWORD dwSourceChannel, 
+                                           DWORD dwDestinationChannelGroup,
+                                           DWORD dwDestinationChannel,
+                                           LPDIRECTMUSICPORT pDestinationPort) PURE;
 };
 
 #ifndef __IReferenceClock_INTERFACE_DEFINED__
@@ -641,32 +516,28 @@ DECLARE_INTERFACE_(IReferenceClock, IUnknown)
 
 #endif /* __IReferenceClock_INTERFACE_DEFINED__ */
 
-DEFINE_GUID(IID_IKsControl,                 0x28F54685L, 0x06FD, 0x11D2, 0xB2, 0x7A, 0x00, 0xA0, 0xC9, 0x22, 0x31, 0x96);
-
-
-
 DEFINE_GUID(CLSID_DirectMusic,0x636b9f10,0x0c7d,0x11d1,0x95,0xb2,0x00,0x20,0xaf,0xdc,0x74,0x21);
 DEFINE_GUID(CLSID_DirectMusicCollection,0x480ff4b0, 0x28b2, 0x11d1, 0xbe, 0xf7, 0x0, 0xc0, 0x4f, 0xbf, 0x8f, 0xef);
 DEFINE_GUID(CLSID_DirectMusicSynth,0x58C2B4D0,0x46E7,0x11D1,0x89,0xAC,0x00,0xA0,0xC9,0x05,0x41,0x29);
-DEFINE_GUID(CLSID_DirectMusicSynthSink,0xaec17ce3, 0xa514, 0x11d1, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
 
-DEFINE_GUID(IID_IDirectMusic,0xd2ac2876, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(IID_IDirectMusic,0x6536115a,0x7b2d,0x11d2,0xba,0x18,0x00,0x00,0xf8,0x75,0xac,0x12);
 DEFINE_GUID(IID_IDirectMusicBuffer,0xd2ac2878, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(IID_IDirectMusicPort, 0x55e2edd8, 0xcd7c, 0x11d1, 0xa7, 0x6f, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
+DEFINE_GUID(IID_IDirectMusicPort, 0x08f2d8c9,0x37c2,0x11d2,0xb9,0xf9,0x00,0x00,0xf8,0x75,0xac,0x12);
+DEFINE_GUID(IID_IDirectMusicThru, 0xced153e7, 0x3606, 0x11d2, 0xb9, 0xf9, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
 DEFINE_GUID(IID_IDirectMusicPortDownload,0xd2ac287a, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicDownload,0xd2ac287b, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicCollection,0xd2ac287c, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicInstrument,0xd2ac287d, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicDownloadedInstrument,0xd2ac287e, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(IID_IDirectMusicSynth,0xf69b9165, 0xbb60, 0x11d1, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
-DEFINE_GUID(IID_IDirectMusicSynthSink,0xd2ac2880, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 
-/* Property Query GUID_DMUS_PROP_GM_Hardware
- * Property Query GUID_DMUS_PROP_GS_Hardware
- * Property Query GUID_DMUS_PROP_XG_Hardware
- * Property Query GUID_DMUS_PROP_DLS1_Hardware
- * Property Query GUID_DMUS_PROP_SynthSink_DSOUND
- * Property Query GUID_DMUS_PROP_SynthSink_WAVE
+/* Property Query GUID_DMUS_PROP_GM_Hardware - Local GM set, no need to download
+ * Property Query GUID_DMUS_PROP_GS_Hardware - Local GS set, no need to download
+ * Property Query GUID_DMUS_PROP_XG_Hardware - Local XG set, no need to download
+ * Property Query GUID_DMUS_PROP_DLS1        - Support DLS level 1
+ * Property Query GUID_DMUS_PROP_XG_Capable  - Support minimum requirements of XG
+ * Property Query GUID_DMUS_PROP_GS_Capable  - Support minimum requirements of GS
+ * Property Query GUID_DMUS_PROP_SynthSink_DSOUND - Synthsink talks to DSound
+ * Property Query GUID_DMUS_PROP_SynthSink_WAVE - Synthsink talks to Wave device
  *
  * Item 0: Supported
  * Returns a DWORD which is non-zero if the feature is supported
@@ -674,9 +545,25 @@ DEFINE_GUID(IID_IDirectMusicSynthSink,0xd2ac2880, 0xb39b, 0x11d1, 0x87, 0x4, 0x0
 DEFINE_GUID(GUID_DMUS_PROP_GM_Hardware, 0x178f2f24, 0xc364, 0x11d1, 0xa7, 0x60, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
 DEFINE_GUID(GUID_DMUS_PROP_GS_Hardware, 0x178f2f25, 0xc364, 0x11d1, 0xa7, 0x60, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
 DEFINE_GUID(GUID_DMUS_PROP_XG_Hardware, 0x178f2f26, 0xc364, 0x11d1, 0xa7, 0x60, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
+DEFINE_GUID(GUID_DMUS_PROP_XG_Capable,  0x6496aba1, 0x61b0, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
+DEFINE_GUID(GUID_DMUS_PROP_GS_Capable,  0x6496aba2, 0x61b0, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
 DEFINE_GUID(GUID_DMUS_PROP_DLS1,        0x178f2f27, 0xc364, 0x11d1, 0xa7, 0x60, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
 DEFINE_GUID(GUID_DMUS_PROP_SynthSink_DSOUND,0xaa97844, 0xc877, 0x11d1, 0x87, 0xc, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(GUID_DMUS_PROP_SynthSink_WAVE,0xaa97845, 0xc877, 0x11d1, 0x87, 0xc, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Property Get/Set GUID_DMUS_PROP_WriteLatency
+ *
+ * Item 0: Synth buffer write latency, in milliseconds
+ * Get/Set SynthSink latency, the average time after the play head that the next buffer gets written.
+ */
+DEFINE_GUID(GUID_DMUS_PROP_WriteLatency,0x268a0fa0, 0x60f2, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
+
+/* Property Get/Set GUID_DMUS_PROP_WritePeriod
+ *
+ * Item 0: Synth buffer write period, in milliseconds
+ * Get/Set SynthSink buffer write period, time span between successive writes.
+ */
+DEFINE_GUID(GUID_DMUS_PROP_WritePeriod,0x268a0fa1, 0x60f2, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
 
 /* Property Get GUID_DMUS_PROP_MemorySize
  *
@@ -685,30 +572,42 @@ DEFINE_GUID(GUID_DMUS_PROP_SynthSink_WAVE,0xaa97845, 0xc877, 0x11d1, 0x87, 0xc, 
  */
 DEFINE_GUID(GUID_DMUS_PROP_MemorySize,  0x178f2f28, 0xc364, 0x11d1, 0xa7, 0x60, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
 
-/* Property Set GUID_DMUS_PROP_SetDSound
+/* Property Set GUID_DMUS_PROP_WavesReverb
  *
- * Item 0: IDirectSound Interface
- * Sets the IDirectMusicSynthSink to use the specified DSound object.
+ * Item 0: DMUS_WAVES_REVERB structure
+ * Sets reverb parameters
  */
-DEFINE_GUID(GUID_DMUS_PROP_SetDSound,0xaa97842, 0xc877, 0x11d1, 0x87, 0xc, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(GUID_DMUS_PROP_WavesReverb,0x4cb5622, 0x32e5, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
 
-/* Property Set GUID_DMUS_PROP_WriteBufferZone
+/* Property Set GUID_DMUS_PROP_Effects
  *
- * Item 0: Distance in milliseconds from the write pointer to the synth write.
- * Sets the IDirectMusicSynthSink to write this far behind the pointer.
+ * Item 0: DWORD with effects flags. 
+ * Get/Set effects bits, same as dwEffectFlags in DMUS_PORTPARAMS and DMUS_PORTCAPS:
+ * DMUS_EFFECT_NONE 
+ * DMUS_EFFECT_REVERB 
+ * DMUS_EFFECT_CHORUS 
  */
-DEFINE_GUID(GUID_DMUS_PROP_WriteBufferZone,0xaa97843, 0xc877, 0x11d1, 0x87, 0xc, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(GUID_DMUS_PROP_Effects, 0xcda8d611, 0x684a, 0x11d2, 0x87, 0x1e, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 
 /* Property Set GUID_DMUS_PROP_LegacyCaps
  *
  * Item 0: The MIDINCAPS or MIDIOUTCAPS which describes the port's underlying WinMM device. This property is only supported
  * by ports which wrap WinMM devices.
  */
+
 DEFINE_GUID(GUID_DMUS_PROP_LegacyCaps,0xcfa7cdc2, 0x00a1, 0x11d2, 0xaa, 0xd5, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
 
+/* Property Set GUID_DMUS_Volume
+ *
+ * Item 0: A long which contains an offset, in 1/100 dB, to be added to the final volume
+ *
+ */
+DEFINE_GUID(GUID_DMUS_PROP_Volume, 0xfedfae25L, 0xe46e, 0x11d1, 0xaa, 0xce, 0x00, 0x00, 0xf8, 0x75, 0xac, 0x12);
 
 #ifdef __cplusplus
 }; /* extern "C" */
 #endif
+
+#include <poppack.h>
 
 #endif /* #ifndef _DMUSICC_ */

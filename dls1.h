@@ -49,10 +49,10 @@
 //               [path],
 //               [path],
 //               LIST [] 'wave' [dlid,RIFFWAVE]
-//               LIST [] 'wave'	[dlid,RIFFWAVE]
-//               LIST [] 'wave'	[dlid,RIFFWAVE]
-//               LIST [] 'wave'	[dlid,RIFFWAVE]
-//               LIST [] 'wave'	[dlid,RIFFWAVE]
+//               LIST [] 'wave' [dlid,RIFFWAVE]
+//               LIST [] 'wave' [dlid,RIFFWAVE]
+//               LIST [] 'wave' [dlid,RIFFWAVE]
+//               LIST [] 'wave' [dlid,RIFFWAVE]
 //
 // INFOLIST
 // LIST [] 'INFO' 
@@ -140,7 +140,7 @@ typedef struct _DLSVERSION {
   DWORD    dwVersionMS;
   DWORD    dwVersionLS;
 }DLSVERSION, FAR *LPDLSVERSION;
-				   
+                   
 
 typedef struct _CONNECTION {
   USHORT   usSource;
@@ -224,7 +224,6 @@ typedef struct _WAVELINK { /* any paths or links are stored right after struct *
 #define POOL_CUE_NULL  0xffffffffl
 
 typedef struct _POOLCUE { 
-/*  ULONG    ulEntryIndex;   // Index entry in the list */
   ULONG    ulOffset;       /* Offset to the entry in the list */
 }POOLCUE, FAR *LPPOOLCUE;
 

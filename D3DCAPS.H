@@ -200,6 +200,14 @@ typedef struct _D3DPrimCaps {
  */
 #define D3DPTEXTURECAPS_ALPHAPALETTE    0x00000080L
 
+/*
+ * Device can use non-POW2 textures if:
+ *  1) D3DTEXTURE_ADDRESS is set to CLAMP for this texture's stage
+ *  2) D3DRS_WRAP(N) is zero for this texture's coordinates
+ *  3) mip mapping or anisotropic filtering  is not enabled
+ */
+#define D3DPTEXTURECAPS_NONPOW2CONDITIONAL  0x00000100L
+
 
 /* D3DPRIMCAPS dwTextureFilterCaps */
 

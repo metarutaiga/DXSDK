@@ -1,6 +1,7 @@
 /************************************************************************
 *                                                                       *
-*   dmusici.h -- This module defines the DirectMusic interative API's   *
+*   dmusici.h -- This module contains the API for the                   *
+*                DirectMusic performance layer                          *
 *                                                                       *
 *   Copyright (c) 1998, Microsoft Corp. All rights reserved.            *
 *                                                                       *
@@ -16,6 +17,8 @@
 
 #include <mmsystem.h>
 #include <dmusicc.h>
+
+#include <pshpack8.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,7 +42,7 @@ interface IDirectMusicBuffer;
 interface IDirectMusicInstrument;
 interface IDirectMusicDownloadedInstrument;
 interface IDirectMusicBand;
-interface IDirectMusicPersonality;
+interface IDirectMusicChordMap;
 interface IDirectMusicLoader;
 interface IDirectMusicObject;
 #ifndef __cplusplus 
@@ -55,7 +58,7 @@ typedef interface IDirectMusicBuffer IDirectMusicBuffer;
 typedef interface IDirectMusicInstrument IDirectMusicInstrument;
 typedef interface IDirectMusicDownloadedInstrument IDirectMusicDownloadedInstrument;
 typedef interface IDirectMusicBand IDirectMusicBand;
-typedef interface IDirectMusicPersonality IDirectMusicPersonality;
+typedef interface IDirectMusicChordMap IDirectMusicChordMap;
 typedef interface IDirectMusicObject IDirectMusicObject;
 typedef interface IDirectMusicLoader IDirectMusicLoader;
 #endif
@@ -66,7 +69,8 @@ typedef enum enumDMUS_COMMANDT_TYPES
     DMUS_COMMANDT_FILL              = 1,
     DMUS_COMMANDT_INTRO             = 2,
     DMUS_COMMANDT_BREAK             = 3,
-    DMUS_COMMANDT_END               = 4
+    DMUS_COMMANDT_END               = 4,
+    DMUS_COMMANDT_ENDANDINTRO       = 5
 } DMUS_COMMANDT_TYPES;
 
 typedef enum enumDMUS_SHAPET_TYPES
@@ -80,7 +84,7 @@ typedef enum enumDMUS_SHAPET_TYPES
     DMUS_SHAPET_RANDOM              = 6,
     DMUS_SHAPET_RISING              = 7,
     DMUS_SHAPET_SONG                = 8
-}       DMUS_SHAPET_TYPES;
+}   DMUS_SHAPET_TYPES;
 
 typedef enum enumDMUS_COMPOSEF_FLAGS
 {       
@@ -91,9 +95,10 @@ typedef enum enumDMUS_COMPOSEF_FLAGS
     DMUS_COMPOSEF_GRID              = 0x8,
     DMUS_COMPOSEF_BEAT              = 0x10,
     DMUS_COMPOSEF_MEASURE           = 0x20,
+    DMUS_COMPOSEF_AFTERPREPARETIME  = 0x40,
     DMUS_COMPOSEF_MODULATE          = 0x1000,
     DMUS_COMPOSEF_LONG              = 0x2000
-}       DMUS_COMPOSEF_FLAGS;
+}   DMUS_COMPOSEF_FLAGS;
 
 #define DMUS_PMSG_PART                                                                              \
     DWORD               dwSize;                                                                     \
@@ -105,7 +110,11 @@ typedef enum enumDMUS_COMPOSEF_FLAGS
     DWORD               dwVirtualTrackID;   /* virtual track ID */                                  \
     IDirectMusicTool*   pTool;              /* tool interface pointer */                            \
     IDirectMusicGraph*  pGraph;             /* tool graph interface pointer */                      \
-    DWORD               dwType;             /* PMSG type (see DMUS_PM_TYPE defines) */              \
+    DWORD               dwType;             /* PMSG type (see DMUS_PMSGT_TYPES defines) */              \
+    DWORD               dwVoiceID;          /* unique voice id which allows synthesizers to */      \
+                                            /* identify a specific event. For DirectX 6.0, */       \
+                                            /* this field should always be 0. */                    \
+    DWORD               dwGroupID;          /* Track group id */                                 \
     IUnknown*           punkUser;           /* user com pointer, auto released upon PMSG free */
 
 /* every DMUS_PMSG is based off of this structure. The Performance needs 
@@ -127,6 +136,8 @@ typedef enum enumDMUS_PMSGF_FLAGS
     DMUS_PMSGF_TOOL_QUEUE       = 8,      /* if PMSG should be processed a little early, at Queue time */
     DMUS_PMSGF_TOOL_ATTIME      = 16,     /* if PMSG should be processed at the time stamp */
     DMUS_PMSGF_TOOL_FLUSH       = 32      /* if PMSG is being flushed */
+    /* The values of DMUS_TIME_RESOLVE_FLAGS may also be used inside the */
+    /* DMUS_PMSG's dwFlags member. */
 } DMUS_PMSGF_FLAGS;
 
 /* DMUS_PMSGT_TYPES fill the DMUS_PMSG's dwType member */
@@ -141,23 +152,37 @@ typedef enum enumDMUS_PMSGT_TYPES
     DMUS_PMSGT_TIMESIG          = 6,      /* Time signature */
     DMUS_PMSGT_PATCH            = 7,      /* Patch changes */
     DMUS_PMSGT_TRANSPOSE        = 8,      /* Transposition messages */
+    DMUS_PMSGT_CHANNEL_PRIORITY = 9,      /* Channel priority */
+    DMUS_PMSGT_STOP             = 10,     /* Stop message */
+    DMUS_PMSGT_DIRTY            = 11,     /* Tells Tools that cache GetParam() info to refresh */
     DMUS_PMSGT_USER             = 255     /* User message */
 } DMUS_PMSGT_TYPES;
 
 /* DMUS_SEGF_FLAGS correspond to IDirectMusicPerformance::PlaySegment, and other API */
 typedef enum enumDMUS_SEGF_FLAGS
 {
-    DMUS_SEGF_AFTERQUEUETIME    = 1,      /* play after the queue time (See IDirectMusicPerformance::GetQueueTime) */
-    DMUS_SEGF_AFTERPREPARETIME  = 2,      /* play after the prepare time (See IDirectMusicPerformance::GetPrepareTime) */
-    DMUS_SEGF_GRID              = 4,      /* play on grid boundary */
-    DMUS_SEGF_BEAT              = 8,      /* play on beat boundary */
-    DMUS_SEGF_MEASURE           = 16,     /* play on measure boundary */
-    DMUS_SEGF_DEFAULT           = 32,     /* use segment's default boundary */
     DMUS_SEGF_REFTIME           = 64,     /* time parameter is in reference time  */
     DMUS_SEGF_SECONDARY         = 128,    /* secondary segment */
     DMUS_SEGF_QUEUE             = 256,    /* queue at the end of the primary segment queue (primary only) */
-    DMUS_SEGF_CONTROL           = 512     /* play as a control track (secondary segments only) */
+    DMUS_SEGF_CONTROL           = 512,    /* play as a control track (secondary segments only) */
+    DMUS_SEGF_AFTERPREPARETIME  = 1<<10,  /* play after the prepare time (See IDirectMusicPerformance::GetPrepareTime) */
+    DMUS_SEGF_GRID              = 1<<11,  /* play on grid boundary */
+    DMUS_SEGF_BEAT              = 1<<12,  /* play on beat boundary */
+    DMUS_SEGF_MEASURE           = 1<<13,  /* play on measure boundary */
+    DMUS_SEGF_DEFAULT           = 1<<14,  /* use segment's default boundary */
+    DMUS_SEGF_NOINVALIDATE      = 1<<15   /* play without invalidating the currently playing segment(s) */
 } DMUS_SEGF_FLAGS;
+
+/* DMUS_TIME_RESOLVE_FLAGS correspond to IDirectMusicPerformance::GetResolvedTime, and can */
+/* also be used interchangeably with the corresponding DMUS_SEGF_FLAGS, since their values */
+/* are intentionally the same */
+typedef enum enumDMUS_TIME_RESOLVE_FLAGS
+{
+    DMUS_TIME_RESOLVE_AFTERPREPARETIME  = 1<<10,  /* resolve to a time after the prepare time */
+    DMUS_TIME_RESOLVE_GRID              = 1<<11,  /* resolve to a time on a grid boundary */
+    DMUS_TIME_RESOLVE_BEAT              = 1<<12,  /* resolve to a time on a beat boundary */
+    DMUS_TIME_RESOLVE_MEASURE           = 1<<13   /* resolve to a time on a measure boundary */
+} DMUS_TIME_RESOLVE_FLAGS;
 
 /* The following flags are sent in the IDirectMusicTrack::Play() method */
 /* inside the dwFlags parameter */
@@ -166,10 +191,32 @@ typedef enum enumDMUS_TRACKF_FLAGS
     DMUS_TRACKF_SEEK            = 1,      /* set on a seek */
     DMUS_TRACKF_LOOP            = 2,      /* set on a loop (repeat) */
     DMUS_TRACKF_START           = 4,      /* set on first call to Play */
-    DMUS_TRACKF_FLUSH           = 8       /* set when this call is in response to a flush on the perfomance */
+    DMUS_TRACKF_FLUSH           = 8,      /* set when this call is in response to a flush on the perfomance */
+    DMUS_TRACKF_DIRTY           = 16,     /* set when the track should consider any cached values from a previous call to GetParam to be invalidated */
 } DMUS_TRACKF_FLAGS;
 
 #define DMUS_MAXSUBCHORD 8
+
+typedef struct _DMUS_SUBCHORD
+{
+    DWORD   dwChordPattern;     /* Notes in the subchord */
+    DWORD   dwScalePattern;     /* Notes in the scale */
+    DWORD   dwInversionPoints;  /* Where inversions can occur */
+    DWORD   dwLevels;           /* Which levels are supported by this subchord */
+    BYTE    bChordRoot;         /* Root of the subchord */
+    BYTE    bScaleRoot;         /* Root of the scale */
+} DMUS_SUBCHORD;
+
+typedef struct _DMUS_CHORD_KEY
+{
+    WCHAR           wszName[16];        /* Name of the chord */
+    WORD            wMeasure;           /* Measure this falls on */
+    BYTE            bBeat;              /* Beat this falls on */
+    BYTE            bSubChordCount;     /* Number of chords in the list of subchords */
+    DMUS_SUBCHORD   SubChordList[DMUS_MAXSUBCHORD]; /* List of sub chords */
+    DWORD           dwScale;            /* Scale underlying the entire chord */
+    BYTE            bKey;               /* Key underlying the entire chord */
+} DMUS_CHORD_KEY;
 
 /* DMUS_NOTE_PMSG */
 typedef struct _DMUS_NOTE_PMSG
@@ -189,15 +236,77 @@ typedef struct _DMUS_NOTE_PMSG
     BYTE    bTimeRange;        /* Range to randomize time. */
     BYTE    bDurRange;         /* Range to randomize duration. */
     BYTE    bVelRange;         /* Range to randomize velocity. */
-    BYTE    bInversionID;      /* Identifies inversion group to which this note belongs */
     BYTE    bPlayModeFlags;    /* Play mode */
+    BYTE    bSubChordLevel;    /* Which subchord level this note uses.  */
     BYTE    bMidiValue;        /* The MIDI note value, converted from wMusicValue */
+    char    cTranspose;        /* Transposition to add to midi note value after converted from wMusicValue. */
 } DMUS_NOTE_PMSG;
 
 typedef enum enumDMUS_NOTEF_FLAGS
 {
     DMUS_NOTEF_NOTEON = 1,     /* Set if this is a MIDI Note On. Otherwise, it is MIDI Note Off */
 } DMUS_NOTEF_FLAGS;
+
+/* The DMUS_PLAYMODE_FLAGS are used to determine how to convert wMusicValue
+   into the appropriate bMidiValue.
+*/
+
+typedef enum enumDMUS_PLAYMODE_FLAGS
+{
+    DMUS_PLAYMODE_KEY_ROOT          = 1,  /* Transpose on top of the key root. */
+    DMUS_PLAYMODE_CHORD_ROOT        = 2,  /* Transpose on top of the chord root. */
+    DMUS_PLAYMODE_SCALE_INTERVALS   = 4,  /* Use scale intervals from scale pattern. */
+    DMUS_PLAYMODE_CHORD_INTERVALS   = 8,  /* Use chord intervals from chord pattern. */
+    DMUS_PLAYMODE_NONE              = 16, /* No mode. Indicates the parent part's mode should be used. */
+} DMUS_PLAYMODE_FLAGS;
+
+/* The following are playback modes that can be created by combining the DMUS_PLAYMODE_FLAGS
+   in various ways:
+*/
+
+/* Fixed. wMusicValue holds final MIDI note value. This is used for drums, sound effects, and sequenced
+   notes that should not be transposed by the chord or scale.
+*/
+#define DMUS_PLAYMODE_FIXED             0  
+/* In fixed to key, the musicvalue is again a fixed MIDI value, but it
+   is transposed on top of the key root. 
+*/
+#define DMUS_PLAYMODE_FIXEDTOKEY        DMUS_PLAYMODE_KEY_ROOT
+/* In fixed to chord, the musicvalue is also a fixed MIDI value, but it
+   is transposed on top of the chord root. 
+*/
+#define DMUS_PLAYMODE_FIXEDTOCHORD      DMUS_PLAYMODE_CHORD_ROOT
+/* In Pedalpoint, the key root is used and the notes only track the intervals in
+   the scale. The chord root and intervals are completely ignored. This is useful
+   for melodic lines that play relative to the key root.
+*/
+#define DMUS_PLAYMODE_PEDALPOINT        (DMUS_PLAYMODE_KEY_ROOT | DMUS_PLAYMODE_SCALE_INTERVALS)
+/* In the Melodic mode, the chord root is used but the notes only track the intervals in
+   the scale. The key root and chord intervals are completely ignored. This is useful
+   for melodic lines that play relative to the chord root. 
+*/
+#define DMUS_PLAYMODE_MELODIC           (DMUS_PLAYMODE_CHORD_ROOT | DMUS_PLAYMODE_SCALE_INTERVALS)
+/* Normal chord mode is the prevalent playback mode. 
+   The notes track the intervals in the chord, which is based on the chord root. 
+   If there is a scale component to the MusicValue, the additional intervals 
+   are pulled from the scale and added.
+   If the chord does not have an interval to match the chord component of
+   the MusicValue, the note is silent.
+*/
+#define DMUS_PLAYMODE_NORMALCHORD       (DMUS_PLAYMODE_CHORD_ROOT | DMUS_PLAYMODE_CHORD_INTERVALS)
+/* If it is desirable to play a note that is above the top of the chord, the
+   always play mode (known as "purpleized" in a former life) finds a position
+   for the note by using intervals from the scale. Essentially, this mode is
+   a combination of the Normal and Melodic playback modes, where a failure
+   in Normal causes a second try in Melodic mode.
+*/
+#define DMUS_PLAYMODE_ALWAYSPLAY        (DMUS_PLAYMODE_MELODIC | DMUS_PLAYMODE_NORMALCHORD)
+
+/*  Legacy names for modes... */
+#define DMUS_PLAYMODE_PURPLEIZED        DMUS_PLAYMODE_ALWAYSPLAY
+#define DMUS_PLAYMODE_SCALE_ROOT        DMUS_PLAYMODE_KEY_ROOT
+#define DMUS_PLAYMODE_FIXEDTOSCALE      DMUS_PLAYMODE_FIXEDTOKEY
+
 
 /* DMUS_MIDI_PMSG */
 typedef struct _DMUS_MIDI_PMSG
@@ -223,8 +332,6 @@ typedef struct _DMUS_PATCH_PMSG
     BYTE    byMSB;
     BYTE    byLSB;
     BYTE    byPad[1];
-    DWORD   dwGroup;
-    DWORD   dwMChannel;
 } DMUS_PATCH_PMSG;
 
 /* DMUS_TRANSPOSE_PMSG */
@@ -236,6 +343,16 @@ typedef struct _DMUS_TRANSPOSE_PMSG
 
     short   nTranspose;
 } DMUS_TRANSPOSE_PMSG;
+
+/* DMUS_CHANNEL_PRIORITY_PMSG */
+typedef struct _DMUS_CHANNEL_PRIORITY_PMSG
+{
+    /* begin DMUS_PMSG_PART */
+    DMUS_PMSG_PART
+    /* end DMUS_PMSG_PART */
+
+    DWORD   dwChannelPriority;
+} DMUS_CHANNEL_PRIORITY_PMSG;
 
 /* DMUS_TEMPO_PMSG */
 typedef struct _DMUS_TEMPO_PMSG
@@ -252,9 +369,6 @@ typedef struct _DMUS_TEMPO_PMSG
 
 #define DMUS_MASTERTEMPO_MAX    2.0
 #define DMUS_MASTERTEMPO_MIN    0.25
-
-#define DMUS_MASTERVOLUME_MAX   6
-#define DMUS_MASTERVOLUME_MIN   -100
 
 /* DMUS_SYSEX_PMSG */
 typedef struct _DMUS_SYSEX_PMSG
@@ -286,9 +400,9 @@ typedef struct _DMUS_CURVE_PMSG
     short           nOffset;         /* Offset from grid at which this curve occurs */
     BYTE            bBeat;           /* Beat (in measure) at which this curve occurs */
     BYTE            bGrid;           /* Grid offset from beat at which this curve occurs */
-    BYTE                bType;       /* type of curve */
+    BYTE            bType;           /* type of curve */
     BYTE            bCurveShape;     /* shape of curve */
-    BYTE                bCCData;     /* CC# if this is a control change type */
+    BYTE            bCCData;         /* CC# if this is a control change type */
     BYTE            bFlags;          /* set to 1 if the nResetValue must be sent when the 
                                         time is reached or an invalidate occurs because
                                         of a transition. If 0, the curve stays
@@ -296,6 +410,14 @@ typedef struct _DMUS_CURVE_PMSG
                                         1 are reserved. */
 
 } DMUS_CURVE_PMSG;
+
+typedef enum enumDMUS_CURVE_FLAGS
+{
+    DMUS_CURVE_RESET = 1,           /* Set if the curve needs to be reset. */
+} DMUS_CURVE_FLAGS;
+
+
+#define DMUS_CURVE_RESET    1        
 
 /* Curve shapes */
 enum
@@ -332,8 +454,11 @@ typedef struct _DMUS_TIMESIG_PMSG
 #define DMUS_NOTIFICATION_SEGSTART      0
 #define DMUS_NOTIFICATION_SEGEND        1
 #define DMUS_NOTIFICATION_SEGALMOSTEND  2
-#define DMUS_NOTIFICATION_MUSICSTOPPED  3
-#define DMUS_NOTIFICATION_SEGLOOP       4
+#define DMUS_NOTIFICATION_SEGLOOP       3
+#define DMUS_NOTIFICATION_SEGABORT      4
+/* The following correspond to GUID_NOTIFICATION_PERFORMANCE */
+#define DMUS_NOTIFICATION_MUSICSTARTED  0
+#define DMUS_NOTIFICATION_MUSICSTOPPED  1
 /* The following corresponds to GUID_NOTIFICATION_MEASUREANDBEAT */
 #define DMUS_NOTIFICATION_MEASUREBEAT   0
 /* The following corresponds to GUID_NOTIFICATION_CHORD */
@@ -355,16 +480,6 @@ typedef struct _DMUS_NOTIFICATION_PMSG
     DWORD   dwField2;
 } DMUS_NOTIFICATION_PMSG;
 
-/* Time Signature structure, used by IDirectMusicStyle */
-typedef struct _DMUS_TIMESIGNATURE
-{
-    long    lTime;
-    BYTE    bBeatsPerMeasure;       /* beats per measure (top of time sig) */
-    BYTE    bBeat;                  /* what note receives the beat (bottom of time sig.) */
-                                    /* we can assume that 0 means 256th note */
-    WORD    wGridsPerBeat;          /* grids per beat */
-} DMUS_TIMESIGNATURE;
-
 
 #define DMUS_MAX_NAME           64         /* Maximum object name length. */
 #define DMUS_MAX_CATEGORY       64         /* Maximum object category name length. */
@@ -374,6 +489,17 @@ typedef struct _DMUS_VERSION {
   DWORD    dwVersionMS;
   DWORD    dwVersionLS;
 }DMUS_VERSION, FAR *LPDMUS_VERSION;
+
+/* Time Signature structure, used by IDirectMusicStyle */
+/* Also used as a parameter for GetParam() and SetParam */
+typedef struct _DMUS_TIMESIGNATURE
+{
+    MUSIC_TIME mtTime;
+    BYTE    bBeatsPerMeasure;       /* beats per measure (top of time sig) */
+    BYTE    bBeat;                  /* what note receives the beat (bottom of time sig.) */
+                                    /* we can assume that 0 means 256th note */
+    WORD    wGridsPerBeat;          /* grids per beat */
+} DMUS_TIMESIGNATURE;
 
 /*      The DMUSOBJECTDESC structure is used to communicate everything you could */
 /*      possibly use to describe a DirectMusic object.  */
@@ -389,6 +515,8 @@ typedef struct _DMUS_OBJECTDESC
     WCHAR          wszName[DMUS_MAX_NAME]; /* Name of object. */
     WCHAR          wszCategory[DMUS_MAX_CATEGORY]; /* Category for object (optional). */
     WCHAR          wszFileName[DMUS_MAX_FILENAME]; /* File path. */
+    LONGLONG       llMemLength;            /* Size of Memory data. */
+    LPBYTE         pbMemData;              /* Memory pointer for data. */
 } DMUS_OBJECTDESC;
 
 typedef DMUS_OBJECTDESC *LPDMUS_OBJECTDESC;
@@ -406,7 +534,7 @@ typedef DMUS_OBJECTDESC *LPDMUS_OBJECTDESC;
 #define DMUS_OBJ_VERSION        (1 << 7)     /* Version is valid. */
 #define DMUS_OBJ_DATE           (1 << 8)     /* Date is valid. */
 #define DMUS_OBJ_LOADED         (1 << 9)     /* Object is currently loaded in memory. */
-
+#define DMUS_OBJ_MEMORY         (1 << 10)    /* Object is pointed to by pbMemData. */
 
 typedef IDirectMusicObject __RPC_FAR *LPDMUS_OBJECT;
 typedef IDirectMusicLoader __RPC_FAR *LPDMUS_LOADER;
@@ -460,6 +588,7 @@ DECLARE_INTERFACE_(IDirectMusicLoader, IUnknown)
     STDMETHOD(GetObject)            (THIS_ LPDMUS_OBJECTDESC pDesc,
                                            REFIID riid,
                                            LPVOID FAR *ppv) PURE;
+    STDMETHOD(SetObject)            (THIS_ LPDMUS_OBJECTDESC pDesc) PURE;
     STDMETHOD(SetSearchDirectory)   (THIS_ REFGUID rguidClass, 
                                            WCHAR *pwzPath, 
                                            BOOL fClear) PURE;
@@ -519,7 +648,8 @@ DECLARE_INTERFACE_(IDirectMusicSegment, IUnknown)
                                                DWORD dwGroupBits) PURE;
     STDMETHOD(RemoveTrack)              (THIS_ IDirectMusicTrack* pTrack) PURE;
     STDMETHOD(InitPlay)                 (THIS_ IDirectMusicSegmentState** ppSegState, 
-                                               IDirectMusicPerformance* pPerformance) PURE;
+                                               IDirectMusicPerformance* pPerformance,
+                                               DWORD dwFlags) PURE;
     STDMETHOD(GetGraph)                 (THIS_ IDirectMusicGraph** ppGraph) PURE;
     STDMETHOD(SetGraph)                 (THIS_ IDirectMusicGraph* pGraph) PURE;
     STDMETHOD(AddNotificationType)      (THIS_ REFGUID rguidNotificationType) PURE;
@@ -583,7 +713,8 @@ DECLARE_INTERFACE_(IDirectMusicTrack, IUnknown)
     STDMETHOD(InitPlay)               (THIS_ IDirectMusicSegmentState* pSegmentState, 
                                              IDirectMusicPerformance* pPerformance, 
                                              void** ppStateData, 
-                                             DWORD dwVirtualTrackID) PURE;
+                                             DWORD dwVirtualTrackID,
+                                             DWORD dwFlags) PURE;
     STDMETHOD(EndPlay)                (THIS_ void* pStateData) PURE;
     STDMETHOD(Play)                   (THIS_ void* pStateData, 
                                              MUSIC_TIME mtStart, 
@@ -620,7 +751,9 @@ DECLARE_INTERFACE_(IDirectMusicPerformance, IUnknown)
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
     /*  IDirectMusicPerformance */
-    STDMETHOD(Init)                 (THIS_ IDirectMusic** ppDirectMusic) PURE;
+    STDMETHOD(Init)                 (THIS_ IDirectMusic** ppDirectMusic,
+                                           LPDIRECTSOUND pDirectSound,
+                                           HWND hWnd) PURE;
     STDMETHOD(PlaySegment)          (THIS_ IDirectMusicSegment* pSegment, 
                                            DWORD dwFlags, 
                                            __int64 i64StartTime, 
@@ -698,6 +831,31 @@ DECLARE_INTERFACE_(IDirectMusicPerformance, IUnknown)
     STDMETHOD(GetQueueTime)         (THIS_ REFERENCE_TIME* prtTime) PURE;
     STDMETHOD(AdjustTime)           (THIS_ REFERENCE_TIME rtAmount) PURE;
     STDMETHOD(CloseDown)            (THIS) PURE;
+    STDMETHOD(GetResolvedTime)      (THIS_ REFERENCE_TIME rtTime,
+                                           REFERENCE_TIME* prtResolved,
+                                           DWORD dwTimeResolveFlags) PURE;
+    STDMETHOD(MIDIToMusic)          (THIS_ BYTE bMIDIValue,
+                                           DMUS_CHORD_KEY* pChord,
+                                           BYTE bPlayMode,
+                                           BYTE bChordLevel,
+                                           WORD *pwMusicValue) PURE;
+    STDMETHOD(MusicToMIDI)          (THIS_ WORD wMusicValue,
+                                           DMUS_CHORD_KEY* pChord,
+                                           BYTE bPlayMode,
+                                           BYTE bChordLevel,
+                                           BYTE *pbMIDIValue) PURE;
+    STDMETHOD(TimeToRhythm)         (THIS_ MUSIC_TIME mtTime,
+                                           DMUS_TIMESIGNATURE *pTimeSig,
+                                           WORD *pwMeasure,
+                                           BYTE *pbBeat,
+                                           BYTE *pbGrid,
+                                           short *pnOffset) PURE;
+    STDMETHOD(RhythmToTime)         (THIS_ WORD wMeasure,
+                                           BYTE bBeat,
+                                           BYTE bGrid,
+                                           short nOffset,
+                                           DMUS_TIMESIGNATURE *pTimeSig,
+                                           MUSIC_TIME *pmtTime) PURE;                                        
 };
 
 /*////////////////////////////////////////////////////////////////////
@@ -737,7 +895,6 @@ DECLARE_INTERFACE_(IDirectMusicGraph, IUnknown)
 
     /*  IDirectMusicGraph */
     STDMETHOD(StampPMsg)            (THIS_ DMUS_PMSG* pPMSG) PURE;
-    STDMETHOD(Shutdown)             (THIS) PURE;
     STDMETHOD(InsertTool)           (THIS_ IDirectMusicTool* pTool, 
                                            DWORD* pdwPChannels, 
                                            DWORD cPChannels, 
@@ -768,11 +925,11 @@ DECLARE_INTERFACE_(IDirectMusicStyle, IUnknown)
                                              WCHAR* pwszName) PURE;
     STDMETHOD(GetMotif)               (THIS_ WCHAR* pwszName, 
                                              IDirectMusicSegment** ppSegment) PURE;
-    STDMETHOD(GetDefaultPersonality)  (THIS_ IDirectMusicPersonality** ppPersonality) PURE;
-    STDMETHOD(EnumPersonality)        (THIS_ DWORD dwIndex, 
+    STDMETHOD(GetDefaultChordMap)     (THIS_ IDirectMusicChordMap** ppChordMap) PURE;
+    STDMETHOD(EnumChordMap)           (THIS_ DWORD dwIndex, 
                                              WCHAR *pwszName) PURE;
-    STDMETHOD(GetPersonality)         (THIS_ WCHAR* pwszName, 
-                                             IDirectMusicPersonality** ppPersonality) PURE;
+    STDMETHOD(GetChordMap)            (THIS_ WCHAR* pwszName, 
+                                             IDirectMusicChordMap** ppChordMap) PURE;
     STDMETHOD(GetTimeSignature)       (THIS_ DMUS_TIMESIGNATURE* pTimeSig) PURE;
     STDMETHOD(GetEmbellishmentLength) (THIS_ DWORD dwType, 
                                              DWORD dwLevel, 
@@ -782,17 +939,17 @@ DECLARE_INTERFACE_(IDirectMusicStyle, IUnknown)
 };
 
 /*/////////////////////////////////////////////////////////////////////
-// IDirectMusicPersonality */
+// IDirectMusicChordMap */
 #undef  INTERFACE
-#define INTERFACE  IDirectMusicPersonality
-DECLARE_INTERFACE_(IDirectMusicPersonality, IUnknown)
+#define INTERFACE  IDirectMusicChordMap
+DECLARE_INTERFACE_(IDirectMusicChordMap, IUnknown)
 {
     /*  IUnknown */
     STDMETHOD(QueryInterface)       (THIS_ REFIID, LPVOID FAR *) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    /*  IDirectMusicPersonality */
+    /*  IDirectMusicChordMap */
     STDMETHOD(GetScale)             (THIS_ DWORD* pdwScale) PURE;
 };
 
@@ -811,7 +968,7 @@ DECLARE_INTERFACE_(IDirectMusicComposer, IUnknown)
     STDMETHOD(ComposeSegmentFromTemplate)   (THIS_ IDirectMusicStyle* pStyle, 
                                                    IDirectMusicSegment* pTempSeg, 
                                                    WORD wActivity, 
-                                                   IDirectMusicPersonality* pPersonality, 
+                                                   IDirectMusicChordMap* pChordMap, 
                                                    IDirectMusicSegment** ppSectionSeg) PURE;
     STDMETHOD(ComposeSegmentFromShape)      (THIS_ IDirectMusicStyle* pStyle, 
                                                    WORD wNumMeasures, 
@@ -819,20 +976,20 @@ DECLARE_INTERFACE_(IDirectMusicComposer, IUnknown)
                                                    WORD wActivity, 
                                                    BOOL fIntro, 
                                                    BOOL fEnd, 
-                                                   IDirectMusicPersonality* pPersonality, 
+                                                   IDirectMusicChordMap* pChordMap, 
                                                    IDirectMusicSegment** ppSectionSeg ) PURE;
     STDMETHOD(ComposeTransition)            (THIS_ IDirectMusicSegment* pFromSeg, 
                                                    IDirectMusicSegment* pToSeg, 
                                                    MUSIC_TIME mtTime, 
                                                    WORD wCommand, 
                                                    DWORD dwFlags, 
-                                                   IDirectMusicPersonality* pPersonality, 
+                                                   IDirectMusicChordMap* pChordMap, 
                                                    IDirectMusicSegment** ppSectionSeg) PURE;
     STDMETHOD(AutoTransition)               (THIS_ IDirectMusicPerformance* pPerformance, 
                                                    IDirectMusicSegment* pToSeg, 
                                                    WORD wCommand, 
                                                    DWORD dwFlags, 
-                                                   IDirectMusicPersonality* pPersonality, 
+                                                   IDirectMusicChordMap* pChordMap, 
                                                    IDirectMusicSegment** ppTransSeg, 
                                                    IDirectMusicSegmentState** ppToSegState, 
                                                    IDirectMusicSegmentState** ppTransSegState) PURE;
@@ -842,9 +999,9 @@ DECLARE_INTERFACE_(IDirectMusicComposer, IUnknown)
                                                    BOOL fEnd, 
                                                    WORD wEndLength, 
                                                    IDirectMusicSegment** ppTempSeg) PURE;
-    STDMETHOD(ChangePersonality)            (THIS_ IDirectMusicSegment* pSectionSeg, 
+    STDMETHOD(ChangeChordMap)            (THIS_ IDirectMusicSegment* pSectionSeg, 
                                                    BOOL fTrackScale, 
-                                                   IDirectMusicPersonality* pPersonality) PURE;
+                                                   IDirectMusicChordMap* pChordMap) PURE;
 };
 
 /* CLSID's */
@@ -854,7 +1011,6 @@ DEFINE_GUID(CLSID_DirectMusicSegmentState,0xd2ac2883, 0xb39b, 0x11d1, 0x87, 0x4,
 DEFINE_GUID(CLSID_DirectMusicGraph,0xd2ac2884, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicTempoTrack,0xd2ac2885, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicSeqTrack,0xd2ac2886, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(CLSID_DirectMusicCurveTrack,0xc51f3861, 0xf9a6, 0x11d1, 0xbc, 0x95, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
 DEFINE_GUID(CLSID_DirectMusicSysExTrack,0xd2ac2887, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicTimeSigTrack,0xd2ac2888, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicStyle,0xd2ac288a, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
@@ -862,14 +1018,13 @@ DEFINE_GUID(CLSID_DirectMusicChordTrack,0xd2ac288b, 0xb39b, 0x11d1, 0x87, 0x4, 0
 DEFINE_GUID(CLSID_DirectMusicCommandTrack,0xd2ac288c, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicStyleTrack,0xd2ac288d, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicMotifTrack,0xd2ac288e, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(CLSID_DirectMusicPersonality,0xd2ac288f, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(CLSID_DirectMusicChordMap,0xd2ac288f, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicComposer,0xd2ac2890, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicSignPostTrack,0xf17e8672, 0xc3b4, 0x11d1, 0x87, 0xb, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicLoader,0xd2ac2892, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(CLSID_DirectMusicBandTrk,0xd2ac2894, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(CLSID_DirectMusicBandTrack,0xd2ac2894, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicBand,0x79ba9e00, 0xb6ee, 0x11d1, 0x86, 0xbe, 0x0, 0xc0, 0x4f, 0xbf, 0x8f, 0xef);
-DEFINE_GUID(CLSID_DirectMusicPersonalityTrack,0xd2ac2896, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(CLSID_DirectMusicAuditionTrack,0xd2ac2897, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(CLSID_DirectMusicChordMapTrack,0xd2ac2896, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(CLSID_DirectMusicMuteTrack,0xd2ac2898, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 
 /* Special GUID for all object types. This is used by the loader. */
@@ -877,57 +1032,98 @@ DEFINE_GUID(GUID_DirectMusicAllTypes,0xd2ac2893, 0xb39b, 0x11d1, 0x87, 0x4, 0x0,
 
 /* Notification guids */
 DEFINE_GUID(GUID_NOTIFICATION_SEGMENT,0xd2ac2899, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(GUID_NOTIFICATION_PERFORMANCE,0x81f75bc5, 0x4e5d, 0x11d2, 0xbc, 0xc7, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
 DEFINE_GUID(GUID_NOTIFICATION_MEASUREANDBEAT,0xd2ac289a, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(GUID_NOTIFICATION_CHORD,0xd2ac289b, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(GUID_NOTIFICATION_COMMAND,0xd2ac289c, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 
 /* Track param type guids */
-DEFINE_GUID(GUID_CommandTrack,0xd2ac289d, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_ChordTrackChord,0xd2ac289e, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_ChordTrackRhythm,0xd2ac289f, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_StyleTrackRepeats,0xd2ac28a0, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_StyleTrackStyle,0xd2ac28a1, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_MotifTrack,0xd2ac28a2, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_TimeSigTrack,0xd2ac28a4, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_TempoTrack,0xd2ac28a5, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_BandTrack,0xd2ac28a6, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_BandTrack_Download,0xd2ac28a7, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_BandTrack_Unload,0xd2ac28a8, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_BandTrack_Enable_Auto_Download,0xd2ac28a9, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_BandTrack_Disable_Auto_Download,0xd2ac28aa, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_BandTrack_Clear_All_Bands,0xd2ac28ab, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_BandTrack_AddBand,0xd2ac28ac, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_BandTrack_SetGMOnly, 0x6621075, 0xe92e, 0x11d1, 0xa8, 0xc5, 0x0, 0xc0, 0x4f, 0xa3, 0x72, 0x6e);
-DEFINE_GUID(GUID_BandTrack_ConnectToDLSCollection, 0x1db1ae6b, 0xe92e, 0x11d1, 0xa8, 0xc5, 0x0, 0xc0, 0x4f, 0xa3, 0x72, 0x6e);
-DEFINE_GUID(GUID_PersonalityTrack,0xd2ac28ad, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_AuditionTrack,0xd2ac28ae, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(GUID_MuteTrack,0xd2ac28af, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+/* Use to get/set a DMUS_COMMAND_PARAM param in the Command track */
+DEFINE_GUID(GUID_CommandParam,0xd2ac289d, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Use to get/set a DMUS_CHORD_PARAM param in the Chord track */
+DEFINE_GUID(GUID_ChordParam,0xd2ac289e, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Use to get a DMUS_RHYTHM_PARAM param in the Chord track */
+DEFINE_GUID(GUID_RhythmParam,0xd2ac289f, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Use to get/set an IDirectMusicStyle param in the Style track */
+DEFINE_GUID(GUID_IDirectMusicStyle,0xd2ac28a1, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Use to get a DMUS_TIMESIGNATURE param in the Style and TimeSig tracks */
+DEFINE_GUID(GUID_TimeSignature,0xd2ac28a4, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Use to get/set a DMUS_TEMPO_PARAM param in the Tempo track */
+DEFINE_GUID(GUID_TempoParam,0xd2ac28a5, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Use to set an IDirectMusicBand param in the Band track */
+DEFINE_GUID(GUID_IDirectMusicBand,0xd2ac28ac, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Use to get/set an IDirectMusicChordMap param in the ChordMap track */
+DEFINE_GUID(GUID_IDirectMusicChordMap,0xd2ac28ad, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Use to get/set a DMUS_MUTE_PARAM param in the Mute track */
+DEFINE_GUID(GUID_MuteParam,0xd2ac28af, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* These guids are used in IDirectMusicSegment::SetParam to tell the band track to perform various actions.
+ */
+/* Download bands for the IDirectMusicSegment */
+DEFINE_GUID(GUID_Download,0xd2ac28a7, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Unload bands for the IDirectMusicSegment */
+DEFINE_GUID(GUID_Unload,0xd2ac28a8, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Connect segment's bands to an IDirectMusicCollection */
+DEFINE_GUID(GUID_ConnectToDLSCollection, 0x1db1ae6b, 0xe92e, 0x11d1, 0xa8, 0xc5, 0x0, 0xc0, 0x4f, 0xa3, 0x72, 0x6e);
+
+/* Enable/disable autodownloading of bands */
+DEFINE_GUID(GUID_Enable_Auto_Download,0xd2ac28a9, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(GUID_Disable_Auto_Download,0xd2ac28aa, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Clear all bands */
+DEFINE_GUID(GUID_Clear_All_Bands,0xd2ac28ab, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+
+/* Set segment to manage all program changes, bank selects, etc. for simple playback of a standard MIDI file */
+DEFINE_GUID(GUID_StandardMIDIFile, 0x6621075, 0xe92e, 0x11d1, 0xa8, 0xc5, 0x0, 0xc0, 0x4f, 0xa3, 0x72, 0x6e);
+/* For compatibility with beta releases... */
+#define GUID_IgnoreBankSelectForGM 	GUID_StandardMIDIFile
+
+/* Disable/enable param guids. Use these in SetParam calls to disable or enable sending
+ * specific PMsg types.
+ */
+DEFINE_GUID(GUID_DisableTimeSig, 0x45fc707b, 0x1db4, 0x11d2, 0xbc, 0xac, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
+DEFINE_GUID(GUID_EnableTimeSig, 0x45fc707c, 0x1db4, 0x11d2, 0xbc, 0xac, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
+DEFINE_GUID(GUID_DisableTempo, 0x45fc707d, 0x1db4, 0x11d2, 0xbc, 0xac, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
+DEFINE_GUID(GUID_EnableTempo, 0x45fc707e, 0x1db4, 0x11d2, 0xbc, 0xac, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
 
 /* Global data guids */
 DEFINE_GUID(GUID_PerfMasterTempo,0xd2ac28b0, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(GUID_PerfMasterVolume,0xd2ac28b1, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(GUID_PerfMasterGrooveLevel,0xd2ac28b2, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(GUID_PerfAutoDownload, 0xfb09565b, 0x3631, 0x11d2, 0xbc, 0xb8, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
 
 /* GUID for default GM/GS dls collection. */
 DEFINE_GUID(GUID_DefaultGMCollection, 0xf17e8673, 0xc3b4, 0x11d1, 0x87, 0xb, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 
 /* IID's */
-DEFINE_GUID(IID_IDirectMusicLoader, 0xf0b49495, 0xbac, 0x11d2, 0xbc, 0xa1, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
+DEFINE_GUID(IID_IDirectMusicLoader, 0x2ffaaca2, 0x5dca, 0x11d2, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
 DEFINE_GUID(IID_IDirectMusicGetLoader,0x68a04844, 0xd13d, 0x11d1, 0xaf, 0xa6, 0x0, 0xaa, 0x0, 0x24, 0xd8, 0xb6);
 DEFINE_GUID(IID_IDirectMusicObject,0xd2ac28b5, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(IID_IDirectMusicSegment, 0x70e3bd5d, 0xf118, 0x11d1, 0xbc, 0x92, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
+DEFINE_GUID(IID_IDirectMusicSegment, 0xf96029a2, 0x4282, 0x11d2, 0x87, 0x17, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicSegmentState, 0xa3afdcc7, 0xd3ee, 0x11d1, 0xbc, 0x8d, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
-DEFINE_GUID(IID_IDirectMusicTrack, 0xde5e3a32, 0xd31b, 0x11d1, 0xbc, 0x8b, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
-DEFINE_GUID(IID_IDirectMusicPerformance, 0xde5e3a33, 0xd31b, 0x11d1, 0xbc, 0x8b, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
+DEFINE_GUID(IID_IDirectMusicTrack, 0xf96029a1, 0x4282, 0x11d2, 0x87, 0x17, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(IID_IDirectMusicPerformance,0x7d43d03, 0x6523, 0x11d2, 0x87, 0x1d, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicTool,0xd2ac28ba, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(IID_IDirectMusicGraph,0x1ee21dc8, 0xc370, 0x11d1, 0xbc, 0x84, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
+DEFINE_GUID(IID_IDirectMusicGraph,0x2befc277, 0x5497, 0x11d2, 0xbc, 0xcb, 0x0, 0xa0, 0xc9, 0x22, 0xe6, 0xeb);
 DEFINE_GUID(IID_IDirectMusicStyle,0xd2ac28bd, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
-DEFINE_GUID(IID_IDirectMusicPersonality,0xd2ac28be, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
+DEFINE_GUID(IID_IDirectMusicChordMap,0xd2ac28be, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicComposer,0xd2ac28bf, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 DEFINE_GUID(IID_IDirectMusicBand,0xd2ac28c0, 0xb39b, 0x11d1, 0x87, 0x4, 0x0, 0x60, 0x8, 0x93, 0xb1, 0xbd);
 
 #ifdef __cplusplus
 }; /* extern "C" */
 #endif
+
+#include <poppack.h>
 
 #endif /* #ifndef _DMUSICI_ */

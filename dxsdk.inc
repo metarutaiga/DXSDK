@@ -25,7 +25,7 @@ outobj = -o
 commas =,
 outexe=
 borlib=+
-deflibs = import32.lib cw32mti.lib ole2w32.lib
+deflibs = import32.lib cw32mt.lib ole2w32.lib
 !IFDEF MFC
 cflags =$(cflags) -VF -w-hid -w-par -w-aus -w-inl -w-inq -WM -Vd /D_NO_VCL;_RTLDLL;_AFXDLL;_X86_;_WINDOWS;_MSC_VER=1100;WIN32;
 !IFDEF NODEBUG

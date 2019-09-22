@@ -4,57 +4,6 @@
  *
  *  File:       dplobby.h
  *  Content:    DirectPlayLobby include file
- *@@BEGIN_MSINTERNAL
- *  History:
- *	Date		By		Reason
- *	===========	=======	==========
- *	4/13/96		myronth	Created it
- *	6/20/96		myronth	Cleaned it up
- *	6/24/96		myronth	More cleanup
- *	7/1/96		myronth	Changed DPLERR_ to DPERR_
- *  7/9/96      ajayj   Cleaned up formatting to match dplay.h
- *  7/15/96     ajayj   Added DPADDRESS chunk tags for dplaunch
- *                      sample app.
- *	7/16/96		kipo	changed address types to be GUIDs instead of 4CC
- *  8/1/96      sohailm Added IDirectPlayLobby interface macros
- *  8/10/96     sohailm Bug#2227: declared pointers in callbacks as const.
- *  8/15/96     sohailm Added type definition for LPCDPLCONNECTION
- *                      Changed LPGUIDs to REFGUIDs in IDirectPlayLobby interface 
- *                      Made function parameters constant where appropriate
- *	8/16/96		andyco	took out some const and ref stuff for ship
- *	8/16/96		myronth	Added SetConnectionSettings & Connect methods
- *  8/21/96     ajayj   replace tabs with spaces
- *	8/21/96		kipo	Added DPCOMPORTADDRESS structure
- *	9/5/96		myronth	Wrapped DPLCAPS with MSINTERNAL
- *	10/23/96	myronth	Added first cut of client/server methods
- *	10/25/96	myronth	Added DX5 methods
- *	12/13/96	myronth	Changed DPLAD_SYSTEM to DPLMSG_SYSTEM
- *	1/30/97		myronth	Added MSINTERNAL's to DX5 stuff for meltdown
- *	2/12/97		myronth	Removed meltdown changes
- *	2/12/97		myronth	Mass DX5 changes
- *	2/18/97		myronth	Implemented GetObjectCaps
- *	3/5/97		andyco	added DPAID_TotalSize
- *	3/12/97		myronth	Added DPAID_LobbyProvider chunk
- *	3/17/97		kipo	Added data structures for CreateCompoundAddress() and
- *						added guids for Unicode phone numbers and IP addresses
- *	3/24/97		kipo	Added support for IDirectPlayLobby2 interface
- *	4/11/97		myronth	Added CLSID_DirectPlayLobby clsid
- *	5/8/97		myronth	Moved DPLCONNECTION structure definition to dplay.h
- *  5/21/97		ajayj	Added structures and definitions for standard lobby 
- *						messages
- *  5/23/97		ajayj	Added DPLDATA_PLAYERGUID structure
- *  5/30/97		ajayj	Added DPLPROPERTY_MessagesSupported GUID
- *	6/7/97		myronth	Fixed CreateCompoundAddress macros
- *	6/6/97		kipo	Added "FAR" to all structures
- *	8/19/97		myronth	Added DPLMSG_NEWSESSIONHOST structure
- *	11/13/97	myronth	Added guidInstance to lobby system messages (#10944)
- *	12/2/97		myronth	Added Register/UnregisterApplication
- *	12/4/97		myronth	Added ConnectEx
- *	1/20/98		myronth	Added WaitForConnectionSettings
- *	1/29/98		sohailm	Added DPAID_INetPort.
- *	2/11/98		a-peterz Clarify that DPAID_INetPort value is a word (#18210)
- *	4/15/98		a-peterz Fix IDirectPlayLobby_CreateCompoundAddress C++ version
- *@@END_MSINTERNAL
  ***************************************************************************/
 #ifndef __DPLOBBY_INCLUDED__
 #define __DPLOBBY_INCLUDED__
@@ -770,22 +719,6 @@ DEFINE_GUID(DPAID_INetPort,
 0xe4524541, 0x8ea5, 0x11d1, 0x8a, 0x96, 0x0, 0x60, 0x97, 0xb0, 0x14, 0x11);
 
 #ifdef BIGMESSAGEDEFENSE
-//@@BEGIN_MSINTERNAL
-/*
- * DPAID_MaxMessageSize
- *
- * Tells DPLAY what the maximum allowed message size is.  Enables SPs to
- *	combat Denial of Service attacks
- */
- 
- // this terrible hack is needed so the SP can work with the Elmer build.
- // it can be removed when the MSINTERNAL stuff is removed
- #define MAXMSGSIZEGUIDDEFINED
-
-// {F5D09980-F0C4-11d1-8326-006097B01411}
-DEFINE_GUID(DPAID_MaxMessageSize, 
-0xf5d09980, 0xf0c4, 0x11d1, 0x83, 0x26, 0x0, 0x60, 0x97, 0xb0, 0x14, 0x11);
-//@@END_MSINTERNAL
 #endif
 
 /*
@@ -837,3 +770,4 @@ DEFINE_GUID(DPAID_ComPort,
 #endif /* __cplusplus */
 
 #endif /* __DPLOBBY_INCLUDED__ */
+
