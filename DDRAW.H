@@ -1,6 +1,6 @@
 /*==========================================================================;
  *
- *  Copyright (C) 1994-1995 Microsoft Corporation.  All Rights Reserved.
+ *  Copyright (C) 1994-1996 Microsoft Corporation.  All Rights Reserved.
  *
  *  File:       ddraw.h
  *  Content:    DirectDraw include file
@@ -9,15 +9,16 @@
 
 #ifndef __DDRAW_INCLUDED__
 #define __DDRAW_INCLUDED__
-#if defined( _WIN32 ) && !defined( _NO_COM )
+#if defined( _WIN32 )  && !defined( _NO_COM )
 #define COM_NO_WINDOWS_H
 #include <objbase.h>
 #else
-#define IUnknown        void
+#define IUnknown            void
+#define CO_E_NOTINITIALIZED 0x800401F0L
 #endif
 
-#define _FAC    0x876
-#define MAKE_DDHRESULT( code )  MAKE_HRESULT( 1, _FAC, code )
+#define _FACDD  0x876
+#define MAKE_DDHRESULT( code )  MAKE_HRESULT( 1, _FACDD, code )
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,10 +28,16 @@ extern "C" {
  * GUIDS used by DirectDraw objects
  */
 #if defined( _WIN32 ) && !defined( _NO_COM )
+DEFINE_GUID( CLSID_DirectDraw,                  0xD7B70EE0,0x4340,0x11CF,0xB0,0x63,0x00,0x20,0xAF,0xC2,0xCD,0x35 );
+DEFINE_GUID( CLSID_DirectDrawClipper,           0x593817A0,0x7DB3,0x11CF,0xA2,0xDE,0x00,0xAA,0x00,0xb9,0x33,0x56 );
 DEFINE_GUID( IID_IDirectDraw,                   0x6C14DB80,0xA733,0x11CE,0xA5,0x21,0x00,0x20,0xAF,0x0B,0xE5,0x60 );
+DEFINE_GUID( IID_IDirectDraw2,                  0xB3A6F3E0,0x2B43,0x11CF,0xA2,0xDE,0x00,0xAA,0x00,0xB9,0x33,0x56 );
 DEFINE_GUID( IID_IDirectDrawSurface,            0x6C14DB81,0xA733,0x11CE,0xA5,0x21,0x00,0x20,0xAF,0x0B,0xE5,0x60 );
+DEFINE_GUID( IID_IDirectDrawSurface2,           0x57805885,0x6eec,0x11cf,0x94,0x41,0xa8,0x23,0x03,0xc1,0x0e,0x27 );
+
 DEFINE_GUID( IID_IDirectDrawPalette,            0x6C14DB84,0xA733,0x11CE,0xA5,0x21,0x00,0x20,0xAF,0x0B,0xE5,0x60 );
 DEFINE_GUID( IID_IDirectDrawClipper,            0x6C14DB85,0xA733,0x11CE,0xA5,0x21,0x00,0x20,0xAF,0x0B,0xE5,0x60 );
+                 
 #endif
 
 /*============================================================================
@@ -47,7 +54,10 @@ struct IDirectDrawPalette;
 struct IDirectDrawClipper;
 
 typedef struct IDirectDraw                      FAR *LPDIRECTDRAW;
+typedef struct IDirectDraw2                     FAR *LPDIRECTDRAW2;
 typedef struct IDirectDrawSurface               FAR *LPDIRECTDRAWSURFACE;
+typedef struct IDirectDrawSurface2              FAR *LPDIRECTDRAWSURFACE2;
+
 typedef struct IDirectDrawPalette               FAR *LPDIRECTDRAWPALETTE;
 typedef struct IDirectDrawClipper               FAR *LPDIRECTDRAWCLIPPER;
 
@@ -57,19 +67,25 @@ typedef struct _DDSURFACEDESC           FAR *LPDDSURFACEDESC;
 /*
  * API's
  */
-#if defined( _WIN32 ) && !defined( _NO_ENUM )
-typedef BOOL (FAR PASCAL * LPDDENUMCALLBACKA)(GUID FAR *, LPSTR, LPSTR, LPVOID);
-typedef BOOL (FAR PASCAL * LPDDENUMCALLBACKW)(GUID FAR *, LPWSTR, LPWSTR, LPVOID);
-extern HRESULT WINAPI DirectDrawEnumerateW( LPDDENUMCALLBACKW lpCallback, LPVOID lpContext );
-extern HRESULT WINAPI DirectDrawEnumerateA( LPDDENUMCALLBACKA lpCallback, LPVOID lpContext );
-#ifdef UNICODE
-typedef LPDDENUMCALLBACKW       LPDDENUMCALLBACK;
-#define DirectDrawEnumerate     DirectDrawEnumerateW
-#else
-typedef LPDDENUMCALLBACKA       LPDDENUMCALLBACK;
-#define DirectDrawEnumerate     DirectDrawEnumerateA
-#endif
-extern HRESULT WINAPI DirectDrawCreate( GUID FAR *lpGUID, LPDIRECTDRAW FAR *lplpDD, IUnknown FAR *pUnkOuter );
+#if (defined (WIN32) || defined( _WIN32 ) ) && !defined( _NO_COM )
+//#if defined( _WIN32 ) && !defined( _NO_ENUM )
+    typedef BOOL (FAR PASCAL * LPDDENUMCALLBACKA)(GUID FAR *, LPSTR, LPSTR, LPVOID);
+    typedef BOOL (FAR PASCAL * LPDDENUMCALLBACKW)(GUID FAR *, LPWSTR, LPWSTR, LPVOID);
+    extern HRESULT WINAPI DirectDrawEnumerateW( LPDDENUMCALLBACKW lpCallback, LPVOID lpContext );
+    extern HRESULT WINAPI DirectDrawEnumerateA( LPDDENUMCALLBACKA lpCallback, LPVOID lpContext );
+    #ifdef UNICODE
+        typedef LPDDENUMCALLBACKW       LPDDENUMCALLBACK;
+        #define DirectDrawEnumerate     DirectDrawEnumerateW
+    #else
+        typedef LPDDENUMCALLBACKA       LPDDENUMCALLBACK;
+        #define DirectDrawEnumerate     DirectDrawEnumerateA
+    #endif
+    extern HRESULT WINAPI DirectDrawCreate( GUID FAR *lpGUID, LPDIRECTDRAW FAR *lplpDD, IUnknown FAR *pUnkOuter );
+    extern HRESULT WINAPI DirectDrawCreateClipper( DWORD dwFlags, LPDIRECTDRAWCLIPPER FAR *lplpDDClipper, IUnknown FAR *pUnkOuter );
+    #ifdef WINNT
+        //This is the user-mode entry stub to the kernel mode procedure.
+        extern HRESULT NtDirectDrawCreate( GUID FAR *lpGUID, HANDLE *lplpDD, IUnknown FAR *pUnkOuter );
+    #endif
 #endif
 
 #define REGSTR_KEY_DDHW_DESCRIPTION     "Description"
@@ -79,9 +95,14 @@ extern HRESULT WINAPI DirectDrawCreate( GUID FAR *lpGUID, LPDIRECTDRAW FAR *lplp
 #define DDCREATE_HARDWAREONLY           0x00000001l
 #define DDCREATE_EMULATIONONLY          0x00000002l
 
+#ifdef WINNT
+typedef long HRESULT;
+#endif
+
+//#ifndef WINNT
 typedef HRESULT (FAR PASCAL * LPDDENUMMODESCALLBACK)(LPDDSURFACEDESC, LPVOID);
 typedef HRESULT (FAR PASCAL * LPDDENUMSURFACESCALLBACK)(LPDIRECTDRAWSURFACE, LPDDSURFACEDESC, LPVOID);
-
+//#endif
 /*
  * DDCOLORKEY
  */
@@ -140,6 +161,7 @@ typedef struct _DDBLTFX
     union
     {
         DWORD   dwFillColor;                    // color in RGB or Palettized
+        DWORD   dwFillDepth;                    // depth value for z-buffer
         LPDIRECTDRAWSURFACE lpDDSPattern;       // Surface to use as pattern
     };
     DDCOLORKEY  ddckDestColorkey;               // DestColorkey override
@@ -163,6 +185,7 @@ typedef DDSCAPS FAR* LPDDSCAPS;
  * DDCAPS
  */
 #define DD_ROP_SPACE            (256/32)        // space required to store ROP array
+
 typedef struct _DDCAPS
 {
     DWORD       dwSize;                 // size of the DDDRIVERCAPS structure
@@ -201,9 +224,26 @@ typedef struct _DDCAPS
     DWORD       dwReserved1;            // reserved
     DWORD       dwReserved2;            // reserved
     DWORD       dwReserved3;            // reserved
+    DWORD       dwSVBCaps;              // driver specific capabilities for System->Vmem blts
+    DWORD       dwSVBCKeyCaps;          // driver color key capabilities for System->Vmem blts
+    DWORD       dwSVBFXCaps;            // driver FX capabilities for System->Vmem blts
+    DWORD       dwSVBRops[DD_ROP_SPACE];// ROPS supported for System->Vmem blts
+    DWORD       dwVSBCaps;              // driver specific capabilities for Vmem->System blts
+    DWORD       dwVSBCKeyCaps;          // driver color key capabilities for Vmem->System blts
+    DWORD       dwVSBFXCaps;            // driver FX capabilities for Vmem->System blts
+    DWORD       dwVSBRops[DD_ROP_SPACE];// ROPS supported for Vmem->System blts
+    DWORD       dwSSBCaps;              // driver specific capabilities for System->System blts
+    DWORD       dwSSBCKeyCaps;          // driver color key capabilities for System->System blts
+    DWORD       dwSSBFXCaps;            // driver FX capabilities for System->System blts
+    DWORD       dwSSBRops[DD_ROP_SPACE];// ROPS supported for System->System blts
+    DWORD       dwReserved4;            // reserved
+    DWORD       dwReserved5;            // reserved
+    DWORD       dwReserved6;            // reserved
 } DDCAPS;
 
 typedef DDCAPS FAR* LPDDCAPS;
+
+
 
 /*
  * DDPIXELFORMAT
@@ -367,6 +407,68 @@ DECLARE_INTERFACE_( IDirectDraw, IUnknown )
 
 #endif
 
+#if defined( _WIN32 ) && !defined( _NO_COM )
+#undef INTERFACE
+#define INTERFACE IDirectDraw2
+DECLARE_INTERFACE_( IDirectDraw2, IUnknown )
+{
+    /*** IUnknown methods ***/
+    STDMETHOD(QueryInterface) (THIS_ REFIID riid, LPVOID FAR * ppvObj) PURE;
+    STDMETHOD_(ULONG,AddRef) (THIS)  PURE;
+    STDMETHOD_(ULONG,Release) (THIS) PURE;
+    /*** IDirectDraw methods ***/
+    STDMETHOD(Compact)(THIS) PURE;
+    STDMETHOD(CreateClipper)(THIS_ DWORD, LPDIRECTDRAWCLIPPER FAR*, IUnknown FAR * ) PURE;
+    STDMETHOD(CreatePalette)(THIS_ DWORD, LPPALETTEENTRY, LPDIRECTDRAWPALETTE FAR*, IUnknown FAR * ) PURE;
+    STDMETHOD(CreateSurface)(THIS_  LPDDSURFACEDESC, LPDIRECTDRAWSURFACE FAR *, IUnknown FAR *) PURE;
+    STDMETHOD(DuplicateSurface)( THIS_ LPDIRECTDRAWSURFACE, LPDIRECTDRAWSURFACE FAR * ) PURE;
+    STDMETHOD(EnumDisplayModes)( THIS_ DWORD, LPDDSURFACEDESC, LPVOID, LPDDENUMMODESCALLBACK ) PURE;
+    STDMETHOD(EnumSurfaces)(THIS_ DWORD, LPDDSURFACEDESC, LPVOID,LPDDENUMSURFACESCALLBACK ) PURE;
+    STDMETHOD(FlipToGDISurface)(THIS) PURE;
+    STDMETHOD(GetCaps)( THIS_ LPDDCAPS, LPDDCAPS) PURE;
+    STDMETHOD(GetDisplayMode)( THIS_ LPDDSURFACEDESC) PURE;
+    STDMETHOD(GetFourCCCodes)(THIS_  LPDWORD, LPDWORD ) PURE;
+    STDMETHOD(GetGDISurface)(THIS_ LPDIRECTDRAWSURFACE FAR *) PURE;
+    STDMETHOD(GetMonitorFrequency)(THIS_ LPDWORD) PURE;
+    STDMETHOD(GetScanLine)(THIS_ LPDWORD) PURE;
+    STDMETHOD(GetVerticalBlankStatus)(THIS_ LPBOOL ) PURE;
+    STDMETHOD(Initialize)(THIS_ GUID FAR *) PURE;
+    STDMETHOD(RestoreDisplayMode)(THIS) PURE;
+    STDMETHOD(SetCooperativeLevel)(THIS_ HWND, DWORD) PURE;
+    STDMETHOD(SetDisplayMode)(THIS_ DWORD, DWORD,DWORD, DWORD, DWORD) PURE;
+    STDMETHOD(WaitForVerticalBlank)(THIS_ DWORD, HANDLE ) PURE;
+    /*** Added in the v2 interface ***/
+    STDMETHOD(GetAvailableVidMem)(THIS_ LPDDSCAPS, LPDWORD, LPDWORD) PURE;
+};
+#if !defined(__cplusplus) || defined(CINTERFACE)
+#define IDirectDraw2_QueryInterface(p, a, b)         (p)->lpVtbl->QueryInterface(p, a, b)
+#define IDirectDraw2_AddRef(p)                       (p)->lpVtbl->AddRef(p)
+#define IDirectDraw2_Release(p)                      (p)->lpVtbl->Release(p)
+#define IDirectDraw2_Compact(p)                      (p)->lpVtbl->Compact(p)
+#define IDirectDraw2_CreateClipper(p, a, b, c)       (p)->lpVtbl->CreateClipper(p, a, b, c)
+#define IDirectDraw2_CreatePalette(p, a, b, c, d)    (p)->lpVtbl->CreatePalette(p, a, b, c, d)
+#define IDirectDraw2_CreateSurface(p, a, b, c)       (p)->lpVtbl->CreateSurface(p, a, b, c)
+#define IDirectDraw2_DuplicateSurface(p, a, b)       (p)->lpVtbl->DuplicateSurface(p, a, b)
+#define IDirectDraw2_EnumDisplayModes(p, a, b, c, d) (p)->lpVtbl->EnumDisplayModes(p, a, b, c, d)
+#define IDirectDraw2_EnumSurfaces(p, a, b, c, d)     (p)->lpVtbl->EnumSurfaces(p, a, b, c, d)
+#define IDirectDraw2_FlipToGDISurface(p)             (p)->lpVtbl->FlipToGDISurface(p)
+#define IDirectDraw2_GetCaps(p, a, b)                (p)->lpVtbl->GetCaps(p, a, b)
+#define IDirectDraw2_GetDisplayMode(p, a)            (p)->lpVtbl->GetDisplayMode(p, a)
+#define IDirectDraw2_GetFourCCCodes(p, a, b)         (p)->lpVtbl->GetFourCCCodes(p, a, b)
+#define IDirectDraw2_GetGDISurface(p, a)             (p)->lpVtbl->GetGDISurface(p, a)
+#define IDirectDraw2_GetMonitorFrequency(p, a)       (p)->lpVtbl->GetMonitorFrequency(p, a)
+#define IDirectDraw2_GetScanLine(p, a)               (p)->lpVtbl->GetScanLine(p, a)
+#define IDirectDraw2_GetVerticalBlankStatus(p, a)    (p)->lpVtbl->GetVerticalBlankStatus(p, a)
+#define IDirectDraw2_Initialize(p, a)                (p)->lpVtbl->Initialize(p, a)
+#define IDirectDraw2_RestoreDisplayMode(p)           (p)->lpVtbl->RestoreDisplayMode(p)
+#define IDirectDraw2_SetCooperativeLevel(p, a, b)    (p)->lpVtbl->SetCooperativeLevel(p, a, b)
+#define IDirectDraw2_SetDisplayMode(p, a, b, c, d)   (p)->lpVtbl->SetDisplayMode(p, a, b, c, d)
+#define IDirectDraw2_WaitForVerticalBlank(p, a, b)   (p)->lpVtbl->WaitForVerticalBlank(p, a, b)
+#define IDirectDraw2_GetAvailableVidMem(p, a, b, c)  (p)->lpVtbl->GetAvailableVidMem(p, a, b, c)
+#endif
+
+#endif
+
 /*
  * IDirectDrawPalette
  */
@@ -520,6 +622,99 @@ DECLARE_INTERFACE_( IDirectDrawSurface, IUnknown )
 #define IDirectDrawSurface_UpdateOverlayZOrder(p,a,b)   (p)->lpVtbl->UpdateOverlayZOrder(p,a,b)
 #endif
 
+/*
+ * IDirectDrawSurface2 and related interfaces
+ */
+#undef INTERFACE
+#define INTERFACE IDirectDrawSurface2
+DECLARE_INTERFACE_( IDirectDrawSurface2, IUnknown )
+{
+    /*** IUnknown methods ***/
+    STDMETHOD(QueryInterface) (THIS_ REFIID riid, LPVOID FAR * ppvObj) PURE;
+    STDMETHOD_(ULONG,AddRef) (THIS)  PURE;
+    STDMETHOD_(ULONG,Release) (THIS) PURE;
+    /*** IDirectDrawSurface methods ***/
+    STDMETHOD(AddAttachedSurface)(THIS_ LPDIRECTDRAWSURFACE2) PURE;
+    STDMETHOD(AddOverlayDirtyRect)(THIS_ LPRECT) PURE;
+    STDMETHOD(Blt)(THIS_ LPRECT,LPDIRECTDRAWSURFACE2, LPRECT,DWORD, LPDDBLTFX) PURE;
+    STDMETHOD(BltBatch)(THIS_ LPDDBLTBATCH, DWORD, DWORD ) PURE;
+    STDMETHOD(BltFast)(THIS_ DWORD,DWORD,LPDIRECTDRAWSURFACE2, LPRECT,DWORD) PURE;
+    STDMETHOD(DeleteAttachedSurface)(THIS_ DWORD,LPDIRECTDRAWSURFACE2) PURE;
+    STDMETHOD(EnumAttachedSurfaces)(THIS_ LPVOID,LPDDENUMSURFACESCALLBACK) PURE;
+    STDMETHOD(EnumOverlayZOrders)(THIS_ DWORD,LPVOID,LPDDENUMSURFACESCALLBACK) PURE;
+    STDMETHOD(Flip)(THIS_ LPDIRECTDRAWSURFACE2, DWORD) PURE;
+    STDMETHOD(GetAttachedSurface)(THIS_ LPDDSCAPS, LPDIRECTDRAWSURFACE2 FAR *) PURE;
+    STDMETHOD(GetBltStatus)(THIS_ DWORD) PURE;
+    STDMETHOD(GetCaps)(THIS_ LPDDSCAPS) PURE;
+    STDMETHOD(GetClipper)(THIS_ LPDIRECTDRAWCLIPPER FAR*) PURE;
+    STDMETHOD(GetColorKey)(THIS_ DWORD, LPDDCOLORKEY) PURE;
+    STDMETHOD(GetDC)(THIS_ HDC FAR *) PURE;
+    STDMETHOD(GetFlipStatus)(THIS_ DWORD) PURE;
+    STDMETHOD(GetOverlayPosition)(THIS_ LPLONG, LPLONG ) PURE;
+    STDMETHOD(GetPalette)(THIS_ LPDIRECTDRAWPALETTE FAR*) PURE;
+    STDMETHOD(GetPixelFormat)(THIS_ LPDDPIXELFORMAT) PURE;
+    STDMETHOD(GetSurfaceDesc)(THIS_ LPDDSURFACEDESC) PURE;
+    STDMETHOD(Initialize)(THIS_ LPDIRECTDRAW, LPDDSURFACEDESC) PURE;
+    STDMETHOD(IsLost)(THIS) PURE;
+    STDMETHOD(Lock)(THIS_ LPRECT,LPDDSURFACEDESC,DWORD,HANDLE) PURE;
+    STDMETHOD(ReleaseDC)(THIS_ HDC) PURE;
+    STDMETHOD(Restore)(THIS) PURE;
+    STDMETHOD(SetClipper)(THIS_ LPDIRECTDRAWCLIPPER) PURE;
+    STDMETHOD(SetColorKey)(THIS_ DWORD, LPDDCOLORKEY) PURE;
+    STDMETHOD(SetOverlayPosition)(THIS_ LONG, LONG ) PURE;
+    STDMETHOD(SetPalette)(THIS_ LPDIRECTDRAWPALETTE) PURE;
+    STDMETHOD(Unlock)(THIS_ LPVOID) PURE;
+    STDMETHOD(UpdateOverlay)(THIS_ LPRECT, LPDIRECTDRAWSURFACE2,LPRECT,DWORD, LPDDOVERLAYFX) PURE;
+    STDMETHOD(UpdateOverlayDisplay)(THIS_ DWORD) PURE;
+    STDMETHOD(UpdateOverlayZOrder)(THIS_ DWORD, LPDIRECTDRAWSURFACE2) PURE;
+    /*** Added in the v2 interface ***/
+    STDMETHOD(GetDDInterface)(THIS_ LPVOID FAR *) PURE;
+    STDMETHOD(PageLock)(THIS_ DWORD) PURE;
+    STDMETHOD(PageUnlock)(THIS_ DWORD) PURE;
+};
+
+#if !defined(__cplusplus) || defined(CINTERFACE)
+#define IDirectDrawSurface2_QueryInterface(p,a,b)        (p)->lpVtbl->QueryInterface(p,a,b)
+#define IDirectDrawSurface2_AddRef(p)                    (p)->lpVtbl->AddRef(p)
+#define IDirectDrawSurface2_Release(p)                   (p)->lpVtbl->Release(p)
+#define IDirectDrawSurface2_AddAttachedSurface(p,a)      (p)->lpVtbl->AddAttachedSurface(p,a)
+#define IDirectDrawSurface2_AddOverlayDirtyRect(p,a)     (p)->lpVtbl->AddOverlayDirtyRect(p,a)
+#define IDirectDrawSurface2_Blt(p,a,b,c,d,e)             (p)->lpVtbl->Blt(p,a,b,c,d,e)
+#define IDirectDrawSurface2_BltBatch(p,a,b,c)            (p)->lpVtbl->BltBatch(p,a,b,c)
+#define IDirectDrawSurface2_BltFast(p,a,b,c,d,e)         (p)->lpVtbl->BltFast(p,a,b,c,d,e)
+#define IDirectDrawSurface2_DeleteAttachedSurface(p,a,b) (p)->lpVtbl->DeleteAttachedSurface(p,a,b)
+#define IDirectDrawSurface2_EnumAttachedSurfaces(p,a,b)  (p)->lpVtbl->EnumAttachedSurfaces(p,a,b)
+#define IDirectDrawSurface2_EnumOverlayZOrders(p,a,b,c)  (p)->lpVtbl->EnumOverlayZOrders(p,a,b,c)
+#define IDirectDrawSurface2_Flip(p,a,b)                  (p)->lpVtbl->Flip(p,a,b)
+#define IDirectDrawSurface2_GetAttachedSurface(p,a,b)    (p)->lpVtbl->GetAttachedSurface(p,a,b)
+#define IDirectDrawSurface2_GetBltStatus(p,a)            (p)->lpVtbl->GetBltStatus(p,a)
+#define IDirectDrawSurface2_GetCaps(p,b)                 (p)->lpVtbl->GetCaps(p,b)
+#define IDirectDrawSurface2_GetClipper(p,a)              (p)->lpVtbl->GetClipper(p,a)
+#define IDirectDrawSurface2_GetColorKey(p,a,b)           (p)->lpVtbl->GetColorKey(p,a,b)
+#define IDirectDrawSurface2_GetDC(p,a)                   (p)->lpVtbl->GetDC(p,a)
+#define IDirectDrawSurface2_GetFlipStatus(p,a)           (p)->lpVtbl->GetFlipStatus(p,a)
+#define IDirectDrawSurface2_GetOverlayPosition(p,a,b)    (p)->lpVtbl->GetOverlayPosition(p,a,b)
+#define IDirectDrawSurface2_GetPalette(p,a)              (p)->lpVtbl->GetPalette(p,a)
+#define IDirectDrawSurface2_GetPixelFormat(p,a)          (p)->lpVtbl->GetPixelFormat(p,a)
+#define IDirectDrawSurface2_GetSurfaceDesc(p,a)          (p)->lpVtbl->GetSurfaceDesc(p,a)
+#define IDirectDrawSurface2_Initialize(p,a,b)            (p)->lpVtbl->Initialize(p,a,b)
+#define IDirectDrawSurface2_IsLost(p)                    (p)->lpVtbl->IsLost(p)
+#define IDirectDrawSurface2_Lock(p,a,b,c,d)              (p)->lpVtbl->Lock(p,a,b,c,d)
+#define IDirectDrawSurface2_ReleaseDC(p,a)               (p)->lpVtbl->ReleaseDC(p,a)
+#define IDirectDrawSurface2_Restore(p)                   (p)->lpVtbl->Restore(p)
+#define IDirectDrawSurface2_SetClipper(p,a)              (p)->lpVtbl->SetClipper(p,a)
+#define IDirectDrawSurface2_SetColorKey(p,a,b)           (p)->lpVtbl->SetColorKey(p,a,b)
+#define IDirectDrawSurface2_SetOverlayPosition(p,a,b)    (p)->lpVtbl->SetOverlayPosition(p,a,b)
+#define IDirectDrawSurface2_SetPalette(p,a)              (p)->lpVtbl->SetPalette(p,a)
+#define IDirectDrawSurface2_Unlock(p,b)                  (p)->lpVtbl->Unlock(p,b)
+#define IDirectDrawSurface2_UpdateOverlay(p,a,b,c,d,e)   (p)->lpVtbl->UpdateOverlay(p,a,b,c,d,e)
+#define IDirectDrawSurface2_UpdateOverlayDisplay(p,a)    (p)->lpVtbl->UpdateOverlayDisplay(p,a)
+#define IDirectDrawSurface2_UpdateOverlayZOrder(p,a,b)   (p)->lpVtbl->UpdateOverlayZOrder(p,a,b)
+#define IDirectDrawSurface2_GetDDInterface(p,a)          (p)->lpVtbl->GetDDInterface(p,a)
+#define IDirectDrawSurface2_PageLock(p,a)                (p)->lpVtbl->PageLock(p,a)
+#define IDirectDrawSurface2_PageUnlock(p,a)              (p)->lpVtbl->PageUnlock(p,a)
+#endif
+
 
 #endif
 
@@ -535,7 +730,12 @@ typedef struct _DDSURFACEDESC
     DWORD               dwWidth;                // width of input surface
     LONG                lPitch;                 // distance to start of next line (return value only)
     DWORD               dwBackBufferCount;      // number of back buffers requested
-    DWORD               dwZBufferBitDepth;      // depth of Z buffer requested
+    union
+    {
+        DWORD           dwMipMapCount;          // number of mip-map levels requested
+        DWORD           dwZBufferBitDepth;      // depth of Z buffer requested
+        DWORD           dwRefreshRate;          // refresh rate (used when display mode is described)
+    };
     DWORD               dwAlphaBitDepth;        // depth of alpha buffer requested
     DWORD               dwReserved;             // reserved
     LPVOID              lpSurface;              // pointer to the associated surface memory
@@ -550,7 +750,7 @@ typedef struct _DDSURFACEDESC
 /*
  * ddsCaps field is valid.
  */
-#define DDSD_CAPS               0x00000000l     // default
+#define DDSD_CAPS               0x00000001l     // default
 
 /*
  * dwHeight field is valid.
@@ -583,10 +783,6 @@ typedef struct _DDSURFACEDESC
 #define DDSD_ALPHABITDEPTH      0x00000080l
 
 
-/*
- * lpSurface is valid.
- */
-#define DDSD_LPSURFACE          0x00000800l
 
 /*
  * ddpfPixelFormat is valid.
@@ -614,22 +810,21 @@ typedef struct _DDSURFACEDESC
 #define DDSD_CKSRCBLT           0x00010000l
 
 /*
- * All input fields are valid. 
+ * dwMipMapCount is valid.
  */
-#define DDSD_ALL                0x0001f9eel
+#define DDSD_MIPMAPCOUNT        0x00020000l
+
+ /*
+  * dwRefreshRate is valid
+  */
+#define DDSD_REFRESHRATE        0x00040000l
+
 
 /*
- * DDMODEDESC
+ * All input fields are valid. 
  */
-typedef struct _DDMODEDESC
-{
-    DWORD               dwSize;                 // size of structure
-    DWORD               dwFlags;                // enumeration flags
-    DWORD               dwMonitorFrequency;     // frequency of monitor in mode
-    DDSURFACEDESC       ddsdSurfaceDesc;        // surface being enumerated
-} DDMODEDESC;
+#define DDSD_ALL                0x0007f9eel
 
-typedef DDMODEDESC FAR* LPDDMODEDESC;
 
 /*============================================================================
  *
@@ -646,9 +841,7 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  *
  ****************************************************************************/
 /*
- * Indicates that this surface is a front buffer, back buffer, or
- * texture map that is being used in conjunction with a 3DDDI or
- * Direct3D HAL.
+ * This bit currently has no meaning.
  */
 #define DDSCAPS_3D                              0x00000001l
 
@@ -755,7 +948,14 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  * Indicates that this surface can be used as a 3D texture.  It does not
  * indicate whether or not the surface is being used for that purpose.
  */
-#define DDSCAPS_TEXTUREMAP                      0x00001000l
+#define DDSCAPS_TEXTURE                         0x00001000l
+
+/*
+ * Indicates that a surface may be a destination for 3D rendering.  This
+ * bit must be set in order to query for a Direct3D Device Interface 
+ * from this surface.
+ */
+#define DDSCAPS_3DDEVICE                        0x00002000l
 
 /*
  * Indicates that this surface exists in video memory.
@@ -777,7 +977,7 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
 #define DDSCAPS_WRITEONLY                       0x00010000l
 
 /*
- * Indicates that this surface is the z buffer.  The z buffer does not contain
+ * Indicates that this surface is a z buffer. A z buffer does not contain
  * displayable information.  Instead it contains bit depth information that is
  * used to determine which pixels are visible and which are obscured. 
  */
@@ -804,7 +1004,26 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  */
 #define DDSCAPS_MODEX                           0x00200000l
 
-/****************************************************************************
+/*
+ * Indicates surface is one level of a mip-map. This surface will
+ * be attached to other DDSCAPS_MIPMAP surfaces to form the mip-map.
+ * This can be done explicitly, by creating a number of surfaces and
+ * attaching them with AddAttachedSurface or by implicitly by CreateSurface.
+ * If this bit is set then DDSCAPS_TEXTURE must also be set.
+ */
+#define DDSCAPS_MIPMAP                          0x00400000l
+
+
+
+/*
+ * Indicates that memory for the surface is not allocated until the surface
+ * is loaded (via the Direct3D texture Load() function).
+ */
+#define DDSCAPS_ALLOCONLOAD                     0x04000000l
+
+
+
+ /****************************************************************************
  *
  * DIRECTDRAW DRIVER CAPABILITY FLAGS
  *
@@ -960,7 +1179,28 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  */
 #define DDCAPS_BANKSWITCHED             0x08000000l
 
-/****************************************************************************
+/*
+ * Display hardware is capable of depth filling Z-buffers with bltter
+ */
+#define DDCAPS_BLTDEPTHFILL             0x10000000l
+
+/*
+ * Display hardware is capable of clipping while bltting.
+ */
+#define DDCAPS_CANCLIP                  0x20000000l
+
+/*
+ * Display hardware is capable of clipping while stretch bltting.
+ */
+#define DDCAPS_CANCLIPSTRETCHED         0x40000000l
+
+/*
+ * Display hardware is capable of bltting to or from system memory
+ */
+#define DDCAPS_CANBLTSYSMEM             0x80000000l
+
+
+ /****************************************************************************
  *
  * MORE DIRECTDRAW DRIVER CAPABILITY FLAGS (dwCaps2)
  *
@@ -970,6 +1210,12 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  * Display hardware is certified
  */
 #define DDCAPS2_CERTIFIED               0x00000001l
+
+/*
+ * Driver cannot interleave 2D operations (lock and blt) to surfaces with
+ * Direct3D rendering operations between calls to BeginScene() and EndScene()
+ */
+#define DDCAPS2_NO2DDURING3DSCENE       0x00000002l
 
 /****************************************************************************
  *
@@ -1257,9 +1503,9 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
 
 /*
  * Index is onto a 8 bit color index.  This field is only valid with the
- * DDPCAPS_4BIT capability and the target surface is in 8bpp. Each color
- * entry is one byte long and is an index into destination surface's 8bpp
- * palette.
+ * DDPCAPS_1BIT, DDPCAPS_2BIT or DDPCAPS_4BIT capability and the target
+ * surface is in 8bpp. Each color entry is one byte long and is an index
+ * into destination surface's 8bpp palette.
  */
 #define DDPCAPS_8BITENTRIES             0x00000002l
 
@@ -1300,6 +1546,16 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  */
 #define DDPCAPS_VSYNC                   0x00000080l
 
+/*
+ * Index is 1 bit.  There are two color entries in the palette table.
+ */
+#define DDPCAPS_1BIT                    0x00000100l
+
+/*
+ * Index is 2 bit.  There are four color entries in the palette table.
+ */
+#define DDPCAPS_2BIT                    0x00000200l
+
 
 /****************************************************************************
  *
@@ -1307,16 +1563,6 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  *
  ****************************************************************************/
 
-/*
- * Palette changes take effect immediately.
- */
-#define DDPSETPAL_IMMEDIATE             0x00000000l     // default
-
-/*
- * Palette changes should take effect during the vertical blank to avoid
- * palette tearing.
- */
-#define DDPSETPAL_VSYNC                 0x00000002l
 
 /****************************************************************************
  *
@@ -1332,16 +1578,6 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  *
  ****************************************************************************/
 
-/*
- * Palette change takes effect immediately.
- */
-#define DDSETPAL_IMMEDIATE              0x00000000l     // default
-
-/*
- * Palette change should take effect during the vertical blank to avoid
- * palette tearing.
- */
-#define DDSETPAL_VSYNC                  0x00000002l
 
 /****************************************************************************
  *
@@ -1571,9 +1807,10 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
 #define DDPF_PALETTEINDEXED4                    0x00000008l
 
 /*
- * The surface is 4-bit color indexed to an 8-bit palette.
+ * The surface is indexed into a palette which stores indices
+ * into the destination surface's 8-bit palette.
  */
-#define DDPF_PALETTEINDEXED4TO8                 0x00000010l
+#define DDPF_PALETTEINDEXEDTO8                  0x00000010l
 
 /*
  * The surface is 8-bit color indexed.
@@ -1608,6 +1845,16 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  * pixel format is a z buffer only surface
  */
 #define DDPF_ZBUFFER                            0x00000400l
+
+/*
+ * The surface is 1-bit color indexed.
+ */
+#define DDPF_PALETTEINDEXED1                    0x00000800l
+
+/*
+ * The surface is 2-bit color indexed.
+ */
+#define DDPF_PALETTEINDEXED2                    0x00001000l
 
 /*===========================================================================
  *
@@ -1647,6 +1894,20 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  * Enumerate the surfaces that already exist that meet the search criterion.
  */
 #define DDENUMSURFACES_DOESEXIST                0x00000010l
+
+
+/****************************************************************************
+ *
+ * DIRECTDRAW ENUMDISPLAYMODES FLAGS
+ *
+ ****************************************************************************/
+
+/*
+ * Enumerate Modes with different refresh rates.  EnumDisplayModes guarantees
+ * that a particular mode will be enumerated only once.  This flag specifies whether
+ * the refresh rate is taken into account when determining if a mode is unique.
+ */
+#define DDEDM_REFRESHRATES                      0x00000001l
 
 
 /****************************************************************************
@@ -1848,6 +2109,13 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  */
 #define DDBLT_WAIT                              0x01000000l
 
+/*
+ * Uses the dwFillDepth field in the DDBLTFX structure as the depth value
+ * to fill the destination rectangle on the destination Z-buffer surface
+ * with.
+ */
+#define DDBLT_DEPTHFILL                         0x02000000l
+
 
 /****************************************************************************
  *
@@ -1859,16 +2127,6 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
 #define DDBLTFAST_SRCCOLORKEY                   0x00000001
 #define DDBLTFAST_DESTCOLORKEY                  0x00000002
 #define DDBLTFAST_WAIT                          0x00000010
-
-/****************************************************************************
- *
- * LOCK FLAGS
- *
- ****************************************************************************/
-
-#define DDLOCK_WAIT                          0x00000001
-#define DDLOCK_READONLY                      0x00000010 // surface will only be read from
-#define DDLOCK_WRITEONLY                     0x00000020 // surface will only be written to
 
 /****************************************************************************
  *
@@ -1987,10 +2245,6 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  */
 #define DDOVER_REFRESHALL                      0x00020000l
 
-/*
- * Force redrawing onto the destination surface without regard for the background
- */
-#define DDOVER_REFRESHPOUND                     0x00040000l
 
 /*
  * Use the overlay FX flags to define special overlay FX
@@ -2009,13 +2263,53 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  * to the top of the specified rectangle.  If no rectangle is specified then a
  * pointer to the top of the surface is returned.
  */
-#define DDLOCK_SURFACEMEMORYPTR                 0x00000000l     // default
+#define DDLOCK_SURFACEMEMORYPTR                 0x00000000L     // default
+
+/*
+ * Set to indicate that Lock should wait until it can obtain a valid memory
+ * pointer before returning.  If this bit is set, Lock will never return 
+ * DDERR_WASSTILLDRAWING.
+ */
+#define DDLOCK_WAIT                             0x00000001L
 
 /*
  * Set if an event handle is being passed to Lock.  Lock will trigger the event
  * when it can return the surface memory pointer requested.
  */
-#define DDLOCK_EVENT                            0x00000002l
+#define DDLOCK_EVENT                            0x00000002L
+
+/*
+ * Indicates that the surface being locked will only be read from.
+ */
+#define DDLOCK_READONLY                         0x00000010L
+
+/*
+ * Indicates that the surface being locked will only be written to
+ */
+#define DDLOCK_WRITEONLY                        0x00000020L
+
+
+/****************************************************************************
+ *
+ * DIRECTDRAWSURFACE PAGELOCK FLAGS
+ *
+ ****************************************************************************/
+
+/*
+ * No flags defined at present
+ */
+
+
+/****************************************************************************
+ *
+ * DIRECTDRAWSURFACE PAGEUNLOCK FLAGS
+ *
+ ****************************************************************************/
+
+/*
+ * No flags defined at present
+ */
+
 
 /****************************************************************************
  *
@@ -2215,8 +2509,6 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  *
  * Issued by: DirectDraw Commands and all callbacks
  */
-#define DD_OK_HANDLED                           1
-#define DD_OK_NOTHANDLED                        0
 #define DD_OK                                   0
 
 /****************************************************************************
@@ -2522,6 +2814,14 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
 #define DDERR_SURFACEBUSY                       MAKE_DDHRESULT( 430 )
 
 /*
+ * Access to this surface is being refused because no driver exists
+ * which can supply a pointer to the surface.
+ * This is most likely to happen when attempting to lock the primary
+ * surface when no DCI provider is present.
+ */
+#define DDERR_CANTLOCKSURFACE                   MAKE_DDHRESULT( 435 )
+
+/*
  * Access to Surface refused because Surface is obscured.
  */
 #define DDERR_SURFACEISOBSCURED                 MAKE_DDHRESULT( 440 )
@@ -2745,101 +3045,55 @@ typedef DDMODEDESC FAR* LPDDMODEDESC;
  */
 #define DDERR_NOTPALETTIZED                     MAKE_DDHRESULT( 589 )
 
+
 /*
  * The display is currently in an unsupported mode
  */
 #define DDERR_UNSUPPORTEDMODE                   MAKE_DDHRESULT( 590 )
 
+/*
+ * Operation could not be carried out because there is no mip-map
+ * texture mapping hardware present or available.
+ */
+#define DDERR_NOMIPMAPHW                        MAKE_DDHRESULT( 591 )
+
+/*
+ * The requested action could not be performed because the surface was of
+ * the wrong type.
+ */
+#define DDERR_INVALIDSURFACETYPE                MAKE_DDHRESULT( 592 )
+
+
+
+/*
+ * A DC has already been returned for this surface. Only one DC can be 
+ * retrieved per surface.
+ */
+#define DDERR_DCALREADYCREATED                  MAKE_DDHRESULT( 620 )
+
+/*
+ * The attempt to page lock a surface failed.
+ */
+#define DDERR_CANTPAGELOCK                      MAKE_DDHRESULT( 640 )
+
+/*
+ * The attempt to page unlock a surface failed.
+ */
+#define DDERR_CANTPAGEUNLOCK                    MAKE_DDHRESULT( 660 )
+
+/*
+ * An attempt was made to page unlock a surface with no outstanding page locks.
+ */
+#define DDERR_NOTPAGELOCKED                     MAKE_DDHRESULT( 680 )
+
+/*
+ * An attempt was made to invoke an interface member of a DirectDraw object
+ * created by CoCreateInstance() before it was initialized.
+ */
+#define DDERR_NOTINITIALIZED                    CO_E_NOTINITIALIZED
+
 /* Alpha bit depth constants */
 
-/*
- * 1 bit alpha constants
- */
-
-/*
- * Completely transparent. Colors being blended with this constant do not effect
- * the final result.
- */
-#define DDALPHA1_TRANSPARENT                    0
-
-/*
- * Completely opaque. Colors being blended with this constant are the final result.
- */
-#define DDALPHA1_OPAQUE                         1
-
-/*
- * 2 bit alpha constants
- */
-
-/*
- * Completely transparent. Colors being blended with this constant do not effect
- * the final result.
- */
-#define DDALPHA2_TRANSPARENT                    0
-
-/*
- * 50-50 blend.  Colors being blended with this constant effect the final result
- * with 50% of their color.
- */
-#define DDALPHA2_50                             2
-
-/*
- * Completely opaque. Colors being blended with this constant are the final result.
- */
-#define DDALPHA2_OPAQUE                         3
-
-/*
- * 4 bit alpha constants
- */
-
-/*
- * Completely transparent. Colors being blended with this constant do not effect
- * the final result.
- */
-#define DDALPHA4_TRANSPARENT                    0
-
-/*
- * Opaque modifier is multiplied by any value between 0 and _OPAQUE to
- * establish gradients of alpha blending.
- */
-#define DDALPHA4_OPAQUEMOD                      1
-
-/*
- * 50-50 blend.  Colors being blended with this constant effect the final result
- * with 50% of their color.
- */
-#define DDALPHA4_50                             8
-
-/*
- * Completely opaque. Colors being blended with this constant are the final result.
- */
-#define DDALPHA4_OPAQUE                         15
-
-/*
- * 8 bit alpha constants
- */
-
-/*
- * Completely transparent. Colors being blended with this constant do not effect
- * the final result.
- */
-#define DDALPHA8_TRANSPARENT                    0
-
-/*
- * Opaque modifier is multiplied by any value between 0 and _OPAQUE to
- * establish gradients of alpha blending.
- */
-#define DDALPHA8_OPAQUEMOD                      1
-
-/*
- * 50-50 blend.  Colors being blended with this constant effect the final result
- * with 50% of their color.
- */
-#define DDALPHA8_50                             128
-/*
- * Completely opaque. Colors being blended with this constant are the final result.
- */
-#define DDALPHA8_OPAQUE                         255
 
 #ifdef __cplusplus
 };

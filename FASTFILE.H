@@ -1,6 +1,6 @@
 /*==========================================================================
  *
- *  Copyright (C) 1995 Microsoft Corporation.  All Rights Reserved.
+ *  Copyright (C) 1995-1996 Microsoft Corporation.  All Rights Reserved.
  *
  *  File:       fastfile.h
  *  Content:    Definitions for fastfile access.

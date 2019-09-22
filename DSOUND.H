@@ -1,6 +1,6 @@
 /*==========================================================================;
  *
- *  Copyright (C) 1995 Microsoft Corporation.  All Rights Reserved.
+ *  Copyright (C) 1995,1996 Microsoft Corporation.  All Rights Reserved.
  *
  *  File:       dsound.h
  *  Content:    DirectSound include file
@@ -21,6 +21,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+// Direct Sound Component GUID    {47D4D946-62E8-11cf-93BC-444553540000}
+DEFINE_GUID(CLSID_DirectSound,
+0x47d4d946, 0x62e8, 0x11cf, 0x93, 0xbc, 0x44, 0x45, 0x53, 0x54, 0x0, 0x0);
 
 // DirectSound 279afa83-4981-11ce-a521-0020af0be560
 DEFINE_GUID(IID_IDirectSound,0x279AFA83,0x4981,0x11CE,0xA5,0x21,0x00,0x20,0xAF,0x0B,0xE5,0x60);
@@ -147,7 +151,7 @@ DECLARE_INTERFACE_( IDirectSound, IUnknown )
 #define IDirectSound_Compact(p)                  (p)->lpVtbl->Compact(p)
 #define IDirectSound_GetSpeakerConfig(p,a)       (p)->lpVtbl->GetSpeakerConfig(p,a)
 #define IDirectSound_SetSpeakerConfig(p,b)       (p)->lpVtbl->SetSpeakerConfig(p,b)
-#define IDirectSound_Initialize(p)               (p)->lpVtbl->Initialize(p)
+#define IDirectSound_Initialize(p,a)             (p)->lpVtbl->Initialize(p,a)
 #endif
 
 #endif
@@ -280,6 +284,11 @@ DECLARE_INTERFACE_( IDirectSoundBuffer, IUnknown )
  * succeeding.
  */
 #define DSERR_OTHERAPPHASPRIO           MAKE_DSHRESULT( 160 )
+/*
+ * The Initialize() member on the Direct Sound Object has not been
+ * called or called successfully before calls to other members.
+ */
+#define DSERR_UNINITIALIZED             MAKE_DSHRESULT( 170 )
 
 
 
@@ -333,6 +342,8 @@ DECLARE_INTERFACE_( IDirectSoundBuffer, IUnknown )
 #define DSBCAPS_CTRLVOLUME          0x00000080
 #define DSBCAPS_CTRLDEFAULT         0x000000E0  // Pan + volume + frequency.
 #define DSBCAPS_CTRLALL             0x000000E0  // All control capabilities
+#define DSBCAPS_STICKYFOCUS         0x00004000
+#define DSBCAPS_GETCURRENTPOSITION2 0x00010000  // More accurate play cursor under emulation
 
 
 
