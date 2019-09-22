@@ -159,9 +159,9 @@ DECLARE_INTERFACE_(ID3DXEffectPool, IUnknown)
 typedef interface ID3DXBaseEffect ID3DXBaseEffect;
 typedef interface ID3DXBaseEffect *LPD3DXBASEEFFECT;
 
-// {3B7A6FFB-3A69-46d7-BC01-A6B2AD4C2BB0}
+// {017C18AC-103F-4417-8C51-6BF6EF1E56BE}
 DEFINE_GUID(IID_ID3DXBaseEffect, 
-0x3b7a6ffb, 0x3a69, 0x46d7, 0xbc, 0x1, 0xa6, 0xb2, 0xad, 0x4c, 0x2b, 0xb0);
+0x17c18ac, 0x103f, 0x4417, 0x8c, 0x51, 0x6b, 0xf6, 0xef, 0x1e, 0x56, 0xbe);
 
 
 #undef INTERFACE
@@ -230,9 +230,7 @@ DECLARE_INTERFACE_(ID3DXBaseEffect, IUnknown)
     STDMETHOD(GetString)(THIS_ D3DXHANDLE hParameter, LPCSTR* ppString) PURE;
     STDMETHOD(SetTexture)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DBASETEXTURE9 pTexture) PURE;
     STDMETHOD(GetTexture)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DBASETEXTURE9 *ppTexture) PURE;
-    STDMETHOD(SetPixelShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DPIXELSHADER9 pPShader) PURE;
     STDMETHOD(GetPixelShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DPIXELSHADER9 *ppPShader) PURE;
-    STDMETHOD(SetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 pVShader) PURE;
     STDMETHOD(GetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 *ppVShader) PURE;
 
     //Set Range of an Array to pass to device
@@ -303,9 +301,9 @@ DECLARE_INTERFACE_(ID3DXEffectStateManager, IUnknown)
 typedef interface ID3DXEffect ID3DXEffect;
 typedef interface ID3DXEffect *LPD3DXEFFECT;
 
-// {0F0DCC9F-6152-4117-A933-FFAC29C43AA4}
+// {D165CCB1-62B0-4a33-B3FA-A92300305A11}
 DEFINE_GUID(IID_ID3DXEffect, 
-0xf0dcc9f, 0x6152, 0x4117, 0xa9, 0x33, 0xff, 0xac, 0x29, 0xc4, 0x3a, 0xa4);
+0xd165ccb1, 0x62b0, 0x4a33, 0xb3, 0xfa, 0xa9, 0x23, 0x0, 0x30, 0x5a, 0x11);
 
 #undef INTERFACE
 #define INTERFACE ID3DXEffect
@@ -373,9 +371,7 @@ DECLARE_INTERFACE_(ID3DXEffect, ID3DXBaseEffect)
     STDMETHOD(GetString)(THIS_ D3DXHANDLE hParameter, LPCSTR* ppString) PURE;
     STDMETHOD(SetTexture)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DBASETEXTURE9 pTexture) PURE;
     STDMETHOD(GetTexture)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DBASETEXTURE9 *ppTexture) PURE;
-    STDMETHOD(SetPixelShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DPIXELSHADER9 pPShader) PURE;
     STDMETHOD(GetPixelShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DPIXELSHADER9 *ppPShader) PURE;
-    STDMETHOD(SetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 pVShader) PURE;
     STDMETHOD(GetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 *ppVShader) PURE;
 
 	//Set Range of an Array to pass to device
@@ -433,9 +429,9 @@ DECLARE_INTERFACE_(ID3DXEffect, ID3DXBaseEffect)
 typedef interface ID3DXEffectCompiler ID3DXEffectCompiler;
 typedef interface ID3DXEffectCompiler *LPD3DXEFFECTCOMPILER;
 
-// {15A709EB-5A8E-40a0-86A9-0C024124339B}
+// {51B8A949-1A31-47e6-BEA0-4B30DB53F1E0}
 DEFINE_GUID(IID_ID3DXEffectCompiler, 
-0x15a709eb, 0x5a8e, 0x40a0, 0x86, 0xa9, 0xc, 0x2, 0x41, 0x24, 0x33, 0x9b);
+0x51b8a949, 0x1a31, 0x47e6, 0xbe, 0xa0, 0x4b, 0x30, 0xdb, 0x53, 0xf1, 0xe0);
 
 
 #undef INTERFACE
@@ -504,9 +500,7 @@ DECLARE_INTERFACE_(ID3DXEffectCompiler, ID3DXBaseEffect)
     STDMETHOD(GetString)(THIS_ D3DXHANDLE hParameter, LPCSTR* ppString) PURE;
     STDMETHOD(SetTexture)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DBASETEXTURE9 pTexture) PURE;
     STDMETHOD(GetTexture)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DBASETEXTURE9 *ppTexture) PURE;
-    STDMETHOD(SetPixelShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DPIXELSHADER9 pPShader) PURE;
     STDMETHOD(GetPixelShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DPIXELSHADER9 *ppPShader) PURE;
-    STDMETHOD(SetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 pVShader) PURE;
     STDMETHOD(GetVertexShader)(THIS_ D3DXHANDLE hParameter, LPDIRECT3DVERTEXSHADER9 *ppVShader) PURE;
     
 	//Set Range of an Array to pass to device

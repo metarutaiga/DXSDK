@@ -103,6 +103,23 @@ enum _MAX_FVF_DECL_SIZE
     MAX_FVF_DECL_SIZE = MAXD3DDECLLENGTH + 1 // +1 for END
 };
 
+typedef enum _D3DXTANGENT
+{
+    D3DXTANGENT_WRAP_U =                    0x01,
+    D3DXTANGENT_WRAP_V =                    0x02,
+    D3DXTANGENT_WRAP_UV =                   0x03,
+    D3DXTANGENT_DONT_NORMALIZE_PARTIALS =   0x04,
+    D3DXTANGENT_DONT_ORTHOGONALIZE =        0x08,
+    D3DXTANGENT_ORTHOGONALIZE_FROM_V =      0x010,
+    D3DXTANGENT_ORTHOGONALIZE_FROM_U =      0x020,
+    D3DXTANGENT_WEIGHT_BY_AREA =            0x040,
+    D3DXTANGENT_WEIGHT_EQUAL =              0x080,
+    D3DXTANGENT_WIND_CW =                   0x0100,
+    D3DXTANGENT_CALCULATE_NORMALS =         0x0200,
+    D3DXTANGENT_GENERATE_IN_PLACE =         0x0400,
+} D3DXTANGENT;
+
+
 typedef struct ID3DXBaseMesh *LPD3DXBASEMESH;
 typedef struct ID3DXMesh *LPD3DXMESH;
 typedef struct ID3DXPMesh *LPD3DXPMESH;
@@ -1056,6 +1073,26 @@ BOOL WINAPI
         CONST D3DXVECTOR3 *pRayDirection);
 
 
+HRESULT WINAPI D3DXComputeTangentFrame(ID3DXMesh *pMesh,
+                                       DWORD dwOptions);
+
+HRESULT WINAPI D3DXComputeTangentFrameEx(ID3DXMesh *pMesh,
+                                         DWORD dwTextureInSemantic,
+                                         DWORD dwTextureInIndex,
+                                         DWORD dwUPartialOutSemantic,
+                                         DWORD dwUPartialOutIndex,
+                                         DWORD dwVPartialOutSemantic,
+                                         DWORD dwVPartialOutIndex,
+                                         DWORD dwNormalOutSemantic,
+                                         DWORD dwNormalOutIndex,
+                                         DWORD dwOptions,
+                                         CONST DWORD *pdwAdjacency,
+                                         FLOAT fPartialEdgeThreshold,
+                                         FLOAT fSingularPointThreshold,
+                                         FLOAT fNormalEdgeThreshold,
+                                         ID3DXMesh **ppMeshOut,
+                                         ID3DXBuffer **ppVertexMapping);
+
 
 //D3DXComputeTangent
 //
@@ -1594,6 +1631,15 @@ DECLARE_INTERFACE_(ID3DXPRTEngine, IUnknown)
     // Number of faces currently allocated (includes new faces)
     STDMETHOD_(UINT, GetNumFaces)(THIS) PURE;
 
+    // Sets the Minimum/Maximum intersection distances, this can be used to control
+    // maximum distance that objects can shadow/reflect light, and help with "bad"
+    // art that might have near features that you don't want to shadow.  This does not
+    // apply for GPU simulations.
+    //  fMin - minimum intersection distance, must be positive and less than fMax
+    //  fMax - maximum intersection distance, if 0.0f use the previous value, otherwise
+    //      must be strictly greater than fMin
+    STDMETHOD(SetMinMaxIntersection)(THIS_ FLOAT fMin, FLOAT fMax) PURE;
+
     // This will subdivide faces on a mesh so that adaptively simulations can
     // use a more conservative threshold (it won't miss features.)
     // MinEdgeLength - minimum edge length that will be generated, if 0.0f a
@@ -1685,6 +1731,24 @@ DECLARE_INTERFACE_(ID3DXPRTEngine, IUnknown)
     STDMETHOD(ComputeSS)(THIS_ LPD3DXPRTBUFFER pDataIn, 
                          LPD3DXPRTBUFFER pDataOut, LPD3DXPRTBUFFER pDataTotal) PURE;
 
+    // Adaptive version of ComputeSS.
+    //
+    // pDataIn - input data (previous bounce)
+    // AdaptiveThresh - threshold for adaptive subdivision (in PRT vector error)
+    //  if value is less then 1e-6f, 1e-6f is specified
+    // MinEdgeLength - minimum edge length that will be generated
+    //  if value is too small a fairly conservative model dependent value
+    //  is used
+    // MaxSubdiv - maximum subdivision level, if 0 is specified it 
+    //  will default to 4    
+    // pDataOut - result of subsurface scattering simulation
+    // pDataTotal - [optional] results can be summed into this buffer
+    STDMETHOD(ComputeSSAdaptive)(THIS_ LPD3DXPRTBUFFER pDataIn, 
+                                 FLOAT AdaptiveThresh,
+                                 FLOAT MinEdgeLength,
+                                 UINT MaxSubdiv,
+                                 LPD3DXPRTBUFFER pDataOut, LPD3DXPRTBUFFER pDataTotal) PURE;
+
     // computes a single bounce of inter-reflected light
     // works for SH based PRT or generic lighting
     // Albedo is not multiplied by result
@@ -1765,6 +1829,38 @@ DECLARE_INTERFACE_(ID3DXPRTEngine, IUnknown)
                                     UINT NumVolSamples,
                                     CONST D3DXVECTOR3 *pSampleLocs,
                                     LPD3DXPRTBUFFER pDataOut) PURE;
+
+    // Computes direct lighting (SH) for a point not on the mesh
+    // with a given normal - cannot use texture buffers.
+    //
+    // SHOrder      - order of SH to use
+    // NumSamples   - number of sample locations
+    // pSampleLocs  - position for each sample
+    // pSampleNorms - normal for each sample
+    // pDataOut     - PRT Buffer that will store output results
+    STDMETHOD(ComputeSurfSamplesDirectSH)(THIS_ UINT SHOrder,
+                                          UINT NumSamples,
+                                          CONST D3DXVECTOR3 *pSampleLocs,
+                                          CONST D3DXVECTOR3 *pSampleNorms,
+                                          LPD3DXPRTBUFFER pDataOut) PURE;
+
+
+    // given the solution for PRT or light maps, computes transfer vector at arbitrary 
+    // position/normal pairs in space
+    //
+    // pSurfDataIn  - input data
+    // NumSamples   - number of sample locations
+    // pSampleLocs  - position for each sample
+    // pSampleNorms - normal for each sample
+    // pDataOut     - PRT Buffer that will store output results
+    // pDataTotal   - optional buffer to sum results into - can be NULL
+    STDMETHOD(ComputeSurfSamplesBounce)(THIS_ LPD3DXPRTBUFFER pSurfDataIn,
+                                        UINT NumSamples,
+                                        CONST D3DXVECTOR3 *pSampleLocs,
+                                        CONST D3DXVECTOR3 *pSampleNorms,
+                                        LPD3DXPRTBUFFER pDataOut,
+                                        LPD3DXPRTBUFFER pDataTotal) PURE;
+
     // Frees temporary data structures that can be created for subsurface scattering
     // this data is freed when the PRTComputeEngine is freed and is lazily created
     STDMETHOD(FreeSSData)(THIS) PURE;
@@ -1773,24 +1869,25 @@ DECLARE_INTERFACE_(ID3DXPRTEngine, IUnknown)
     // this data is freed when the PRTComputeEngine is freed and is lazily created
     STDMETHOD(FreeBounceData)(THIS) PURE;
 
-    // This computes the convolution coefficients relative to the per sample normals
-    // that minimize error in a least squares sense with respect to the input PRT
-    // data set.  These coefficients can be used with skinned/transformed normals to
-    // model global effects with dynamic objects.  Shading normals can optionaly be
-    // solved for - these normals (along with the convolution coefficients) can more
-    // accurately represent the PRT signal.
+    // This computes the Local Deformable PRT (LDPRT) coefficients relative to the 
+    // per sample normals that minimize error in a least squares sense with respect 
+    // to the input PRT data set.  These coefficients can be used with skinned/transformed 
+    // normals to model global effects with dynamic objects.  Shading normals can 
+    // optionally be solved for - these normals (along with the LDPRT coefficients) can
+    // more accurately represent the PRT signal.  The coefficients are for zonal
+    // harmonics oriented in the normal/shading normal direction.
     //
     // pDataIn  - SH PRT dataset that is input
     // SHOrder  - Order of SH to compute conv coefficients for 
     // pNormOut - Optional array of vectors (passed in) that will be filled with
-    //             "shading normals", convolution coefficients are optimized for
+    //             "shading normals", LDPRT coefficients are optimized for
     //             these normals.  This array must be the same size as the number of
     //             samples in pDataIn
-    // pDataOut - Output buffer (SHOrder convolution coefficients per channel per sample)
-    STDMETHOD(ComputeConvCoeffs)(THIS_ LPD3DXPRTBUFFER pDataIn,
-                                 UINT SHOrder,
-                                 D3DXVECTOR3 *pNormOut,
-                                 LPD3DXPRTBUFFER pDataOut) PURE;
+    // pDataOut - Output buffer (SHOrder zonal harmonic coefficients per channel per sample)
+    STDMETHOD(ComputeLDPRTCoeffs)(THIS_ LPD3DXPRTBUFFER pDataIn,
+                                  UINT SHOrder,
+                                  D3DXVECTOR3 *pNormOut,
+                                  LPD3DXPRTBUFFER pDataOut) PURE;
 
     // scales all the samples associated with a given sub mesh
     // can be useful when using subsurface scattering
@@ -2019,7 +2116,11 @@ HRESULT WINAPI
 //      Number of clusters to compute
 //    NumPCA
 //      Number of basis vectors to compute
-//    ppBufferIn
+//    pCB
+//      Optional Callback function
+//    lpUserContext
+//      Optional user context
+//    pBufferIn
 //      Buffer that will be compressed
 //    ppBufferOut
 //      Compressed buffer that will be created
@@ -2032,6 +2133,8 @@ HRESULT WINAPI
         D3DXSHCOMPRESSQUALITYTYPE Quality,
         UINT NumClusters, 
         UINT NumPCA,
+        LPD3DXSHPRTSIMCB pCB,
+        LPVOID lpUserContext,        
         LPD3DXPRTBUFFER  pBufferIn,
         LPD3DXPRTCOMPBUFFER *ppBufferOut
     );
@@ -2079,6 +2182,8 @@ HRESULT WINAPI
 //    pMesh
 //      Mesh that represents the scene - must have an AttributeTable
 //      where vertices are in a unique attribute.
+//    pAdjacency
+//      Optional adjacency information
 //    ExtractUVs
 //      Set this to true if textures are going to be used for albedos
 //      or to store PRT vectors
@@ -2092,7 +2197,8 @@ HRESULT WINAPI
 
 HRESULT WINAPI 
     D3DXCreatePRTEngine( 
-        LPD3DXMESH pMesh, 
+        LPD3DXMESH pMesh,
+        DWORD *pAdjacency,
         BOOL ExtractUVs,
         LPD3DXMESH pBlockerMesh, 
         LPD3DXPRTENGINE* ppEngine);

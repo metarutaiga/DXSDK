@@ -682,7 +682,7 @@ OUR_GUID_ENTRY(CLSID_AudioRender,
 OUR_GUID_ENTRY(CLSID_AudioProperties,
 0x05589faf, 0xc356, 0x11ce, 0xbf, 0x01, 0x0, 0xaa, 0x0, 0x55, 0x59, 0x5a)
 
-// 79376820-07D0-11cf-A24D-0020AFD79767           DSound audio renderer
+// 79376820-07D0-11cf-A24D-0020AFD79767           DirectSound audio renderer
 OUR_GUID_ENTRY(CLSID_DSoundRender,
 0x79376820, 0x07D0, 0x11CF, 0xA2, 0x4D, 0x0, 0x20, 0xAF, 0xD7, 0x97, 0x67)
 
@@ -1399,7 +1399,7 @@ OUR_GUID_ENTRY(CLSID_VideoPortManager,
 
 
 // -------------------------------------------------------------------------
-// VMR GUIDS for DX9
+// VMR GUIDS for DirectX9
 // -------------------------------------------------------------------------
 
 // {51b4abf3-748f-4e3b-a276-c828330e926a}

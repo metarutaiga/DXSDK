@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 interface IDirectMusicCollection;
-#ifndef __cplusplus 
+#ifndef __cplusplus
 typedef interface IDirectMusicCollection IDirectMusicCollection;
 #endif
 
@@ -50,7 +50,7 @@ typedef struct _DMUS_IO_SEQ_ITEM
     MUSIC_TIME    mtTime;
     MUSIC_TIME    mtDuration;
     DWORD         dwPChannel;
-    short         nOffset; 
+    short         nOffset;
     BYTE          bStatus;
     BYTE          bByte1;
     BYTE          bByte2;
@@ -71,7 +71,7 @@ typedef struct _DMUS_IO_CURVE_ITEM
     BYTE        bCurveShape;
     BYTE        bCCData;
     BYTE        bFlags;
-    /* Following was added for DX8. */
+    /* Following was added for DirectX8. */
     WORD        wParamType;      /* RPN or NRPN parameter number. */
     WORD        wMergeIndex;     /* Allows multiple parameters to be merged (pitchbend, volume, and expression.) */
 } DMUS_IO_CURVE_ITEM;
@@ -147,22 +147,22 @@ typedef struct _DMUS_MUTE_PARAM
 /* chords that are triads, 6th or 7th chords, and chords with extensions, respectively.    */
 /* bits 28 and 29 handle chords that are followed by tonic and dominant chords,            */
 /* respectively.                                                                           */
-#define DMUS_VARIATIONF_MAJOR        0x0000007F /* Seven positions in the scale - major chords. */    
-#define DMUS_VARIATIONF_MINOR        0x00003F80 /* Seven positions in the scale - minor chords. */    
-#define DMUS_VARIATIONF_OTHER        0x001FC000 /* Seven positions in the scale - other chords. */    
-#define DMUS_VARIATIONF_ROOT_SCALE   0x00200000 /* Handles chord roots in the scale. */         
-#define DMUS_VARIATIONF_ROOT_FLAT    0x00400000 /* Handles flat chord roots (based on scale notes). */         
-#define DMUS_VARIATIONF_ROOT_SHARP   0x00800000 /* Handles sharp chord roots (based on scale notes). */         
-#define DMUS_VARIATIONF_TYPE_TRIAD   0x01000000 /* Handles simple chords - triads. */  
-#define DMUS_VARIATIONF_TYPE_6AND7   0x02000000 /* Handles simple chords - 6 and 7. */  
-#define DMUS_VARIATIONF_TYPE_COMPLEX 0x04000000 /* Handles complex chords. */  
-#define DMUS_VARIATIONF_DEST_TO1     0x08000000 /* Handles transitions to 1 chord. */  
-#define DMUS_VARIATIONF_DEST_TO5     0x10000000 /* Handles transitions to 5 chord. */  
-#define DMUS_VARIATIONF_DEST_OTHER   0x40000000 /* Handles transitions to chords other than 1 . */  
+#define DMUS_VARIATIONF_MAJOR        0x0000007F /* Seven positions in the scale - major chords. */
+#define DMUS_VARIATIONF_MINOR        0x00003F80 /* Seven positions in the scale - minor chords. */
+#define DMUS_VARIATIONF_OTHER        0x001FC000 /* Seven positions in the scale - other chords. */
+#define DMUS_VARIATIONF_ROOT_SCALE   0x00200000 /* Handles chord roots in the scale. */
+#define DMUS_VARIATIONF_ROOT_FLAT    0x00400000 /* Handles flat chord roots (based on scale notes). */
+#define DMUS_VARIATIONF_ROOT_SHARP   0x00800000 /* Handles sharp chord roots (based on scale notes). */
+#define DMUS_VARIATIONF_TYPE_TRIAD   0x01000000 /* Handles simple chords - triads. */
+#define DMUS_VARIATIONF_TYPE_6AND7   0x02000000 /* Handles simple chords - 6 and 7. */
+#define DMUS_VARIATIONF_TYPE_COMPLEX 0x04000000 /* Handles complex chords. */
+#define DMUS_VARIATIONF_DEST_TO1     0x08000000 /* Handles transitions to 1 chord. */
+#define DMUS_VARIATIONF_DEST_TO5     0x10000000 /* Handles transitions to 5 chord. */
+#define DMUS_VARIATIONF_DEST_OTHER   0x40000000 /* Handles transitions to chords other than 1 . */
 
 /* legacy mask for variation modes */
 #define DMUS_VARIATIONF_MODES        0xE0000000
-/* Bits 29 and 31 of the variation flags are the Mode bits.  If both are 0, it's IMA. */  
+/* Bits 29 and 31 of the variation flags are the Mode bits.  If both are 0, it's IMA. */
 /* If bit 29 is 1, it's Direct Music. */
 #define DMUS_VARIATIONF_MODES_EX     (0x20000000 | 0x80000000)
 #define DMUS_VARIATIONF_IMA25_MODE   0x00000000
@@ -173,18 +173,18 @@ typedef struct _DMUS_MUTE_PARAM
 /* Set this if the part is allowed to switch only on chord-aligned markers */
 #define DMUS_PARTF_ALIGN_CHORDS      0x2
 
-/* These specify if the marker event signals whether to stop a variation or start a 
+/* These specify if the marker event signals whether to stop a variation or start a
 pattern/variation (or both), and whether new variations must align with a chord */
 #define DMUS_MARKERF_START            0x1
 #define DMUS_MARKERF_STOP             0x2
 #define DMUS_MARKERF_CHORD_ALIGN      0x4
 
-/* if this flag is set, variation settings in a playing pattern-based track's state data will 
+/* if this flag is set, variation settings in a playing pattern-based track's state data will
 persist in the track after it stops playing */
 #define DMUS_PATTERNF_PERSIST_CONTROL 0x1
 
 /* These specify possible values for DMUS_IO_PARTREF.bRandomVariation
-   all but DMUS_VARIATIONT_SEQUENTIAL and DMUS_VARIATIONT_RANDOM are dx8. */
+   all but DMUS_VARIATIONT_SEQUENTIAL and DMUS_VARIATIONT_RANDOM are DirectX8. */
 typedef enum enumDMUS_VARIATIONT_TYPES
 {
     DMUS_VARIATIONT_SEQUENTIAL       = 0, /* Play sequential starting with variation 1. */
@@ -194,7 +194,7 @@ typedef enum enumDMUS_VARIATIONT_TYPES
     DMUS_VARIATIONT_RANDOM_ROW       = 4  /* Play randomly as a row: don't repeat any variation until all have played. */
 } DMUS_VARIATIONT_TYPES;
 
-/* These specify possible values for DMUS_IO_PATTERN.wEmbellishment (dx8) */
+/* These specify possible values for DMUS_IO_PATTERN.wEmbellishment (DirectX8) */
 typedef enum enumDMUS_EMBELLISHT_TYPES
 {
     DMUS_EMBELLISHT_NORMAL          = 0,
@@ -221,7 +221,7 @@ typedef struct _DMUS_IO_TIMESIG
 typedef struct _DMUS_IO_STYLE
 {
     DMUS_IO_TIMESIG     timeSig;        /* Styles have a default Time Signature */
-    double              dblTempo;   
+    double              dblTempo;
 } DMUS_IO_STYLE;
 
 typedef struct _DMUS_IO_VERSION
@@ -252,7 +252,7 @@ typedef struct _DMUS_IO_STYLEPART
     BYTE                bInvertUpper;   /* inversion upper limit */
     BYTE                bInvertLower;   /* inversion lower limit */
     BYTE                bPad[3];        /* for DWORD alignment */
-    DWORD               dwFlags;        /* various flags */ 
+    DWORD               dwFlags;        /* various flags */
 } DMUS_IO_STYLEPART;
 
 typedef struct _DMUS_IO_PARTREF
@@ -284,7 +284,7 @@ typedef struct _DMUS_IO_STYLENOTE
     BYTE        bVelRange;      /* Range to randomize velocity. */
     BYTE        bInversionID;   /* Identifies inversion group to which this note belongs */
     BYTE        bPlayModeFlags; /* Can override part */
-    /* Following exists only under DX8 and on */
+    /* Following exists only under DirectX8 and on */
     BYTE        bNoteFlags;     /* values from DMUS_NOTEF_FLAGS */
 } DMUS_IO_STYLENOTE;
 
@@ -303,7 +303,7 @@ typedef struct _DMUS_IO_STYLECURVE
     BYTE        bCCData;        /* CC# */
     BYTE        bFlags;         /* Bit 1=TRUE means to send nResetValue. Otherwise, don't.
                                    Other bits are reserved. */
-    /*  Following was added for DX8. */
+    /*  Following was added for DirectX8. */
     WORD        wParamType;      /* RPN or NRPN parameter number. */
     WORD        wMergeIndex;     /* Allows multiple parameters to be merged (pitchbend, volume, and expression.) */
 } DMUS_IO_STYLECURVE;
@@ -498,10 +498,10 @@ RIFF
 
 /* Chord and command file formats */
 
-/* These specify possible values for DMUS_IO_COMMAND.bRepeatMode (dx8) */
+/* These specify possible values for DMUS_IO_COMMAND.bRepeatMode (DirectX8) */
 typedef enum enumDMUS_PATTERNT_TYPES
 {
-    DMUS_PATTERNT_RANDOM           = 0, /* Play randomly. (dx7 behavior) */
+    DMUS_PATTERNT_RANDOM           = 0, /* Play randomly. (DirectX7 behavior) */
     DMUS_PATTERNT_REPEAT           = 1, /* Repeat last pattern. */
     DMUS_PATTERNT_SEQUENTIAL       = 2, /* Play sequential starting with first matching pattern. */
     DMUS_PATTERNT_RANDOM_START     = 3, /* Play sequential starting with a random pattern. */
@@ -665,7 +665,7 @@ RIFF
     [<UNFO-list>]   // Name, author, copyright info., comments
     [<DMTG-form>]   // Optional ToolGraph
     [<pcsl-list>]   // Optional list of port configurations
-    [<dbfl-list>]...// Optional array of Dsound buffer descriptors
+    [<dbfl-list>]...// Optional array of DirectSound buffer descriptors
 )
 */
 
@@ -693,7 +693,7 @@ typedef struct _DMUS_IO_PORTCONFIG_HEADER
    is identified by a guid. Each pchannel can map to one or more buffers.
    This is defined with one or more DMUS_IO_PCHANNELTOBUFFER_HEADER
    structures. Each defines a range of PChannels and the set of buffers
-   that they connect to. 
+   that they connect to.
 */
 
 typedef struct _DMUS_IO_PCHANNELTOBUFFER_HEADER
@@ -704,14 +704,14 @@ typedef struct _DMUS_IO_PCHANNELTOBUFFER_HEADER
     DWORD   dwFlags;            /* Various flags. Currently reserved for future use. Must be 0. */
 } DMUS_IO_PCHANNELTOBUFFER_HEADER;
 
-/* Each buffer is represented by an DSBC form. This is wrapped by the 
+/* Each buffer is represented by an DSBC form. This is wrapped by the
    DMUS_IO_BUFFER_ATTRIBUTES_HEADER which identifies how to use the
    buffer. In particular, it indicates whether this gets dynamically duplicated
-   or all references to this should share the same instance. 
+   or all references to this should share the same instance.
    To resolve references, the unique GUID of the buffer is also stored
-   in this structure. 
+   in this structure.
 */
-   
+
 typedef struct _DMUS_IO_BUFFER_ATTRIBUTES_HEADER
 {
     GUID    guidBufferID;       /* Each buffer config has a unique ID. */
@@ -736,7 +736,7 @@ LIST
     'pcfl'          // List container for one port configuration.
     <pcfh-ck>       // Portconfig header chunk.
     <pprh-ck>       // Port params, to be used to create the port.
-    [<dbfl-list>]...// Optional array of Dsound buffer descriptors
+    [<dbfl-list>]...// Optional array of DirectSound buffer descriptors
     [<pchl-list>]   // Optional list of pchannel to buffer assignments
 
 )
@@ -769,7 +769,7 @@ LIST
 LIST
 (
     'dbfl'          // List container for one buffer and buffer attributes header.
-    <ddah-ck>       // Buffer attributes header. 
+    <ddah-ck>       // Buffer attributes header.
     [<DSBC-form>]   // Buffer configuration. Not required when header uses a predefined buffer type.
 
     // <ddah-ck>
@@ -856,7 +856,7 @@ RIFF
             (
                 <DMUS_IO_BAND_ITEM_HEADER> or <DMUS_IO_BAND_ITEM_HEADER2> // Band item header
             )
-*/      
+*/
 
 
 /*  File io for DirectMusic Band object
@@ -944,9 +944,9 @@ RIFF
                 'bins'
                 <DMUS_IO_INSTRUMENT>    // Instrument header
             )
-*/      
+*/
 
-/* This RIFF id and io struct have been added to allow wave files (and the wave object) to 
+/* This RIFF id and io struct have been added to allow wave files (and the wave object) to
    differentiate between streaming and one-shot waves, and to give a prefetch for streaming
    waves  */
 
@@ -971,10 +971,10 @@ typedef struct _DMUS_IO_WAVE_HEADER
 #define DMUS_FOURCC_WAVE_LIST           mmioFOURCC('w','a','v','e')
 #define DMUS_FOURCC_WAVEITEM_CHUNK      mmioFOURCC('w','a','i','h')
 
-/* This flag is included in DMUS_IO_WAVE_TRACK_HEADER.dwFlags.  If set, the track will get its 
+/* This flag is included in DMUS_IO_WAVE_TRACK_HEADER.dwFlags.  If set, the track will get its
    variations from a pattern track, via GetParam(GUID_Variations). */
 #define DMUS_WAVETRACKF_SYNC_VAR   0x1
-/* This is also included in DMUS_IO_WAVE_TRACK_HEADER.dwFlags.  If set, variation control 
+/* This is also included in DMUS_IO_WAVE_TRACK_HEADER.dwFlags.  If set, variation control
    information will persist from one playback instance to the next.*/
 #define DMUS_WAVETRACKF_PERSIST_CONTROL 0x2
 
@@ -1105,12 +1105,12 @@ RIFF
     <cosl-list>     // List of objects.
 )
 
-    // <conh-ck>        
+    // <conh-ck>
     'conh'
     (
         <DMUS_IO_CONTAINER_HEADER>
     )
-    
+
     // <guid-ck>
     'guid'
     (
@@ -1177,11 +1177,11 @@ typedef struct _DMUS_IO_SEGMENT_HEADER
     MUSIC_TIME  mtLoopStart;    /* Start of looping portion. By default, 0. */
     MUSIC_TIME  mtLoopEnd;      /* End of loop. Must be greater than dwPlayStart. Or, 0, indicating loop full segment. */
     DWORD       dwResolution;   /* Default resolution. */
-    /* Following added for DX8: */
+    /* Following added for DirectX8: */
     REFERENCE_TIME rtLength;    /* Length, in reference time (overrides music time length.) */
     DWORD       dwFlags;
     DWORD       dwReserved;     /* Reserved. */
-    /* Added for DX9. */
+    /* Added for DirectX9: */
     REFERENCE_TIME rtLoopStart; /* Clock time loop start. */
     REFERENCE_TIME rtLoopEnd;   /* Clock time loop end. */
     REFERENCE_TIME rtPlayStart; /* Start of playback in clock time. */
@@ -1196,15 +1196,15 @@ typedef struct _DMUS_IO_TRACK_HEADER
     DWORD       dwPosition;     /* Position in track list. */
     DWORD       dwGroup;        /* Group bits for track. */
     FOURCC      ckid;           /* chunk ID of track's data chunk. */
-    FOURCC      fccType;        /* list type if ckid is RIFF or LIST */ 
+    FOURCC      fccType;        /* list type if ckid is RIFF or LIST */
 } DMUS_IO_TRACK_HEADER;
 
-/*  Additional parameters for the track header chunk, introduced in DX8 and
+/*  Additional parameters for the track header chunk, introduced in DirectX8 and
     on, are stored in a separate chunk. */
 
 typedef struct _DMUS_IO_TRACK_EXTRAS_HEADER
 {
-    DWORD       dwFlags;        /* DX8 Added flags for control tracks. */
+    DWORD       dwFlags;        /* DirectX8 Added flags for control tracks. */
     DWORD       dwPriority;     /* Priority for composition. */
 } DMUS_IO_TRACK_EXTRAS_HEADER;
 
@@ -1222,12 +1222,12 @@ RIFF
     [<DMAP-form>]   // Optional Audio Path
 )
 
-    // <segh-ck>        
+    // <segh-ck>
     'segh'
     (
         <DMUS_IO_SEGMENT_HEADER>
     )
-    
+
     // <guid-ck>
     'guid'
     (
@@ -1252,7 +1252,7 @@ RIFF
     (
         'DMTK'
         <trkh-ck>
-        [<trkx-ck>]     // Optional track flags. 
+        [<trkx-ck>]     // Optional track flags.
         [<guid-ck>]     // Optional GUID for track object instance (not to be confused with Class id in track header)
         [<vers-ck>]     // Optional version info
         [<UNFO-list>]   // Optional name, author, copyright info., comments
@@ -1268,11 +1268,11 @@ RIFF
     // <trkx-ck>            // Track flags chunk
     (
         'trkx'
-        <DMUS_IO_TRACK_EXTRAS_HEADER>  // DX8 Track flags header
+        <DMUS_IO_TRACK_EXTRAS_HEADER>  // DirectX8 Track flags header
     )
 */
 
-/*  File io for DirectMusic reference chunk. 
+/*  File io for DirectMusic reference chunk.
     This is used to embed a reference to an object.
 */
 
@@ -1371,7 +1371,7 @@ LIST
 
 /* values for dwChord field of DMUS_IO_PERS_SIGNPOST */
 /* DMUS_SIGNPOSTF_ flags are also used in templates (DMUS_IO_SIGNPOST) */
-#define DMUS_SIGNPOSTF_A        1      
+#define DMUS_SIGNPOSTF_A        1
 #define DMUS_SIGNPOSTF_B        2
 #define DMUS_SIGNPOSTF_C        4
 #define DMUS_SIGNPOSTF_D        8
@@ -1463,12 +1463,12 @@ RIFF
                                 <ncsq-ck>   // connecting(next) chords
                      )
 
-<chrd-list> ::= LIST('chrd' 
+<chrd-list> ::= LIST('chrd'
                                 <INAM-ck>   // name of chord in wide char format
                                 <sbcn-ck>   // list of subchords composing chord
                     )
 
-<chpl-list> ::= LIST('chpl' 
+<chpl-list> ::= LIST('chpl'
                                 <chrd-list> ... // chord definition
                     )
 
@@ -1491,7 +1491,7 @@ RIFF
 
 <sbcn-ck> ::= sbcn(<cSubChordID:WORD> ...)
 
-<ncsq-ck> ::= ncsq(<wNextChordSize:WORD> 
+<ncsq-ck> ::= ncsq(<wNextChordSize:WORD>
                    <DMUS_IO_NEXTCHORD>...)
 
 <spsh-ck> ::= spsh(<DMUS_IO_PERS_SIGNPOST>)
@@ -1545,7 +1545,7 @@ RIFF
     (
         <DMUS_FOURCC_SCRIPT_CHUNK>
     )
-    
+
     // <guid-ck>
     'guid'
     (
@@ -1737,8 +1737,8 @@ typedef struct _DMUS_IO_TIMESIGNATURE_ITEM
     WORD          wGridsPerBeat;      /* grids per beat */
 } DMUS_IO_TIMESIGNATURE_ITEM;
 
-/*  DX6 time signature track
-    
+/*  DirectX6 time signature track
+
     'tims'
     (
         // size of DMUS_IO_TIMESIGNATURE_ITEM : DWORD
@@ -1746,7 +1746,7 @@ typedef struct _DMUS_IO_TIMESIGNATURE_ITEM
     )
 */
 
-/*  DX8 Time signature track. The track has been updated from DX7 to support a list of
+/*  DirectX8 Time signature track. The track has been updated from DirectX7 to support a list of
     RIFF chunks. This will allow the time signature track to expand in the future.
 */
 
@@ -1765,10 +1765,10 @@ LIST
         // size of DMUS_IO_TIMESIGNATURE_ITEM : DWORD
         <DMUS_IO_TIMESIGNATURE_ITEM>...
     )
- 
+
 */
 
-/*  DX8 Marker track. This is used to store valid start points and other
+/*  DirectX8 Marker track. This is used to store valid start points and other
     flow control parameters that may come later. For example, if we want
     to implement more sophisticated looping and branching constructs, they
     would live in this track.
@@ -1808,7 +1808,7 @@ LIST
         // size of DMUS_IO_PLAY_MARKER : DWORD
         <DMUS_IO_PLAY_MARKER>...
     )
-  
+
 */
 
 /* segment trigger tracks */
@@ -1877,7 +1877,7 @@ LIST
             (
                 // Name, stored as NULL terminated string of WCHARs
             )
-*/      
+*/
 
 /* Script track. */
 
@@ -2149,7 +2149,7 @@ RIFF
     // <bsid-ck>
     'bsid'
     (
-        <DSOUND_IO_DSBUSID>  // The size of DSOUND_IO_DSBUSID is determined by the chunk size 
+        <DSOUND_IO_DSBUSID>  // The size of DSOUND_IO_DSBUSID is determined by the chunk size
     )
 
     // <ds3d-ck>

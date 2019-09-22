@@ -947,7 +947,13 @@ typedef enum _DXVA_DestinationFlags {
 } DXVA_DestinationFlags;
 
 
+
+
 typedef struct _DXVA_VideoSample2 {
+#ifdef _WIN64
+    DWORD               Size;
+    DWORD               Reserved;
+#endif
     REFERENCE_TIME      rtStart;
     REFERENCE_TIME      rtEnd;
     DWORD               SampleFormat;   // cast to DXVA_ExtendedFormat, or use Extract macros
@@ -980,6 +986,38 @@ typedef struct _DXVA_DeinterlaceCaps {
 // Function codes for RenderMoComp
 
 #define MAX_DEINTERLACE_SURFACES                        32
+
+#ifdef _WIN64
+//
+// These structures are used for thunking 32 bit DeinterlaceBltEx calls on
+// 64 bit drivers.
+// 
+typedef struct _DXVA_VideoSample32 {
+    REFERENCE_TIME      rtStart;
+    REFERENCE_TIME      rtEnd;
+    DWORD               SampleFormat;
+    DWORD               SampleFlags;
+    DWORD               lpDDSSrcSurface;  // 32 bit pointer size
+    RECT                rcSrc;
+    RECT                rcDst;
+    DXVA_AYUVsample2    Palette[16];
+    // DWORD Pad; 
+    // 4 bytes of padding added by the compiler to align the struct to 8 bytes.
+} DXVA_VideoSample32;
+ 
+typedef struct _DXVA_DeinterlaceBltEx32 {
+    DWORD               Size;
+    DXVA_AYUVsample2    BackgroundColor;
+    RECT                rcTarget;
+    REFERENCE_TIME      rtTarget;
+    DWORD               NumSourceSurfaces;
+    FLOAT               Alpha;
+    DXVA_VideoSample32  Source[MAX_DEINTERLACE_SURFACES];
+    DWORD               DestinationFormat;
+    DWORD               DestinationFlags;
+} DXVA_DeinterlaceBltEx32;
+#endif
+
 
 typedef struct _DXVA_DeinterlaceBlt {
     DWORD               Size;

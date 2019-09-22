@@ -16,7 +16,7 @@ extern "C" {
 //
 //  DXGetErrorString9
 //  
-//  Desc:  Converts a DirectX 9 or earlier HRESULT to a string 
+//  Desc:  Converts a DirectX 9 or eariler HRESULT to a string 
 //
 //  Args:  HRESULT hr   Can be any error code from
 //                      D3D9 D3DX9 D3D8 D3DX8 DDRAW DPLAY8 DMUSIC DSOUND DINPUT DSHOW
@@ -36,7 +36,7 @@ const WCHAR* WINAPI DXGetErrorString9W(HRESULT hr);
 //
 //  DXGetErrorDescription9
 //  
-//  Desc:  Returns a string description of a DirectX 9 or earlier HRESULT
+//  Desc:  Returns a string description of a DirectX 9 or eariler HRESULT
 //
 //  Args:  HRESULT hr   Can be any error code from
 //                      D3D9 D3DX9 D3D8 D3DX8 DDRAW DPLAY8 DMUSIC DSOUND DINPUT DSHOW 
@@ -97,4 +97,3 @@ HRESULT WINAPI DXTraceW( const char* strFile, DWORD dwLine, HRESULT hr, const WC
 #endif //__cplusplus
 
 #endif // _DXERR9_H_
-
